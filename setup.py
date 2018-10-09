@@ -37,8 +37,12 @@ setup(
 
     install_requires=[
         'numpy',
+        'scipy',
+        'ipython',
         'matplotlib',
         'h5py',
-        'pandas'
+        'pandas',
+        'seaborn',
+        'astropy'
     ],
 )
