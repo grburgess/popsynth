@@ -3,9 +3,12 @@ import numpy as np
 import scipy.stats as stats
 import scipy.special as sf
 import scipy.integrate as integrate
-import scipy.interpolate as interpolate
+
+import abc
+from IPython.display import display 
 
 import h5py
+import pandas as pd
 
 from astropy.cosmology import WMAP9 as cosmo
 
@@ -15,12 +18,20 @@ sol = sol.value
 from popsynth.population import Population
 
 
-class PopulationSynth(object):
 
+
+class PopulationSynth(object):
+    __metaclass__ = abc.ABCMeta
+    
     def __init__(self, r_max=10):
         self._n_model = 500
         self._model_spaces = {}
 
+        self._lf_params = {}
+        self._spatial_params = {}
+
+        self._r_max = r_max
+        
     def set_luminosity_function_parameters(self, **lf_params):
 
         self._lf_params = lf_params
@@ -40,9 +51,11 @@ class PopulationSynth(object):
 
         self._model_spaces[name] = space
 
+    @abc.abstractmethod
     def differential_volume(self, distance):
         pass
 
+    @abc.abstractmethod
     def dNdV(self, distance):
 
         pass
@@ -73,9 +86,11 @@ class PopulationSynth(object):
                     flag = False
         return np.array(r_out)
 
+    @abc.abstractmethod
     def draw_luminosity(self, size):
         pass
 
+    @abc.abstractmethod
     def transform(self, flux, distance):
         pass
 
@@ -91,7 +106,7 @@ class PopulationSynth(object):
 
         return log10_fobs
 
-    def draw_survey(self, boundary, strength=10.):
+    def draw_survey(self, boundary, flux_sigma=1., strength=10.):
 
         dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
 
@@ -138,3 +153,17 @@ class PopulationSynth(object):
             model_spaces=self._model_spaces,
             boundary=boundary,
             strength=strength)
+
+    def display(self):
+
+        spatial_df = pd.Series(self._spatial_params)
+        lf_df = pd.Series(self._lf_params)
+
+        print('Luminosity Function:')
+
+        display(lf_df)
+
+        print('Spatial Parameters:')
+
+        display(spatial_df)
+        
