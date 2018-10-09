@@ -9,46 +9,79 @@ import h5py
 
 from astropy.cosmology import WMAP9 as cosmo
 
-
 from astropy.constants import c as sol
 sol = sol.value
+
+from popsynth.population import Population
 
 
 class PopulationSynth(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, r_max=10):
+        self._n_model = 500
+        self._model_spaces = {}
 
-
-    def set_luminosity_function_parameters(self,lf_params):
+    def set_luminosity_function_parameters(self, **lf_params):
 
         self._lf_params = lf_params
 
-    def set_spatial_distribution_params(self, spatial_params):
+    def set_spatial_distribution_params(self, **spatial_params):
 
-        self._spatial_params
+        self._spatial_params = spatial_params
 
-    
-    def comoving_volume(self,r):
+    def add_model_space(self, name, start, stop, log=True):
+
+        if log:
+            space = np.logspace(np.log10(start), np.log10(stop), self._n_model)
+
+        else:
+
+            space = np.linspace(start, stop, self._n_model)
+
+        self._model_spaces[name] = space
+
+    def differential_volume(self, distance):
         pass
 
-    def dNdV(self):
+    def dNdV(self, distance):
 
         pass
 
-    def draw_distance(self,size):
+    def time_adjustment(self, r):
 
-        pass
-    
-    def draw_luminosity(self,size):
+        return 1.
+
+    def draw_distance(self, size):
+
+        dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
+
+        tmp = np.linspace(0, self._r_max, 1E5)
+
+        ymax = np.max(dNdr(tmp))
+
+        r_out = []
+
+        for i in range(size):
+            flag = True
+            while flag:
+
+                y = np.random.uniform(low=0, high=ymax)
+                r = np.random.uniform(low=0, high=self._r_max)
+
+                if y < dNdr(r):
+                    r_out.append(r)
+                    flag = False
+        return np.array(r_out)
+
+    def draw_luminosity(self, size):
         pass
 
-    def transform(self,flux, distance):
+    def transform(self, flux, distance):
         pass
-    
+
     def prob_det(x, boundary, strength):
 
-        return sf.expit(10.*(x-boundary))
+        return sf.expit(strength * (x - boundary))
 
     def draw_log10_fobs(self, f, f_sigma, size=1):
 
@@ -56,36 +89,52 @@ class PopulationSynth(object):
 
         log10_fobs = log10_f + np.random.normal(loc=0, scale=f_sigma, size=size)
 
-    def draw_survey(self):
+        return log10_fobs
 
-        N = integrate.quad(dNdz,0.,zmax,args=( r0, rise, decay , peak))[0]
+    def draw_survey(self, boundary, strength=10.):
 
+        dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
+
+        N = integrate.quad(dNdr, 0., self._r_max)[0]
 
         # this should be poisson distributed
         n = np.random.poisson(N)
-        
+
         luminosities = self.draw_luminosity(size=n)
         distances = self.draw_distance(size=n)
         fluxes = self.transform(luminosities, distances)
 
-        log10_fluxes = np.log10(fluxes)
+        #log10_fluxes = np.log10(fluxes)
 
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
         detection_probability = self.prob_det(log10_fluxes_obs, np.log10(boundary), strength)
-        
+
         selection = []
         for p in detection_probability:
-        
-        if stats.bernoulli.rvs(p) == 1:
-            
-            selection.append(True)
-            
-        else:
-            
-            selection.append(False)
-        
-        selection = np.array(selection)   
 
-        n_model = 500
+            if stats.bernoulli.rvs(p) == 1:
 
+                selection.append(True)
+
+            else:
+
+                selection.append(False)
+
+            selection = np.array(selection)
+
+
+
+        return Population(
+            luminosities=luminosities,
+            distances=distances,
+            fluxes=fluxes,
+            flux_obs=np.power(10, log10_fluxes_obs),
+            selection=selection,
+            flux_sigma=flux_sigma,
+            n_model=self._n_model,
+            lf_params=self._lf_params,
+            spatial_params=self._spatial_params,
+            model_spaces=self._model_spaces,
+            boundary=boundary,
+            strength=strength)
