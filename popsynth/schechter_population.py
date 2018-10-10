@@ -11,6 +11,7 @@ class SchechterPopulation(PopulationSynth):
 
         self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
 
+        self._lf_form = r'\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]'
     
     def phi(self, L):
         return  L**self.alpha * np.exp(-L/self.Lmin)/(self.Lmin**(1+self.alpha) * sf.gamma(1+self.alpha))

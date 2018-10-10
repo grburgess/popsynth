@@ -11,6 +11,10 @@ class ParetoPopulation(PopulationSynth):
 
         self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
 
+
+
+
+        self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
     
 
     def phi(self, L):

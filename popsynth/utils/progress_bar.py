@@ -2,10 +2,30 @@ from __future__ import print_function
 
 import sys, time
 import datetime
+from IPython import get_ipython
 
 
-# This is used for testing purposes
+def is_inside_notebook():
 
+    ip = get_ipython()
+
+    if ip is None:
+
+        # This happens if we are running in a python session, not a IPython one (for example in a script)
+        return False
+
+    else:
+
+        # We are running in a IPython session, either in a console or in a notebook
+        if ip.has_trait('kernel'):
+
+            # We are in a notebook
+            return True
+
+        else:
+
+            # We are not in a notebook
+            return False
 test_ascii_only = False
 
 try:

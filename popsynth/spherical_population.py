@@ -3,28 +3,33 @@ import numpy as np
 from popsynth.population_synth import PopulationSynth
 
 
-
-
 class SphericalPopulation(PopulationSynth):
 
-    def __init__(self, r_max=10):
+    def __init__(self, r_max=10, seed=1234, name='_sphere'):
 
-        super(SphericalPopulation, self).__init__(r_max)
+        PopulationSynth.__init__( self, r_max, seed, name)
 
     def differential_volume(self, r):
 
-        return 4 * np.pi * r* r
+        return 4 * np.pi * r * r
 
+    def transform(self, L, r):
+
+        return L/(4. * np.pi * r * r)
+    
 class ConstantSphericalPopulation(SphericalPopulation):
 
 
-    def __init__(self, Lambda=1. ,r_max = 10.):
+    def __init__(self, Lambda=1. ,r_max = 10., seed=1234, name='_cons_sphere'):
 
-        super(ConstantSphericalPopulation, self).__init__(r_max)
+        super(ConstantSphericalPopulation, self).__init__(r_max, seed, name)
 
 
         self.set_spatial_distribution_params(Lambda=Lambda)
 
+
+        self._spatial_form = r'\Lambda'
+        
     def __get_Lambda(self):
              """Calculates the 'Lambda' property."""
              return self._spatial_params['Lambda']
@@ -48,3 +53,5 @@ class ConstantSphericalPopulation(SphericalPopulation):
     def dNdV(self, distance):
 
         return self._spatial_params['Lambda']
+
+

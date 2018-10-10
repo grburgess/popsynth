@@ -48,9 +48,9 @@ def differential_comoving_volume(z):
 
 class CosmologicalPopulation(PopulationSynth):
 
-    def __init__(self, r_max=10, seed=1234):
+    def __init__(self, r_max=10, seed=1234, name='cosmo'):
 
-        super(CosmologicalPopulation, self).__init__(r_max, seed)
+        PopulationSynth.__init__(self, r_max, seed, name)
 
     def differential_volume(self, z):
 
@@ -62,15 +62,18 @@ class CosmologicalPopulation(PopulationSynth):
 
         return L/(4. * np.pi * luminosity_distance(z)**2)
 
+    def time_adjustment(self, z):
+        return (1+z)
 
 class SFRPopulation(CosmologicalPopulation):
 
-    def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234):
+    def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name='_sfrcosmo'):
 
-        super(SFRPopulation, self).__init__(r_max, seed)
+        CosmologicalPopulation.__init__(self, r_max, seed, name)
 
         self.set_spatial_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
+        self._spatial_form = r'\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}'
 
 
     def dNdV(self, z):

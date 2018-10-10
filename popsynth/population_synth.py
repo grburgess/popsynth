@@ -5,7 +5,7 @@ import scipy.special as sf
 import scipy.integrate as integrate
 
 import abc
-from IPython.display import display 
+from IPython.display import display, Math, Markdown
 
 import h5py
 import pandas as pd
@@ -16,17 +16,19 @@ from astropy.constants import c as sol
 sol = sol.value
 
 from popsynth.population import Population
-
+from popsynth.utils.progress_bar import progress_bar
 
 
 
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
     
-    def __init__(self, r_max=10, seed = 1234):
+    def __init__(self, r_max=10, seed = 1234, name='no_name'):
         self._n_model = 500
-        self._seed int(seed)
+        self._seed = int(seed)
         self._model_spaces = {}
+
+        self._name = name
 
  
         #self._lf_params = {}
@@ -53,6 +55,10 @@ class PopulationSynth(object):
 
         self._model_spaces[name] = space
 
+    @property
+    def name(self):
+        return self._name
+        
     @abc.abstractmethod
     def phi(self, L):
         pass
@@ -80,16 +86,18 @@ class PopulationSynth(object):
 
         r_out = []
 
-        for i in range(size):
-            flag = True
-            while flag:
+        with progress_bar(size, title='Drawing distances') as pbar:
+            for i in range(size):
+                flag = True
+                while flag:
 
-                y = np.random.uniform(low=0, high=ymax)
-                r = np.random.uniform(low=0, high=self._r_max)
+                    y = np.random.uniform(low=0, high=ymax)
+                    r = np.random.uniform(low=0, high=self._r_max)
 
-                if y < dNdr(r):
-                    r_out.append(r)
-                    flag = False
+                    if y < dNdr(r):
+                        r_out.append(r)
+                        flag = False
+                pbar.increase()
         return np.array(r_out)
 
     @abc.abstractmethod
@@ -119,9 +127,11 @@ class PopulationSynth(object):
         dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
 
         N = integrate.quad(dNdr, 0., self._r_max)[0]
-
+        
         # this should be poisson distributed
         n = np.random.poisson(N)
+
+        print('Expecting %d total objects'%n)
 
         luminosities = self.draw_luminosity(size=n)
         distances = self.draw_distance(size=n)
@@ -146,6 +156,7 @@ class PopulationSynth(object):
 
         selection = np.array(selection)
 
+        print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
 
 
         return Population(
@@ -155,25 +166,44 @@ class PopulationSynth(object):
             flux_obs=np.power(10, log10_fluxes_obs),
             selection=selection,
             flux_sigma=flux_sigma,
+            r_max = self._r_max,
             n_model=self._n_model,
             lf_params=self._lf_params,
             spatial_params=self._spatial_params,
             model_spaces=self._model_spaces,
             boundary=boundary,
             strength=strength,
-            seed=self._seed
+            seed=self._seed,
+            name=self._name,
+            spatial_form=self._spatial_form,
+            lf_form=self._lf_form
         )
 
     def display(self):
-
-        spatial_df = pd.Series(self._spatial_params)
-        lf_df = pd.Series(self._lf_params)
-
-        print('Luminosity Function:')
-
-        display(lf_df)
-
-        print('Spatial Parameters:')
-
-        display(spatial_df)
+        """
+        Display the simulation parameters
         
+        """
+
+        out={'parameter':[], 'value':[]}
+
+        display(Markdown('## Luminosity Function'))
+        for k,v in self._lf_params.items():
+
+             out['parameter'].append(k)
+             out['value'].append(v)
+
+        display(Math(self._lf_form))
+        display(pd.DataFrame(out))
+        out={'parameter':[], 'value':[]}
+
+        display(Markdown('## Spatial Function'))
+
+
+        for k,v in self._spatial_params.items():
+
+            out['parameter'].append(k)
+            out['value'].append(v)
+
+        display(Math(self._spatial_form))
+        display(pd.DataFrame(out))

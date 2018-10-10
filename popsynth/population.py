@@ -2,7 +2,8 @@ import h5py
 import importlib
 import numpy as np
 import matplotlib.pyplot as plt
-
+import pandas as pd
+from IPython.display import display, Math, Markdown
 
 green = '#24B756'
 green_highlight = '#07A23B'
@@ -20,6 +21,7 @@ class Population(object):
                  flux_obs,
                  selection,
                  flux_sigma,
+                 r_max,
                  boundary,
                  strength,
                  n_model,
@@ -27,7 +29,9 @@ class Population(object):
                  spatial_params=None,
                  model_spaces=None,
                  seed=1234,
-                 name=None
+                 name=None,
+                 spatial_form=None,
+                 lf_form=None
     ):
 
         self._luminosities = luminosities
@@ -35,12 +39,15 @@ class Population(object):
         self._fluxes = fluxes
         self._flux_obs = flux_obs
         self._selection = selection
+        self._r_max = r_max
         self._flux_sigma = flux_sigma
         self._boundary = boundary
         self._strength = strength
         self._seed = seed
         self._n_model = n_model
         self._name = name
+        self._spatial_form = spatial_form
+        self._lf_form = lf_form
         
         self._flux_selected = flux_obs[selection]
         self._distance_selected = distances[selection]
@@ -119,8 +126,11 @@ class Population(object):
             
 
             f.attrs['name'] = np.string_(self._name)
+            f.attrs['lf_form'] = np.string_(self._lf_form)
+            f.attrs['spatial_form'] = np.string_(self._spatial_form)
             f.attrs['flux_sigma'] = self._flux_sigma
             f.attrs['n_model'] = self._n_model
+            f.attrs['r_max'] = self._r_max
             f.attrs['boundary'] = self._boundary
             f.attrs['strength'] = self._strength
             f.attrs['seed'] = int(self._seed)
@@ -158,8 +168,11 @@ class Population(object):
             boundary = f.attrs['boundary']
             strength = f.attrs['strength']
             n_model = f.attrs['n_model']
+            r_max = f.attrs['r_max']
             seed = int(f.attrs['seed'])
             name = f.attrs['name']
+            lf_form = str(f.attrs['lf_form'])
+            spatial_form = str(f.attrs['spatial_form'])
             
             luminosities = f['luminosities'].value
             distances = f['distances'].value
@@ -181,20 +194,55 @@ class Population(object):
             selection=selection,
             flux_sigma=flux_sigma,
             n_model=n_model,
+            r_max=r_max,
             boundary=boundary,
             strength=strength,
             lf_params=lf_params,
             spatial_params=spatial_params,
             model_spaces=model_spaces,
             seed=seed,
-            name=name
+            name=name,
+            spatial_form=spatial_form,
+            lf_form=lf_form
         )
 
     def display(self):
 
-        pass
+        """
+        Display the simulation parameters
+        
+        """
 
-    def display_fluxes(self, ax=None):
+
+        info = '### %s simulation\nDetected %d out of %d objects' %(self._name, sum(self._selection), len(self._fluxes))
+
+        display(Markdown(info))
+        
+        out={'parameter':[], 'value':[]}
+
+        display(Markdown('## Luminosity Function'))
+        for k,v in self._lf_params.items():
+
+             out['parameter'].append(k)
+             out['value'].append(v)
+
+        display(Math(self._lf_form))
+        display(pd.DataFrame(out))
+        out={'parameter':[], 'value':[]}
+
+        display(Markdown('## Spatial Function'))
+
+
+        for k,v in self._spatial_params.items():
+
+            out['parameter'].append(k)
+            out['value'].append(v)
+
+        display(Math(self._spatial_form))
+        display(pd.DataFrame(out))
+
+
+    def display_true_fluxes(self, ax=None, flux_color = orange):
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -203,17 +251,7 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distances, self._fluxes, alpha=.2,color=orange, edgecolors='none',s=10)
-        ax.scatter(self._distance_selected, self._flux_selected , alpha=.8,color=green,edgecolors='none', s=15)
-
-        for start, stop, z in zip(self._fluxes[self._selection], self._flux_selected, self._distance_selected):
-    
-            x=z
-            y=start
-            dx=0
-            dy = stop-start
-   
-            ax.arrow(x, y, dx, dy,color='k', head_width=0.05, head_length=0.2*np.abs(dy),length_includes_head=True )
+        ax.scatter(self._distances, self._fluxes, alpha=.5,color=flux_color, edgecolors='none',s=10)
 
         ax.axhline(self._boundary, color='grey',zorder=-5000,ls='--')
         
@@ -222,3 +260,58 @@ class Population(object):
         ax.set_yscale('log')
 
         ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+
+
+        ax.set_xlabel('distance')
+        ax.set_ylabel('flux')
+        
+    def display_obs_fluxes(self, ax=None, flux_color = green):
+
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        else:
+
+            fig = ax.get_figure()
+
+
+        ax.scatter(self._distance_selected, self._flux_selected , alpha=.8,color=flux_color, edgecolors='none', s=15)
+
+
+        ax.axhline(self._boundary, color='grey',zorder=-5000,ls='--')
+        #ax.set_xscale('log')
+        ax.set_yscale('log')
+
+        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+        ax.set_xlim(right=self._r_max)
+
+        ax.set_xlabel('distance')
+        ax.set_ylabel('flux')
+
+
+
+    def display_fluxes(self, ax=None, true_color=orange, obs_color=green):
+
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        else:
+
+            fig = ax.get_figure()
+
+        self.display_true_fluxes(ax=ax,flux_color=true_color)
+        self.display_obs_fluxes(ax=ax,flux_color=obs_color)
+        
+        for start, stop, z in zip(self._fluxes[self._selection], self._flux_selected, self._distance_selected):
+
+            x=z
+            y=start
+            dx=0
+            dy = stop-start
+
+            ax.arrow(x, y, dx, dy,color='k', head_width=0.05, head_length=0.2*np.abs(dy),length_includes_head=True )
+
+
+
+
+        
