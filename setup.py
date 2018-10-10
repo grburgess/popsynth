@@ -22,7 +22,8 @@ setup(
 
     name="popsynth",
     packages=[
-        'popsynth'
+        'popsynth',
+        'popsynth/io'
     ],
     version='v1.0a',
     license='BSD',
@@ -43,6 +44,7 @@ setup(
         'h5py',
         'pandas',
         'seaborn',
-        'astropy'
+        'astropy',
+        'ipywidgets'
     ],
 )
