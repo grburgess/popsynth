@@ -23,7 +23,7 @@ setup(
     name="popsynth",
     packages=[
         'popsynth',
-        'popsynth/io'
+        'popsynth/utils'
     ],
     version='v1.0a',
     license='BSD',
