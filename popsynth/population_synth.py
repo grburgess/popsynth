@@ -23,12 +23,14 @@ from popsynth.population import Population
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
     
-    def __init__(self, r_max=10):
+    def __init__(self, r_max=10, seed = 1234):
         self._n_model = 500
+        self._seed int(seed)
         self._model_spaces = {}
 
-        self._lf_params = {}
-        self._spatial_params = {}
+ 
+        #self._lf_params = {}
+        #self._spatial_params = {}
 
         self._r_max = r_max
         
@@ -51,6 +53,10 @@ class PopulationSynth(object):
 
         self._model_spaces[name] = space
 
+    @abc.abstractmethod
+    def phi(self, L):
+        pass
+        
     @abc.abstractmethod
     def differential_volume(self, distance):
         pass
@@ -94,7 +100,7 @@ class PopulationSynth(object):
     def transform(self, flux, distance):
         pass
 
-    def prob_det(x, boundary, strength):
+    def prob_det(self, x, boundary, strength):
 
         return sf.expit(strength * (x - boundary))
 
@@ -107,6 +113,8 @@ class PopulationSynth(object):
         return log10_fobs
 
     def draw_survey(self, boundary, flux_sigma=1., strength=10.):
+
+        np.random.seed(self._seed)
 
         dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
 
@@ -136,7 +144,7 @@ class PopulationSynth(object):
 
                 selection.append(False)
 
-            selection = np.array(selection)
+        selection = np.array(selection)
 
 
 
@@ -152,7 +160,9 @@ class PopulationSynth(object):
             spatial_params=self._spatial_params,
             model_spaces=self._model_spaces,
             boundary=boundary,
-            strength=strength)
+            strength=strength,
+            seed=self._seed
+        )
 
     def display(self):
 
