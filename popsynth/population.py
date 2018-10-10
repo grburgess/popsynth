@@ -1,4 +1,5 @@
 import h5py
+import importlib
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -25,7 +26,9 @@ class Population(object):
                  lf_params,
                  spatial_params=None,
                  model_spaces=None,
-                 seed=1234):
+                 seed=1234,
+                 name=None
+    ):
 
         self._luminosities = luminosities
         self._distances = distances
@@ -37,7 +40,8 @@ class Population(object):
         self._strength = strength
         self._seed = seed
         self._n_model = n_model
-
+        self._name = name
+        
         self._flux_selected = flux_obs[selection]
         self._distance_selected = distances[selection]
         self._luminosity_selected = luminosities[selection]
@@ -114,6 +118,7 @@ class Population(object):
                 lum_grp.create_dataset(k, data=np.array([v]), compression='lzf')
             
 
+            f.attrs['name'] = np.string_(self._name)
             f.attrs['flux_sigma'] = self._flux_sigma
             f.attrs['n_model'] = self._n_model
             f.attrs['boundary'] = self._boundary
@@ -154,6 +159,7 @@ class Population(object):
             strength = f.attrs['strength']
             n_model = f.attrs['n_model']
             seed = int(f.attrs['seed'])
+            name = f.attrs['name']
             
             luminosities = f['luminosities'].value
             distances = f['distances'].value
@@ -180,7 +186,9 @@ class Population(object):
             lf_params=lf_params,
             spatial_params=spatial_params,
             model_spaces=model_spaces,
-            seed=seed)
+            seed=seed,
+            name=name
+        )
 
     def display(self):
 
