@@ -126,7 +126,9 @@ class Population(object):
             log_flux_obs = np.log10(self._flux_selected),
             flux_sigma = self._flux_sigma,
             z_max = self._r_max,
-            N_model = self._n_model
+            N_model = self._n_model,
+            boundary = self._boundary,
+            strength = self._strength
         )
 
         # now append the model spaces
