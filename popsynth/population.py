@@ -366,7 +366,8 @@ class Population(object):
             x2=np.log10(x2)
             y2=np.log10(y2)
             z2=np.log10(z2)
-            
+
+            R=np.log10(R)
             
         ax.scatter3D(x,y,z,c=self._flux_selected, cmap=cmap,norm=mpl.colors.LogNorm(vmin=min(self._flux_selected), 
                                                                                   vmax=max(self._flux_selected)))
@@ -424,6 +425,8 @@ class Population(object):
             x2=np.log10(x2)
             y2=np.log10(y2)
             z2=np.log10(z2)
+
+            R=np.log10(R)
             
             
         ax.scatter3D(x,y,z,c=self._flux_obs, cmap=cmap,norm=mpl.colors.LogNorm(vmin=min(self._fluxes), 
@@ -481,7 +484,7 @@ class Population(object):
             x2=np.log10(x2)
             y2=np.log10(y2)
             z2=np.log10(z2)
-            
+            R=np.log10(R)
             
         ax.scatter3D(x,y,z,c=self._flux_hidden, cmap=cmap,norm=mpl.colors.LogNorm(vmin=min(self._flux_hidden), 
                                                                                   vmax=max(self._flux_hidden)))
