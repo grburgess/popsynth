@@ -115,8 +115,29 @@ class Population(object):
     
     
     def to_stan_data(self):
+        """
+        Create Stan input
+        """
 
-        pass
+        # create a dict for Stan
+        output = dict(
+            N = self._selection.sum(),
+            z_obs = self._distance_selected,
+            log_flux_obs = np.log10(self._flux_selected),
+            flux_sigma = self._flux_sigma,
+            z_max = self._r_max,
+            N_model = self._n_model
+        )
+
+        # now append the model spaces
+        for k, v in self._model_spaces.items():
+
+            output[k] = v
+
+        return output
+        
+
+        
 
     def writeto(self, file_name):
 
