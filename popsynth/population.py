@@ -2,8 +2,13 @@ import h5py
 import importlib
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+import importlib
+importlib.import_module('mpl_toolkits.mplot3d').Axes3D
 import pandas as pd
 from IPython.display import display, Math, Markdown
+
+from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
 
 green = '#24B756'
 green_highlight = '#07A23B'
@@ -53,6 +58,11 @@ class Population(object):
         self._distance_selected = distances[selection]
         self._luminosity_selected = luminosities[selection]
 
+        self._flux_hidden = flux_obs[~selection]
+        self._distance_hidden = distances[~selection]
+        self._luminosity_hidden = luminosities[~selection]
+
+        
         self._lf_params = lf_params
         self._spatial_params = spatial_params
 
@@ -311,7 +321,186 @@ class Population(object):
 
             ax.arrow(x, y, dx, dy,color='k', head_width=0.05, head_length=0.2*np.abs(dy),length_includes_head=True )
 
+    def display_obs_fluxes_sphere(self, ax=None, cmap='magma', distance_transform = None, use_log=False):
+
+        if ax is None:
+            fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
+
+        else:
+
+            fig = ax.get_figure()
 
 
+        n = sum(self._selection)
+
+        theta, phi = sample_theta_phi(n)
+
+
+        if distance_transform is not None:
+
+            distance = distance_transform(self._distance_selected)
+
+        else:
+
+            distance = self._distance_selected
+
+            
+        
+        x, y, z = xyz(distance, theta, phi)
+
+        R = self._r_max
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        x2 = R * np.outer(np.cos(u), np.sin(v))
+        y2 = R * np.outer(np.sin(u), np.sin(v))
+        z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
 
         
+        if use_log:
+
+            x=np.log10(x)
+            y=np.log10(y)
+            z=np.log10(z)
+
+            x2=np.log10(x2)
+            y2=np.log10(y2)
+            z2=np.log10(z2)
+            
+            
+        ax.scatter3D(x,y,z,c=self._flux_selected, cmap=cmap,norm=mpl.colors.LogNorm(vmin=min(self._flux_selected), 
+                                                                                  vmax=max(self._flux_selected)))
+
+        ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
+
+        ax._axis3don = False
+        ax.set_xlim(-R,R)
+        ax.set_ylim(-R,R)
+        ax.set_zlim(-R,R)
+
+
+    def display_fluxes_sphere(self, ax=None, cmap='magma', distance_transform = None, use_log=False):
+
+        if ax is None:
+            fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
+
+        else:
+
+            fig = ax.get_figure()
+
+
+        n = len(self._fluxes)
+
+        theta, phi = sample_theta_phi(n)
+
+
+        if distance_transform is not None:
+
+            distance = distance_transform(self._distances)
+
+        else:
+
+            distance = self._distances
+
+            
+        
+        x, y, z = xyz(distance, theta, phi)
+
+        R = self._r_max
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        x2 = R * np.outer(np.cos(u), np.sin(v))
+        y2 = R * np.outer(np.sin(u), np.sin(v))
+        z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        
+        if use_log:
+
+            x=np.log10(x)
+            y=np.log10(y)
+            z=np.log10(z)
+
+            x2=np.log10(x2)
+            y2=np.log10(y2)
+            z2=np.log10(z2)
+            
+            
+        ax.scatter3D(x,y,z,c=self._flux_obs, cmap=cmap,norm=mpl.colors.LogNorm(vmin=min(self._fluxes), 
+                                                                                  vmax=max(self._fluxes)))
+        
+        ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
+
+        ax._axis3don = False
+        ax.set_xlim(-R,R)
+        ax.set_ylim(-R,R)
+        ax.set_zlim(-R,R)
+
+    def display_hidden_fluxes_sphere(self, ax=None, cmap='magma', distance_transform = None, use_log=False):
+
+        if ax is None:
+            fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
+
+        else:
+
+            fig = ax.get_figure()
+
+
+        n = len(self._flux_hidden)
+
+        theta, phi = sample_theta_phi(n)
+
+
+        if distance_transform is not None:
+
+            distance = distance_transform(self._distance_hidden)
+
+        else:
+
+            distance = self._distance_hidden
+
+            
+        
+        x, y, z = xyz(distance, theta, phi)
+
+        R = self._r_max
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        x2 = R * np.outer(np.cos(u), np.sin(v))
+        y2 = R * np.outer(np.sin(u), np.sin(v))
+        z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        
+        if use_log:
+
+            x=np.log10(x)
+            y=np.log10(y)
+            z=np.log10(z)
+
+            x2=np.log10(x2)
+            y2=np.log10(y2)
+            z2=np.log10(z2)
+            
+            
+        ax.scatter3D(x,y,z,c=self._flux_hidden, cmap=cmap,norm=mpl.colors.LogNorm(vmin=min(self._flux_hidden), 
+                                                                                  vmax=max(self._flux_hidden)))
+        
+        ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
+
+        ax._axis3don = False
+        ax.set_xlim(-R,R)
+        ax.set_ylim(-R,R)
+        ax.set_zlim(-R,R)
+
+    def display_flux_sphere(self, ax=None, seen_cmap='magma', unseen_cmap='Greys' , distance_transform = None, use_log=False):
+
+        if ax is None:
+            fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
+
+        else:
+            fig = ax.get_figure()
+
+
+        self.display_obs_fluxes_sphere(ax=ax,cmap=seen_cmap,distance_transform=distance_transform,use_log=use_log)
+        self.display_hidden_fluxes_sphere(ax=ax,cmap=unseen_cmap,distance_transform=distance_transform,use_log=use_log)
