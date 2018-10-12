@@ -533,6 +533,8 @@ class Population(object):
 
     def display_luminosty(self):
 
+        fig, ax = plt.subplots()
+        
         bins = np.logspace(np.log10(self._luminosities.min()),np.log10(self._luminosities.max()),30)
 
         ax.hist(self._luminosities,bins=bins,normed=True,facecolor=orange,edgecolor=orange_highlight,lw=1.5)
