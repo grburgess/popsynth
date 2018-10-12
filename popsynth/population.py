@@ -530,3 +530,13 @@ class Population(object):
 
         self.display_obs_fluxes_sphere(ax=ax,cmap=seen_cmap,distance_transform=distance_transform,use_log=use_log)
         self.display_hidden_fluxes_sphere(ax=ax,cmap=unseen_cmap,distance_transform=distance_transform,use_log=use_log)
+
+    def display_luminosty(self):
+
+        bins = np.logspace(np.log10(self._luminosities.min()),np.log10(self._luminosities.max()),30)
+
+        ax.hist(self._luminosities,bins=bins,normed=True,facecolor=orange,edgecolor=orange_highlight,lw=1.5)
+
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+        ax.set_xlabel('L')
