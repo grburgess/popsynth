@@ -60,7 +60,7 @@ class PopulationSynth(object):
         """
         if log:
             space = np.logspace(np.log10(start), np.log10(stop), self._n_model)
-
+ 
         else:
 
             space = np.linspace(start, stop, self._n_model)
