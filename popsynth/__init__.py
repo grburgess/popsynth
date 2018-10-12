@@ -5,6 +5,7 @@ from popsynth.pareto_population import ParetoPopulation
 from popsynth.schechter_population import SchechterPopulation
 
 from popsynth.population import Population
+from popsynth.auxiliary_sampler import AuxiliarySampler
 
 from popsynth import synths
 #from popsynth.synths import ParetoConstantSphericalPopulation, ParetoSFRPopulation, SchechterSFRPopulation

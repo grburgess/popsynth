@@ -36,7 +36,8 @@ class Population(object):
                  seed=1234,
                  name=None,
                  spatial_form=None,
-                 lf_form=None
+                 lf_form=None,
+                 auxiliary_quantities=None
     ):
 
         self._luminosities = luminosities
@@ -68,6 +69,24 @@ class Population(object):
 
         self._model_spaces = model_spaces
 
+
+        
+        
+        if auxiliary_quantities is not None:
+
+            for k,v in auxiliary_quantities.items():
+
+                setattr(self, k, v['true_values'])
+                setattr(self,'%s_obs'%k, v['obs_values'])
+                setattr(self,'%s_selected'%k, v['obs_values'][selection])
+
+
+        self._auxiliary_quantites = auxiliary_quantities
+
+                
+            
+            
+        
         if model_spaces is not None:
 
             for k, v in model_spaces.items():
@@ -136,6 +155,12 @@ class Population(object):
 
             output[k] = v
 
+        for k, v in self._auxiliary_quantites.items():
+
+            output['%s_obs'%k] = v['obs_values'][self._selection]
+            output['%s_sigma'%k] = v['sigma']
+
+            
         return output
         
 
@@ -174,6 +199,16 @@ class Population(object):
             f.create_dataset('flux_obs', data=self._flux_obs, compression='lzf')
             f.create_dataset('selection', data=self._selection, compression='lzf')
 
+            aux_grp = f.create_group('auxiliary_quantities')
+
+            for k, v in self._auxiliary_quantites.items():
+
+                q_grp = aux_grp.create_group(k)
+                q_grp.create_dataset('true_values',data=v['true_values'], compression='lzf')
+                q_grp.create_dataset('obs_values',data=v['obs_values'], compression='lzf')
+
+                q_grp.attrs['sigma'] = v['sigma']
+            
             model_grp = f.create_group('model_spaces')
 
             for k, v in self._model_spaces.items():
@@ -217,8 +252,19 @@ class Population(object):
 
             for k in f['model_spaces'].keys():
 
-                model_spaces[k] = f['model_spaces'][k].values
+                model_spaces[str(k)] = f['model_spaces'][k].value
 
+            auxiliary_quantities = {}
+
+            for k in f['auxiliary_quantities'].keys():
+
+                auxiliary_quantities[str(k)] = {'true_values': f['auxiliary_quantities'][k]['true_values'].value,
+                                           'obs_values': f['auxiliary_quantities'][k]['obs_values'].value,
+                                           'sigma': f['auxiliary_quantities'][k].attrs['sigma']
+
+                }
+
+                
         return cls(
             luminosities=luminosities,
             distances=distances,
@@ -236,7 +282,9 @@ class Population(object):
             seed=seed,
             name=name,
             spatial_form=spatial_form,
-            lf_form=lf_form
+            lf_form=lf_form,
+            auxiliary_quantities=auxiliary_quantities
+            
         )
 
     def display(self):

@@ -30,7 +30,7 @@ class PopulationSynth(object):
         self._n_model = 500
         self._seed = int(seed)
         self._model_spaces = {}
-
+        self._auxiliary_observations = {}
         self._name = name
 
         self._r_max = r_max
@@ -67,6 +67,13 @@ class PopulationSynth(object):
 
         self._model_spaces[name] = space
 
+    def add_observed_quantity(self, auxiliary_sampler):
+
+
+        self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
+        
+        
+        
     @property
     def name(self):
         return self._name
@@ -175,6 +182,36 @@ class PopulationSynth(object):
         distances = self.draw_distance(size=n)
         fluxes = self.transform(luminosities, distances)
 
+
+        # now sample any auxilary quantities
+        # if needed
+        
+        auxiliary_quantities = {}
+
+        for k,v in self._auxiliary_observations.items():
+
+            print('Sampling: %s' %k)
+
+            v.set_luminosity(luminosities)
+            v.set_distance(distances)
+
+            v.true_sampler(size=n)
+            v.observation_sampler(size=n)
+
+            # check to make sure we sampled!
+            assert v.true_values is not None and len(v.true_values) == n
+            assert v.obs_values is not None and len(v.obs_values) == n
+            
+            auxiliary_quantities[k] = {'true_values': v.true_values,
+                                       'obs_values': v.obs_values,
+                                       'sigma': v.sigma 
+
+
+            }
+            
+            
+            
+        
         #log10_fluxes = np.log10(fluxes)
 
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
@@ -214,7 +251,8 @@ class PopulationSynth(object):
             seed=self._seed,
             name=self._name,
             spatial_form=self._spatial_form,
-            lf_form=self._lf_form
+            lf_form=self._lf_form,
+            auxiliary_quantities=auxiliary_quantities
         )
 
     def display(self):
