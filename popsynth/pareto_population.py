@@ -19,7 +19,7 @@ class ParetoPopulation(PopulationSynth):
 
     def phi(self, L):
 
-        out = np.zeros_like(L):
+        out = np.zeros_like(L)
 
         idx = L>=self.Lmin
         
