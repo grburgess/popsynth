@@ -297,7 +297,7 @@ class Population(object):
         display(Math(self._spatial_form))
         display(pd.DataFrame(out))
 
-    def display_true_fluxes(self, ax=None, flux_color=orange):
+    def display_true_fluxes(self, ax=None, flux_color=orange, **kwargs):
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -306,7 +306,7 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distances, self._fluxes, alpha=.5, color=flux_color, edgecolors='none', s=10)
+        ax.scatter(self._distances, self._fluxes, alpha=.5, color=flux_color, edgecolors='none', s=10, **kwargs)
 
         ax.axhline(self._boundary, color='grey', zorder=-5000, ls='--')
 
@@ -318,7 +318,7 @@ class Population(object):
         ax.set_xlabel('distance')
         ax.set_ylabel('flux')
 
-    def display_obs_fluxes(self, ax=None, flux_color=green):
+    def display_obs_fluxes(self, ax=None, flux_color=green, **kwargs):
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -327,7 +327,8 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distance_selected, self._flux_selected, alpha=.8, color=flux_color, edgecolors='none', s=15)
+        ax.scatter(self._distance_selected, self._flux_selected, alpha=.8,
+                   color=flux_color, edgecolors='none', s=15, **kwargs)
 
         ax.axhline(self._boundary, color='grey', zorder=-5000, ls='--')
         #ax.set_xscale('log')
@@ -339,7 +340,7 @@ class Population(object):
         ax.set_xlabel('distance')
         ax.set_ylabel('flux')
 
-    def display_fluxes(self, ax=None, true_color=orange, obs_color=green):
+    def display_fluxes(self, ax=None, true_color=orange, obs_color=green, **kwargs):
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -348,8 +349,8 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        self.display_true_fluxes(ax=ax, flux_color=true_color)
-        self.display_obs_fluxes(ax=ax, flux_color=obs_color)
+        self.display_true_fluxes(ax=ax, flux_color=true_color, **kwargs)
+        self.display_obs_fluxes(ax=ax, flux_color=obs_color, **kwargs)
 
         for start, stop, z in zip(self._fluxes[self._selection], self._flux_selected, self._distance_selected):
 
@@ -360,7 +361,7 @@ class Population(object):
 
             ax.arrow(x, y, dx, dy, color='k', head_width=0.05, head_length=0.2 * np.abs(dy), length_includes_head=True)
 
-    def display_obs_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False):
+    def display_obs_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
 
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
@@ -409,7 +410,8 @@ class Population(object):
             z,
             c=self._flux_selected,
             cmap=cmap,
-            norm=mpl.colors.LogNorm(vmin=min(self._flux_selected), vmax=max(self._flux_selected)))
+            norm=mpl.colors.LogNorm(vmin=min(self._flux_selected), vmax=max(self._flux_selected)),
+            **kwargs)
 
         ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
 
@@ -418,7 +420,7 @@ class Population(object):
         ax.set_ylim(-R, R)
         ax.set_zlim(-R, R)
 
-    def display_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False):
+    def display_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
 
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
@@ -467,7 +469,7 @@ class Population(object):
             z,
             c=self._flux_obs,
             cmap=cmap,
-            norm=mpl.colors.LogNorm(vmin=min(self._fluxes), vmax=max(self._fluxes)))
+            norm=mpl.colors.LogNorm(vmin=min(self._fluxes), vmax=max(self._fluxes)), **kwargs)
 
         ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
 
@@ -476,7 +478,7 @@ class Population(object):
         ax.set_ylim(-R, R)
         ax.set_zlim(-R, R)
 
-    def display_hidden_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False):
+    def display_hidden_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
 
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
@@ -524,21 +526,26 @@ class Population(object):
             z,
             c=self._flux_hidden,
             cmap=cmap,
-            norm=mpl.colors.LogNorm(vmin=min(self._flux_hidden), vmax=max(self._flux_hidden)))
+            norm=mpl.colors.LogNorm(vmin=min(self._flux_hidden), vmax=max(self._flux_hidden)),
+            **kwargs
+            
+        )
 
         ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
 
         ax._axis3don = False
-        ax.set_xlim(-R, R)
-        ax.set_ylim(-R, R)
-        ax.set_zlim(-R, R)
+        # ax.set_xlim(-R, R)
+        # ax.set_ylim(-R, R)
+        # ax.set_zlim(-R, R)
 
     def display_flux_sphere(self,
                             ax=None,
                             seen_cmap='magma',
                             unseen_cmap='Greys',
                             distance_transform=None,
-                            use_log=False):
+                            use_log=False,
+                            **kwargs
+    ):
 
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
@@ -546,14 +553,25 @@ class Population(object):
         else:
             fig = ax.get_figure()
 
-        self.display_obs_fluxes_sphere(ax=ax, cmap=seen_cmap, distance_transform=distance_transform, use_log=use_log)
-        self.display_hidden_fluxes_sphere(
-            ax=ax, cmap=unseen_cmap, distance_transform=distance_transform, use_log=use_log)
+        self.display_obs_fluxes_sphere(ax=ax, cmap=seen_cmap,
+                                       distance_transform=distance_transform,
+                                       use_log=use_log,
+                                       **kwargs)
+        
+        self.display_hidden_fluxes_sphere(ax=ax, cmap=unseen_cmap,
+                                          distance_transform=distance_transform,
+                                          use_log=use_log,
+                                          **kwargs)
 
-    def display_luminosty(self):
+    def display_luminosty(self, ax=None, **kwargs):
 
-        fig, ax = plt.subplots()
+        if ax is None:
+            fig, ax = plt.subplots()
 
+        else:
+
+            fig = ax.get_figure()
+            
         bins = np.logspace(np.log10(self._luminosities.min()), np.log10(self._luminosities.max()), 30)
 
         ax.hist(self._luminosities, bins=bins, normed=True, facecolor=orange, edgecolor=orange_highlight, lw=1.5)
