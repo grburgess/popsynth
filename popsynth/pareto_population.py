@@ -18,8 +18,15 @@ class ParetoPopulation(PopulationSynth):
     
 
     def phi(self, L):
-        return self.alpha*self.Lmin**self.alpha / L**(self.alpha+1)
 
+        out = np.zeros_like(L):
+
+        idx = L>=self.Lmin
+        
+        out[idx] =  self.alpha*self.Lmin**self.alpha / L[idx]**(self.alpha+1)
+
+        return out
+        
     def draw_luminosity(self, size=1):
     
         return (np.random.pareto(self._lf_params['alpha'], size) + 1) * self._lf_params['Lmin']
