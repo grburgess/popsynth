@@ -590,3 +590,20 @@ class Population(object):
         ax.set_xscale('log')
         ax.set_yscale('log')
         ax.set_xlabel('L')
+
+
+    def display_distances(self, ax=None):
+
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        else:
+            fig = ax.get_figure()
+
+        bins = np.linspace(0,self._r_max,40)
+        ax.hist(data['z'],bins=bins, facecolor=green, edgecolor=green_highlight, lw=1.5,label='Total Pop.')
+        ax.hist(data['z_obs'],bins=bins, facecolor=blue, edgecolor=blue_highlight, lw=1.5,alpha=1,label='Obs. Pop.')
+
+        ax.set_xlabel('z')
+        ax.legend()
+        #sns.despine(offset=5, trim=True);
