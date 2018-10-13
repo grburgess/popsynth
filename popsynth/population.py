@@ -61,7 +61,7 @@ class Population(object):
         self._lf_form = lf_form
 
         self._flux_selected = flux_obs[selection]
-v        self._distance_selected = distances[selection]
+        self._distance_selected = distances[selection]
         self._luminosity_selected = luminosities[selection]
 
         self._flux_hidden = flux_obs[~selection]
