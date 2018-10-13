@@ -166,11 +166,24 @@ class PopulationSynth(object):
         return log10_fobs
 
     def draw_survey(self, boundary, flux_sigma=1., strength=10.):
+        """
+        Draw the total survey and return a Population object
 
+        :param boundary: the mean boundary for flux selection
+        :param flux_sigma: the homoskedastic sigma for the flux in log10 space
+        :param strength: the log10 strength of the inv logit selection
+        :return: a Population object
+        """
+
+        # set the random seed
+        
         np.random.seed(self._seed)
 
+        # create a callback of the integrand 
         dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
 
+        # integrate the population to determine the true number of
+        # objects
         N = integrate.quad(dNdr, 0., self._r_max)[0]
         
         # this should be poisson distributed
@@ -178,8 +191,11 @@ class PopulationSynth(object):
 
         print('Expecting %d total objects'%n)
 
+        # draw all the values
         luminosities = self.draw_luminosity(size=n)
         distances = self.draw_distance(size=n)
+
+        # transform the fluxes
         fluxes = self.transform(luminosities, distances)
 
 
@@ -192,35 +208,41 @@ class PopulationSynth(object):
 
             print('Sampling: %s' %k)
 
+            # set the luminosities and distances to
+            # auxilary sampler just in case
+            # they are needed
+            
             v.set_luminosity(luminosities)
             v.set_distance(distances)
 
+            # sample the true and obs
+            # values which are held internally
             v.true_sampler(size=n)
             v.observation_sampler(size=n)
 
             # check to make sure we sampled!
             assert v.true_values is not None and len(v.true_values) == n
             assert v.obs_values is not None and len(v.obs_values) == n
-            
+
+            # append these values to a dict
             auxiliary_quantities[k] = {'true_values': v.true_values,
                                        'obs_values': v.obs_values,
-                                       'sigma': v.sigma 
-
-
-            }
+                                       'sigma': v.sigma }
             
             
-            
-        
-        #log10_fluxes = np.log10(fluxes)
 
+        # now draw all the observed fluxes
+        # this is homoskedastic for now
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
+        # compute the detection probability  for the observed values
         detection_probability = self.prob_det(log10_fluxes_obs, np.log10(boundary), strength)
 
+        # now select them
         selection = []
         for p in detection_probability:
 
+            # make a bernoulli draw given the detection probability
             if stats.bernoulli.rvs(p) == 1:
 
                 selection.append(True)
@@ -233,6 +255,7 @@ class PopulationSynth(object):
 
         print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
 
+        # return a Population object
 
         return Population(
             luminosities=luminosities,
