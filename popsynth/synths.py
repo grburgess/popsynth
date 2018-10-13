@@ -4,7 +4,7 @@ from popsynth.cosmological_population import SFRPopulation
 
 from popsynth.pareto_population import ParetoPopulation
 from popsynth.schechter_population import SchechterPopulation
-
+from popsynth.log_normal_population import LogNormalPopulation
 
 class ParetoHomogeneousSphericalPopulation(ParetoPopulation, ConstantSphericalPopulation):
 
@@ -43,3 +43,13 @@ class SchechterSFRPopulation(SchechterPopulation, SFRPopulation):
             self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='SchechterSFRPopulation')
         SFRPopulation.__init__(
             self, r0=r0, rise=rise, decay=decay, peak=peak, r_max=r_max, seed=seed, name='SchechterSFRPopulation')
+
+
+class LogNormalSFRPopulation(LogNormalPopulation, SFRPopulation):
+
+    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=10, seed=1234):
+
+        LogNormalPopulation.__init__(
+            self, mu=mu, tau=tau, r_max=r_max, seed=seed, name='LogNormalSFRPopulation')
+        SFRPopulation.__init__(
+            self, r0=r0, rise=rise, decay=decay, peak=peak, r_max=r_max, seed=seed, name='LogNormalSFRPopulation')
