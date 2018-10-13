@@ -22,7 +22,7 @@ class LogNormalPopulation(PopulationSynth):
 
     def draw_luminosity(self, size=1):
     
-        return np.random.lognormal(mu=self.mu, tau=self.tau, size=size)
+        return np.random.lognormal(mean=self.mu, sigma=self.tau, size=size)
         
     def __get_mu(self):
              """Calculates the 'mu' property."""
