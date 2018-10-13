@@ -13,19 +13,16 @@ class LogNormalPopulation(PopulationSynth):
 
         self.set_luminosity_function_parameters(mu=mu, tau=tau)
 
-
-
-
         self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
     
 
     def phi(self, L):
 
-        return stats.lognorm.pdf(L, loc=self.mu, scale=self.tau)
+        return (1./(self.tau * L * np.sqrt(2* np.pi))) * np.exp(-(np.log(x) - self.mu)**2/(2*self.tau**2))
 
     def draw_luminosity(self, size=1):
     
-        return stats.lognorm.rvs(loc=self.mu, scale=self.tau, size=size)
+        return np.random.lognormal(mu=self.mu, tau=self.tau, size=size)
         
     def __get_mu(self):
              """Calculates the 'mu' property."""
