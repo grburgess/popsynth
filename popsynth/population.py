@@ -325,6 +325,7 @@ class Population(object):
 
     def display_obs_fluxes(self, ax=None, flux_color=green, **kwargs):
 
+        
         if ax is None:
             fig, ax = plt.subplots()
 
@@ -485,6 +486,13 @@ class Population(object):
 
     def display_hidden_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
 
+        # do not display if there is nothing hidden
+        if len(self._selection) == sum(selection):
+
+            return 
+
+        
+        
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
 
