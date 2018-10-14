@@ -253,6 +253,10 @@ class PopulationSynth(object):
 
         selection = np.array(selection)
 
+        if sum(selection) == n:
+            print('NO HIDDEN OBJECTS')
+            
+        
         print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
 
         # return a Population object
