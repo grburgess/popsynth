@@ -311,7 +311,7 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distances, self._fluxes, alpha=.5, color=flux_color, edgecolors='none', s=10, **kwargs)
+        ax.scatter(self._distances, self._fluxes, alpha=.5, color=flux_color, edgecolors='none',label='True flux', **kwargs)
 
         ax.axhline(self._boundary, color='grey', zorder=-5000, ls='--')
 
@@ -334,7 +334,7 @@ class Population(object):
             fig = ax.get_figure()
 
         ax.scatter(self._distance_selected, self._flux_selected, alpha=.8,
-                   color=flux_color, edgecolors='none', s=15, **kwargs)
+                   color=flux_color, edgecolors='none',label='Detected flux', **kwargs)
 
         ax.axhline(self._boundary, color='grey', zorder=-5000, ls='--')
         #ax.set_xscale('log')
@@ -484,10 +484,12 @@ class Population(object):
         ax.set_ylim(-R, R)
         ax.set_zlim(-R, R)
 
+        return fig
+
     def display_hidden_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
 
         # do not display if there is nothing hidden
-        if len(self._selection) == sum(selection):
+        if len(self._selection) == sum(self._selection):
 
             return 
 
@@ -576,6 +578,10 @@ class Population(object):
                                           use_log=use_log,
                                           **kwargs)
 
+
+
+
+        return fig
     def display_luminosty(self, ax=None, **kwargs):
 
         if ax is None:
