@@ -16,6 +16,7 @@ from astropy.constants import c as sol
 sol = sol.value
 
 from popsynth.population import Population
+from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.utils.progress_bar import progress_bar
 
 
@@ -34,7 +35,10 @@ class PopulationSynth(object):
         self._name = name
 
         self._r_max = r_max
-        
+
+        self._has_derived_luminosity = False
+        self._derived_luminosity_sampler = None
+
     def set_luminosity_function_parameters(self, **lf_params):
         """
         Set the luminosity function parameters as keywords
@@ -69,8 +73,14 @@ class PopulationSynth(object):
 
     def add_observed_quantity(self, auxiliary_sampler):
 
+        if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
+            self._has_derived_luminosity = True
+            self._derived_luminosity_sampler = auxiliary_sampler
 
-        self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
+        else:
+            
+
+            self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
         
         
         
@@ -141,7 +151,7 @@ class PopulationSynth(object):
     def transform(self, flux, distance):
         pass
 
-    def prob_det(self, x, boundary, strength):
+    def _prob_det(self, x, boundary, strength):
         """
         Soft detection threshold
 
@@ -188,12 +198,40 @@ class PopulationSynth(object):
         
         # this should be poisson distributed
         n = np.random.poisson(N)
-
+        distances = self.draw_distance(size=n)
+        
         print('Expecting %d total objects'%n)
 
-        # draw all the values
-        luminosities = self.draw_luminosity(size=n)
-        distances = self.draw_distance(size=n)
+
+        # first check if the auxilliary samplers
+        # compute the luminosities
+        auxiliary_quantities = {}
+        if self._has_derived_luminosity:
+
+            print('Sampling %s', self._derived_luminosity_sampler.name )
+            self._derived_luminosity_sampler.set_distance(distances)
+
+            # sample the true and obs
+            # values which are held internally
+            self._derived_luminosity_sampler.true_sampler(size=n)
+            self._derived_luminosity_sampler.observation_sampler(size=n)
+
+            # check to make sure we sampled!
+            assert v.true_values is not None and len(v.true_values) == n
+            assert v.obs_values is not None and len(v.obs_values) == n
+
+            # append these values to a dict
+            auxiliary_quantities[self._derived_luminosity_sampler.name] = {'true_values': self._derived_luminosity_sampler.true_values,
+                                       'obs_values': self._derived_luminosity_sampler.obs_values,
+                                       'sigma': self._derived_luminosity_sampler.sigma }
+
+            print('Getting luminosity from derived sampler')
+            luminosities = self._derived_luminosity_sampler.compute_luminosity()
+            
+        else:
+            # draw all the values
+            luminosities = self.draw_luminosity(size=n)
+ 
 
         # transform the fluxes
         fluxes = self.transform(luminosities, distances)
@@ -202,7 +240,7 @@ class PopulationSynth(object):
         # now sample any auxilary quantities
         # if needed
         
-        auxiliary_quantities = {}
+        
 
         for k,v in self._auxiliary_observations.items():
 
@@ -236,7 +274,7 @@ class PopulationSynth(object):
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
         # compute the detection probability  for the observed values
-        detection_probability = self.prob_det(log10_fluxes_obs, np.log10(boundary), strength)
+        detection_probability = self._prob_det(log10_fluxes_obs, np.log10(boundary), strength)
 
         # now select them
         selection = []
