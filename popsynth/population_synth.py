@@ -208,7 +208,7 @@ class PopulationSynth(object):
         auxiliary_quantities = {}
         if self._has_derived_luminosity:
 
-            print('Sampling %s', self._derived_luminosity_sampler.name )
+            print('Sampling %s' % self._derived_luminosity_sampler.name )
             self._derived_luminosity_sampler.set_distance(distances)
 
             # sample the true and obs
@@ -217,8 +217,8 @@ class PopulationSynth(object):
             self._derived_luminosity_sampler.observation_sampler(size=n)
 
             # check to make sure we sampled!
-            assert v.true_values is not None and len(v.true_values) == n
-            assert v.obs_values is not None and len(v.obs_values) == n
+            assert self._derived_luminosity_sampler.true_values is not None and len(self._derived_luminosity_sampler.true_values) == n
+            assert self._derived_luminosity_sampler.obs_values is not None and len(self._derived_luminosity_sampler.obs_values) == n
 
             # append these values to a dict
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {'true_values': self._derived_luminosity_sampler.true_values,
@@ -294,9 +294,12 @@ class PopulationSynth(object):
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')
             
-        
-        print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
 
+        try:
+            print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
+
+        except:
+            print('No Objects detected')
         # return a Population object
 
         return Population(

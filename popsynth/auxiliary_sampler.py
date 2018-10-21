@@ -57,3 +57,11 @@ class AuxiliarySampler(object):
         pass
 
     
+class DerivedLumAuxSampler(AuxiliarySampler):
+
+    def __init__(self, name, sigma):
+
+        super(DerivedLumAuxSampler, self).__init__(name, sigma)
+
+    def compute_luminosity(self):
+        pass
