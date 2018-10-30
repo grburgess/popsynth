@@ -175,7 +175,7 @@ class PopulationSynth(object):
 
         return log10_fobs
 
-    def draw_survey(self, boundary, flux_sigma=1., strength=10.):
+    def draw_survey(self, boundary, flux_sigma=1., strength=10., hard_cut=False):
         """
         Draw the total survey and return a Population object
 
@@ -277,23 +277,35 @@ class PopulationSynth(object):
         detection_probability = self._prob_det(log10_fluxes_obs, np.log10(boundary), strength)
 
         # now select them
-        selection = []
-        for p in detection_probability:
 
-            # make a bernoulli draw given the detection probability
-            if stats.bernoulli.rvs(p) == 1:
 
-                selection.append(True)
+        if not hard_cut:
 
-            else:
+            selection = []
+            for p in detection_probability:
 
-                selection.append(False)
+                # make a bernoulli draw given the detection probability
+                if stats.bernoulli.rvs(p) == 1:
 
-        selection = np.array(selection)
+                    selection.append(True)
 
+                else:
+
+                    selection.append(False)
+
+            selection = np.array(selection)
+
+        else:
+
+            selection = np.power(10, log10_fluxes_obs) >= boundary 
+            
+
+ 
+ 
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')
-            
+
+        
 
         try:
             print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
