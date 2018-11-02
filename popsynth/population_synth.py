@@ -44,13 +44,42 @@ class PopulationSynth(object):
         Set the luminosity function parameters as keywords
         """
 
-        self._lf_params = lf_params
+        try:
+            for k,v in lf_params.items():
+
+                if k in self._lf_params:
+                    self._lf_params[k] = v
+
+                else:
+                    RuntimeWarning('%s was not originally in the parameters... ignoring.'%k)
+                    
+        except:
+
+            # we have not set params before
+            
+            self._lf_params = lf_params
+        
 
     def set_spatial_distribution_params(self, **spatial_params):
         """
         Set the spatial parameters as keywords
         """
-        self._spatial_params = spatial_params
+
+        try:
+
+            for k,v in spatial_params.items():
+
+                if k in self._spatial_params:
+                    self._spatial_params[k] = v
+                else:
+                    RuntimeWarning('%s was not originally in the parameters... ignoring.'%k)
+                    
+                    
+        except:
+
+            # we have not set these before
+            
+            self._spatial_params = spatial_params
 
     def add_model_space(self, name, start, stop, log=True):
         """
