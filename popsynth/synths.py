@@ -1,9 +1,10 @@
 import numpy as np
-from popsynth.spherical_population import ConstantSphericalPopulation
+from popsynth.spherical_population import ConstantSphericalPopulation, ZPowerSphericalPopulation
 from popsynth.cosmological_population import SFRPopulation
 
 from popsynth.pareto_population import ParetoPopulation
 from popsynth.schechter_population import SchechterPopulation
+from popsynth.log10_normal_population import Log10NormalPopulation
 from popsynth.log_normal_population import LogNormalPopulation
 
 class ParetoHomogeneousSphericalPopulation(ParetoPopulation, ConstantSphericalPopulation):
@@ -15,6 +16,27 @@ class ParetoHomogeneousSphericalPopulation(ParetoPopulation, ConstantSphericalPo
         ConstantSphericalPopulation.__init__(
             self, Lambda=Lambda, r_max=r_max, seed=seed, name='ParetoHomogeneousSphericalPopulation')
 
+
+class Log10NormalHomogeneousSphericalPopulation(Log10NormalPopulation, ConstantSphericalPopulation):
+
+    def __init__(self, Lambda, mu, tau, r_max=10, seed=1234):
+
+        Log10NormalPopulation.__init__(
+            self, mu=mu, tau=tau, r_max=r_max, seed=seed, name='Log10NormalHomogeneousSphericalPopulation')
+        ConstantSphericalPopulation.__init__(
+            self, Lambda=Lambda, r_max=r_max, seed=seed, name= 'Log10NormalHomogeneousSphericalPopulation')
+
+
+class Log10NormalZPowerSphericalPopulation(Log10NormalPopulation, ZPowerSphericalPopulation):
+
+    def __init__(self, Lambda, delta, mu, tau, r_max=10, seed=1234):
+
+        Log10NormalPopulation.__init__(
+            self, mu=mu, tau=tau, r_max=r_max, seed=seed, name='Log10NormalZPowerSphericalPopulation')
+        ZPowerSphericalPopulation.__init__(
+            self, Lambda=Lambda, delta=delta, r_max=r_max, seed=seed, name='Log10NormalZPowerSphericalPopulation')
+
+        
 
 class SchechterHomogeneousSphericalPopulation(SchechterPopulation, ConstantSphericalPopulation):
 
