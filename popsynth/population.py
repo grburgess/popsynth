@@ -389,7 +389,8 @@ class Population(object):
 
         ax.set_xlabel('distance')
         ax.set_ylabel('flux')
-
+        return fig
+        
     def display_fluxes(self, ax=None, true_color=orange, obs_color=green, **kwargs):
 
         if ax is None:
@@ -411,6 +412,8 @@ class Population(object):
 
             ax.arrow(x, y, dx, dy, color='k', head_width=0.05, head_length=0.2 * np.abs(dy), length_includes_head=True)
 
+        return fig
+            
     def display_obs_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
 
         if ax is None:
