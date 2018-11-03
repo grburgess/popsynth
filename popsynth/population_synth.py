@@ -16,6 +16,7 @@ from astropy.constants import c as sol
 sol = sol.value
 
 from popsynth.population import Population
+from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.utils.progress_bar import progress_bar
 
 
@@ -34,19 +35,51 @@ class PopulationSynth(object):
         self._name = name
 
         self._r_max = r_max
-        
+
+        self._has_derived_luminosity = False
+        self._derived_luminosity_sampler = None
+
     def set_luminosity_function_parameters(self, **lf_params):
         """
         Set the luminosity function parameters as keywords
         """
 
-        self._lf_params = lf_params
+        try:
+            for k,v in lf_params.items():
+
+                if k in self._lf_params:
+                    self._lf_params[k] = v
+
+                else:
+                    RuntimeWarning('%s was not originally in the parameters... ignoring.'%k)
+                    
+        except:
+
+            # we have not set params before
+            
+            self._lf_params = lf_params
+        
 
     def set_spatial_distribution_params(self, **spatial_params):
         """
         Set the spatial parameters as keywords
         """
-        self._spatial_params = spatial_params
+
+        try:
+
+            for k,v in spatial_params.items():
+
+                if k in self._spatial_params:
+                    self._spatial_params[k] = v
+                else:
+                    RuntimeWarning('%s was not originally in the parameters... ignoring.'%k)
+                    
+                    
+        except:
+
+            # we have not set these before
+            
+            self._spatial_params = spatial_params
 
     def add_model_space(self, name, start, stop, log=True):
         """
@@ -69,8 +102,14 @@ class PopulationSynth(object):
 
     def add_observed_quantity(self, auxiliary_sampler):
 
+        if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
+            self._has_derived_luminosity = True
+            self._derived_luminosity_sampler = auxiliary_sampler
 
-        self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
+        else:
+            
+
+            self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
         
         
         
@@ -141,7 +180,7 @@ class PopulationSynth(object):
     def transform(self, flux, distance):
         pass
 
-    def prob_det(self, x, boundary, strength):
+    def _prob_det(self, x, boundary, strength):
         """
         Soft detection threshold
 
@@ -165,7 +204,7 @@ class PopulationSynth(object):
 
         return log10_fobs
 
-    def draw_survey(self, boundary, flux_sigma=1., strength=10.):
+    def draw_survey(self, boundary, flux_sigma=1., strength=10., hard_cut=False):
         """
         Draw the total survey and return a Population object
 
@@ -188,12 +227,40 @@ class PopulationSynth(object):
         
         # this should be poisson distributed
         n = np.random.poisson(N)
-
+        distances = self.draw_distance(size=n)
+        
         print('Expecting %d total objects'%n)
 
-        # draw all the values
-        luminosities = self.draw_luminosity(size=n)
-        distances = self.draw_distance(size=n)
+
+        # first check if the auxilliary samplers
+        # compute the luminosities
+        auxiliary_quantities = {}
+        if self._has_derived_luminosity:
+
+            print('Sampling %s' % self._derived_luminosity_sampler.name )
+            self._derived_luminosity_sampler.set_distance(distances)
+
+            # sample the true and obs
+            # values which are held internally
+            self._derived_luminosity_sampler.true_sampler(size=n)
+            self._derived_luminosity_sampler.observation_sampler(size=n)
+
+            # check to make sure we sampled!
+            assert self._derived_luminosity_sampler.true_values is not None and len(self._derived_luminosity_sampler.true_values) == n
+            assert self._derived_luminosity_sampler.obs_values is not None and len(self._derived_luminosity_sampler.obs_values) == n
+
+            # append these values to a dict
+            auxiliary_quantities[self._derived_luminosity_sampler.name] = {'true_values': self._derived_luminosity_sampler.true_values,
+                                       'obs_values': self._derived_luminosity_sampler.obs_values,
+                                       'sigma': self._derived_luminosity_sampler.sigma }
+
+            print('Getting luminosity from derived sampler')
+            luminosities = self._derived_luminosity_sampler.compute_luminosity()
+            
+        else:
+            # draw all the values
+            luminosities = self.draw_luminosity(size=n)
+ 
 
         # transform the fluxes
         fluxes = self.transform(luminosities, distances)
@@ -202,7 +269,7 @@ class PopulationSynth(object):
         # now sample any auxilary quantities
         # if needed
         
-        auxiliary_quantities = {}
+        
 
         for k,v in self._auxiliary_observations.items():
 
@@ -236,29 +303,44 @@ class PopulationSynth(object):
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
         # compute the detection probability  for the observed values
-        detection_probability = self.prob_det(log10_fluxes_obs, np.log10(boundary), strength)
+        detection_probability = self._prob_det(log10_fluxes_obs, np.log10(boundary), strength)
 
         # now select them
-        selection = []
-        for p in detection_probability:
 
-            # make a bernoulli draw given the detection probability
-            if stats.bernoulli.rvs(p) == 1:
 
-                selection.append(True)
+        if not hard_cut:
 
-            else:
+            selection = []
+            for p in detection_probability:
 
-                selection.append(False)
+                # make a bernoulli draw given the detection probability
+                if stats.bernoulli.rvs(p) == 1:
 
-        selection = np.array(selection)
+                    selection.append(True)
 
+                else:
+
+                    selection.append(False)
+
+            selection = np.array(selection)
+
+        else:
+
+            selection = np.power(10, log10_fluxes_obs) >= boundary 
+            
+
+ 
+ 
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')
-            
-        
-        print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
 
+        
+
+        try:
+            print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
+
+        except:
+            print('No Objects detected')
         # return a Population object
 
         return Population(

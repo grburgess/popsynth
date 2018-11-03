@@ -125,6 +125,50 @@ class Population(object):
     def spatial_parameters(self):
         return self._spatial_params
 
+
+    def _prob_det(self, x, boundary, strength):
+        """
+        Soft detection threshold
+
+        :param x: values to test
+        :param boundary: mean value of the boundary
+        :param strength: the strength of the threshold
+        """
+
+
+        return sf.expit(strength * (x - boundary))
+
+    def recompute_selection(self, boundary, stength):
+
+        raise NotImplementedError('not ready for this yet')
+        
+        # compute the detection probability  for the observed values
+        detection_probability = self._prob_det(log10_fluxes_obs, np.log10(boundary), strength)
+
+        # now select them
+        selection = []
+        for p in detection_probability:
+
+            # make a bernoulli draw given the detection probability
+            if stats.bernoulli.rvs(p) == 1:
+
+                selection.append(True)
+
+            else:
+
+                selection.append(False)
+
+        selection = np.array(selection)
+
+        if sum(selection) == n:
+            print('NO HIDDEN OBJECTS')
+            
+        
+        print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
+
+        
+
+    
     def to_stan_data(self):
         """
         Create Stan input
@@ -345,7 +389,8 @@ class Population(object):
 
         ax.set_xlabel('distance')
         ax.set_ylabel('flux')
-
+        return fig
+        
     def display_fluxes(self, ax=None, true_color=orange, obs_color=green, **kwargs):
 
         if ax is None:
@@ -367,6 +412,8 @@ class Population(object):
 
             ax.arrow(x, y, dx, dy, color='k', head_width=0.05, head_length=0.2 * np.abs(dy), length_includes_head=True)
 
+        return fig
+            
     def display_obs_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
 
         if ax is None:

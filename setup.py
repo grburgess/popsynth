@@ -1,4 +1,6 @@
-from setuptools import setup
+from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext as _build_ext
+from Cython.Build import cythonize
 
 
 import os
@@ -36,6 +38,7 @@ setup(
 #    package_data={'': extra_files, },
 #    include_package_data=True,
 
+    ext_modules=cythonize('popsynth/broken_powerlaw_sampler.pyx'),
     install_requires=[
         'numpy',
         'scipy',
@@ -45,6 +48,7 @@ setup(
         'pandas',
         'seaborn',
         'astropy',
-        'ipywidgets'
+        'ipywidgets',
+        'Cython'
     ],
 )

@@ -15,7 +15,7 @@ class SphericalPopulation(PopulationSynth):
 
     def transform(self, L, r):
 
-        return L/(4. * np.pi * r * r)
+        return L/(4. * np.pi * (r+1) * (r+1))
     
 class ConstantSphericalPopulation(SphericalPopulation):
 
@@ -53,5 +53,44 @@ class ConstantSphericalPopulation(SphericalPopulation):
     def dNdV(self, distance):
 
         return self._spatial_params['Lambda']
+
+class ZPowerSphericalPopulation(ConstantSphericalPopulation):
+
+
+    def __init__(self, Lambda=1., delta=1. ,r_max = 10., seed=1234, name='_cons_sphere'):
+
+        self.set_spatial_distribution_params(Lambda=Lambda, delta=delta)
+
+        super(ZPowerSphericalPopulation, self).__init__(Lambda, r_max ,seed, name)
+
+
+        
+
+
+        self._spatial_form = r'\Lambda (z+1)^{\delta}'
+        
+    def __get_delta(self):
+             """Calculates the 'delta' property."""
+             return self._spatial_params['delta']
+
+    def ___get_delta(self):
+         """Indirect accessor for 'delta' property."""
+         return self.__get_delta()
+
+    def __set_delta(self, delta):
+         """Sets the 'delta' property."""
+         self.set_spatial_distribution_params(delta=delta)
+
+    def ___set_delta(self, delta):
+         """Indirect setter for 'delta' property."""
+         self.__set_delta(delta)
+
+    delta = property(___get_delta, ___set_delta,
+                     doc="""Gets or sets the delta.""")
+        
+    
+    def dNdV(self, distance):
+
+        return self._spatial_params['Lambda'] * np.power(distance+1., self._spatial_params['delta'])
 
 
