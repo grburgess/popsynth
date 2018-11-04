@@ -38,7 +38,7 @@ setup(
 #    package_data={'': extra_files, },
 #    include_package_data=True,
 
-    ext_modules=cythonize('popsynth/broken_powerlaw_sampler.pyx'),
+#    ext_modules=cythonize('popsynth/broken_powerlaw_sampler.pyx'),
     install_requires=[
         'numpy',
         'scipy',
