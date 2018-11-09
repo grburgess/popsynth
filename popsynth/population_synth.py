@@ -204,7 +204,7 @@ class PopulationSynth(object):
 
         return log10_fobs
 
-    def draw_survey(self, boundary, flux_sigma=1., strength=10., hard_cut=False):
+    def draw_survey(self, boundary, flux_sigma=1., strength=10., hard_cut=False, distance_probability=None):
         """
         Draw the total survey and return a Population object
 
@@ -334,10 +334,42 @@ class PopulationSynth(object):
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')
 
-        
 
+        if distance_probability is not None:
+
+            known_distances = []
+            known_distance_idx = []
+            unknown_distance_idx = []
+            
+            assert (distance_probability>=0) and (distance_probability <=1.), 'the distance detection must be between 0 and 1'
+
+            for i, d in distances[selection]:
+
+                # see if we detect the distance
+                if stats.bernoulli.rvs(distance_probability) == 1:
+
+                    known_distances.append(d)
+                    known_distance_idx.append(i)
+
+                else:
+
+                    unknown_distance_idx.append(i)
+
+            print('Detected %d distances' %len(known_distances))
+
+        else:
+
+
+            known_distances = distances
+            known_distance_idx = [i for i in range(sum(selection))]
+            unknown_distance_idx = []
+
+        known_distances = np.array(known_distances)
+        known_distance_idx = np.array(known_distance_idx)
+        unknown_distance_idx = np.array(unknown_distance_idx)
+                    
         try:
-            print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
+            print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(knwon_distances)))
 
         except:
             print('No Objects detected')
@@ -346,6 +378,9 @@ class PopulationSynth(object):
         return Population(
             luminosities=luminosities,
             distances=distances,
+            known_distances=known_distances,
+            known_distance_idx=known_distance_idx,
+            unknown_distance_idx=unknown_distance_idx,
             fluxes=fluxes,
             flux_obs=np.power(10, log10_fluxes_obs),
             selection=selection,

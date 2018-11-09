@@ -23,6 +23,9 @@ class Population(object):
     def __init__(self,
                  luminosities,
                  distances,
+                 known_distances,
+                 known_distance_idx,
+                 unknown_distance_idx,
                  fluxes,
                  flux_obs,
                  selection,
@@ -47,6 +50,10 @@ class Population(object):
         
         self._luminosities = luminosities
         self._distances = distances
+        self._known_distances = known_distances
+        self._known_distance_idx =known_distance_idx,
+        self._unknown_distance_idx = unknown_distance_idx
+
         self._fluxes = fluxes
         self._flux_obs = flux_obs
         self._selection = selection
@@ -101,6 +108,10 @@ class Population(object):
     def distances(self):
         return self._distances
 
+    @property
+    def known_distances(self):
+        return self._known_distances
+    
     @property
     def selection(self):
         return self._selection
@@ -178,6 +189,9 @@ class Population(object):
         output = dict(
             N=self._selection.sum(),
             z_obs=self._distance_selected,
+            known_z_obs = self._known_distances,
+            z_idx = self._known_distance_idx,
+            z_nidx = self._unknown_distance_idx,
             log_flux_obs=np.log10(self._flux_selected),
             flux_sigma=self._flux_sigma,
             z_max=self._r_max,
@@ -225,6 +239,9 @@ class Population(object):
 
             f.create_dataset('luminosities', data=self._luminosities, compression='lzf')
             f.create_dataset('distances', data=self._distances, compression='lzf')
+            f.create_dataset('known_distances', data=self._known_distances, compression='lzf')
+            f.create_dataset('known_distance_idx', data=self._known_distance_idx, compression='lzf')
+            f.create_dataset('unknown_distance_idx', data=self._unknown_distance_idx, compression='lzf')
             f.create_dataset('fluxes', data=self._fluxes, compression='lzf')
             f.create_dataset('flux_obs', data=self._flux_obs, compression='lzf')
             f.create_dataset('selection', data=self._selection, compression='lzf')
@@ -273,6 +290,19 @@ class Population(object):
 
             luminosities = f['luminosities'].value
             distances = f['distances'].value
+
+            # right now this is just for older pops
+            try:
+                known_distances = f['known_distances'].value
+                known_distance_idx = ( f['known_distance_idx'].value).astype(int)
+                unknown_distance_idx = ( f['unknown_distance_idx'].value).astype(int)
+
+            except:
+
+                known_distances = None
+                known_distance_idx = None
+                unknown_distance_idx = None
+                
             fluxes = f['fluxes'].value
             flux_obs = f['flux_obs'].value
             selection = f['selection'].value
@@ -296,6 +326,9 @@ class Population(object):
         return cls(
             luminosities=luminosities,
             distances=distances,
+            known_distances=known_distances,
+            known_distance_idx=known_distance_idx,
+            unknown_distance_idx=unknown_distance_idx,
             fluxes=fluxes,
             flux_obs=flux_obs,
             selection=selection,
