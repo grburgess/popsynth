@@ -369,7 +369,7 @@ class PopulationSynth(object):
         unknown_distance_idx = np.array(unknown_distance_idx)
                     
         try:
-            print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(knwon_distances)))
+            print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(known_distances)))
 
         except:
             print('No Objects detected')
