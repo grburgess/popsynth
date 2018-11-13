@@ -343,7 +343,7 @@ class PopulationSynth(object):
             
             assert (distance_probability>=0) and (distance_probability <=1.), 'the distance detection must be between 0 and 1'
 
-            for i, d in distances[selection]:
+            for i, d in enumerate(distances[selection]):
 
                 # see if we detect the distance
                 if stats.bernoulli.rvs(distance_probability) == 1:

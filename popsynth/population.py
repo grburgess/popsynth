@@ -51,7 +51,7 @@ class Population(object):
         self._luminosities = luminosities
         self._distances = distances
         self._known_distances = known_distances
-        self._known_distance_idx =known_distance_idx,
+        self._known_distance_idx =known_distance_idx
         self._unknown_distance_idx = unknown_distance_idx
 
         self._fluxes = fluxes
@@ -188,10 +188,12 @@ class Population(object):
         # create a dict for Stan
         output = dict(
             N=self._selection.sum(),
+            Nz=len(self._known_distances),
+            Nnz = len(self._unknown_distance_idx),
             z_obs=self._distance_selected,
             known_z_obs = self._known_distances,
-            z_idx = self._known_distance_idx,
-            z_nidx = self._unknown_distance_idx,
+            z_idx = self._known_distance_idx+1, # stan indexing
+            z_nidx = self._unknown_distance_idx+1, #stan indexing
             log_flux_obs=np.log10(self._flux_selected),
             flux_sigma=self._flux_sigma,
             z_max=self._r_max,
