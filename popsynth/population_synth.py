@@ -360,7 +360,7 @@ class PopulationSynth(object):
         else:
 
 
-            known_distances = distances
+            known_distances = distances[selection]
             known_distance_idx = [i for i in range(sum(selection))]
             unknown_distance_idx = []
 
