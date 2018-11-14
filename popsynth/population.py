@@ -49,16 +49,23 @@ class Population(object):
 
         
         self._luminosities = luminosities
+
+
         self._distances = distances
         self._known_distances = known_distances
         self._known_distance_idx =known_distance_idx
         self._unknown_distance_idx = unknown_distance_idx
 
+        assert len(known_distances) + len(unknown_distance_idx) == sum(selection), 'the distances are not the correct size'
+        
+        
         self._fluxes = fluxes
         self._flux_obs = flux_obs
         self._selection = selection
-        self._r_max = r_max
         self._flux_sigma = flux_sigma
+        
+        self._r_max = r_max
+        
         self._boundary = boundary
         self._strength = strength
         self._seed = seed
