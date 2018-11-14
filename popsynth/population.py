@@ -433,7 +433,7 @@ class Population(object):
         ax.set_ylabel('flux')
         return fig
         
-    def display_fluxes(self, ax=None, true_color=orange, obs_color=green, **kwargs):
+    def display_fluxes(self, ax=None, true_color=orange, obs_color=green,arrow_color='k',with_arrows=True, **kwargs):
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -445,14 +445,15 @@ class Population(object):
         self.display_true_fluxes(ax=ax, flux_color=true_color, **kwargs)
         self.display_obs_fluxes(ax=ax, flux_color=obs_color, **kwargs)
 
-        for start, stop, z in zip(self._fluxes[self._selection], self._flux_selected, self._distance_selected):
+        if with_arrows:
+            for start, stop, z in zip(self._fluxes[self._selection], self._flux_selected, self._distance_selected):
 
-            x = z
-            y = start
-            dx = 0
-            dy = stop - start
+                x = z
+                y = start
+                dx = 0
+                dy = stop - start
 
-            ax.arrow(x, y, dx, dy, color='k', head_width=0.05, head_length=0.2 * np.abs(dy), length_includes_head=True)
+                ax.arrow(x, y, dx, dy, color=arrow_color, head_width=0.05, head_length=0.2 * np.abs(dy), length_includes_head=True)
 
         return fig
             
