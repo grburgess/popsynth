@@ -124,7 +124,7 @@ class Population(object):
         return self._selection
 
     @property
-    def flux_observed(self):
+    def flux_observed_all(self):
         return self._flux_obs
 
     @property
