@@ -195,12 +195,12 @@ class Population(object):
         # First we add on the population level parameters
 
         # luminosity function
-        for k,v in self._lf_params:
+        for k,v in self._lf_params.items():
 
             stan_gen.add_parameters(k)
 
                 # luminosity function
-        for k,v in self._spatial_params:
+        for k,v in self._spatial_params.items():
 
             stan_gen.add_parameters(k)
 
@@ -212,36 +212,36 @@ class Population(object):
         stan_gen.add_data('flux_sigma','z_max', 'boundary', 'strength')
 
         # add vector data
-        stan_gen.add_vector_data('log_flux_obs')
+        stan_gen.add_standard_vector_data('log_flux_obs')
 
         distance_flag = False
         if len(self._known_distances) == len(self._distance_selected):
             # ok, we know all the distances so things will be normal
-            stan_gen.add_vector_data('z_obs')
+            stan_gen.add_standard_vector_data('z_obs')
             distance_flag = True
 
         else:
 
             # now we needed to add the unknown distance stuff
-            stan_gen.add_data(stan_type='int', 'Nz','Nnz')
+            stan_gen.add_data( 'Nz','Nnz',stan_type='int')
             
-            stan_gen.add_vector_data(stan_type='int',size='Nz','z_idx')
-            stan_gen.add_vector_data(stan_type='int',size='Nnz','z_nidx')
-            stan_gen.add_vector_data(size='Nz','known_z_obs')
+            stan_gen.add_vector_data('z_idx',stan_type='int',size='Nz')
+            stan_gen.add_vector_data('z_nidx',stan_type='int',size='Nnz')
+            stan_gen.add_vector_data('known_z_obs',size='Nz')
 
-            stan_gen.add_vector_parameters(size='Nz',lower_bound='0',upper_bound='z_max','z')
+            stan_gen.add_vector_parameters('z',size='Nz',lower_bound='0',upper_bound='z_max')
             
         # now we deal with the aux
 
-        stan_gen.add_data(stan_type='int', 'N_model')
+        stan_gen.add_data('N_model',stan_type='int')
         for k, v in self._model_spaces.items():
 
-            stan_gen.add_vector_data(size='N_model',k)
+            stan_gen.add_vector_data(k,size='N_model')
             
         
         for k, v in self._auxiliary_quantites.items():
 
-            stan_gen.add_vector_data('%s_obs' % k)
+            stan_gen.add_standard_vector_data('%s_obs' % k)
             stan_gen.add_data('%s_sigma' % k)
 
 
