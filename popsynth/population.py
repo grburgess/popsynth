@@ -9,6 +9,8 @@ import pandas as pd
 from IPython.display import display, Math, Markdown
 
 from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
+from stan_utility.stan_generator import StanGenerator
+
 
 green = '#24B756'
 green_highlight = '#07A23B'
@@ -184,6 +186,76 @@ class Population(object):
         
         print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
 
+
+    def generate_stan_code(self, model_name='model', population_synth=None):
+        
+
+        stan_gen = StanGenerator(model_name, data_size='N')
+
+        # First we add on the population level parameters
+
+        # luminosity function
+        for k,v in self._lf_params:
+
+            stan_gen.add_parameters(k)
+
+                # luminosity function
+        for k,v in self._spatial_params:
+
+            stan_gen.add_parameters(k)
+
+
+        
+        # now the basic data
+
+        # assume homoskedastic flux_sigma
+        stan_gen.add_data('flux_sigma','z_max', 'boundary', 'strength')
+
+        # add vector data
+        stan_gen.add_vector_data('log_flux_obs')
+
+        distance_flag = False
+        if len(self._known_distances) == len(self._distance_selected):
+            # ok, we know all the distances so things will be normal
+            stan_gen.add_vector_data('z_obs')
+            distance_flag = True
+
+        else:
+
+            # now we needed to add the unknown distance stuff
+            stan_gen.add_data(stan_type='int', 'Nz','Nnz')
+            
+            stan_gen.add_vector_data(stan_type='int',size='Nz','z_idx')
+            stan_gen.add_vector_data(stan_type='int',size='Nnz','z_nidx')
+            stan_gen.add_vector_data(size='Nz','known_z_obs')
+
+            stan_gen.add_vector_parameters(size='Nz',lower_bound='0',upper_bound='z_max','z')
+            
+        # now we deal with the aux
+
+        stan_gen.add_data(stan_type='int', 'N_model')
+        for k, v in self._model_spaces.items():
+
+            stan_gen.add_vector_data(size='N_model',k)
+            
+        
+        for k, v in self._auxiliary_quantites.items():
+
+            stan_gen.add_vector_data('%s_obs' % k)
+            stan_gen.add_data('%s_sigma' % k)
+
+
+        if population_synth is None:
+            print('Will not generate population code')
+
+        else:
+
+
+            population_synth.generate_stan_code(stan_gen)
+
+        stan_gen.write_stan_code()
+
+        return stan_gen
         
 
     
