@@ -21,6 +21,7 @@ from popsynth.utils.progress_bar import progress_bar
 
 
 
+
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
     
@@ -399,6 +400,8 @@ class PopulationSynth(object):
             auxiliary_quantities=auxiliary_quantities
         )
 
+
+    
     def display(self):
         """
         Display the simulation parameters
@@ -427,3 +430,8 @@ class PopulationSynth(object):
 
         display(Math(self._spatial_form))
         display(pd.DataFrame(out))
+
+
+    def generate_stan_code(self, stan_gen):
+
+        pass
