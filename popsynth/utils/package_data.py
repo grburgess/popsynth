@@ -15,8 +15,8 @@ def get_path_of_data_dir():
 
 def copy_package_data(data_file):
 
-    data_file = get_path_of_data_file(data_file)
-    copyfile(data_file, '.')
+    data_file_path = get_path_of_data_file(data_file)
+    copyfile(data_file_path, './%s'%data_file)
     
 
     

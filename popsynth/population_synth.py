@@ -432,6 +432,6 @@ class PopulationSynth(object):
         display(pd.DataFrame(out))
 
 
-    def generate_stan_code(self, stan_gen):
+    def generate_stan_code(self, stan_gen, **kwargs):
 
         pass

@@ -211,9 +211,22 @@ class Population(object):
         # assume homoskedastic flux_sigma
         stan_gen.add_data('flux_sigma','z_max', 'boundary', 'strength')
 
+        stan_gen.add_data('M', stan_type='int')
         # add vector data
         stan_gen.add_standard_vector_data('log_flux_obs')
 
+        # add typical params... I assume mixtures from now on
+        stan_gen.add_standard_vector_parameters('luminosity_latent', lower_bound='0')
+
+        
+        
+        # mixture stuff
+        stan_gen.add_parameters('Lambda0', lower_bound='0')
+
+        stan_gen.add_vector_parameters('luminosity_tilde_latent',size='M', lower_bound=0)
+        stan_gen.add_vector_parameters('log_flux_tilde',size='M', lower_bound=0)
+
+        
         distance_flag = False
         if len(self._known_distances) == len(self._distance_selected):
             # ok, we know all the distances so things will be normal
@@ -243,7 +256,11 @@ class Population(object):
 
             stan_gen.add_standard_vector_data('%s_obs' % k)
             stan_gen.add_data('%s_sigma' % k)
-
+            stan_gen.add_standard_vector_parameters('%s_latent'%k , lower_bound=0)
+            # mixture stuff
+            stan_gen.add_vector_parameters('%s_tilde_latent'%k , size='M', lower_bound=0)
+            stan_gen.add_vector_parameters('%s_tilde_obs'%k,size='M', lower_bound=0)
+        
 
         if population_synth is None:
             print('Will not generate population code')
@@ -251,7 +268,7 @@ class Population(object):
         else:
 
 
-            population_synth.generate_stan_code(stan_gen)
+            population_synth.generate_stan_code(stan_gen=stan_gen, distance_flag=distance_flag)
 
         stan_gen.write_stan_code()
 

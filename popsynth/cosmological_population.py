@@ -4,7 +4,7 @@ import numpy as np
 from astropy.cosmology import WMAP9 as cosmo
 
 from popsynth.population_synth import PopulationSynth
-
+from popsynth.utils.package_data import copy_package_data
 
 from astropy.constants import c as sol
 sol = sol.value
@@ -65,6 +65,209 @@ class CosmologicalPopulation(PopulationSynth):
     def time_adjustment(self, z):
         return (1+z)
 
+
+    def generate_stan_code(self, stan_gen, **kwargs):
+
+        # add the cosmology code
+        copy_package_data('cosmo.stan')
+        copy_package_data('cosmo_constants.stan')
+
+        stan_gen.blocks['functions'].add_include('cosmo.stan')
+        stan_gen.blocks['transformed_data'].add_include('cosmo_constants.stan')
+
+        if 'distance_flag' in kwargs:
+            distance_flag = kwargs['distance_flag']
+        else:
+
+            distance_flag = False
+            
+        if not distance_flag:
+            code = """
+            // technical varaibales required for the integration
+            real x_r[0];
+            int x_i[0];
+
+            real zout[1];
+            real state0[1];
+
+            // here we precompute things which depend on the data only
+
+            vector[Nz] z2_inverse;
+            vector[N] log_p_obs;
+            vector[Nz] log_volume_element;
+            real total_static_prob;
+
+
+            zout[1] = z_max;
+            state0[1] = 0.0;
+
+            // the detection probability and comoving volume elements
+            // for the observed objects is static
+            // we precompute and then sum
+            log_volume_element = log(differential_comoving_volume(known_z_obs, Om, Ode, hubble_distance, Om_reduced,Om_sqrt,phi_0)) - log(1+z_obs);
+            log_p_obs = log_p_det(log_flux_obs, boundary, strength);
+            total_static_prob = sum(log_p_obs) + sum(log_volume_element);
+
+            // the transformation of the objects is static
+            z2_inverse = transform(to_vector(rep_array(1.,Nn)), known_z_obs , hubble_distance, Om_reduced, Om_sqrt, phi_0);
+
+
+            """
+
+
+        else:
+            code = """
+            // technical varaibales required for the integration
+            real x_r[0];
+            int x_i[0];
+
+            real zout[1];
+            real state0[1];
+
+            // here we precompute things which depend on the data only
+
+            vector[N] z2_inverse;
+            vector[N] log_p_obs;
+            vector[N] log_volume_element;
+            real total_static_prob;
+
+
+            zout[1] = z_max;
+            state0[1] = 0.0;
+
+            // the detection probability and comoving volume elements
+            // for the observed objects is static
+            // we precompute and then sum
+            log_volume_element = log(differential_comoving_volume(z_obs, Om, Ode, hubble_distance, Om_reduced,Om_sqrt,phi_0)) - log(1+z_obs);
+            log_p_obs = log_p_det(log_flux_obs, boundary, strength);
+            total_static_prob = sum(log_p_obs) + sum(log_volume_element);
+
+            // the transformation of the objects is static
+            z2_inverse = transform(to_vector(rep_array(1.,N)), z_obs , hubble_distance, Om_reduced, Om_sqrt, phi_0);
+
+
+            """
+
+        stan_gen.blocks['transformed_data'].insert_code(code)
+
+
+
+        code = """
+
+         // setup for the integral
+        real Lambda; // this is total Lambda!
+        real params[10];
+        real integration_result[1,1];
+
+
+        vector[M] log_flux_tilde_latent;
+        vector[M] log_dndv_tilde;
+        vector[M] log_dvdz_tilde;
+        vector[M] log_pndet;
+
+        
+
+        """
+
+
+        stan_gen.blocks['model'].insert_code(code)
+
+
+        if not distance_flag:
+
+            code = """
+        
+            log_flux_obs ~ normal(log10(flux_latent), flux_sigma);
+            
+            // add the differential of the inhomogeneous process on
+            // and detection probability
+        
+            target += total_static_prob;
+            target += sum(log(dNdV(known_z_obs, r0, rise, decay, peak)));
+            
+            
+            // unkown z
+            target += sum( log( differential_comoving_volume(z, Om, Ode, hubble_distance, Om_reduced,Om_sqrt,phi_0) ) - log(1+z) );
+            target += sum( log( dNdV(z, r0, rise, decay, peak) ) );
+            """
+
+
+        else:
+
+            code = """
+        
+            log_flux_obs ~ normal(log10(flux_latent), flux_sigma);
+
+
+            // add the differential of the inhomogeneous process on
+            // and detection probability
+
+            target += total_static_prob;
+            target += sum(log(dNdV(z_obs, r0, rise, decay, peak)));
+
+            """
+
+
+        stan_gen.blocks['model'].insert_code(code)
+
+        code = """
+
+
+
+        log_flux_tilde_latent = log10(transform(lum_tilde_latent, z_tilde, hubble_distance, Om_reduced, Om_sqrt, phi_0));
+        
+
+        log_dndv_tilde =  log(dNdV(z_tilde, r0, rise, decay, peak));
+        log_dvdz_tilde = log(differential_comoving_volume(z_tilde, Om, Ode, hubble_distance, Om_reduced,Om_sqrt,phi_0))-log(1+z_tilde);
+        log_pndet = log_p_ndet(log_flux_tilde, boundary, strength) ;
+
+        for (m in 1:M) {
+
+
+           target+= log_sum_exp( log_dndv_tilde[m]
+                          + log_dvdz_tilde[m]
+                          + log_pndet[m]
+                          + normal_lpdf(log_flux_tilde[m] | log_flux_tilde_latent[m], flux_sigma)
+                          //insert here
+                          ,
+
+                          log(Lambda0) + normal_lpdf(log_flux_tilde[m]| log10(boundary),4)+
+                          // insert here
+                          + uniform_lpdf(z_tilde[m]| 0 ,z_max)
+
+                          );
+
+
+
+        }
+
+        // Poisson normalization for the integral rate
+        
+        // (Distinguishiable) Poisson process model
+
+        params[1] = r0;
+        params[2] = rise;
+        params[3] = decay;
+        params[4] = peak;
+        params[5] = Om;
+        params[6] = Ode;
+        params[7] = hubble_distance;
+        params[8] = Om_reduced;
+        params[9] = Om_sqrt;
+        params[10] = phi_0;
+
+
+        // integrate the dN/dz to get the normalizing constant for given r0 and alpha
+        integration_result = integrate_ode_rk45(N_integrand, state0, 0.0, zout, params, x_r, x_i);
+        Lambda = integration_result[1,1];
+
+        
+        
+        target += - Lambda - Lambda0;
+        """
+
+        stan_gen.blocks['model'].insert_code(code)
+        
 class SFRPopulation(CosmologicalPopulation):
 
     def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name='_sfrcosmo'):
@@ -161,3 +364,13 @@ class SFRPopulation(CosmologicalPopulation):
     peak = property(___get_peak, ___set_peak,
                      doc="""Gets or sets the peak.""")
 
+
+    def generate_stan_code(self, stan_gen, **kwargs):
+
+
+        CosmologicalPopulation.generate_stan_code(self, stan_gen, **kwargs)
+
+        copy_package_data('sfr_functions.stan')
+        stan_gen.blocks['functions'].add_include('sfr_functions.stan')
+
+        

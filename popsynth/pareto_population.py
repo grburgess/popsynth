@@ -73,3 +73,7 @@ class ParetoPopulation(PopulationSynth):
 
 
 
+    def generate_stan_code(self, stan_gen, **kwargs):
+
+        pass
+

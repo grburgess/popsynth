@@ -57,6 +57,12 @@ class ParetoSFRPopulation(ParetoPopulation, SFRPopulation):
             self, r0=r0, rise=rise, decay=decay, peak=peak, r_max=r_max, seed=seed, name='ParetoSFRPopulation')
 
 
+    def generate_stan_code(self, stan_gen, **kwargs):
+
+        ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        
+
 class SchechterSFRPopulation(SchechterPopulation, SFRPopulation):
 
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
