@@ -1,0 +1,24 @@
+import pkg_resources
+import os
+
+
+def get_path_of_data_file(data_file):
+    file_path = pkg_resources.resource_filename("popsynth", 'data/%s' % data_file)
+
+    return file_path
+
+
+def get_path_of_data_dir():
+    file_path = pkg_resources.resource_filename("popsynth", 'data')
+
+    return file_path
+
+
+# def get_path_of_user_dir():
+#     """
+#     Returns the path of the directory containing the user data (~/.popsynth)
+
+#     :return: an absolute path
+#     """
+
+#     return os.path.abspath(os.path.expanduser('~/.popsynth'))
