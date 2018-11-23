@@ -1,6 +1,6 @@
 from setuptools.command.build_ext import build_ext as _build_ext
 from Cython.Build import cythonize
-from setuptools import setup, find_packages, Command, Externsion
+from setuptools import setup, find_packages, Command, Extension
 import os
 import io
 import sys
@@ -91,30 +91,22 @@ class UploadCommand(Command):
 
 
 
-        
-stan_cache = os.path.expanduser('~/.stan_cache')
-        
-def ensure_dir(file_path):
-    if not os.path.exists(file_path):
-
-        print('Creating %s'% file_path)
-        
-        os.makedirs(file_path)
 
 
 # Create list of data files
 def find_data_files(directory):
 
     paths = []
-    
+
     for (path, directories, filenames) in os.walk(directory):
-        
+
         for filename in filenames:
-            
+
             paths.append(os.path.join('..', path, filename))
-            
+
     return paths
 
+extra_files = find_data_files('popsynth/data')
 
         
 setup(
@@ -132,7 +124,7 @@ setup(
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
-    
+    package_data={'': extra_files, },    
     license='BSD',
     cmdclass={
         'upload': UploadCommand,},
