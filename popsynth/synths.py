@@ -6,6 +6,7 @@ from popsynth.pareto_population import ParetoPopulation
 from popsynth.schechter_population import SchechterPopulation
 from popsynth.log10_normal_population import Log10NormalPopulation
 from popsynth.log_normal_population import LogNormalPopulation
+from popsynth.bpl_population import BPLPopulation
 
 class ParetoHomogeneousSphericalPopulation(ParetoPopulation, ConstantSphericalPopulation):
 
@@ -63,6 +64,22 @@ class ParetoSFRPopulation(ParetoPopulation, SFRPopulation):
         SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
         
 
+class BPLSFRPopulation(BPLPopulation, SFRPopulation):
+
+    def __init__(self, r0, rise, decay, peak, Lmin, alpha, Lbreak, beta, Lmax,  r_max=10, seed=1234):
+
+        BPLPopulation.__init__(self, Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax,  r_max=r_max, seed=seed, name='BPLSFRPopulation')
+        SFRPopulation.__init__(
+            self, r0=r0, rise=rise, decay=decay, peak=peak, r_max=r_max, seed=seed, name='BPLSFRPopulation')
+
+
+    def generate_stan_code(self, stan_gen, **kwargs):
+        pass
+#        ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
+ #       SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        
+
+        
 class SchechterSFRPopulation(SchechterPopulation, SFRPopulation):
 
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
