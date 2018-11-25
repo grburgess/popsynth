@@ -9,7 +9,7 @@ import pandas as pd
 from IPython.display import display, Math, Markdown
 
 from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
-from stan_utility.stan_generator import StanGenerator
+from stan_utility import StanGenerator
 
 
 green = '#24B756'
