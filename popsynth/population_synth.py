@@ -115,9 +115,9 @@ class PopulationSynth(object):
 
     @abc.abstractmethod
     def phi(self, L):
-        
+
         raise RuntimeError('Must be implemented in derived class')
-        
+
         pass
 
     @abc.abstractmethod
@@ -217,7 +217,7 @@ class PopulationSynth(object):
 
         np.random.seed(self._seed)
 
-        # create a callback of the integrand 
+        # create a callback of the integrand
         dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
 
         # integrate the population to determine the true number of
@@ -235,7 +235,7 @@ class PopulationSynth(object):
         auxiliary_quantities = {}
         if self._has_derived_luminosity:
 
-            print('Sampling %s' % self._derived_luminosity_sampler.name)
+
             self._derived_luminosity_sampler.set_distance(distances)
 
             # sample the true and obs
@@ -247,9 +247,8 @@ class PopulationSynth(object):
             assert self._derived_luminosity_sampler.true_values is not None and len(
                 self._derived_luminosity_sampler.true_values) == n
 
-
             assert self._derived_luminosity_sampler.obs_values is not None and len(
-                    self._derived_luminosity_sampler.obs_values) == n
+                self._derived_luminosity_sampler.obs_values) == n
 
             # append these values to a dict
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {
@@ -262,9 +261,12 @@ class PopulationSynth(object):
             luminosities = self._derived_luminosity_sampler.compute_luminosity()
 
             for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
-                auxiliary_quantities[k2] = {'true_values': v2.true_values, 'sigma': v2.sigma, 'obs_values': v2.obs_values}
+                auxiliary_quantities[k2] = {
+                    'true_values': v2.true_values,
+                    'sigma': v2.sigma,
+                    'obs_values': v2.obs_values
+                }
 
-            
         else:
             # draw all the values
             luminosities = self.draw_luminosity(size=n)
@@ -278,8 +280,6 @@ class PopulationSynth(object):
         for k, v in self._auxiliary_observations.items():
 
             assert not v.is_secondary, 'This is a secondary sampler. You cannot sample it in the main sampler'
-
-            print('Sampling: %s' % k)
 
             # set the luminosities and distances to
             # auxilary sampler just in case
@@ -302,9 +302,13 @@ class PopulationSynth(object):
             auxiliary_quantities[k] = {'true_values': v.true_values, 'sigma': v.sigma, 'obs_values': v.obs_values}
 
             # collect the secondary values
-            
+
             for k2, v2 in v.secondary_samplers.items():
-                auxiliary_quantities[k2] = {'true_values': v2.true_values, 'sigma': v2.sigma, 'obs_values': v2.obs_values}
+                auxiliary_quantities[k2] = {
+                    'true_values': v2.true_values,
+                    'sigma': v2.sigma,
+                    'obs_values': v2.obs_values
+                }
 
         # now draw all the observed fluxes
         # this is homoskedastic for now
@@ -344,8 +348,8 @@ class PopulationSynth(object):
             known_distance_idx = []
             unknown_distance_idx = []
 
-            assert (distance_probability >= 0) and (
-                distance_probability <= 1.), 'the distance detection must be between 0 and 1'
+            assert (distance_probability >= 0) and (distance_probability <=
+                                                    1.), 'the distance detection must be between 0 and 1'
 
             for i, d in enumerate(distances[selection]):
 
