@@ -1,7 +1,4 @@
-import numpy as np
-
 import abc
-
 
 class AuxiliarySampler(object):
     __metaclass__ = abc.ABCMeta
@@ -55,7 +52,6 @@ class AuxiliarySampler(object):
         # loop if we try to add it again
         
         sampler.make_secondary()
-
         # attach the sampler to this class
         
         self._secondary_samplers[sampler.name] = sampler
@@ -68,44 +64,41 @@ class AuxiliarySampler(object):
         :param size: the number of samples to draw
         """
         # do not resample!
-        if self._is_sampled:
+        if not self._is_sampled:
 
-            return 
-    
-        
-        if self._has_secondary:
-            print("%s is sampling its secondary quantities" % self.name)
-
-        for k, v in self._secondary_samplers.items():
-
-            assert v.is_secondary, 'Tried to sample a non-secondary, this is a bag'
+            print('Sampling: %s' % self.name)
             
-            print('Sampling: %s' % k)
+            if self._has_secondary:
+                print("%s is sampling its secondary quantities" % self.name)
 
-            # we do not allow for the secondary
-            # quantities to derive a luminosity
-            # as it should be the last thing dervied
+            for k, v in self._secondary_samplers.items():
 
-            v.draw(size=size)
+                assert v.is_secondary, 'Tried to sample a non-secondary, this is a bag'
 
-        # Now, it is assumed that if this sampler depends on the previous samplers,
-        # then those properties have been drawn
+                # we do not allow for the secondary
+                # quantities to derive a luminosity
+                # as it should be the last thing dervied
 
-        self.true_sampler(size=size)
+                v.draw(size=size)
 
-        if self._is_observed:
+            # Now, it is assumed that if this sampler depends on the previous samplers,
+            # then those properties have been drawn
 
-            self.observation_sampler(size)
+            self.true_sampler(size=size)
 
-        else:
+            if self._is_observed:
 
-            self._obs_values = np.array([-9999999] * size)
+                self.observation_sampler(size)
 
-        # check to make sure we sampled!
-        assert self.true_values is not None and len(self.true_values) == size
-        assert self.obs_values is not None and len(self.obs_values) == size
+            else:
 
-        self._is_sampled = True
+                self._obs_values = self._true_values
+
+            # check to make sure we sampled!
+            assert self.true_values is not None and len(self.true_values) == size
+            assert self.obs_values is not None and len(self.obs_values) == size
+
+            self._is_sampled = True
         
     def make_secondary(self):
 
@@ -176,7 +169,7 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         """
         
 
-        super(DerivedLumAuxSampler, self).__init__(name, sigma)
+        super(DerivedLumAuxSampler, self).__init__(name, sigma, observed=observed)
 
     def compute_luminosity(self):
 
