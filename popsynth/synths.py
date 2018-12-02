@@ -4,7 +4,7 @@ from popsynth.populations.spherical_population import ConstantSphericalPopulatio
 from popsynth.populations.cosmological_population import SFRPopulation
 
 from popsynth.populations.pareto_population import ParetoPopulation
-from popsynth.populations.populations.schechter_population import SchechterPopulation
+from popsynth.populations.schechter_population import SchechterPopulation
 from popsynth.populations.log10_normal_population import Log10NormalPopulation
 from popsynth.populations.log_normal_population import LogNormalPopulation
 from popsynth.populations.bpl_population import BPLPopulation
@@ -90,7 +90,7 @@ class SchechterHomogeneousSphericalPopulation(SchechterPopulation, ConstantSpher
         :rtype: 
 
         """
-         SchechterPopulation.__init__(
+        SchechterPopulation.__init__(
             self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='SchechterHomogeneousSphericalPopulation')
         ConstantSphericalPopulation.__init__(
             self, Lambda=Lambda, r_max=r_max, seed=seed, name='SchechterHomogeneousSphericalPopulation')
