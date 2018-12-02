@@ -5,7 +5,7 @@ import abc
 class AuxiliarySampler(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, sigma):
+    def __init__(self, name, sigma, observed=True):
 
         self._sigma = sigma
         
@@ -14,7 +14,9 @@ class AuxiliarySampler(object):
 
         self._obs_values = None
         self._true_values = None
-        
+        self._observed = observed
+        self._secondary_samplers = {}
+        self._is_secondary = False
 
     def set_luminosity(self, luminosity):
 
@@ -23,6 +25,80 @@ class AuxiliarySampler(object):
     def set_distance(self, distance):
 
         self._distance = distance
+
+    def set_secondary_sampler(self, sampler, name):
+        """
+        Allows the setting of a secondary sampler from which to derive values
+        """
+
+        sampler.make_secondary()
+
+        self._secondary_samplers[sampler.name] = sampler
+
+    def draw(self, size=1):
+        """
+        Draw the primary and secondary samplers
+        """
+
+        print("%s is sampling its secondary quantities" % self.name)
+        
+        for k,v in self._secondary_samplers.items():
+
+            print('Sampling: %s' %k)
+
+
+            # we do not allow for the secondary
+            # quantities to derive a luminosity
+            # as it should be the last thing dervied
+
+            v.draw(size=size)
+
+        # Now, it is assumed that if this sampler depends on the previous samplers,
+        # then those properties have been drawn
+            
+        self.true_sampler(size=size)
+
+        if self._observed:
+        
+            self.observation_sampler(size)
+
+        else:
+
+            self._obs_values = np.array([-9999999]*size)
+
+        # check to make sure we sampled!
+        assert self.true_values is not None and len(self.true_values) == size
+        assert self.obs_values is not None and len(self.obs_values) == size
+
+        
+        
+        
+
+    def make_secondary(self):
+
+        self._is_secondary = True
+
+    @property
+    def secondary_samplers(self):
+        """
+        Secondary samplers
+        """
+
+        return self._secondary_samplers
+        
+        
+    @property
+    def is_secondary(self):
+
+        return self._is_secondary
+        
+        
+    @property
+    def observed(self):
+        """
+        """
+        return self._observed
+        
         
     @property
     def name(self):
@@ -59,7 +135,7 @@ class AuxiliarySampler(object):
     
 class DerivedLumAuxSampler(AuxiliarySampler):
 
-    def __init__(self, name, sigma):
+    def __init__(self, name, sigma, observed=True):
 
         super(DerivedLumAuxSampler, self).__init__(name, sigma)
 
