@@ -63,7 +63,7 @@ class ParetoSFRPopulation(ParetoPopulation, SFRPopulation):
         ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
         SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
         
-
+        
 class BPLSFRPopulation(BPLPopulation, SFRPopulation):
 
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, Lbreak, beta, Lmax,  r_max=10, seed=1234):

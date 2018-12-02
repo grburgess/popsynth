@@ -20,12 +20,10 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.utils.progress_bar import progress_bar
 
 
-
-
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
-    
-    def __init__(self, r_max=10, seed = 1234, name='no_name'):
+
+    def __init__(self, r_max=10, seed=1234, name='no_name'):
         """
         
         """
@@ -46,20 +44,19 @@ class PopulationSynth(object):
         """
 
         try:
-            for k,v in lf_params.items():
+            for k, v in lf_params.items():
 
                 if k in self._lf_params:
                     self._lf_params[k] = v
 
                 else:
-                    RuntimeWarning('%s was not originally in the parameters... ignoring.'%k)
-                    
+                    RuntimeWarning('%s was not originally in the parameters... ignoring.' % k)
+
         except:
 
             # we have not set params before
-            
+
             self._lf_params = lf_params
-        
 
     def set_spatial_distribution_params(self, **spatial_params):
         """
@@ -68,18 +65,17 @@ class PopulationSynth(object):
 
         try:
 
-            for k,v in spatial_params.items():
+            for k, v in spatial_params.items():
 
                 if k in self._spatial_params:
                     self._spatial_params[k] = v
                 else:
-                    RuntimeWarning('%s was not originally in the parameters... ignoring.'%k)
-                    
-                    
+                    RuntimeWarning('%s was not originally in the parameters... ignoring.' % k)
+
         except:
 
             # we have not set these before
-            
+
             self._spatial_params = spatial_params
 
     def add_model_space(self, name, start, stop, log=True):
@@ -94,7 +90,7 @@ class PopulationSynth(object):
         """
         if log:
             space = np.logspace(np.log10(start), np.log10(stop), self._n_model)
- 
+
         else:
 
             space = np.linspace(start, stop, self._n_model)
@@ -108,29 +104,32 @@ class PopulationSynth(object):
             self._derived_luminosity_sampler = auxiliary_sampler
 
         else:
-            
 
             self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
-        
-        
-        
+
     @property
     def name(self):
         return self._name
 
     # The following methods must be implemented in subclasses
-    
+
     @abc.abstractmethod
     def phi(self, L):
-        pass
         
+        raise RuntimeError('Must be implemented in derived class')
+        
+        pass
+
     @abc.abstractmethod
     def differential_volume(self, distance):
+
+        raise RuntimeError('Must be implemented in derived class')
         pass
 
     @abc.abstractmethod
     def dNdV(self, distance):
 
+        raise RuntimeError('Must be implemented in derived class')
         pass
 
     def time_adjustment(self, r):
@@ -157,20 +156,20 @@ class PopulationSynth(object):
                 while flag:
 
                     # get am rvs from 0 to the max of the function
-                    
+
                     y = np.random.uniform(low=0, high=ymax)
 
                     # get an rvs from 0 to the maximum distance
-                    
+
                     r = np.random.uniform(low=0, high=self._r_max)
 
                     # compare them
-                    
+
                     if y < dNdr(r):
                         r_out.append(r)
                         flag = False
                 pbar.increase()
-                
+
         return np.array(r_out)
 
     @abc.abstractmethod
@@ -189,7 +188,6 @@ class PopulationSynth(object):
         :param boundary: mean value of the boundary
         :param strength: the strength of the threshold
         """
-
 
         return sf.expit(strength * (x - boundary))
 
@@ -216,7 +214,7 @@ class PopulationSynth(object):
         """
 
         # set the random seed
-        
+
         np.random.seed(self._seed)
 
         # create a callback of the integrand 
@@ -225,79 +223,88 @@ class PopulationSynth(object):
         # integrate the population to determine the true number of
         # objects
         N = integrate.quad(dNdr, 0., self._r_max)[0]
-        
+
         # this should be poisson distributed
         n = np.random.poisson(N)
         distances = self.draw_distance(size=n)
-        
-        print('Expecting %d total objects'%n)
 
+        print('Expecting %d total objects' % n)
 
         # first check if the auxilliary samplers
         # compute the luminosities
         auxiliary_quantities = {}
         if self._has_derived_luminosity:
 
-            print('Sampling %s' % self._derived_luminosity_sampler.name )
+            print('Sampling %s' % self._derived_luminosity_sampler.name)
             self._derived_luminosity_sampler.set_distance(distances)
 
             # sample the true and obs
             # values which are held internally
-            self._derived_luminosity_sampler.true_sampler(size=n)
-            self._derived_luminosity_sampler.observation_sampler(size=n)
+
+            self._derived_luminosity_sampler.draw(size=n)
 
             # check to make sure we sampled!
-            assert self._derived_luminosity_sampler.true_values is not None and len(self._derived_luminosity_sampler.true_values) == n
-            assert self._derived_luminosity_sampler.obs_values is not None and len(self._derived_luminosity_sampler.obs_values) == n
+            assert self._derived_luminosity_sampler.true_values is not None and len(
+                self._derived_luminosity_sampler.true_values) == n
+
+
+            assert self._derived_luminosity_sampler.obs_values is not None and len(
+                    self._derived_luminosity_sampler.obs_values) == n
 
             # append these values to a dict
-            auxiliary_quantities[self._derived_luminosity_sampler.name] = {'true_values': self._derived_luminosity_sampler.true_values,
-                                       'obs_values': self._derived_luminosity_sampler.obs_values,
-                                       'sigma': self._derived_luminosity_sampler.sigma }
+            auxiliary_quantities[self._derived_luminosity_sampler.name] = {
+                'true_values': self._derived_luminosity_sampler.true_values,
+                'obs_values': self._derived_luminosity_sampler.obs_values,
+                'sigma': self._derived_luminosity_sampler.sigma
+            }
 
             print('Getting luminosity from derived sampler')
             luminosities = self._derived_luminosity_sampler.compute_luminosity()
+
+            for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
+                auxiliary_quantities[k2] = {'true_values': v2.true_values, 'sigma': v2.sigma, 'obs_values': v2.obs_values}
+
             
         else:
             # draw all the values
             luminosities = self.draw_luminosity(size=n)
- 
 
         # transform the fluxes
         fluxes = self.transform(luminosities, distances)
 
-
         # now sample any auxilary quantities
         # if needed
-        
-        
 
-        for k,v in self._auxiliary_observations.items():
+        for k, v in self._auxiliary_observations.items():
 
-            print('Sampling: %s' %k)
+            assert not v.is_secondary, 'This is a secondary sampler. You cannot sample it in the main sampler'
+
+            print('Sampling: %s' % k)
 
             # set the luminosities and distances to
             # auxilary sampler just in case
             # they are needed
-            
+
             v.set_luminosity(luminosities)
             v.set_distance(distances)
 
             # sample the true and obs
             # values which are held internally
-            v.true_sampler(size=n)
-            v.observation_sampler(size=n)
+            # this will also invoke secondary samplers
+
+            v.draw(size=n)
 
             # check to make sure we sampled!
             assert v.true_values is not None and len(v.true_values) == n
             assert v.obs_values is not None and len(v.obs_values) == n
 
             # append these values to a dict
-            auxiliary_quantities[k] = {'true_values': v.true_values,
-                                       'obs_values': v.obs_values,
-                                       'sigma': v.sigma }
+            auxiliary_quantities[k] = {'true_values': v.true_values, 'sigma': v.sigma, 'obs_values': v.obs_values}
+
+            # collect the secondary values
             
-            
+            for k2, v2 in v.secondary_samplers.items():
+                auxiliary_quantities[k2] = {'true_values': v2.true_values, 'sigma': v2.sigma, 'obs_values': v2.obs_values}
 
         # now draw all the observed fluxes
         # this is homoskedastic for now
@@ -307,7 +314,6 @@ class PopulationSynth(object):
         detection_probability = self._prob_det(log10_fluxes_obs, np.log10(boundary), strength)
 
         # now select them
-
 
         if not hard_cut:
 
@@ -327,22 +333,19 @@ class PopulationSynth(object):
 
         else:
 
-            selection = np.power(10, log10_fluxes_obs) >= boundary 
-            
+            selection = np.power(10, log10_fluxes_obs) >= boundary
 
- 
- 
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')
-
 
         if distance_probability is not None:
 
             known_distances = []
             known_distance_idx = []
             unknown_distance_idx = []
-            
-            assert (distance_probability>=0) and (distance_probability <=1.), 'the distance detection must be between 0 and 1'
+
+            assert (distance_probability >= 0) and (
+                distance_probability <= 1.), 'the distance detection must be between 0 and 1'
 
             for i, d in enumerate(distances[selection]):
 
@@ -356,10 +359,9 @@ class PopulationSynth(object):
 
                     unknown_distance_idx.append(i)
 
-            print('Detected %d distances' %len(known_distances))
+            print('Detected %d distances' % len(known_distances))
 
         else:
-
 
             known_distances = distances[selection]
             known_distance_idx = [i for i in range(sum(selection))]
@@ -368,9 +370,9 @@ class PopulationSynth(object):
         known_distances = np.array(known_distances)
         known_distance_idx = np.array(known_distance_idx)
         unknown_distance_idx = np.array(unknown_distance_idx)
-                    
+
         try:
-            print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(known_distances)))
+            print('Deteced %d objects or to a distance of %.2f' % (sum(selection), max(known_distances)))
 
         except:
             print('No Objects detected')
@@ -386,7 +388,7 @@ class PopulationSynth(object):
             flux_obs=np.power(10, log10_fluxes_obs),
             selection=selection,
             flux_sigma=flux_sigma,
-            r_max = self._r_max,
+            r_max=self._r_max,
             n_model=self._n_model,
             lf_params=self._lf_params,
             spatial_params=self._spatial_params,
@@ -397,40 +399,35 @@ class PopulationSynth(object):
             name=self._name,
             spatial_form=self._spatial_form,
             lf_form=self._lf_form,
-            auxiliary_quantities=auxiliary_quantities
-        )
+            auxiliary_quantities=auxiliary_quantities)
 
-
-    
     def display(self):
         """
         Display the simulation parameters
         
         """
 
-        out={'parameter':[], 'value':[]}
+        out = {'parameter': [], 'value': []}
 
         display(Markdown('## Luminosity Function'))
-        for k,v in self._lf_params.items():
+        for k, v in self._lf_params.items():
 
-             out['parameter'].append(k)
-             out['value'].append(v)
+            out['parameter'].append(k)
+            out['value'].append(v)
 
         display(Math(self._lf_form))
         display(pd.DataFrame(out))
-        out={'parameter':[], 'value':[]}
+        out = {'parameter': [], 'value': []}
 
         display(Markdown('## Spatial Function'))
 
-
-        for k,v in self._spatial_params.items():
+        for k, v in self._spatial_params.items():
 
             out['parameter'].append(k)
             out['value'].append(v)
 
         display(Math(self._spatial_form))
         display(pd.DataFrame(out))
-
 
     def generate_stan_code(self, stan_gen, **kwargs):
 

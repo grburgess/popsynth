@@ -11,13 +11,10 @@ from IPython.display import display, Math, Markdown
 from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
 from stan_utility import StanGenerator
 
+from betagen import betagen
 
-green = '#24B756'
-green_highlight = '#07A23B'
-orange = '#FA7031'
-orange_highlight = '#DD4B09'
-blue = '#1E9A91'
-blue_highlight = '#06887F'
+wine = '#8F2727'
+dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
 
 
 class Population(object):
@@ -44,30 +41,51 @@ class Population(object):
                  spatial_form=None,
                  lf_form=None,
                  auxiliary_quantities=None):
+        """FIXME! briefly describe function
+
+        :param luminosities: 
+        :param distances: 
+        :param known_distances: 
+        :param known_distance_idx: 
+        :param unknown_distance_idx: 
+        :param fluxes: 
+        :param flux_obs: 
+        :param selection: 
+        :param flux_sigma: 
+        :param r_max: 
+        :param boundary: 
+        :param strength: 
+        :param n_model: 
+        :param lf_params: 
+        :param spatial_params: 
+        :param model_spaces: 
+        :param seed: 
+        :param name: 
+        :param spatial_form: 
+        :param lf_form: 
+        :param auxiliary_quantities: 
+        :returns: 
+        :rtype: 
 
         """
-        A Population of detected objects
-        """
 
-        
         self._luminosities = luminosities
-
 
         self._distances = distances
         self._known_distances = known_distances
-        self._known_distance_idx =known_distance_idx
+        self._known_distance_idx = known_distance_idx
         self._unknown_distance_idx = unknown_distance_idx
 
-        assert len(known_distances) + len(unknown_distance_idx) == sum(selection), 'the distances are not the correct size'
-        
-        
+        assert len(known_distances) + len(unknown_distance_idx) == sum(
+            selection), 'the distances are not the correct size'
+
         self._fluxes = fluxes
         self._flux_obs = flux_obs
         self._selection = selection
         self._flux_sigma = flux_sigma
-        
+
         self._r_max = r_max
-        
+
         self._boundary = boundary
         self._strength = strength
         self._seed = seed
@@ -120,7 +138,7 @@ class Population(object):
     @property
     def known_distances(self):
         return self._known_distances
-    
+
     @property
     def selection(self):
         return self._selection
@@ -145,7 +163,6 @@ class Population(object):
     def spatial_parameters(self):
         return self._spatial_params
 
-
     def _prob_det(self, x, boundary, strength):
         """
         Soft detection threshold
@@ -155,13 +172,12 @@ class Population(object):
         :param strength: the strength of the threshold
         """
 
-
         return sf.expit(strength * (x - boundary))
 
     def recompute_selection(self, boundary, stength):
 
         raise NotImplementedError('not ready for this yet')
-        
+
         # compute the detection probability  for the observed values
         detection_probability = self._prob_det(log10_fluxes_obs, np.log10(boundary), strength)
 
@@ -182,34 +198,37 @@ class Population(object):
 
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')
-            
-        
-        print('Deteced %d objects or to a distance of %.2f' %(sum(selection), max(distances[selection])))
 
+        print('Deteced %d objects or to a distance of %.2f' % (sum(selection), max(distances[selection])))
 
     def generate_stan_code(self, model_name='model', population_synth=None):
-        
+        """FIXME! briefly describe function
+
+        :param model_name: 
+        :param population_synth: 
+        :returns: 
+        :rtype: 
+
+        """
 
         stan_gen = StanGenerator(model_name, data_size='N')
 
         # First we add on the population level parameters
 
         # luminosity function
-        for k,v in self._lf_params.items():
+        for k, v in self._lf_params.items():
 
             stan_gen.add_parameters(k)
 
-                # luminosity function
-        for k,v in self._spatial_params.items():
+            # luminosity function
+        for k, v in self._spatial_params.items():
 
             stan_gen.add_parameters(k)
 
-
-        
         # now the basic data
 
         # assume homoskedastic flux_sigma
-        stan_gen.add_data('flux_sigma','z_max', 'boundary', 'strength')
+        stan_gen.add_data('flux_sigma', 'z_max', 'boundary', 'strength')
 
         stan_gen.add_data('M', stan_type='int')
         # add vector data
@@ -218,15 +237,12 @@ class Population(object):
         # add typical params... I assume mixtures from now on
         stan_gen.add_standard_vector_parameters('luminosity_latent', lower_bound='0')
 
-        
-        
         # mixture stuff
         stan_gen.add_parameters('Lambda0', lower_bound='0')
 
-        stan_gen.add_vector_parameters('luminosity_tilde_latent',size='M', lower_bound=0)
-        stan_gen.add_vector_parameters('log_flux_tilde',size='M', lower_bound=0)
+        stan_gen.add_vector_parameters('luminosity_tilde_latent', size='M', lower_bound=0)
+        stan_gen.add_vector_parameters('log_flux_tilde', size='M', lower_bound=0)
 
-        
         distance_flag = False
         if len(self._known_distances) == len(self._distance_selected):
             # ok, we know all the distances so things will be normal
@@ -236,46 +252,41 @@ class Population(object):
         else:
 
             # now we needed to add the unknown distance stuff
-            stan_gen.add_data( 'Nz','Nnz',stan_type='int')
-            
-            stan_gen.add_vector_data('z_idx',stan_type='int',size='Nz')
-            stan_gen.add_vector_data('z_nidx',stan_type='int',size='Nnz')
-            stan_gen.add_vector_data('known_z_obs',size='Nz')
+            stan_gen.add_data('Nz', 'Nnz', stan_type='int')
 
-            stan_gen.add_vector_parameters('z',size='Nz',lower_bound='0',upper_bound='z_max')
-            
+            stan_gen.add_vector_data('z_idx', stan_type='int', size='Nz')
+            stan_gen.add_vector_data('z_nidx', stan_type='int', size='Nnz')
+            stan_gen.add_vector_data('known_z_obs', size='Nz')
+
+            stan_gen.add_vector_parameters('z', size='Nz', lower_bound='0', upper_bound='z_max')
+
         # now we deal with the aux
 
-        stan_gen.add_data('N_model',stan_type='int')
+        stan_gen.add_data('N_model', stan_type='int')
         for k, v in self._model_spaces.items():
 
-            stan_gen.add_vector_data(k,size='N_model')
-            
-        
+            stan_gen.add_vector_data(k, size='N_model')
+
         for k, v in self._auxiliary_quantites.items():
 
             stan_gen.add_standard_vector_data('%s_obs' % k)
             stan_gen.add_data('%s_sigma' % k)
-            stan_gen.add_standard_vector_parameters('%s_latent'%k , lower_bound=0)
+            stan_gen.add_standard_vector_parameters('%s_latent' % k, lower_bound=0)
             # mixture stuff
-            stan_gen.add_vector_parameters('%s_tilde_latent'%k , size='M', lower_bound=0)
-            stan_gen.add_vector_parameters('%s_tilde_obs'%k,size='M', lower_bound=0)
-        
+            stan_gen.add_vector_parameters('%s_tilde_latent' % k, size='M', lower_bound=0)
+            stan_gen.add_vector_parameters('%s_tilde_obs' % k, size='M', lower_bound=0)
 
         if population_synth is None:
             print('Will not generate population code')
 
         else:
 
-
             population_synth.generate_stan_code(stan_gen=stan_gen, distance_flag=distance_flag)
 
         stan_gen.write_stan_code()
 
         return stan_gen
-        
 
-    
     def to_stan_data(self):
         """
         Create Stan input
@@ -285,11 +296,11 @@ class Population(object):
         output = dict(
             N=self._selection.sum(),
             Nz=len(self._known_distances),
-            Nnz = len(self._unknown_distance_idx),
+            Nnz=len(self._unknown_distance_idx),
             z_obs=self._distance_selected,
-            known_z_obs = self._known_distances,
-            z_idx = self._known_distance_idx+1, # stan indexing
-            z_nidx = self._unknown_distance_idx+1, #stan indexing
+            known_z_obs=self._known_distances,
+            z_idx=self._known_distance_idx + 1,    # stan indexing
+            z_nidx=self._unknown_distance_idx + 1,    #stan indexing
             log_flux_obs=np.log10(self._flux_selected),
             flux_sigma=self._flux_sigma,
             z_max=self._r_max,
@@ -310,6 +321,13 @@ class Population(object):
         return output
 
     def writeto(self, file_name):
+        """FIXME! briefly describe function
+
+        :param file_name: 
+        :returns: 
+        :rtype: 
+
+        """
 
         with h5py.File(file_name, 'w') as f:
 
@@ -362,6 +380,14 @@ class Population(object):
 
     @classmethod
     def from_file(cls, file_name):
+        """FIXME! briefly describe function
+
+        :param cls: 
+        :param file_name: 
+        :returns: 
+        :rtype: 
+
+        """
 
         with h5py.File(file_name, 'r') as f:
 
@@ -392,15 +418,15 @@ class Population(object):
             # right now this is just for older pops
             try:
                 known_distances = f['known_distances'].value
-                known_distance_idx = ( f['known_distance_idx'].value).astype(int)
-                unknown_distance_idx = ( f['unknown_distance_idx'].value).astype(int)
+                known_distance_idx = (f['known_distance_idx'].value).astype(int)
+                unknown_distance_idx = (f['unknown_distance_idx'].value).astype(int)
 
             except:
 
                 known_distances = None
                 known_distance_idx = None
                 unknown_distance_idx = None
-                
+
             fluxes = f['fluxes'].value
             flux_obs = f['flux_obs'].value
             selection = f['selection'].value
@@ -477,7 +503,15 @@ class Population(object):
         display(Math(self._spatial_form))
         display(pd.DataFrame(out))
 
-    def display_true_fluxes(self, ax=None, flux_color=orange, **kwargs):
+    def display_true_fluxes(self, ax=None, flux_color=dark, **kwargs):
+        """FIXME! briefly describe function
+
+        :param ax: 
+        :param flux_color: 
+        :returns: 
+        :rtype: 
+
+        """
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -486,7 +520,8 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distances, self._fluxes, alpha=.5, color=flux_color, edgecolors='none',label='True flux', **kwargs)
+        ax.scatter(
+            self._distances, self._fluxes, alpha=.5, color=flux_color, edgecolors='none', label='True flux', **kwargs)
 
         ax.axhline(self._boundary, color='grey', zorder=-5000, ls='--')
 
@@ -498,9 +533,17 @@ class Population(object):
         ax.set_xlabel('distance')
         ax.set_ylabel('flux')
 
-    def display_obs_fluxes(self, ax=None, flux_color=green, **kwargs):
+    def display_obs_fluxes(self, ax=None, flux_color=dark, **kwargs):
+        """FIXME! briefly describe function
 
+        :param ax: 
+        :param flux_color: 
+        :returns: 
+        :rtype: 
+
+        """
         
+
         if ax is None:
             fig, ax = plt.subplots()
 
@@ -508,8 +551,14 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distance_selected, self._flux_selected, alpha=.8,
-                   color=flux_color, edgecolors='none',label='Detected flux', **kwargs)
+        ax.scatter(
+            self._distance_selected,
+            self._flux_selected,
+            alpha=.8,
+            color=flux_color,
+            edgecolors='none',
+            label='Detected flux',
+            **kwargs)
 
         ax.axhline(self._boundary, color='grey', zorder=-5000, ls='--')
         #ax.set_xscale('log')
@@ -521,8 +570,19 @@ class Population(object):
         ax.set_xlabel('distance')
         ax.set_ylabel('flux')
         return fig
-        
-    def display_fluxes(self, ax=None, true_color=orange, obs_color=green,arrow_color='k',with_arrows=True, **kwargs):
+
+    def display_fluxes(self, ax=None, true_color=light, obs_color=dark, arrow_color='k', with_arrows=True, **kwargs):
+        """FIXME! briefly describe function
+
+        :param ax: 
+        :param true_color: 
+        :param obs_color: 
+        :param arrow_color: 
+        :param with_arrows: 
+        :returns: 
+        :rtype: 
+
+        """
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -542,11 +602,29 @@ class Population(object):
                 dx = 0
                 dy = stop - start
 
-                ax.arrow(x, y, dx, dy, color=arrow_color, head_width=0.05, head_length=0.2 * np.abs(dy), length_includes_head=True)
+                ax.arrow(
+                    x,
+                    y,
+                    dx,
+                    dy,
+                    color=arrow_color,
+                    head_width=0.05,
+                    head_length=0.2 * np.abs(dy),
+                    length_includes_head=True)
 
         return fig
-            
+
     def display_obs_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
+        """FIXME! briefly describe function
+
+        :param ax: 
+        :param cmap: 
+        :param distance_transform: 
+        :param use_log: 
+        :returns: 
+        :rtype: 
+
+        """
 
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
@@ -654,7 +732,8 @@ class Population(object):
             z,
             c=self._flux_obs,
             cmap=cmap,
-            norm=mpl.colors.LogNorm(vmin=min(self._fluxes), vmax=max(self._fluxes)), **kwargs)
+            norm=mpl.colors.LogNorm(vmin=min(self._fluxes), vmax=max(self._fluxes)),
+            **kwargs)
 
         ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
 
@@ -666,14 +745,23 @@ class Population(object):
         return fig
 
     def display_hidden_fluxes_sphere(self, ax=None, cmap='magma', distance_transform=None, use_log=False, **kwargs):
+        """FIXME! briefly describe function
+
+        :param ax: 
+        :param cmap: 
+        :param distance_transform: 
+        :param use_log: 
+        :returns: 
+        :rtype: 
+
+        """
+        
 
         # do not display if there is nothing hidden
         if len(self._selection) == sum(self._selection):
 
-            return 
+            return
 
-        
-        
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
 
@@ -721,9 +809,7 @@ class Population(object):
             c=self._flux_hidden,
             cmap=cmap,
             norm=mpl.colors.LogNorm(vmin=min(self._flux_hidden), vmax=max(self._flux_hidden)),
-            **kwargs
-            
-        )
+            **kwargs)
 
         ax.plot_wireframe(x2, y2, z2, color='grey', alpha=0.9, rcount=4, ccount=2)
 
@@ -738,8 +824,19 @@ class Population(object):
                             unseen_cmap='Greys',
                             distance_transform=None,
                             use_log=False,
-                            **kwargs
-    ):
+                            **kwargs):
+        """FIXME! briefly describe function
+
+        :param ax: 
+        :param seen_cmap: 
+        :param unseen_cmap: 
+        :param distance_transform: 
+        :param use_log: 
+        :returns: 
+        :rtype: 
+
+        """
+        
 
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection='3d'))
@@ -747,20 +844,14 @@ class Population(object):
         else:
             fig = ax.get_figure()
 
-        self.display_obs_fluxes_sphere(ax=ax, cmap=seen_cmap,
-                                       distance_transform=distance_transform,
-                                       use_log=use_log,
-                                       **kwargs)
-        
-        self.display_hidden_fluxes_sphere(ax=ax, cmap=unseen_cmap,
-                                          distance_transform=distance_transform,
-                                          use_log=use_log,
-                                          **kwargs)
+        self.display_obs_fluxes_sphere(
+            ax=ax, cmap=seen_cmap, distance_transform=distance_transform, use_log=use_log, **kwargs)
 
-
-
+        self.display_hidden_fluxes_sphere(
+            ax=ax, cmap=unseen_cmap, distance_transform=distance_transform, use_log=use_log, **kwargs)
 
         return fig
+
     def display_luminosty(self, ax=None, **kwargs):
 
         if ax is None:
@@ -769,16 +860,24 @@ class Population(object):
         else:
 
             fig = ax.get_figure()
-            
+
         bins = np.logspace(np.log10(self._luminosities.min()), np.log10(self._luminosities.max()), 30)
 
-        ax.hist(self._luminosities, bins=bins, normed=True, facecolor=orange, edgecolor=orange_highlight, lw=1.5)
+        ax.hist(self._luminosities, bins=bins, normed=True, fc=dark, ec=dark_highlight, lw=1.5)
 
         ax.set_xscale('log')
         ax.set_yscale('log')
         ax.set_xlabel('L')
 
     def display_distances(self, ax=None):
+        """FIXME! briefly describe function
+
+        :param ax: 
+        :returns: 
+        :rtype: 
+
+        """
+        
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -788,7 +887,7 @@ class Population(object):
 
         bins = np.linspace(0, self._r_max, 40)
 
-        ax.hist(self._distances, bins=bins, facecolor=green, edgecolor=green_highlight, lw=1.5, label='Total Pop.')
+        ax.hist(self._distances, bins=bins, fc=dark, ec=dark_highlight, lw=1.5, label='Total Pop.')
         ax.hist(
             self._distance_selected,
             bins=bins,
