@@ -1,16 +1,11 @@
 from popsynth.population_synth import PopulationSynth
-from popsynth.spherical_population import ConstantSphericalPopulation, SphericalPopulation
-from popsynth.cosmological_population import CosmologicalPopulation, SFRPopulation
-from popsynth.pareto_population import ParetoPopulation
-from popsynth.schechter_population import SchechterPopulation
+from popsynth.populations import *
+from popsynth.aux_samplers import *
 
 from popsynth.population import Population
-from popsynth.auxiliary_sampler import AuxiliarySampler
+from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 
 from popsynth import synths
-#from popsynth.synths import ParetoConstantSphericalPopulation, ParetoSFRPopulation, SchechterSFRPopulation
-
-
 
 
 
@@ -18,7 +13,7 @@ import numpy as np
 
 chance = np.random.uniform(0,1,size=1)
 
-if chance <= 0.8:
+if chance <= 0.2:
 
     from IPython.display import display, YouTubeVideo
 
