@@ -18,7 +18,10 @@ class AuxiliarySampler(object):
         self._is_observed = observed
         self._secondary_samplers = {}
         self._is_secondary = False
+        self._has_secondary = False
+        self._is_sampled = False
 
+        
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
 
@@ -56,6 +59,7 @@ class AuxiliarySampler(object):
         # attach the sampler to this class
         
         self._secondary_samplers[sampler.name] = sampler
+        self._has_secondary = True
 
     def draw(self, size=1):
         """
@@ -63,11 +67,19 @@ class AuxiliarySampler(object):
 
         :param size: the number of samples to draw
         """
+        # do not resample!
+        if self._is_sampled:
 
-        print("%s is sampling its secondary quantities" % self.name)
+            return 
+    
+        
+        if self._has_secondary:
+            print("%s is sampling its secondary quantities" % self.name)
 
         for k, v in self._secondary_samplers.items():
 
+            assert v.is_secondary, 'Tried to sample a non-secondary, this is a bag'
+            
             print('Sampling: %s' % k)
 
             # we do not allow for the secondary
@@ -93,6 +105,8 @@ class AuxiliarySampler(object):
         assert self.true_values is not None and len(self.true_values) == size
         assert self.obs_values is not None and len(self.obs_values) == size
 
+        self._is_sampled = True
+        
     def make_secondary(self):
 
         self._is_secondary = True
