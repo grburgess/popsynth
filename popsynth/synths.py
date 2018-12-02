@@ -1,16 +1,29 @@
 import numpy as np
-from popsynth.spherical_population import ConstantSphericalPopulation, ZPowerSphericalPopulation
-from popsynth.cosmological_population import SFRPopulation
 
-from popsynth.pareto_population import ParetoPopulation
-from popsynth.schechter_population import SchechterPopulation
-from popsynth.log10_normal_population import Log10NormalPopulation
-from popsynth.log_normal_population import LogNormalPopulation
-from popsynth.bpl_population import BPLPopulation
+from popsynth.populations.spherical_population import ConstantSphericalPopulation, ZPowerSphericalPopulation
+from popsynth.populations.cosmological_population import SFRPopulation
+
+from popsynth.populations.pareto_population import ParetoPopulation
+from popsynth.populations.populations.schechter_population import SchechterPopulation
+from popsynth.populations.log10_normal_population import Log10NormalPopulation
+from popsynth.populations.log_normal_population import LogNormalPopulation
+from popsynth.populations.bpl_population import BPLPopulation
 
 class ParetoHomogeneousSphericalPopulation(ParetoPopulation, ConstantSphericalPopulation):
 
     def __init__(self, Lambda, Lmin, alpha, r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param Lambda: 
+        :param Lmin: 
+        :param alpha: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
+        
 
         ParetoPopulation.__init__(
             self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='ParetoHomogeneousSphericalPopulation')
@@ -21,6 +34,17 @@ class ParetoHomogeneousSphericalPopulation(ParetoPopulation, ConstantSphericalPo
 class Log10NormalHomogeneousSphericalPopulation(Log10NormalPopulation, ConstantSphericalPopulation):
 
     def __init__(self, Lambda, mu, tau, r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param Lambda: 
+        :param mu: 
+        :param tau: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
 
         Log10NormalPopulation.__init__(
             self, mu=mu, tau=tau, r_max=r_max, seed=seed, name='Log10NormalHomogeneousSphericalPopulation')
@@ -31,7 +55,20 @@ class Log10NormalHomogeneousSphericalPopulation(Log10NormalPopulation, ConstantS
 class Log10NormalZPowerSphericalPopulation(Log10NormalPopulation, ZPowerSphericalPopulation):
 
     def __init__(self, Lambda, delta, mu, tau, r_max=10, seed=1234):
+        """FIXME! briefly describe function
 
+        :param Lambda: 
+        :param delta: 
+        :param mu: 
+        :param tau: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
+
+        
         Log10NormalPopulation.__init__(
             self, mu=mu, tau=tau, r_max=r_max, seed=seed, name='Log10NormalZPowerSphericalPopulation')
         ZPowerSphericalPopulation.__init__(
@@ -42,8 +79,18 @@ class Log10NormalZPowerSphericalPopulation(Log10NormalPopulation, ZPowerSpherica
 class SchechterHomogeneousSphericalPopulation(SchechterPopulation, ConstantSphericalPopulation):
 
     def __init__(self, Lambda, Lmin, alpha, r_max=10, seed=1234):
+        """FIXME! briefly describe function
 
-        SchechterPopulation.__init__(
+        :param Lambda: 
+        :param Lmin: 
+        :param alpha: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
+         SchechterPopulation.__init__(
             self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='SchechterHomogeneousSphericalPopulation')
         ConstantSphericalPopulation.__init__(
             self, Lambda=Lambda, r_max=r_max, seed=seed, name='SchechterHomogeneousSphericalPopulation')
@@ -52,6 +99,20 @@ class SchechterHomogeneousSphericalPopulation(SchechterPopulation, ConstantSpher
 class ParetoSFRPopulation(ParetoPopulation, SFRPopulation):
 
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param r0: 
+        :param rise: 
+        :param decay: 
+        :param peak: 
+        :param Lmin: 
+        :param alpha: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
 
         ParetoPopulation.__init__(self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='ParetoSFRPopulation')
         SFRPopulation.__init__(
@@ -67,6 +128,23 @@ class ParetoSFRPopulation(ParetoPopulation, SFRPopulation):
 class BPLSFRPopulation(BPLPopulation, SFRPopulation):
 
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, Lbreak, beta, Lmax,  r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param r0: 
+        :param rise: 
+        :param decay: 
+        :param peak: 
+        :param Lmin: 
+        :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
 
         BPLPopulation.__init__(self, Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax,  r_max=r_max, seed=seed, name='BPLSFRPopulation')
         SFRPopulation.__init__(
@@ -83,6 +161,20 @@ class BPLSFRPopulation(BPLPopulation, SFRPopulation):
 class SchechterSFRPopulation(SchechterPopulation, SFRPopulation):
 
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param r0: 
+        :param rise: 
+        :param decay: 
+        :param peak: 
+        :param Lmin: 
+        :param alpha: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
 
         SchechterPopulation.__init__(
             self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='SchechterSFRPopulation')
@@ -93,6 +185,20 @@ class SchechterSFRPopulation(SchechterPopulation, SFRPopulation):
 class LogNormalSFRPopulation(LogNormalPopulation, SFRPopulation):
 
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param r0: 
+        :param rise: 
+        :param decay: 
+        :param peak: 
+        :param mu: 
+        :param tau: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
 
         LogNormalPopulation.__init__(
             self, mu=mu, tau=tau, r_max=r_max, seed=seed, name='LogNormalSFRPopulation')
