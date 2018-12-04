@@ -6,6 +6,19 @@ from popsynth.population_synth import PopulationSynth
 class ParetoPopulation(PopulationSynth):
 
     def __init__(self, Lmin, alpha, r_max=10, seed=1234, name='_pareto'):
+        """
+        A Pareto luminosity function
+
+        :param Lmin: 
+        :param alpha: 
+        :param r_max: 
+        :param seed: 
+        :param name: 
+        :returns: 
+        :rtype: 
+
+        """
+        
 
         PopulationSynth.__init__(self, r_max, seed, name)
 
@@ -14,6 +27,15 @@ class ParetoPopulation(PopulationSynth):
         self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 
     def phi(self, L):
+        """
+        The luminosity function
+
+        :param L: 
+        :returns: 
+        :rtype: 
+
+        """
+        
 
         out = np.zeros_like(L)
 
@@ -24,7 +46,14 @@ class ParetoPopulation(PopulationSynth):
         return out
 
     def draw_luminosity(self, size=1):
+        """FIXME! briefly describe function
 
+        :param size: 
+        :returns: 
+        :rtype: 
+
+        """
+        
         return (np.random.pareto(self._lf_params['alpha'], size) + 1) * self._lf_params['Lmin']
 
     def __get_Lmin(self):
