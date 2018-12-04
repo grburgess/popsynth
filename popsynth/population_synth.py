@@ -354,6 +354,8 @@ class PopulationSynth(object):
 
         else:
 
+            # simply apply a hard cut selection in the data
+            
             selection = np.power(10, log10_fluxes_obs) >= boundary
 
         if sum(selection) == n:
@@ -368,18 +370,20 @@ class PopulationSynth(object):
             assert (distance_probability >= 0) and (
                 distance_probability <= 1.), 'the distance detection must be between 0 and 1'
 
-            for i, d in enumerate(distances[selection]):
+            with progress_bar(size, title='Selecting distances') as pbar:
+                for i, d in enumerate(distances[selection]):
 
-                # see if we detect the distance
-                if stats.bernoulli.rvs(distance_probability) == 1:
+                    # see if we detect the distance
+                    if stats.bernoulli.rvs(distance_probability) == 1:
 
-                    known_distances.append(d)
-                    known_distance_idx.append(i)
+                        known_distances.append(d)
+                        known_distance_idx.append(i)
 
-                else:
+                    else:
 
-                    unknown_distance_idx.append(i)
+                        unknown_distance_idx.append(i)
 
+                    pbar.increase()
             print('Detected %d distances' % len(known_distances))
 
         else:
