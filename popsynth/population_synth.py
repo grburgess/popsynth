@@ -7,14 +7,6 @@ import scipy.integrate as integrate
 import abc
 from IPython.display import display, Math, Markdown
 
-import h5py
-import pandas as pd
-
-from astropy.cosmology import WMAP9 as cosmo
-
-from astropy.constants import c as sol
-sol = sol.value
-
 from popsynth.population import Population
 from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.utils.progress_bar import progress_bar
@@ -24,9 +16,16 @@ class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, r_max=10, seed=1234, name='no_name'):
+        """FIXME! briefly describe function
+
+        :param r_max: 
+        :param seed: 
+        :param name: 
+        :returns: 
+        :rtype: 
+
         """
-        
-        """
+
         self._n_model = 500
         self._seed = int(seed)
         self._model_spaces = {}
@@ -98,6 +97,13 @@ class PopulationSynth(object):
         self._model_spaces[name] = space
 
     def add_observed_quantity(self, auxiliary_sampler):
+        """FIXME! briefly describe function
+
+        :param auxiliary_sampler: 
+        :returns: 
+        :rtype: 
+
+        """
 
         if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
             self._has_derived_luminosity = True
@@ -133,6 +139,13 @@ class PopulationSynth(object):
         pass
 
     def time_adjustment(self, r):
+        """FIXME! briefly describe function
+
+        :param r: 
+        :returns: 
+        :rtype: 
+
+        """
 
         return 1.
 
@@ -210,6 +223,8 @@ class PopulationSynth(object):
         :param boundary: the mean boundary for flux selection
         :param flux_sigma: the homoskedastic sigma for the flux in log10 space
         :param strength: the log10 strength of the inv logit selection
+        :param hard_cut: (bool) If true, had cuts are applid to the selection
+        :param distance_probability: If not none, then the probability of detecting a distance
         :return: a Population object
         """
 
@@ -235,7 +250,7 @@ class PopulationSynth(object):
         auxiliary_quantities = {}
         if self._has_derived_luminosity:
 
-
+            # set the distance to the auxilary sampler
             self._derived_luminosity_sampler.set_distance(distances)
 
             # sample the true and obs
@@ -259,6 +274,8 @@ class PopulationSynth(object):
 
             print('Getting luminosity from derived sampler')
             luminosities = self._derived_luminosity_sampler.compute_luminosity()
+
+            # collect anything that was sampled here
 
             for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
                 auxiliary_quantities[k2] = {
@@ -348,8 +365,8 @@ class PopulationSynth(object):
             known_distance_idx = []
             unknown_distance_idx = []
 
-            assert (distance_probability >= 0) and (distance_probability <=
-                                                    1.), 'the distance detection must be between 0 and 1'
+            assert (distance_probability >= 0) and (
+                distance_probability <= 1.), 'the distance detection must be between 0 and 1'
 
             for i, d in enumerate(distances[selection]):
 
