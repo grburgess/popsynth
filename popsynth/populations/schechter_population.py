@@ -7,6 +7,19 @@ from popsynth.population_synth import PopulationSynth
 class SchechterPopulation(PopulationSynth):
 
     def __init__(self, Lmin, alpha, r_max=10, seed=1234, name='_shechter'):
+        """
+        A Schechter luminosity function
+
+        :param Lmin: the minimum luminosity
+        :param alpha: the power law index
+        :param r_max: the maximum distance to integrate 
+        :param seed: the random number seed
+        :param name: the name 
+        :returns: None
+        :rtype: 
+
+        """
+        
 
         PopulationSynth.__init__(self, r_max, seed, name)
 
@@ -15,9 +28,25 @@ class SchechterPopulation(PopulationSynth):
         self._lf_form = r'\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]'
 
     def phi(self, L):
+        """FIXME! briefly describe function
+
+        :param L: 
+        :returns: 
+        :rtype: 
+
+        """
+        
         return L**self.alpha * np.exp(-L / self.Lmin) / (self.Lmin**(1 + self.alpha) * sf.gamma(1 + self.alpha))
 
     def draw_luminosity(self, size=1):
+        """FIXME! briefly describe function
+
+        :param size: 
+        :returns: 
+        :rtype: 
+
+        """
+        
 
         xs = (1 - np.random.uniform(size=size))
         return self.Lmin * sf.gammaincinv(1 + self.alpha, xs)
