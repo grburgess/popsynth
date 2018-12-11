@@ -278,11 +278,19 @@ class PopulationSynth(object):
             # collect anything that was sampled here
 
             for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
-                auxiliary_quantities[k2] = {
-                    'true_values': v2.true_values,
-                    'sigma': v2.sigma,
-                    'obs_values': v2.obs_values
-                }
+                
+                # first we tell the sampler to go and retrieve all of
+                # its own secondaries
+
+                
+                properties = v2.get_secondary_properties()
+
+                for k3, v3 in properties.items():
+
+                    # now attach them
+                    auxiliary_quantities[k3] = v3
+ 
+
 
         else:
             # draw all the values
@@ -321,12 +329,22 @@ class PopulationSynth(object):
             # collect the secondary values
 
             for k2, v2 in v.secondary_samplers.items():
-                auxiliary_quantities[k2] = {
-                    'true_values': v2.true_values,
-                    'sigma': v2.sigma,
-                    'obs_values': v2.obs_values
-                }
 
+                # first we tell the sampler to go and retrieve all of
+                # its own secondaries
+
+                properties = v2.get_secondary_properties()
+
+                for k3, v3 in properties.items():
+
+                    # now attach them
+                    auxiliary_quantities[k3] = v3
+                    
+
+                
+
+
+                
         # now draw all the observed fluxes
         # this is homoskedastic for now
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
