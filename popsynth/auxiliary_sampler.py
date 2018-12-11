@@ -113,10 +113,13 @@ class AuxiliarySampler(object):
 
         """
 
+
+        # if a holder was not passed, create one
         if recursive_secondaries is None:
 
             recursive_secondaries = {}
-        
+
+        # now collect each property. This should keep recursing
         if self._has_secondary:
 
             for k,v in self._secondary_samplers.items():
@@ -124,6 +127,7 @@ class AuxiliarySampler(object):
                 recursive_secondaries = v.get_secondary_properties(recursive_secondaries)
 
 
+        # add our own on
         recursive_secondaries[self._name] = {
                     'true_values': self._true_values,
                     'sigma': self._sigma,
