@@ -104,6 +104,38 @@ class AuxiliarySampler(object):
 
         self._is_secondary = True
 
+    def get_secondary_properties(self, recursive_secondaries=None):
+        """FIXME! briefly describe function
+
+        :param recursive_secondaries: 
+        :returns: 
+        :rtype: 
+
+        """
+
+        if recursive_secondaries is None:
+
+            recursive_secondaries = {}
+        
+        if self._has_secondary:
+
+            for k,v in self._secondary_samplers.items():
+
+                recursive_secondaries = v.get_secondary_properties(recursive_secondaries)
+
+
+        recursive_secondaries[self._name] = {
+                    'true_values': self._true_values,
+                    'sigma': self._sigma,
+                    'obs_values': self._obs_values
+                }
+
+        return recursive_secondaries
+            
+
+            
+
+        
     @property
     def secondary_samplers(self):
         """
@@ -117,6 +149,12 @@ class AuxiliarySampler(object):
 
         return self._is_secondary
 
+
+    @property
+    def has_secondary(self):
+
+        return self._has_secondary
+    
     @property
     def observed(self):
         """
