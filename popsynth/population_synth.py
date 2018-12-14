@@ -388,7 +388,7 @@ class PopulationSynth(object):
             assert (distance_probability >= 0) and (
                 distance_probability <= 1.), 'the distance detection must be between 0 and 1'
 
-            with progress_bar(size, title='Selecting distances') as pbar:
+            with progress_bar(len(distances[selection]), title='Selecting distances') as pbar:
                 for i, d in enumerate(distances[selection]):
 
                     # see if we detect the distance
