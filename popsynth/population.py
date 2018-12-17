@@ -125,10 +125,16 @@ class Population(object):
 
     @property
     def luminosities(self):
+        """
+        The true luminosities of the objects
+        """
         return self._luminosities
 
     @property
-    def fluxes(self):
+    def latent_fluxes(self):
+        """
+        The latent fluxes of the objects
+        """
         return self._fluxes
 
     @property
