@@ -158,7 +158,7 @@ class PopulationSynth(object):
         dNdr = lambda r: self.dNdV(r) * self.differential_volume(r) / self.time_adjustment(r)
 
         # find the maximum point
-        tmp = np.linspace(0, self._r_max, 1E5)
+        tmp = np.linspace(0, self._r_max, 500)
         ymax = np.max(dNdr(tmp))
 
         # rejection sampling the distribution
