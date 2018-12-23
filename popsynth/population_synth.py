@@ -9,8 +9,8 @@ from IPython.display import display, Math, Markdown
 
 from popsynth.population import Population
 from popsynth.auxiliary_sampler import DerivedLumAuxSampler
-from popsynth.utils.progress_bar import progress_bar
-
+#from popsynth.utils.progress_bar import progress_bar
+from tqdm.autonotebook import tqdm as progress_bar
 
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
@@ -163,25 +163,25 @@ class PopulationSynth(object):
 
         # rejection sampling the distribution
         r_out = []
-        with progress_bar(size, title='Drawing distances') as pbar:
-            for i in range(size):
-                flag = True
-                while flag:
+         
+        for i in progress_bar(range(size), desc='Drawing distances'):
+            flag = True
+            while flag:
 
-                    # get am rvs from 0 to the max of the function
+                # get am rvs from 0 to the max of the function
 
-                    y = np.random.uniform(low=0, high=ymax)
+                y = np.random.uniform(low=0, high=ymax)
 
-                    # get an rvs from 0 to the maximum distance
+                # get an rvs from 0 to the maximum distance
 
-                    r = np.random.uniform(low=0, high=self._r_max)
+                r = np.random.uniform(low=0, high=self._r_max)
 
-                    # compare them
+                # compare them
 
-                    if y < dNdr(r):
-                        r_out.append(r)
-                        flag = False
-                pbar.increase()
+                if y < dNdr(r):
+                    r_out.append(r)
+                    flag = False
+
 
         return np.array(r_out)
 
@@ -230,6 +230,7 @@ class PopulationSynth(object):
 
         # set the random seed
 
+        pbar = progress_bar(total=5, desc='Integrating volume')
         np.random.seed(self._seed)
 
         # create a callback of the integrand
@@ -241,15 +242,22 @@ class PopulationSynth(object):
 
         # this should be poisson distributed
         n = np.random.poisson(N)
+        pbar.update()
+        pbar.set_description(desc='Drawing distances')
         distances = self.draw_distance(size=n)
 
         print('Expecting %d total objects' % n)
 
         # first check if the auxilliary samplers
         # compute the luminosities
+
+        pbar.update()
+ 
+
         auxiliary_quantities = {}
         if self._has_derived_luminosity:
 
+            pbar.set_description(desc='Getting derived luminosities')
             # set the distance to the auxilary sampler
             self._derived_luminosity_sampler.set_distance(distances)
 
@@ -290,9 +298,10 @@ class PopulationSynth(object):
                     # now attach them
                     auxiliary_quantities[k3] = v3
  
-
+            pbar.update()
 
         else:
+            pbar.update()
             # draw all the values
             luminosities = self.draw_luminosity(size=n)
 
@@ -302,6 +311,7 @@ class PopulationSynth(object):
         # now sample any auxilary quantities
         # if needed
 
+        pbar.set_description(desc='Drawing Auxiliary variables')
         for k, v in self._auxiliary_observations.items():
 
             assert not v.is_secondary, 'This is a secondary sampler. You cannot sample it in the main sampler'
@@ -340,16 +350,14 @@ class PopulationSynth(object):
                     # now attach them
                     auxiliary_quantities[k3] = v3
                     
-
-                
-
-
-                
+        pbar.update()
+        
         # now draw all the observed fluxes
         # this is homoskedastic for now
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
         # compute the detection probability  for the observed values
+        pbar.set_description(desc='Selecting objects')
         detection_probability = self._prob_det(log10_fluxes_obs, np.log10(boundary), strength)
 
         # now select them
@@ -357,7 +365,7 @@ class PopulationSynth(object):
         if not hard_cut:
 
             selection = []
-            for p in detection_probability:
+            for p in progress_bar(detection_probability, desc='samping detection probability'):
 
                 # make a bernoulli draw given the detection probability
                 if stats.bernoulli.rvs(p) == 1:
@@ -376,11 +384,13 @@ class PopulationSynth(object):
             
             selection = np.power(10, log10_fluxes_obs) >= boundary
 
+        pbar.update()
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')
 
+        
         if distance_probability is not None:
-
+            pbar.set_description(desc='Selecting sistances')
             known_distances = []
             known_distance_idx = []
             unknown_distance_idx = []
@@ -388,7 +398,7 @@ class PopulationSynth(object):
             assert (distance_probability >= 0) and (
                 distance_probability <= 1.), 'the distance detection must be between 0 and 1'
 
-            with progress_bar(len(distances[selection]), title='Selecting distances') as pbar:
+            with progress_bar(len(distances[selection]), desc='Selecting distances') as pbar2:
                 for i, d in enumerate(distances[selection]):
 
                     # see if we detect the distance
@@ -401,7 +411,7 @@ class PopulationSynth(object):
 
                         unknown_distance_idx.append(i)
 
-                    pbar.increase()
+                    pbar2.update()
             print('Detected %d distances' % len(known_distances))
 
         else:
@@ -409,7 +419,7 @@ class PopulationSynth(object):
             known_distances = distances[selection]
             known_distance_idx = [i for i in range(sum(selection))]
             unknown_distance_idx = []
-
+        pbar.update()
         known_distances = np.array(known_distances)
         known_distance_idx = np.array(known_distance_idx)
         unknown_distance_idx = np.array(unknown_distance_idx)
