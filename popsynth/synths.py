@@ -1,7 +1,7 @@
 import numpy as np
 
 from popsynth.populations.spherical_population import ConstantSphericalPopulation, ZPowerSphericalPopulation
-from popsynth.populations.cosmological_population import SFRPopulation
+from popsynth.populations.cosmological_population import SFRPopulation, MergerPopulation
 
 from popsynth.populations.pareto_population import ParetoPopulation
 from popsynth.populations.schechter_population import SchechterPopulation
@@ -204,3 +204,35 @@ class LogNormalSFRPopulation(LogNormalPopulation, SFRPopulation):
             self, mu=mu, tau=tau, r_max=r_max, seed=seed, name='LogNormalSFRPopulation')
         SFRPopulation.__init__(
             self, r0=r0, rise=rise, decay=decay, peak=peak, r_max=r_max, seed=seed, name='LogNormalSFRPopulation')
+
+
+
+
+class ParetoMergerPopulation(ParetoPopulation, MergerPopulation):
+
+    def __init__(self, r0, td, sigma, Lmin, alpha, r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param r0: 
+        :param rise: 
+        :param decay: 
+        :param peak: 
+        :param Lmin: 
+        :param alpha: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
+
+        ParetoPopulation.__init__(self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='ParetoMergerPopulation')
+        MergerPopulation.__init__(
+            self, r0=r0, td=td, sigma=sigma,  r_max=r_max, seed=seed, name='ParetoMergerPopulation')
+
+
+    def generate_stan_code(self, stan_gen, **kwargs):
+
+        pass
+        # ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        # SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)

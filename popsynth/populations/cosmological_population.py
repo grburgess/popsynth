@@ -6,6 +6,7 @@ from astropy.cosmology import WMAP9 as cosmo
 from popsynth.population_synth import PopulationSynth
 from popsynth.utils.package_data import copy_package_data
 
+import scipy.integrate as integrate
 from astropy.constants import c as sol
 sol = sol.value
 
@@ -363,6 +364,139 @@ class SFRPopulation(CosmologicalPopulation):
 
     peak = property(___get_peak, ___set_peak,
                      doc="""Gets or sets the peak.""")
+
+
+    def generate_stan_code(self, stan_gen, **kwargs):
+
+
+        CosmologicalPopulation.generate_stan_code(self, stan_gen, **kwargs)
+
+        copy_package_data('sfr_functions.stan')
+        stan_gen.blocks['functions'].add_include('sfr_functions.stan')
+
+class MergerPopulation(CosmologicalPopulation):
+
+    def __init__(self, r0, td, sigma, r_max=10, seed=1234, name='_merger'):
+
+        CosmologicalPopulation.__init__(self, r_max, seed, name)
+
+        self.set_spatial_distribution_params(r0=r0, td=td, sigma=sigma)
+
+        self._spatial_form = r'\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}'
+
+
+        self._td = td
+        self._sigma =sigma
+
+        
+    def _sfr(self, z):
+    
+        top = .01 + 0.12 * z
+        bottom = 1.+np.power(z/3.23, 4.66)
+        return top/bottom
+    
+    def _delay_time(self, tau):    
+        return np.exp(- (np.log(tau)  - np.log(self._td)  )**2 /(2* self._sigma**2))/(np.sqrt(2*np.pi) * self._sigma)
+
+
+
+        
+    def dNdV(self, z):
+
+        integrand = lambda x:  self._sfr(x) * self._delay_time(cosmo.lookback_time(x).value )
+        out = []
+
+
+        try:
+            return self.r0*integrate.quad(integrand,z, np.infty)[0]
+
+        except:
+            for zz in z:
+        
+                out.append(integrate.quad(integrand,zz, np.infty)[0])
+
+
+            return self.r0 * np.array(out)
+   
+
+        
+    def __get_r0(self):
+             """Calculates the 'r0' property."""
+             return self._spatial_params['r0']
+
+    def ___get_r0(self):
+         """Indirect accessor for 'r0' property."""
+         return self.__get_r0()
+
+    def __set_r0(self, r0):
+         """Sets the 'r0' property."""
+         self.set_spatial_distribution_params(r0=r0, rise=self.rise, decay=self.decay, peak=self.peak)
+
+    def ___set_r0(self, r0):
+         """Indirect setter for 'r0' property."""
+         self.__set_r0(r0)
+
+    r0 = property(___get_r0, ___set_r0,
+                     doc="""Gets or sets the r0.""")
+
+    # def __get_rise(self):
+    #          """Calculates the 'rise' property."""
+    #          return self._spatial_params['rise']
+
+    # def ___get_rise(self):
+    #      """Indirect accessor for 'rise' property."""
+    #      return self.__get_rise()
+
+    # def __set_rise(self, rise):
+    #      """Sets the 'rise' property."""
+    #      self.set_spatial_distribution_params(r0=self.r0, rise=rise, decay=self.decay, peak=self.peak)
+
+    # def ___set_rise(self, rise):
+    #      """Indirect setter for 'rise' property."""
+    #      self.__set_rise(rise)
+
+    # rise = property(___get_rise, ___set_rise,
+    #                  doc="""Gets or sets the rise.""")
+
+    
+    # def __get_decay(self):
+    #          """Calculates the 'decay' property."""
+    #          return self._spatial_params['decay']
+
+    # def ___get_decay(self):
+    #      """Indirect accessor for 'decay' property."""
+    #      return self.__get_decay()
+
+    # def __set_decay(self, decay):
+    #      """Sets the 'decay' property."""
+    #      self.set_spatial_distribution_params(r0=self.r0, rise=self.rise, decay=decay, peak=self.peak)
+
+    # def ___set_decay(self, decay):
+    #      """Indirect setter for 'decay' property."""
+    #      self.__set_decay(decay)
+
+    # decay = property(___get_decay, ___set_decay,
+    #                  doc="""Gets or sets the decay.""")
+
+
+    # def __get_peak(self):
+    #     """Calculates the 'peak' property."""
+    #     return self._spatial_params['peak']
+
+    # def ___get_peak(self):
+    #      """Indirect accessor for 'peak' property."""
+    #      return self.__get_peak()
+
+    # def __set_peak(self, peak):
+    #      """Sets the 'peak' property."""
+    #      self.set_spatial_distribution_params(r0=self.r0, rise=self.rise, decay=self.decay, peak=peak)
+
+    # def ___set_peak(self, peak):
+    #      """Indirect setter for 'peak' property."""
+    #      self.__set_peak(peak)
+
+    # peak = property(___get_peak, ___set_peak,
+    #                  doc="""Gets or sets the peak.""")
 
 
     def generate_stan_code(self, stan_gen, **kwargs):
