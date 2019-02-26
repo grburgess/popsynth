@@ -9,7 +9,7 @@ import pandas as pd
 from IPython.display import display, Math, Markdown
 
 from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
-from stan_utility import StanGenerator
+#from stan_utility import StanGenerator
 
 from betagen import betagen
 

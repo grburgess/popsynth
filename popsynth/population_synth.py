@@ -149,7 +149,7 @@ class PopulationSynth(object):
 
         return 1.
 
-    def draw_distance(self, size):
+    def draw_distance(self, size, verbose):
         """
         Draw the distances from the specified dN/dr model
         """
@@ -163,25 +163,45 @@ class PopulationSynth(object):
 
         # rejection sampling the distribution
         r_out = []
-         
-        for i in progress_bar(range(size), desc='Drawing distances'):
-            flag = True
-            while flag:
 
-                # get am rvs from 0 to the max of the function
+        if verbose:
+            for i in progress_bar(range(size), desc='Drawing distances'):
+                flag = True
+                while flag:
 
-                y = np.random.uniform(low=0, high=ymax)
+                    # get am rvs from 0 to the max of the function
 
-                # get an rvs from 0 to the maximum distance
+                    y = np.random.uniform(low=0, high=ymax)
 
-                r = np.random.uniform(low=0, high=self._r_max)
+                    # get an rvs from 0 to the maximum distance
 
-                # compare them
+                    r = np.random.uniform(low=0, high=self._r_max)
 
-                if y < dNdr(r):
-                    r_out.append(r)
-                    flag = False
+                    # compare them
 
+                    if y < dNdr(r):
+                        r_out.append(r)
+                        flag = False
+        else:
+
+            for i in range(size):
+                flag = True
+                while flag:
+
+                    # get am rvs from 0 to the max of the function
+
+                    y = np.random.uniform(low=0, high=ymax)
+
+                    # get an rvs from 0 to the maximum distance
+
+                    r = np.random.uniform(low=0, high=self._r_max)
+
+                    # compare them
+
+                    if y < dNdr(r):
+                        r_out.append(r)
+                        flag = False
+            
 
         return np.array(r_out)
 
@@ -216,7 +236,7 @@ class PopulationSynth(object):
 
         return log10_fobs
 
-    def draw_survey(self, boundary, flux_sigma=1., strength=10., hard_cut=False, distance_probability=None):
+    def draw_survey(self, boundary, flux_sigma=1., strength=10., hard_cut=False, distance_probability=None, verbose=True):
         """
         Draw the total survey and return a Population object
 
@@ -244,9 +264,10 @@ class PopulationSynth(object):
         n = np.random.poisson(N)
  #       pbar.update()
  #       pbar.set_description(desc='Drawing distances')
-        distances = self.draw_distance(size=n)
+        distances = self.draw_distance(size=n, verbose=verbose)
 
-        print('Expecting %d total objects' % n)
+        if verbose:
+            print('Expecting %d total objects' % n)
 
         # first check if the auxilliary samplers
         # compute the luminosities
