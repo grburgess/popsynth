@@ -27,6 +27,10 @@ def test_basic_population():
 
 
 
+    population.writeto('saved_pop.h5')
+    population_reloaded = popsynth.Population.from_file('saved_pop.h5')
+
+
     sfr_synth = popsynth.synths.ParetoSFRPopulation(r0=10., rise=.1, decay=2., peak=5., Lmin=1E52, alpha=1.,seed=123)
 
 
@@ -71,3 +75,11 @@ def test_auxiliary_sampler():
         def observation_sampler(self, size):
 
             self._obs_values =  self._true_values + np.random.normal(0, self._sigma, size=size)
+
+
+
+    d=DemoSampler(5, 1, .1)
+
+    d2=DemoSampler2(0, 1, .1)
+    
+    d2.set_secondary_sampler(d)
