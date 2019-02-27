@@ -27,7 +27,7 @@ REQUIRED = [
     'astropy',
     'ipywidgets',
     'Cython',
-    'stan_utility'
+    'stan_utility',
     'tqdm'
 ]
 
