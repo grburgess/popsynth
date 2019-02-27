@@ -1,5 +1,5 @@
 import numpy as np
-
+import pandas as pd
 from popsynth.populations.spherical_population import ConstantSphericalPopulation, ZPowerSphericalPopulation
 from popsynth.populations.cosmological_population import SFRPopulation, MergerPopulation
 
