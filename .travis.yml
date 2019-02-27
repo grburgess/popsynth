@@ -4,7 +4,7 @@ python:
   - "2.7"
   - "3.6"
   - "3.7"
-  install:
+install:
   - pip install numpy ipython scipy h5py matplotlib betagen pytest pytest-cov
   - python setup.py install
 script:
