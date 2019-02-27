@@ -272,10 +272,22 @@ class PopulationSynth(object):
         # first check if the auxilliary samplers
         # compute the luminosities
 
-  #      pbar.update()
- 
+        #      pbar.update()
+
+
+
+        # now we set up the selection that _may_ come
+        # from the auxilliary samplers
+
+        auxiliary_selection = np.ones(n, dtype=bool)
+        
+  
 
         auxiliary_quantities = {}
+
+        # this means the luminosity is not
+        # simulated directy
+
         if self._has_derived_luminosity:
 
             #pbar.set_description(desc='Getting derived luminosities')
@@ -298,7 +310,8 @@ class PopulationSynth(object):
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {
                 'true_values': self._derived_luminosity_sampler.true_values,
                 'obs_values': self._derived_luminosity_sampler.obs_values,
-                'sigma': self._derived_luminosity_sampler.sigma
+                'sigma': self._derived_luminosity_sampler.sigma,
+                'selection' : self._derived_luminosity_sampler.selection
             }
 
             print('Getting luminosity from derived sampler')
@@ -355,7 +368,7 @@ class PopulationSynth(object):
             assert v.obs_values is not None and len(v.obs_values) == n
 
             # append these values to a dict
-            auxiliary_quantities[k] = {'true_values': v.true_values, 'sigma': v.sigma, 'obs_values': v.obs_values}
+            auxiliary_quantities[k] = {'true_values': v.true_values, 'sigma': v.sigma, 'obs_values': v.obs_values, 'selection': v.selection}
 
             # collect the secondary values
 
@@ -405,6 +418,16 @@ class PopulationSynth(object):
             
             selection = np.power(10, log10_fluxes_obs) >= boundary
 
+
+        # now apply the selection from the auxilary samplers
+
+        for k,v in auxiliary_quantities.items():
+
+            auxiliary_selection = np.logical_and(auxiliary_selection, v['selection'])
+
+        selection = np.logical_and(selection, auxiliary_selection)
+
+            
         #pbar.update()
         if sum(selection) == n:
             print('NO HIDDEN OBJECTS')

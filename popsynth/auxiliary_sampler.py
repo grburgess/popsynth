@@ -1,4 +1,5 @@
 import abc
+import numpy as np
 
 class AuxiliarySampler(object):
     __metaclass__ = abc.ABCMeta
@@ -107,6 +108,11 @@ class AuxiliarySampler(object):
             assert self.true_values is not None and len(self.true_values) == size
             assert self.obs_values is not None and len(self.obs_values) == size
 
+
+            # now apply the selection to yourself
+            # if there is nothing coded, it will be
+            # list of all true
+            
             self._apply_selection()
 
             
