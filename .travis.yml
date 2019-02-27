@@ -9,4 +9,4 @@ install:
   - python setup.py install
 script:
   - python -m pytest -vv --cov=popsynth/
-#  - codecov --token=a9aece23-c28a-4769-ad05-eb33579b6c55
+  - codecov --token=2adee64a-60b0-4c7e-b94c-512ea2b8e794
