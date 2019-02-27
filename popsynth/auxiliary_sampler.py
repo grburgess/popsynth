@@ -192,18 +192,47 @@ class AuxiliarySampler(object):
 
     @property
     def true_values(self):
+        """
+        The true values
+
+        :returns: 
+        :rtype: 
+
+        """
+        
         return self._true_values
 
     @property
     def obs_values(self):
+        """
+        The observed values
+        :returns: 
+        :rtype: 
+
+        """
+        
         return self._obs_values
 
+
+    @property
+    def selection(self):
+        """
+        The selection function
+
+        :returns: 
+        :rtype: np.ndarray
+
+        """
+        
+        return self._selection
+        
+    
     @property
     @abc.abstractmethod
     def true_sampler(self, size=1):
 
         pass
-
+    
     @abc.abstractmethod
     def observation_sampler(self, size=1):
 
