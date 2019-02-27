@@ -28,6 +28,7 @@ REQUIRED = [
     'ipywidgets',
     'Cython',
     'stan_utility'
+    'tqdm'
 ]
 
 # What packages are optional?
