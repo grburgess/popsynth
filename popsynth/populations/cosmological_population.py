@@ -507,4 +507,22 @@ class MergerPopulation(CosmologicalPopulation):
         copy_package_data('sfr_functions.stan')
         stan_gen.blocks['functions'].add_include('sfr_functions.stan')
 
-        
+
+
+class MadauPopulation(CosmologicalPopulation):
+
+    def __init__(self, r0, r_max=10, seed=1234, name='_maduacosmo'):
+
+        CosmologicalPopulation.__init__(self, r_max, seed, name)
+
+        self.set_spatial_distribution_params(r0=r0)
+
+        self._spatial_form = r'23 \rho_0 \frac{e^{3.4 z}}{e^{3.4 z}+ 22.}'
+
+
+    def dNdV(self, z):
+        top = np.exp(3.4*z)
+        bottom = top+ 22.
+    
+        return self.r0 * top/bottom
+
