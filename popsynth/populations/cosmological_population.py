@@ -527,9 +527,9 @@ class MadauPopulation(CosmologicalPopulation):
         return self.r0 * top/bottom
 
 
-        def __get_r0(self):
-             """Calculates the 'r0' property."""
-             return self._spatial_params['r0']
+    def __get_r0(self):
+         """Calculates the 'r0' property."""
+         return self._spatial_params['r0']
 
     def ___get_r0(self):
          """Indirect accessor for 'r0' property."""
