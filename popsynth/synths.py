@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from popsynth.populations.spherical_population import ConstantSphericalPopulation, ZPowerSphericalPopulation
-from popsynth.populations.cosmological_population import SFRPopulation, MergerPopulation
+from popsynth.populations.cosmological_population import SFRPopulation, MergerPopulation, MadauPopulation
 
 from popsynth.populations.pareto_population import ParetoPopulation
 from popsynth.populations.schechter_population import SchechterPopulation
@@ -236,3 +236,25 @@ class ParetoMergerPopulation(ParetoPopulation, MergerPopulation):
         pass
         # ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
         # SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
+
+
+class ParetoMaduaPopulation(ParetoPopulation, MadauPopulation):
+
+    def __init__(self, r0, Lmin, alpha,  r_max=10, seed=1234):
+        """FIXME! briefly describe function
+
+        :param Lambda: 
+        :param Lmin: 
+        :param alpha: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
+        
+
+        ParetoPopulation.__init__(
+            self, Lmin=Lmin, alpha=alpha, r_max=r_max, seed=seed, name='ParetoMaduaPopulation')
+        ConstantSphericalPopulation.__init__(
+            self, r0=r0, r_max=r_max, seed=seed, name='ParetoMaduaPopulation')
