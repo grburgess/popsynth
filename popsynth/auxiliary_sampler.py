@@ -1,4 +1,5 @@
 import abc
+import numpy as np
 
 class AuxiliarySampler(object):
     __metaclass__ = abc.ABCMeta
@@ -17,7 +18,7 @@ class AuxiliarySampler(object):
         self._is_secondary = False
         self._has_secondary = False
         self._is_sampled = False
-
+        self._selection = None
         
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
@@ -42,6 +43,15 @@ class AuxiliarySampler(object):
 
         self._distance = distance
 
+    def _apply_selection(self):
+        """
+        Default selection if none is specfied in child class
+        """
+
+        self._selection = np.ones_like(self._obs_values, dtype=bool)
+        
+
+        
     def set_secondary_sampler(self, sampler):
         """
         Allows the setting of a secondary sampler from which to derive values
@@ -98,6 +108,14 @@ class AuxiliarySampler(object):
             assert self.true_values is not None and len(self.true_values) == size
             assert self.obs_values is not None and len(self.obs_values) == size
 
+
+            # now apply the selection to yourself
+            # if there is nothing coded, it will be
+            # list of all true
+            
+            self._apply_selection()
+
+            
             self._is_sampled = True
         
     def make_secondary(self):
@@ -131,7 +149,8 @@ class AuxiliarySampler(object):
         recursive_secondaries[self._name] = {
                     'true_values': self._true_values,
                     'sigma': self._sigma,
-                    'obs_values': self._obs_values
+                    'obs_values': self._obs_values,
+                    'selection': self._selection,
                 }
 
         return recursive_secondaries
@@ -179,18 +198,47 @@ class AuxiliarySampler(object):
 
     @property
     def true_values(self):
+        """
+        The true values
+
+        :returns: 
+        :rtype: 
+
+        """
+        
         return self._true_values
 
     @property
     def obs_values(self):
+        """
+        The observed values
+        :returns: 
+        :rtype: 
+
+        """
+        
         return self._obs_values
 
+
+    @property
+    def selection(self):
+        """
+        The selection function
+
+        :returns: 
+        :rtype: np.ndarray
+
+        """
+        
+        return self._selection
+        
+    
     @property
     @abc.abstractmethod
     def true_sampler(self, size=1):
 
         pass
-
+    
     @abc.abstractmethod
     def observation_sampler(self, size=1):
 
