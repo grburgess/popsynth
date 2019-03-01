@@ -526,3 +526,23 @@ class MadauPopulation(CosmologicalPopulation):
     
         return self.r0 * top/bottom
 
+
+        def __get_r0(self):
+             """Calculates the 'r0' property."""
+             return self._spatial_params['r0']
+
+    def ___get_r0(self):
+         """Indirect accessor for 'r0' property."""
+         return self.__get_r0()
+
+    def __set_r0(self, r0):
+         """Sets the 'r0' property."""
+         self.set_spatial_distribution_params(r0=r0)
+
+    def ___set_r0(self, r0):
+         """Indirect setter for 'r0' property."""
+         self.__set_r0(r0)
+
+    r0 = property(___get_r0, ___set_r0,
+                     doc="""Gets or sets the r0.""")
+
