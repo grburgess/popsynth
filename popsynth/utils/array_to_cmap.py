@@ -1,6 +1,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+
 def array_to_cmap(values, cmap, use_log=False, vmin=None, vmax=None):
     """
     Generates a color map and color list that is normalized

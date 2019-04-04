@@ -4,8 +4,7 @@ from popsynth.population_synth import PopulationSynth
 
 
 class ParetoPopulation(PopulationSynth):
-
-    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name='_pareto'):
+    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name="_pareto"):
         """
         A Pareto luminosity function
 
@@ -18,7 +17,6 @@ class ParetoPopulation(PopulationSynth):
         :rtype: 
 
         """
-        
 
         PopulationSynth.__init__(self, r_max, seed, name)
 
@@ -35,13 +33,12 @@ class ParetoPopulation(PopulationSynth):
         :rtype: 
 
         """
-        
 
         out = np.zeros_like(L)
 
         idx = L >= self.Lmin
 
-        out[idx] = self.alpha * self.Lmin**self.alpha / L[idx]**(self.alpha + 1)
+        out[idx] = self.alpha * self.Lmin ** self.alpha / L[idx] ** (self.alpha + 1)
 
         return out
 
@@ -53,12 +50,14 @@ class ParetoPopulation(PopulationSynth):
         :rtype: 
 
         """
-        
-        return (np.random.pareto(self._lf_params['alpha'], size) + 1) * self._lf_params['Lmin']
+
+        return (np.random.pareto(self._lf_params["alpha"], size) + 1) * self._lf_params[
+            "Lmin"
+        ]
 
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
-        return self._lf_params['Lmin']
+        return self._lf_params["Lmin"]
 
     def ___get_Lmin(self):
         """Indirect accessor for 'Lmin' property."""
@@ -76,7 +75,7 @@ class ParetoPopulation(PopulationSynth):
 
     def __get_alpha(self):
         """Calculates the 'alpha' property."""
-        return self._lf_params['alpha']
+        return self._lf_params["alpha"]
 
     def ___get_alpha(self):
         """Indirect accessor for 'alpha' property."""

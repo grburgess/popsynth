@@ -7,7 +7,13 @@ from .schechter_population import SchechterPopulation
 from .bpl_population import BPLPopulation
 
 
-__all__ = ['SphericalPopulation','CosmologicalPopulation', 'SFRPopulation', 'ParetoPopulation',
-           'Log10NormalPopulation', 'LogNormalPopulation', 'SchechterPopulation','BPLPopulation'
-
+__all__ = [
+    "SphericalPopulation",
+    "CosmologicalPopulation",
+    "SFRPopulation",
+    "ParetoPopulation",
+    "Log10NormalPopulation",
+    "LogNormalPopulation",
+    "SchechterPopulation",
+    "BPLPopulation",
 ]

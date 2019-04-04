@@ -5,8 +5,7 @@ from popsynth.population_synth import PopulationSynth
 
 
 class SchechterPopulation(PopulationSynth):
-
-    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name='_shechter'):
+    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name="_shechter"):
         """
         A Schechter luminosity function
 
@@ -19,13 +18,12 @@ class SchechterPopulation(PopulationSynth):
         :rtype: 
 
         """
-        
 
         PopulationSynth.__init__(self, r_max, seed, name)
 
         self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
 
-        self._lf_form = r'\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]'
+        self._lf_form = r"\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]"
 
     def phi(self, L):
         """FIXME! briefly describe function
@@ -35,8 +33,12 @@ class SchechterPopulation(PopulationSynth):
         :rtype: 
 
         """
-        
-        return L**self.alpha * np.exp(-L / self.Lmin) / (self.Lmin**(1 + self.alpha) * sf.gamma(1 + self.alpha))
+
+        return (
+            L ** self.alpha
+            * np.exp(-L / self.Lmin)
+            / (self.Lmin ** (1 + self.alpha) * sf.gamma(1 + self.alpha))
+        )
 
     def draw_luminosity(self, size=1):
         """FIXME! briefly describe function
@@ -46,14 +48,13 @@ class SchechterPopulation(PopulationSynth):
         :rtype: 
 
         """
-        
 
-        xs = (1 - np.random.uniform(size=size))
+        xs = 1 - np.random.uniform(size=size)
         return self.Lmin * sf.gammaincinv(1 + self.alpha, xs)
 
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
-        return self._lf_params['Lmin']
+        return self._lf_params["Lmin"]
 
     def ___get_Lmin(self):
         """Indirect accessor for 'Lmin' property."""
@@ -71,7 +72,7 @@ class SchechterPopulation(PopulationSynth):
 
     def __get_alpha(self):
         """Calculates the 'alpha' property."""
-        return self._lf_params['alpha']
+        return self._lf_params["alpha"]
 
     def ___get_alpha(self):
         """Indirect accessor for 'alpha' property."""
