@@ -1,6 +1,7 @@
 import abc
 import numpy as np
 
+
 class AuxiliarySampler(object):
     __metaclass__ = abc.ABCMeta
 
@@ -9,7 +10,7 @@ class AuxiliarySampler(object):
         self._sigma = sigma
 
         self._name = name
-        self._obs_name = '%s_obs' % name
+        self._obs_name = "%s_obs" % name
 
         self._obs_values = None
         self._true_values = None
@@ -19,7 +20,7 @@ class AuxiliarySampler(object):
         self._has_secondary = False
         self._is_sampled = False
         self._selection = None
-        
+
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
 
@@ -39,7 +40,6 @@ class AuxiliarySampler(object):
         :rtype: 
 
         """
-        
 
         self._distance = distance
 
@@ -49,9 +49,7 @@ class AuxiliarySampler(object):
         """
 
         self._selection = np.ones_like(self._obs_values, dtype=bool)
-        
 
-        
     def set_secondary_sampler(self, sampler):
         """
         Allows the setting of a secondary sampler from which to derive values
@@ -60,10 +58,10 @@ class AuxiliarySampler(object):
         # make sure we set the sampler as a secondary
         # this causes it to throw a flag in the main
         # loop if we try to add it again
-        
+
         sampler.make_secondary()
         # attach the sampler to this class
-        
+
         self._secondary_samplers[sampler.name] = sampler
         self._has_secondary = True
 
@@ -76,14 +74,14 @@ class AuxiliarySampler(object):
         # do not resample!
         if not self._is_sampled:
 
-            print('Sampling: %s' % self.name)
-            
+            print("Sampling: %s" % self.name)
+
             if self._has_secondary:
                 print("%s is sampling its secondary quantities" % self.name)
 
             for k, v in self._secondary_samplers.items():
 
-                assert v.is_secondary, 'Tried to sample a non-secondary, this is a bag'
+                assert v.is_secondary, "Tried to sample a non-secondary, this is a bag"
 
                 # we do not allow for the secondary
                 # quantities to derive a luminosity
@@ -108,16 +106,14 @@ class AuxiliarySampler(object):
             assert self.true_values is not None and len(self.true_values) == size
             assert self.obs_values is not None and len(self.obs_values) == size
 
-
             # now apply the selection to yourself
             # if there is nothing coded, it will be
             # list of all true
-            
+
             self._apply_selection()
 
-            
             self._is_sampled = True
-        
+
     def make_secondary(self):
 
         self._is_secondary = True
@@ -131,7 +127,6 @@ class AuxiliarySampler(object):
 
         """
 
-
         # if a holder was not passed, create one
         if recursive_secondaries is None:
 
@@ -140,25 +135,22 @@ class AuxiliarySampler(object):
         # now collect each property. This should keep recursing
         if self._has_secondary:
 
-            for k,v in self._secondary_samplers.items():
+            for k, v in self._secondary_samplers.items():
 
-                recursive_secondaries = v.get_secondary_properties(recursive_secondaries)
-
+                recursive_secondaries = v.get_secondary_properties(
+                    recursive_secondaries
+                )
 
         # add our own on
         recursive_secondaries[self._name] = {
-                    'true_values': self._true_values,
-                    'sigma': self._sigma,
-                    'obs_values': self._obs_values,
-                    'selection': self._selection,
-                }
+            "true_values": self._true_values,
+            "sigma": self._sigma,
+            "obs_values": self._obs_values,
+            "selection": self._selection,
+        }
 
         return recursive_secondaries
-            
 
-            
-
-        
     @property
     def secondary_samplers(self):
         """
@@ -172,12 +164,11 @@ class AuxiliarySampler(object):
 
         return self._is_secondary
 
-
     @property
     def has_secondary(self):
 
         return self._has_secondary
-    
+
     @property
     def observed(self):
         """
@@ -205,7 +196,7 @@ class AuxiliarySampler(object):
         :rtype: 
 
         """
-        
+
         return self._true_values
 
     @property
@@ -216,9 +207,8 @@ class AuxiliarySampler(object):
         :rtype: 
 
         """
-        
-        return self._obs_values
 
+        return self._obs_values
 
     @property
     def selection(self):
@@ -229,16 +219,15 @@ class AuxiliarySampler(object):
         :rtype: np.ndarray
 
         """
-        
+
         return self._selection
-        
-    
+
     @property
     @abc.abstractmethod
     def true_sampler(self, size=1):
 
         pass
-    
+
     @abc.abstractmethod
     def observation_sampler(self, size=1):
 
@@ -246,7 +235,6 @@ class AuxiliarySampler(object):
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
-
     def __init__(self, name, sigma, observed=True):
         """FIXME! briefly describe function
 
@@ -257,10 +245,9 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         :rtype: 
 
         """
-        
 
         super(DerivedLumAuxSampler, self).__init__(name, sigma, observed=observed)
 
     def compute_luminosity(self):
 
-        raise RuntimeError('Must be implemented in derived class')
+        raise RuntimeError("Must be implemented in derived class")
