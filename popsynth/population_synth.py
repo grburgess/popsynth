@@ -385,7 +385,7 @@ class PopulationSynth(object):
             luminosities = self.luminosity_distribution.draw_luminosity(size=n)
 
         # transform the fluxes
-        fluxes = self._luminosity_distribution.transform(luminosities, distances)
+        fluxes = self._spatial_distribution.transform(luminosities, distances)
 
         # now sample any auxilary quantities
         # if needed
