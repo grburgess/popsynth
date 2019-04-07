@@ -25,7 +25,28 @@ class Distribution(object):
     def name(self):
         return self._name
 
-    
+    def set_distribution_params(self, **spatial_params):
+        """
+        Set the spatial parameters as keywords
+        """
+
+        try:
+
+            for k, v in spatial_params.items():
+
+                if k in self._spatial_params:
+                    self._spatial_params[k] = v
+                else:
+                    RuntimeWarning(
+                        "%s was not originally in the parameters... ignoring." % k
+                    )
+
+        except:
+
+            # we have not set these before
+
+            self._spatial_params = spatial_params
+
 
     
 class SpatialDistribution(Distribution):
@@ -64,7 +85,7 @@ class SpatialDistribution(Distribution):
     def transform(self, flux, distance):
         pass
 
-    def set_spatial_distribution_params(self, **spatial_params):
+    def set_distribution_params(self, **spatial_params):
         """
         Set the spatial parameters as keywords
         """
@@ -163,7 +184,7 @@ class LuminosityDistribution(Distribution):
 
         pass
 
-    def set_luminosity_function_parameters(self, **lf_params):
+    def set_distribution_params(self, **lf_params):
         """
         Set the luminosity function parameters as keywords
         """

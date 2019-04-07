@@ -8,7 +8,7 @@ class Log10NormalDistribution(LuminosityDistribution):
 
         super(Log10NormalDistribution, self).__init__( name=name, seed=seed)
 
-        self.set_luminosity_function_parameters(mu=mu, tau=tau)
+        self.set_distribution_params(mu=mu, tau=tau)
 
         self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 
@@ -34,7 +34,7 @@ class Log10NormalDistribution(LuminosityDistribution):
 
     def __set_mu(self, mu):
         """Sets the 'mu' property."""
-        self.set_luminosity_function_parameters(mu=mu, tau=self.tau)
+        self.set_distribution_params(mu=mu, tau=self.tau)
 
     def ___set_mu(self, mu):
         """Indirect setter for 'mu' property."""
@@ -52,7 +52,7 @@ class Log10NormalDistribution(LuminosityDistribution):
 
     def __set_tau(self, tau):
         """Sets the 'tau' property."""
-        self.set_luminosity_function_parameters(mu=self.mu, tau=tau)
+        self.set_distribution_params(mu=self.mu, tau=tau)
 
     def ___set_tau(self, tau):
         """Indirect setter for 'tau' property."""

@@ -272,7 +272,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
         CosmologicalDistribution.__init__(self, r_max, seed, name)
 
-        self.set_spatial_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
+        self.set_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
         self._spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
@@ -292,7 +292,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
     def __set_r0(self, r0):
         """Sets the 'r0' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=r0, rise=self.rise, decay=self.decay, peak=self.peak
         )
 
@@ -312,7 +312,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
     def __set_rise(self, rise):
         """Sets the 'rise' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=self.r0, rise=rise, decay=self.decay, peak=self.peak
         )
 
@@ -332,7 +332,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
     def __set_decay(self, decay):
         """Sets the 'decay' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=self.r0, rise=self.rise, decay=decay, peak=self.peak
         )
 
@@ -352,7 +352,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
     def __set_peak(self, peak):
         """Sets the 'peak' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=self.r0, rise=self.rise, decay=self.decay, peak=peak
         )
 
@@ -375,7 +375,7 @@ class MergerDistribution(CosmologicalDistribution):
 
         CosmologicalDistribution.__init__(self, r_max, seed, name)
 
-        self.set_spatial_distribution_params(r0=r0, td=td, sigma=sigma)
+        self.set_distribution_params(r0=r0, td=td, sigma=sigma)
 
         self._spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
@@ -420,7 +420,7 @@ class MergerDistribution(CosmologicalDistribution):
 
     def __set_r0(self, r0):
         """Sets the 'r0' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=r0, rise=self.rise, decay=self.decay, peak=self.peak
         )
 

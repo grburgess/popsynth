@@ -21,7 +21,7 @@ class SchechterDistribution(LuminosityDistribution):
 
         super(SchechterDistribution, self).__init__(name=name, seed=seed)
 
-        self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
+        self.set_distribution_params(Lmin=Lmin, alpha=alpha)
 
         self._lf_form = r"\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]"
 
@@ -62,7 +62,7 @@ class SchechterDistribution(LuminosityDistribution):
 
     def __set_Lmin(self, Lmin):
         """Sets the 'Lmin' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lmin=Lmin)
+        self.set_distribution_params(alpha=self.alpha, Lmin=Lmin)
 
     def ___set_Lmin(self, Lmin):
         """Indirect setter for 'Lmin' property."""
@@ -80,7 +80,7 @@ class SchechterDistribution(LuminosityDistribution):
 
     def __set_alpha(self, alpha):
         """Sets the 'alpha' property."""
-        self.set_luminosity_function_parameters(alpha=alpha, Lmin=self.Lmin)
+        self.set_distribution_params(alpha=alpha, Lmin=self.Lmin)
 
     def ___set_alpha(self, alpha):
         """Indirect setter for 'alpha' property."""

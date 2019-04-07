@@ -22,7 +22,7 @@ class ConstantSphericalDistribution(SpatialDistribution):
 
         super(ConstantSphericalDistribution, self).__init__(r_max, seed, name)
 
-        self.set_spatial_distribution_params(Lambda=Lambda)
+        self.set_distribution_params(Lambda=Lambda)
 
         self._spatial_form = r"\Lambda"
 
@@ -36,7 +36,7 @@ class ConstantSphericalDistribution(SpatialDistribution):
 
     def __set_Lambda(self, Lambda):
         """Sets the 'Lambda' property."""
-        self.set_spatial_distribution_params(Lambda=Lambda)
+        self.set_distribution_params(Lambda=Lambda)
 
     def ___set_Lambda(self, Lambda):
         """Indirect setter for 'Lambda' property."""
@@ -54,7 +54,7 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
         self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="_cons_sphere"
     ):
 
-        self.set_spatial_distribution_params(Lambda=Lambda, delta=delta)
+        self.set_distribution_params(Lambda=Lambda, delta=delta)
 
         super(ZPowerSphericalDistribution, self).__init__(Lambda, r_max, seed, name)
 
@@ -70,7 +70,7 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
 
     def __set_delta(self, delta):
         """Sets the 'delta' property."""
-        self.set_spatial_distribution_params(delta=delta)
+        self.set_distribution_params(delta=delta)
 
     def ___set_delta(self, delta):
         """Indirect setter for 'delta' property."""

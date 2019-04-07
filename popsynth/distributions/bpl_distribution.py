@@ -34,7 +34,7 @@ class BPLPopulation(LuminosityDistribution):
 
         PopulationSynth.__init__(self, name=name, seed=seed)
 
-        self.set_luminosity_function_parameters(
+        self.set_distribution_params(
             Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax
         )
 
@@ -92,7 +92,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __set_Lmin(self, Lmin):
         """Sets the 'Lmin' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lmin=Lmin)
+        self.set_distribution_params(alpha=self.alpha, Lmin=Lmin)
 
     def ___set_Lmin(self, Lmin):
         """Indirect setter for 'Lmin' property."""
@@ -110,7 +110,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __set_Lmax(self, Lmax):
         """Sets the 'Lmax' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lmax=Lmax)
+        self.set_distribution_params(alpha=self.alpha, Lmax=Lmax)
 
     def ___set_Lmax(self, Lmax):
         """Indirect setter for 'Lmax' property."""
@@ -128,7 +128,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __set_Lbreak(self, Lbreak):
         """Sets the 'Lbreak' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lbreak=Lbreak)
+        self.set_distribution_params(alpha=self.alpha, Lbreak=Lbreak)
 
     def ___set_Lbreak(self, Lbreak):
         """Indirect setter for 'Lbreak' property."""
@@ -146,7 +146,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __set_alpha(self, alpha):
         """Sets the 'alpha' property."""
-        self.set_luminosity_function_parameters(alpha=alpha, Lmin=self.Lmin)
+        self.set_distribution_params(alpha=alpha, Lmin=self.Lmin)
 
     def ___set_alpha(self, alpha):
         """Indirect setter for 'alpha' property."""
@@ -164,7 +164,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __set_beta(self, beta):
         """Sets the 'beta' property."""
-        self.set_luminosity_function_parameters(beta=beta, Lmin=self.Lmin)
+        self.set_distribution_params(beta=beta, Lmin=self.Lmin)
 
     def ___set_beta(self, beta):
         """Indirect setter for 'beta' property."""

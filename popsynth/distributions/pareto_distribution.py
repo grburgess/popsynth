@@ -20,7 +20,7 @@ class ParetoDistribution(LuminosityDistribution):
 
         super(ParetoDistribution, self).__init__(seed, name)
 
-        self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
+        self.set_distribution_params(Lmin=Lmin, alpha=alpha)
 
         self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 
@@ -65,7 +65,7 @@ class ParetoDistribution(LuminosityDistribution):
 
     def __set_Lmin(self, Lmin):
         """Sets the 'Lmin' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lmin=Lmin)
+        self.set_distribution_params(alpha=self.alpha, Lmin=Lmin)
 
     def ___set_Lmin(self, Lmin):
         """Indirect setter for 'Lmin' property."""
@@ -83,7 +83,7 @@ class ParetoDistribution(LuminosityDistribution):
 
     def __set_alpha(self, alpha):
         """Sets the 'alpha' property."""
-        self.set_luminosity_function_parameters(alpha=alpha, Lmin=self.Lmin)
+        self.set_distribution_params(alpha=alpha, Lmin=self.Lmin)
 
     def ___set_alpha(self, alpha):
         """Indirect setter for 'alpha' property."""
