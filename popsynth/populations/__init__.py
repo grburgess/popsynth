@@ -17,9 +17,9 @@ from .schechter_populations import (
 
 from .lognormal_population import (
     Log10NormalSFRPopulation,
-    Log10NormalSFRPopulation,
+    Log10NormalHomogeneousSphericalPopulation,
     Log10NormalZPowerSphericalPopulation,
-    LogNormalSFRPopulation,
+    LogNormalHomogeneousSphericalPopulation,
     LogNormalSFRPopulation,
     LogNormalZPowerSphericalPopulation,
 )
