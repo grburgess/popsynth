@@ -474,7 +474,10 @@ class PopulationSynth(object):
 
         # pbar.update()
         if sum(selection) == n:
-            print("NO HIDDEN OBJECTS")
+            
+    
+            if verbose:
+                print("NO HIDDEN OBJECTS")
 
         if distance_probability is not None:
             # pbar.set_description(desc='Selecting sistances')
@@ -486,9 +489,26 @@ class PopulationSynth(object):
                 distance_probability <= 1.0
             ), "the distance detection must be between 0 and 1"
 
-            with progress_bar(
-                len(distances[selection]), desc="Selecting distances"
-            ) as pbar2:
+            if verbose:
+                with progress_bar(
+                    len(distances[selection]), desc="Selecting distances"
+                ) as pbar2:
+                    for i, d in enumerate(distances[selection]):
+
+                        # see if we detect the distance
+                        if stats.bernoulli.rvs(distance_probability) == 1:
+
+                            known_distances.append(d)
+                            known_distance_idx.append(i)
+
+                        else:
+
+                            unknown_distance_idx.append(i)
+
+                        pbar2.update()
+
+            else:
+
                 for i, d in enumerate(distances[selection]):
 
                     # see if we detect the distance
@@ -501,8 +521,11 @@ class PopulationSynth(object):
 
                         unknown_distance_idx.append(i)
 
-                    pbar2.update()
-            print("Detected %d distances" % len(known_distances))
+                
+                        
+                        
+            if verbose:
+                print("Detected %d distances" % len(known_distances))
 
         else:
 
@@ -514,14 +537,16 @@ class PopulationSynth(object):
         known_distance_idx = np.array(known_distance_idx)
         unknown_distance_idx = np.array(unknown_distance_idx)
 
-        try:
-            print(
-                "Deteced %d objects or to a distance of %.2f"
-                % (sum(selection), max(known_distances))
-            )
+        if verbose:
+            try:
 
-        except:
-            print("No Objects detected")
+                print(
+                    "Deteced %d objects or to a distance of %.2f"
+                    % (sum(selection), max(known_distances))
+                )
+
+            except:
+                print("No Objects detected")
         # return a Population object
 
         return Population(
