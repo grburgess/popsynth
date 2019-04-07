@@ -1,10 +1,10 @@
 import numpy as np
 
-from popsynth.population_synth import PopulationSynth
+from popsynth.population_synth import LuminosityDistribution
 
 
-class ParetoPopulation(PopulationSynth):
-    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name="_pareto"):
+class ParetoPopulation(LuminosityDistribution):
+    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name="pareto"):
         """
         A Pareto luminosity function
 
@@ -18,7 +18,7 @@ class ParetoPopulation(PopulationSynth):
 
         """
 
-        PopulationSynth.__init__(self, r_max, seed, name)
+        super(ParetoPopulation, self).__init__(seed, name)
 
         self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
 
