@@ -250,6 +250,18 @@ class PopulationSynth(object):
 
             self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
 
+    def _prob_det(self, x, boundary, strength):
+        """
+        Soft detection threshold
+
+        :param x: values to test
+        :param boundary: mean value of the boundary
+        :param strength: the strength of the threshold
+        """
+
+        return sf.expit(strength * (x - boundary))
+
+            
     @property
     def name(self):
         return self._name
