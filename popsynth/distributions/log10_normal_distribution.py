@@ -26,7 +26,7 @@ class Log10NormalDistribution(LuminosityDistribution):
 
     def __get_mu(self):
         """Calculates the 'mu' property."""
-        return self._lf_params["mu"]
+        return self._params["mu"]
 
     def ___get_mu(self):
         """Indirect accessor for 'mu' property."""
@@ -44,7 +44,7 @@ class Log10NormalDistribution(LuminosityDistribution):
 
     def __get_tau(self):
         """Calculates the 'tau' property."""
-        return self._lf_params["tau"]
+        return self._params["tau"]
 
     def ___get_tau(self):
         """Indirect accessor for 'tau' property."""

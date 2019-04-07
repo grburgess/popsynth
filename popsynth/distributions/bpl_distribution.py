@@ -84,7 +84,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
-        return self._lf_params["Lmin"]
+        return self._params["Lmin"]
 
     def ___get_Lmin(self):
         """Indirect accessor for 'Lmin' property."""
@@ -102,7 +102,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __get_Lmax(self):
         """Calculates the 'Lmax' property."""
-        return self._lf_params["Lmax"]
+        return self._params["Lmax"]
 
     def ___get_Lmax(self):
         """Indirect accessor for 'Lmax' property."""
@@ -120,7 +120,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __get_Lbreak(self):
         """Calculates the 'Lbreak' property."""
-        return self._lf_params["Lbreak"]
+        return self._params["Lbreak"]
 
     def ___get_Lbreak(self):
         """Indirect accessor for 'Lbreak' property."""
@@ -138,7 +138,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __get_alpha(self):
         """Calculates the 'alpha' property."""
-        return self._lf_params["alpha"]
+        return self._params["alpha"]
 
     def ___get_alpha(self):
         """Indirect accessor for 'alpha' property."""
@@ -156,7 +156,7 @@ class BPLPopulation(LuminosityDistribution):
 
     def __get_beta(self):
         """Calculates the 'beta' property."""
-        return self._lf_params["beta"]
+        return self._params["beta"]
 
     def ___get_beta(self):
         """Indirect accessor for 'beta' property."""

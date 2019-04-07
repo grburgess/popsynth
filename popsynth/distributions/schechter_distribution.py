@@ -54,7 +54,7 @@ class SchechterDistribution(LuminosityDistribution):
 
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
-        return self._lf_params["Lmin"]
+        return self._params["Lmin"]
 
     def ___get_Lmin(self):
         """Indirect accessor for 'Lmin' property."""
@@ -72,7 +72,7 @@ class SchechterDistribution(LuminosityDistribution):
 
     def __get_alpha(self):
         """Calculates the 'alpha' property."""
-        return self._lf_params["alpha"]
+        return self._params["alpha"]
 
     def ___get_alpha(self):
         """Indirect accessor for 'alpha' property."""

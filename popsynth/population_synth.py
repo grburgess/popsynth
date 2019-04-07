@@ -20,7 +20,7 @@ class Distribution(object):
         self._name = name
         self._form = form
         self._params = None
-        
+
     @property
     def name(self):
         return self._name
@@ -28,7 +28,7 @@ class Distribution(object):
     @property
     def form(self):
         return self._form
-    
+
     @property
     def params(self):
         return self._params
@@ -159,10 +159,12 @@ class SpatialDistribution(Distribution):
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, seed, form = None):
+    def __init__(self, name, seed, form=None):
 
         super(LuminosityDistribution, self).__init__(name=name, seed=seed, form=form)
 
+        self._params=None
+        
     @abc.abstractmethod
     def phi(self, L):
 
@@ -208,7 +210,7 @@ class PopulationSynth(object):
     def spatial_distribution(self):
         return self._spatial_distribution
 
-    @propery
+    @property
     def luminosity_distribution(self):
         return self._luminosity_distribution
 
@@ -565,7 +567,7 @@ class PopulationSynth(object):
         out = {"parameter": [], "value": []}
 
         display(Markdown("## Luminosity Function"))
-        for k, v in self._lf_params.items():
+        for k, v in self._luminosity_distribution.params.items():
 
             out["parameter"].append(k)
             out["value"].append(v)
@@ -576,7 +578,7 @@ class PopulationSynth(object):
 
         display(Markdown("## Spatial Function"))
 
-        for k, v in self._spatial_params.items():
+        for k, v in self._spatial_distribution.params.items():
 
             out["parameter"].append(k)
             out["value"].append(v)

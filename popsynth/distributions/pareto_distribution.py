@@ -18,11 +18,12 @@ class ParetoDistribution(LuminosityDistribution):
 
         """
 
-        super(ParetoDistribution, self).__init__(seed, name)
+        lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        super(ParetoDistribution, self).__init__(seed=seed, name=name, form = lf_form)
 
         self.set_distribution_params(Lmin=Lmin, alpha=alpha)
 
-        self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        
 
     def phi(self, L):
         """
@@ -51,13 +52,13 @@ class ParetoDistribution(LuminosityDistribution):
 
         """
 
-        return (np.random.pareto(self._lf_params["alpha"], size) + 1) * self._lf_params[
+        return (np.random.pareto(self._params["alpha"], size) + 1) * self._params[
             "Lmin"
         ]
 
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
-        return self._lf_params["Lmin"]
+        return self._params["Lmin"]
 
     def ___get_Lmin(self):
         """Indirect accessor for 'Lmin' property."""
@@ -75,7 +76,7 @@ class ParetoDistribution(LuminosityDistribution):
 
     def __get_alpha(self):
         """Calculates the 'alpha' property."""
-        return self._lf_params["alpha"]
+        return self._params["alpha"]
 
     def ___get_alpha(self):
         """Indirect accessor for 'alpha' property."""

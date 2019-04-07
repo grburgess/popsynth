@@ -4,9 +4,11 @@ from popsynth.population_synth import SpatialDistribution
 
 
 class SphericalDistribution(SpatialDistribution):
-    def __init__(self, r_max=10, seed=1234, name="_sphere"):
+    def __init__(self, r_max=10, seed=1234, name="sphere", form=None):
 
-        super(SphericalDistribution, self).__init__( r_max, seed, name)
+        super(SphericalDistribution, self).__init__(
+            r_max=r_max, seed=seed, name=name, form=form
+        )
 
     def differential_volume(self, r):
 
@@ -17,18 +19,20 @@ class SphericalDistribution(SpatialDistribution):
         return L / (4.0 * np.pi * (r + 1) * (r + 1))
 
 
-class ConstantSphericalDistribution(SpatialDistribution):
+class ConstantSphericalDistribution(SphericalDistribution):
     def __init__(self, Lambda=1.0, r_max=10.0, seed=1234, name="_cons_sphere"):
 
-        super(ConstantSphericalDistribution, self).__init__(r_max, seed, name)
+        spatial_form = r"\Lambda"
+
+        super(ConstantSphericalDistribution, self).__init__(
+            r_max=r_max, seed=seed, name=name, form=spatial_form
+        )
 
         self.set_distribution_params(Lambda=Lambda)
 
-        self._spatial_form = r"\Lambda"
-
     def __get_Lambda(self):
         """Calculates the 'Lambda' property."""
-        return self._spatial_params["Lambda"]
+        return self._params["Lambda"]
 
     def ___get_Lambda(self):
         """Indirect accessor for 'Lambda' property."""
@@ -46,7 +50,7 @@ class ConstantSphericalDistribution(SpatialDistribution):
 
     def dNdV(self, distance):
 
-        return self._spatial_params["Lambda"]
+        return self._params["Lambda"]
 
 
 class ZPowerSphericalDistribution(ConstantSphericalDistribution):
@@ -56,13 +60,15 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
 
         self.set_distribution_params(Lambda=Lambda, delta=delta)
 
-        super(ZPowerSphericalDistribution, self).__init__(Lambda, r_max, seed, name)
+        spatial_form = r"\Lambda (z+1)^{\delta}"
 
-        self._spatial_form = r"\Lambda (z+1)^{\delta}"
+        super(ZPowerSphericalDistribution, self).__init__(
+            Lambda, r_max, seed, name, form=spatial_form
+        )
 
     def __get_delta(self):
         """Calculates the 'delta' property."""
-        return self._spatial_params["delta"]
+        return self._params["delta"]
 
     def ___get_delta(self):
         """Indirect accessor for 'delta' property."""
@@ -80,6 +86,6 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
 
     def dNdV(self, distance):
 
-        return self._spatial_params["Lambda"] * np.power(
-            distance + 1.0, self._spatial_params["delta"]
+        return self._params["Lambda"] * np.power(
+            distance + 1.0, self._params["delta"]
         )
