@@ -334,8 +334,8 @@ class PopulationSynth(object):
                 "sigma": self._derived_luminosity_sampler.sigma,
                 "selection": self._derived_luminosity_sampler.selection,
             }
-
-            print("Getting luminosity from derived sampler")
+            if verbose:
+                print("Getting luminosity from derived sampler")
             luminosities = self._derived_luminosity_sampler.compute_luminosity()
 
             # collect anything that was sampled here
@@ -428,19 +428,34 @@ class PopulationSynth(object):
         if not hard_cut:
 
             selection = []
-            for p in progress_bar(
-                detection_probability, desc="samping detection probability"
-            ):
+            if verbose:
+                for p in progress_bar(
+                    detection_probability, desc="samping detection probability"
+                ):
 
-                # make a bernoulli draw given the detection probability
-                if stats.bernoulli.rvs(p) == 1:
+                    # make a bernoulli draw given the detection probability
+                    if stats.bernoulli.rvs(p) == 1:
 
-                    selection.append(True)
+                        selection.append(True)
 
-                else:
+                    else:
 
-                    selection.append(False)
+                        selection.append(False)
 
+            else:
+
+                for p in detection_probability:
+                    
+                    # make a bernoulli draw given the detection probability
+                    if stats.bernoulli.rvs(p) == 1:
+
+                        selection.append(True)
+
+                    else:
+
+                        selection.append(False)
+                    
+                        
             selection = np.array(selection)
 
         else:
