@@ -34,115 +34,6 @@ class SpatialDistribution(object):
         raise RuntimeError("Must be implemented in derived class")
         pass
 
-    def draw_distance(self, size, verbose):
-    """
-    Draw the distances from the specified dN/dr model
-    """
-
-    # create a callback for the sampler
-    dNdr = (
-        lambda r: self.dNdV(r)
-        * self.differential_volume(r)
-        / self.time_adjustment(r)
-    )
-
-    # find the maximum point
-    tmp = np.linspace(0, self._r_max, 500)
-    ymax = np.max(dNdr(tmp))
-
-    # rejection sampling the distribution
-    r_out = []
-
-    if verbose:
-        for i in progress_bar(range(size), desc="Drawing distances"):
-            flag = True
-            while flag:
-
-                # get am rvs from 0 to the max of the function
-
-                y = np.random.uniform(low=0, high=ymax)
-
-                # get an rvs from 0 to the maximum distance
-
-                r = np.random.uniform(low=0, high=self._r_max)
-
-                # compare them
-
-                if y < dNdr(r):
-                    r_out.append(r)
-                    flag = False
-    else:
-
-        for i in range(size):
-            flag = True
-            while flag:
-
-                # get am rvs from 0 to the max of the function
-
-                y = np.random.uniform(low=0, high=ymax)
-
-                # get an rvs from 0 to the maximum distance
-
-                r = np.random.uniform(low=0, high=self._r_max)
-
-                # compare them
-
-                if y < dNdr(r):
-                    r_out.append(r)
-                    flag = False
-
-    return np.array(r_out)
-
-
-    
-
-
-class PopulationSynth(object):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, r_max=10, seed=1234, name="no_name"):
-        """FIXME! briefly describe function
-
-        :param r_max: 
-        :param seed: 
-        :param name: 
-        :returns: 
-        :rtype: 
-
-        """
-
-        self._n_model = 500
-        self._seed = int(seed)
-        self._model_spaces = {}
-        self._auxiliary_observations = {}
-        self._name = name
-
-        self._r_max = r_max
-
-        self._has_derived_luminosity = False
-        self._derived_luminosity_sampler = None
-
-    def set_luminosity_function_parameters(self, **lf_params):
-        """
-        Set the luminosity function parameters as keywords
-        """
-
-        try:
-            for k, v in lf_params.items():
-
-                if k in self._lf_params:
-                    self._lf_params[k] = v
-
-                else:
-                    RuntimeWarning(
-                        "%s was not originally in the parameters... ignoring." % k
-                    )
-
-        except:
-
-            # we have not set params before
-
-            self._lf_params = lf_params
 
     def set_spatial_distribution_params(self, **spatial_params):
         """
@@ -165,6 +56,142 @@ class PopulationSynth(object):
             # we have not set these before
 
             self._spatial_params = spatial_params
+
+    
+    def draw_distance(self, size, verbose):
+        """
+        Draw the distances from the specified dN/dr model
+        """
+
+        # create a callback for the sampler
+        dNdr = (
+            lambda r: self.dNdV(r)
+            * self.differential_volume(r)
+            / self.time_adjustment(r)
+        )
+
+        # find the maximum point
+        tmp = np.linspace(0, self._r_max, 500)
+        ymax = np.max(dNdr(tmp))
+
+        # rejection sampling the distribution
+        r_out = []
+
+        if verbose:
+            for i in progress_bar(range(size), desc="Drawing distances"):
+                flag = True
+                while flag:
+
+                    # get am rvs from 0 to the max of the function
+
+                    y = np.random.uniform(low=0, high=ymax)
+
+                    # get an rvs from 0 to the maximum distance
+
+                    r = np.random.uniform(low=0, high=self._r_max)
+
+                    # compare them
+
+                    if y < dNdr(r):
+                        r_out.append(r)
+                        flag = False
+        else:
+
+            for i in range(size):
+                flag = True
+                while flag:
+
+                    # get am rvs from 0 to the max of the function
+
+                    y = np.random.uniform(low=0, high=ymax)
+
+                    # get an rvs from 0 to the maximum distance
+
+                    r = np.random.uniform(low=0, high=self._r_max)
+
+                    # compare them
+
+                    if y < dNdr(r):
+                        r_out.append(r)
+                        flag = False
+
+        return np.array(r_out)
+
+
+
+class LuminosityDistribution(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self):
+
+        pass
+
+
+    @abc.abstractmethod
+    def phi(self, L):
+
+        raise RuntimeError("Must be implemented in derived class")
+
+        pass
+
+    
+    def set_luminosity_function_parameters(self, **lf_params):
+        """
+        Set the luminosity function parameters as keywords
+        """
+
+        try:
+            for k, v in lf_params.items():
+
+                if k in self._lf_params:
+                    self._lf_params[k] = v
+
+                else:
+                    RuntimeWarning(
+                        "%s was not originally in the parameters... ignoring." % k
+                    )
+
+        except:
+
+            # we have not set params before
+
+            self._lf_params = lf_params
+
+    @abc.abstractmethod
+    def draw_luminosity(self, size):
+        pass
+
+    
+class PopulationSynth(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234, name="no_name"):
+        """FIXME! briefly describe function
+
+        :param r_max: 
+        :param seed: 
+        :param name: 
+        :returns: 
+        :rtype: 
+
+        """
+
+        self._n_model = 500
+        self._seed = int(seed)
+        self._model_spaces = {}
+        self._auxiliary_observations = {}
+        self._name = name
+
+        self._r_max = r_max
+
+
+        self._spatial_distribution = spatial_distribution
+        self._luminosity_distribution = luminosity_distribution
+        
+        self._has_derived_luminosity = False
+        self._derived_luminosity_sampler = None
+
+
 
     def add_model_space(self, name, start, stop, log=True):
         """
@@ -208,24 +235,6 @@ class PopulationSynth(object):
 
     # The following methods must be implemented in subclasses
 
-    @abc.abstractmethod
-    def phi(self, L):
-
-        raise RuntimeError("Must be implemented in derived class")
-
-        pass
-
-    @abc.abstractmethod
-    def differential_volume(self, distance):
-
-        raise RuntimeError("Must be implemented in derived class")
-        pass
-
-    @abc.abstractmethod
-    def dNdV(self, distance):
-
-        raise RuntimeError("Must be implemented in derived class")
-        pass
 
     def time_adjustment(self, r):
         """FIXME! briefly describe function
@@ -239,9 +248,6 @@ class PopulationSynth(object):
         return 1.0
 
 
-    @abc.abstractmethod
-    def draw_luminosity(self, size):
-        pass
 
     @abc.abstractmethod
     def transform(self, flux, distance):
@@ -297,8 +303,8 @@ class PopulationSynth(object):
 
         # create a callback of the integrand
         dNdr = (
-            lambda r: self.dNdV(r)
-            * self.differential_volume(r)
+            lambda r: self.spatial_distribution.dNdV(r)
+            * self.spatial_distribution.differential_volume(r)
             / self.time_adjustment(r)
         )
 
@@ -310,7 +316,7 @@ class PopulationSynth(object):
         n = np.random.poisson(N)
         #       pbar.update()
         #       pbar.set_description(desc='Drawing distances')
-        distances = self.draw_distance(size=n, verbose=verbose)
+        distances = self.spatial_distribution.draw_distance(size=n, verbose=verbose)
 
         if verbose:
             print("Expecting %d total objects" % n)
@@ -330,6 +336,10 @@ class PopulationSynth(object):
         # this means the luminosity is not
         # simulated directy
 
+        if self.luminosity_distribution is None:
+
+            assert self._has_derived_luminosity
+        
         if self._has_derived_luminosity:
 
             # pbar.set_description(desc='Getting derived luminosities')
@@ -382,7 +392,7 @@ class PopulationSynth(object):
         else:
             # pbar.update()
             # draw all the values
-            luminosities = self.draw_luminosity(size=n)
+            luminosities = self.luminosity_distribution.draw_luminosity(size=n)
 
         # transform the fluxes
         fluxes = self.transform(luminosities, distances)
