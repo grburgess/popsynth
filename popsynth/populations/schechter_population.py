@@ -1,11 +1,11 @@
 import scipy.special as sf
 import numpy as np
 
-from popsynth.population_synth import PopulationSynth
+from popsynth.population_synth import LuminosityDistribution
 
 
-class SchechterPopulation(PopulationSynth):
-    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name="_shechter"):
+class SchechterPopulation(LuminosityDistribution):
+    def __init__(self, Lmin, alpha, seed=1234, name="shechter"):
         """
         A Schechter luminosity function
 
@@ -19,7 +19,7 @@ class SchechterPopulation(PopulationSynth):
 
         """
 
-        PopulationSynth.__init__(self, r_max, seed, name)
+        super(SchechterPopulation, self).__init__(name=name, seed=seed)
 
         self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
 
