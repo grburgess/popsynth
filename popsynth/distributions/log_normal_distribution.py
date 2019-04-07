@@ -1,14 +1,13 @@
 import numpy as np
 import scipy.stats as stats
 
-
 from popsynth.population_synth import LuminosityDistribution
 
 
-class LogNormalPopulation(LuminosityDistribution):
+class LogNormalDistribution(LuminosityDistribution):
     def __init__(self, mu, tau, seed=1234, name="lognorm"):
 
-        super(LogNormalPopulation, self).__init__(name=name, seed=seed)
+        super(LogNormalDistribution, self).__init__(name=name, seed=seed)
 
         self.set_luminosity_function_parameters(mu=mu, tau=tau)
 
