@@ -4,7 +4,7 @@ from popsynth.population_synth import LuminosityDistribution
 
 
 class Log10NormalDistribution(LuminosityDistribution):
-    def __init__(self, mu, tau, seed=1234, name="_lognorm"):
+    def __init__(self, mu, tau, seed=1234, name="lognorm"):
 
         super(Log10NormalDistribution, self).__init__( name=name, seed=seed)
 
