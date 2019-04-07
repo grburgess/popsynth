@@ -15,10 +15,14 @@ from tqdm.autonotebook import tqdm as progress_bar
 
 
 class Distribution(object):
-    def __init__(self,name, seed):
+    def __init__(self, name, seed):
         self._seed = seed
         self._name = name
-        
+
+
+    @property
+    def name(self):
+        return self._name
 
 class SpatialDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
@@ -41,7 +45,6 @@ class SpatialDistribution(Distribution):
         raise RuntimeError("Must be implemented in derived class")
         pass
 
-
     def time_adjustment(self, r):
         """FIXME! briefly describe function
 
@@ -57,7 +60,6 @@ class SpatialDistribution(Distribution):
     def transform(self, flux, distance):
         pass
 
-    
     def set_spatial_distribution_params(self, **spatial_params):
         """
         Set the spatial parameters as keywords
@@ -139,11 +141,14 @@ class SpatialDistribution(Distribution):
 
         return np.array(r_out)
 
+    @property
+    def r_max(self):
+        return self._r_max
 
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self,name, seed):
+    def __init__(self, name, seed):
 
         super(LuminosityDistribution, self).__init__(name=nname, seed=seed)
 
@@ -184,12 +189,7 @@ class LuminosityDistribution(Distribution):
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(
-        self,
-        spatial_distribution,
-        luminosity_distribution=None,
-        seed=1234,
-    ):
+    def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234):
         """FIXME! briefly describe function
 
         :param r_max: 
@@ -204,8 +204,12 @@ class PopulationSynth(object):
         self._seed = int(seed)
         self._model_spaces = {}
         self._auxiliary_observations = {}
-        self._name = name
 
+
+        self._name = "%s" % spatial_distribution.name 
+        if luminosity_distribution is not None:
+            self._name = "%s_%s" % (self._name, luminosity_distribution.name)
+        
         self._r_max = r_max
 
         self._spatial_distribution = spatial_distribution
@@ -254,19 +258,6 @@ class PopulationSynth(object):
     def name(self):
         return self._name
 
-    # The following methods must be implemented in subclasses
-
-    def time_adjustment(self, r):
-        """FIXME! briefly describe function
-
-        :param r: 
-        :returns: 
-        :rtype: 
-
-        """
-
-        return 1.0
-
 
     def draw_log10_fobs(self, f, f_sigma, size=1):
         """
@@ -309,7 +300,7 @@ class PopulationSynth(object):
         dNdr = (
             lambda r: self.spatial_distribution.dNdV(r)
             * self.spatial_distribution.differential_volume(r)
-            / self.time_adjustment(r)
+            / self.spatial_distribution.time_adjustment(r)
         )
 
         # integrate the population to determine the true number of
