@@ -14,13 +14,19 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from tqdm.autonotebook import tqdm as progress_bar
 
 
-class SpatialDistribution(object):
+class Distribution(object):
+    def __init__(self, seed):
+        self._seed = seed
+
+
+class SpatialDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, r_max):
+    def __init__(self, r_max, seed):
 
-        pass
+        self._r_max = r_max
 
+        super(SpatialDistribution, self).__init__(seed=seed)
 
     @abc.abstractmethod
     def differential_volume(self, distance):
@@ -33,7 +39,6 @@ class SpatialDistribution(object):
 
         raise RuntimeError("Must be implemented in derived class")
         pass
-
 
     def set_spatial_distribution_params(self, **spatial_params):
         """
@@ -57,7 +62,6 @@ class SpatialDistribution(object):
 
             self._spatial_params = spatial_params
 
-    
     def draw_distance(self, size, verbose):
         """
         Draw the distances from the specified dN/dr model
@@ -118,14 +122,12 @@ class SpatialDistribution(object):
         return np.array(r_out)
 
 
-
-class LuminosityDistribution(object):
+class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
+    def __init__(self, seed):
 
-        pass
-
+        super(LuminosityDistribution, self).__init__(seed=seed)
 
     @abc.abstractmethod
     def phi(self, L):
@@ -134,7 +136,6 @@ class LuminosityDistribution(object):
 
         pass
 
-    
     def set_luminosity_function_parameters(self, **lf_params):
         """
         Set the luminosity function parameters as keywords
@@ -161,11 +162,17 @@ class LuminosityDistribution(object):
     def draw_luminosity(self, size):
         pass
 
-    
+
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234, name="no_name"):
+    def __init__(
+        self,
+        spatial_distribution,
+        luminosity_distribution=None,
+        seed=1234,
+        name="no_name",
+    ):
         """FIXME! briefly describe function
 
         :param r_max: 
@@ -184,14 +191,11 @@ class PopulationSynth(object):
 
         self._r_max = r_max
 
-
         self._spatial_distribution = spatial_distribution
         self._luminosity_distribution = luminosity_distribution
-        
+
         self._has_derived_luminosity = False
         self._derived_luminosity_sampler = None
-
-
 
     def add_model_space(self, name, start, stop, log=True):
         """
@@ -235,7 +239,6 @@ class PopulationSynth(object):
 
     # The following methods must be implemented in subclasses
 
-
     def time_adjustment(self, r):
         """FIXME! briefly describe function
 
@@ -246,8 +249,6 @@ class PopulationSynth(object):
         """
 
         return 1.0
-
-
 
     @abc.abstractmethod
     def transform(self, flux, distance):
@@ -339,7 +340,7 @@ class PopulationSynth(object):
         if self.luminosity_distribution is None:
 
             assert self._has_derived_luminosity
-        
+
         if self._has_derived_luminosity:
 
             # pbar.set_description(desc='Getting derived luminosities')
