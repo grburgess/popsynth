@@ -15,27 +15,35 @@ from tqdm.autonotebook import tqdm as progress_bar
 
 
 class Distribution(object):
-    def __init__(self, name, seed):
+    def __init__(self, name, seed, form):
         self._seed = seed
         self._name = name
-
-        self._params = {}
-
+        self._form = form
+        self._params = None
+        
     @property
     def name(self):
         return self._name
 
-    def set_distribution_params(self, **spatial_params):
+    @property
+    def form(self):
+        return self._form
+    
+    @property
+    def params(self):
+        return self._params
+
+    def set_distribution_params(self, **params):
         """
         Set the spatial parameters as keywords
         """
 
         try:
 
-            for k, v in spatial_params.items():
+            for k, v in params.items():
 
-                if k in self._spatial_params:
-                    self._spatial_params[k] = v
+                if k in self._params:
+                    self._params[k] = v
                 else:
                     RuntimeWarning(
                         "%s was not originally in the parameters... ignoring." % k
@@ -45,18 +53,17 @@ class Distribution(object):
 
             # we have not set these before
 
-            self._spatial_params = spatial_params
+            self._params = params
 
 
-    
 class SpatialDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, r_max, seed):
+    def __init__(self, name, r_max, seed, form=None):
 
         self._r_max = r_max
 
-        super(SpatialDistribution, self).__init__(name=name, seed=seed)
+        super(SpatialDistribution, self).__init__(name=name, seed=seed, form=form)
 
     @abc.abstractmethod
     def differential_volume(self, distance):
@@ -84,28 +91,6 @@ class SpatialDistribution(Distribution):
     @abc.abstractmethod
     def transform(self, flux, distance):
         pass
-
-    def set_distribution_params(self, **spatial_params):
-        """
-        Set the spatial parameters as keywords
-        """
-
-        try:
-
-            for k, v in spatial_params.items():
-
-                if k in self._spatial_params:
-                    self._spatial_params[k] = v
-                else:
-                    RuntimeWarning(
-                        "%s was not originally in the parameters... ignoring." % k
-                    )
-
-        except:
-
-            # we have not set these before
-
-            self._spatial_params = spatial_params
 
     def draw_distance(self, size, verbose):
         """
@@ -170,12 +155,13 @@ class SpatialDistribution(Distribution):
     def r_max(self):
         return self._r_max
 
+
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, seed):
+    def __init__(self, name, seed, form = None):
 
-        super(LuminosityDistribution, self).__init__(name=name, seed=seed)
+        super(LuminosityDistribution, self).__init__(name=name, seed=seed, form=form)
 
     @abc.abstractmethod
     def phi(self, L):
@@ -183,28 +169,6 @@ class LuminosityDistribution(Distribution):
         raise RuntimeError("Must be implemented in derived class")
 
         pass
-
-    def set_distribution_params(self, **lf_params):
-        """
-        Set the luminosity function parameters as keywords
-        """
-
-        try:
-            for k, v in lf_params.items():
-
-                if k in self._lf_params:
-                    self._lf_params[k] = v
-
-                else:
-                    RuntimeWarning(
-                        "%s was not originally in the parameters... ignoring." % k
-                    )
-
-        except:
-
-            # we have not set params before
-
-            self._lf_params = lf_params
 
     @abc.abstractmethod
     def draw_luminosity(self, size):
@@ -230,12 +194,9 @@ class PopulationSynth(object):
         self._model_spaces = {}
         self._auxiliary_observations = {}
 
-
-        self._name = "%s" % spatial_distribution.name 
+        self._name = "%s" % spatial_distribution.name
         if luminosity_distribution is not None:
             self._name = "%s_%s" % (self._name, luminosity_distribution.name)
-        
-
 
         self._spatial_distribution = spatial_distribution
         self._luminosity_distribution = luminosity_distribution
@@ -251,7 +212,6 @@ class PopulationSynth(object):
     def luminosity_distribution(self):
         return self._luminosity_distribution
 
-        
     def add_model_space(self, name, start, stop, log=True):
         """
         Add a model space for stan generated quantities
@@ -291,7 +251,6 @@ class PopulationSynth(object):
     @property
     def name(self):
         return self._name
-
 
     def draw_log10_fobs(self, f, f_sigma, size=1):
         """
@@ -585,15 +544,15 @@ class PopulationSynth(object):
             flux_sigma=flux_sigma,
             r_max=self._spatial_distribution.r_max,
             n_model=self._n_model,
-            lf_params=self._luminosity_distribution._lf_params,
-            spatial_params=self._spatial_distribution.spatial_params,
+            lf_params=self._luminosity_distribution.params,
+            spatial_params=self._spatial_distribution.params,
             model_spaces=self._model_spaces,
             boundary=boundary,
             strength=strength,
             seed=self._seed,
             name=self._name,
-            spatial_form=self._spatial_distribution.spatial_form,
-            lf_form=self._luminosity_distribution.lf_form,
+            spatial_form=self._spatial_distribution.form,
+            lf_form=self._luminosity_distribution.form,
             auxiliary_quantities=auxiliary_quantities,
         )
 
@@ -611,7 +570,7 @@ class PopulationSynth(object):
             out["parameter"].append(k)
             out["value"].append(v)
 
-        display(Math(self._lf_form))
+        display(Math(self._luminosity_distribution.form))
         display(pd.DataFrame(out))
         out = {"parameter": [], "value": []}
 
@@ -622,7 +581,7 @@ class PopulationSynth(object):
             out["parameter"].append(k)
             out["value"].append(v)
 
-        display(Math(self._spatial_form))
+        display(Math(self._spatial_distribution.form))
         display(pd.DataFrame(out))
 
     def generate_stan_code(self, stan_gen, **kwargs):
