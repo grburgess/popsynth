@@ -268,7 +268,7 @@ class CosmologicalDistribution(SpatialDistribution):
 
 
 class SFRDistribtution(CosmologicalDistribution):
-    def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name="_sfrcosmo"):
+    def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name="sfr"):
 
         CosmologicalDistribution.__init__(self, r_max, seed, name)
 
@@ -371,7 +371,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
 
 class MergerDistribution(CosmologicalDistribution):
-    def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="_merger"):
+    def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 
         CosmologicalDistribution.__init__(self, r_max, seed, name)
 
