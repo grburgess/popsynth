@@ -1,53 +1,24 @@
 import numpy as np
 import pandas as pd
-from popsynth.populations.spherical_population import (
-    ConstantSphericalPopulation,
-    ZPowerSphericalPopulation,
-)
-from popsynth.populations.cosmological_population import SFRPopulation, MergerPopulation
 
-from popsynth.populations.pareto_population import ParetoPopulation
-from popsynth.populations.schechter_population import SchechterPopulation
-from popsynth.populations.log10_normal_population import Log10NormalPopulation
-from popsynth.populations.log_normal_population import LogNormalPopulation
-from popsynth.populations.bpl_population import BPLPopulation
+from popsynth.populations.spatial_populations import SphericalPopulation, ZPowerSphericalPopulation, SFRPopulation
+
+from popsynth.distributions.log10_normal_distribution import Log10NormalDistribution
+from popsynth.distributions.log_normal_distribution import LogNormalDistribution
+from popsynth.distributions.bpl_distribution import BPLPopulation
+
+from popsynth.population_synth import PopulationSynth
 
 
-class ParetoHomogeneousSphericalPopulation(
-    ParetoPopulation, ConstantSphericalPopulation
-):
-    def __init__(self, Lambda, Lmin, alpha, r_max=10, seed=1234):
-        """FIXME! briefly describe function
-
-        :param Lambda: 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
-
-        """
-
-        ParetoPopulation.__init__(
-            self,
-            Lmin=Lmin,
-            alpha=alpha,
-            r_max=r_max,
-            seed=seed,
-            name="ParetoHomogeneousSphericalPopulation",
-        )
-        ConstantSphericalPopulation.__init__(
-            self,
-            Lambda=Lambda,
-            r_max=r_max,
-            seed=seed,
-            name="ParetoHomogeneousSphericalPopulation",
-        )
 
 
+        
+
+####
+
+        
 class Log10NormalHomogeneousSphericalPopulation(
-    Log10NormalPopulation, ConstantSphericalPopulation
+    Log10NormalDistribution, ConstantSphericalDistribution
 ):
     def __init__(self, Lambda, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
@@ -62,7 +33,7 @@ class Log10NormalHomogeneousSphericalPopulation(
 
         """
 
-        Log10NormalPopulation.__init__(
+        Log10NormalDistribution.__init__(
             self,
             mu=mu,
             tau=tau,
@@ -70,7 +41,7 @@ class Log10NormalHomogeneousSphericalPopulation(
             seed=seed,
             name="Log10NormalHomogeneousSphericalPopulation",
         )
-        ConstantSphericalPopulation.__init__(
+        ConstantSphericalDistribution.__init__(
             self,
             Lambda=Lambda,
             r_max=r_max,
@@ -80,7 +51,7 @@ class Log10NormalHomogeneousSphericalPopulation(
 
 
 class Log10NormalZPowerSphericalPopulation(
-    Log10NormalPopulation, ZPowerSphericalPopulation
+    Log10NormalDistribution, ZPowerSphericalDistribution
 ):
     def __init__(self, Lambda, delta, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
@@ -96,7 +67,7 @@ class Log10NormalZPowerSphericalPopulation(
 
         """
 
-        Log10NormalPopulation.__init__(
+        Log10NormalDistribution.__init__(
             self,
             mu=mu,
             tau=tau,
@@ -104,7 +75,7 @@ class Log10NormalZPowerSphericalPopulation(
             seed=seed,
             name="Log10NormalZPowerSphericalPopulation",
         )
-        ZPowerSphericalPopulation.__init__(
+        ZPowerSphericalDistribution.__init__(
             self,
             Lambda=Lambda,
             delta=delta,
@@ -114,81 +85,51 @@ class Log10NormalZPowerSphericalPopulation(
         )
 
 
-class SchechterHomogeneousSphericalPopulation(
-    SchechterPopulation, ConstantSphericalPopulation
-):
-    def __init__(self, Lambda, Lmin, alpha, r_max=10, seed=1234):
-        """FIXME! briefly describe function
-
-        :param Lambda: 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
-
-        """
-        SchechterPopulation.__init__(
-            self,
-            Lmin=Lmin,
-            alpha=alpha,
-            r_max=r_max,
-            seed=seed,
-            name="SchechterHomogeneousSphericalPopulation",
-        )
-        ConstantSphericalPopulation.__init__(
-            self,
-            Lambda=Lambda,
-            r_max=r_max,
-            seed=seed,
-            name="SchechterHomogeneousSphericalPopulation",
-        )
 
 
-class ParetoSFRPopulation(ParetoPopulation, SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
-        """FIXME! briefly describe function
+# class ParetoSFRPopulation(ParetoDistribution, SFRDistribtution):
+#     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
+#         """FIXME! briefly describe function
 
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+#         :param r0: 
+#         :param rise: 
+#         :param decay: 
+#         :param peak: 
+#         :param Lmin: 
+#         :param alpha: 
+#         :param r_max: 
+#         :param seed: 
+#         :returns: 
+#         :rtype: 
 
-        """
+#         """
 
-        ParetoPopulation.__init__(
-            self,
-            Lmin=Lmin,
-            alpha=alpha,
-            r_max=r_max,
-            seed=seed,
-            name="ParetoSFRPopulation",
-        )
-        SFRPopulation.__init__(
-            self,
-            r0=r0,
-            rise=rise,
-            decay=decay,
-            peak=peak,
-            r_max=r_max,
-            seed=seed,
-            name="ParetoSFRPopulation",
-        )
+#         ParetoDistribution.__init__(
+#             self,
+#             Lmin=Lmin,
+#             alpha=alpha,
+#             r_max=r_max,
+#             seed=seed,
+#             name="ParetoSFRPopulation",
+#         )
+#         SFRDistribtution.__init__(
+#             self,
+#             r0=r0,
+#             rise=rise,
+#             decay=decay,
+#             peak=peak,
+#             r_max=r_max,
+#             seed=seed,
+#             name="ParetoSFRPopulation",
+#         )
 
-    def generate_stan_code(self, stan_gen, **kwargs):
+#     def generate_stan_code(self, stan_gen, **kwargs):
 
-        ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
-        SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
+#         ParetoDistribution.generate_stan_code(self, stan_gen, **kwargs)
+#         SFRDistribtution.generate_stan_code(self, stan_gen, **kwargs)
 
 
-class BPLSFRPopulation(BPLPopulation, SFRPopulation):
+class BPLSFRPopulation(BPLPopulation, SFRDistribtution):
     def __init__(
         self,
         r0,
@@ -232,7 +173,7 @@ class BPLSFRPopulation(BPLPopulation, SFRPopulation):
             seed=seed,
             name="BPLSFRPopulation",
         )
-        SFRPopulation.__init__(
+        SFRDistribtution.__init__(
             self,
             r0=r0,
             rise=rise,
@@ -247,48 +188,13 @@ class BPLSFRPopulation(BPLPopulation, SFRPopulation):
         pass
 
 
-#        ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
-#       SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
+#        ParetoDistribution.generate_stan_code(self, stan_gen, **kwargs)
+#       SFRDistribtution.generate_stan_code(self, stan_gen, **kwargs)
 
 
-class SchechterSFRPopulation(SchechterPopulation, SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
-        """FIXME! briefly describe function
-
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
-
-        """
-
-        SchechterPopulation.__init__(
-            self,
-            Lmin=Lmin,
-            alpha=alpha,
-            r_max=r_max,
-            seed=seed,
-            name="SchechterSFRPopulation",
-        )
-        SFRPopulation.__init__(
-            self,
-            r0=r0,
-            rise=rise,
-            decay=decay,
-            peak=peak,
-            r_max=r_max,
-            seed=seed,
-            name="SchechterSFRPopulation",
-        )
 
 
-class LogNormalSFRPopulation(LogNormalPopulation, SFRPopulation):
+class LogNormalSFRPopulation(LogNormalDistribution, SFRDistribtution):
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
@@ -305,10 +211,10 @@ class LogNormalSFRPopulation(LogNormalPopulation, SFRPopulation):
 
         """
 
-        LogNormalPopulation.__init__(
+        LogNormalDistribution.__init__(
             self, mu=mu, tau=tau, r_max=r_max, seed=seed, name="LogNormalSFRPopulation"
         )
-        SFRPopulation.__init__(
+        SFRDistribtution.__init__(
             self,
             r0=r0,
             rise=rise,
@@ -320,7 +226,7 @@ class LogNormalSFRPopulation(LogNormalPopulation, SFRPopulation):
         )
 
 
-class ParetoMergerPopulation(ParetoPopulation, MergerPopulation):
+class ParetoMergerPopulation(ParetoDistribution, MergerDistribution):
     def __init__(self, r0, td, sigma, Lmin, alpha, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
@@ -337,7 +243,7 @@ class ParetoMergerPopulation(ParetoPopulation, MergerPopulation):
 
         """
 
-        ParetoPopulation.__init__(
+        ParetoDistribution.__init__(
             self,
             Lmin=Lmin,
             alpha=alpha,
@@ -345,7 +251,7 @@ class ParetoMergerPopulation(ParetoPopulation, MergerPopulation):
             seed=seed,
             name="ParetoMergerPopulation",
         )
-        MergerPopulation.__init__(
+        MergerDistribution.__init__(
             self,
             r0=r0,
             td=td,
@@ -358,5 +264,5 @@ class ParetoMergerPopulation(ParetoPopulation, MergerPopulation):
     def generate_stan_code(self, stan_gen, **kwargs):
 
         pass
-        # ParetoPopulation.generate_stan_code(self, stan_gen, **kwargs)
-        # SFRPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        # ParetoDistribution.generate_stan_code(self, stan_gen, **kwargs)
+        # SFRDistribtution.generate_stan_code(self, stan_gen, **kwargs)
