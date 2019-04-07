@@ -1,5 +1,5 @@
 from popsynth.population_synth import PopulationSynth
-from popsynth.populations import *
+from popsynth.distributions import *
 from popsynth.aux_samplers import *
 
 from popsynth.population import Population

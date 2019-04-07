@@ -3,10 +3,10 @@ import numpy as np
 from popsynth.population_synth import SpatialDistribution
 
 
-class SphericalPopulation(SpatialDistribution):
+class SphericalDistribution(SpatialDistribution):
     def __init__(self, r_max=10, seed=1234, name="_sphere"):
 
-        super(SphericalPopulation, self).__init__( r_max, seed, name)
+        super(SphericalDistribution, self).__init__( r_max, seed, name)
 
     def differential_volume(self, r):
 
@@ -17,10 +17,10 @@ class SphericalPopulation(SpatialDistribution):
         return L / (4.0 * np.pi * (r + 1) * (r + 1))
 
 
-class ConstantSphericalPopulation(SpatialDistribution):
+class ConstantSphericalDistribution(SpatialDistribution):
     def __init__(self, Lambda=1.0, r_max=10.0, seed=1234, name="_cons_sphere"):
 
-        super(ConstantSphericalPopulation, self).__init__(r_max, seed, name)
+        super(ConstantSphericalDistribution, self).__init__(r_max, seed, name)
 
         self.set_spatial_distribution_params(Lambda=Lambda)
 
@@ -49,14 +49,14 @@ class ConstantSphericalPopulation(SpatialDistribution):
         return self._spatial_params["Lambda"]
 
 
-class ZPowerSphericalPopulation(ConstantSphericalPopulation):
+class ZPowerSphericalDistribution(ConstantSphericalDistribution):
     def __init__(
         self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="_cons_sphere"
     ):
 
         self.set_spatial_distribution_params(Lambda=Lambda, delta=delta)
 
-        super(ZPowerSphericalPopulation, self).__init__(Lambda, r_max, seed, name)
+        super(ZPowerSphericalDistribution, self).__init__(Lambda, r_max, seed, name)
 
         self._spatial_form = r"\Lambda (z+1)^{\delta}"
 

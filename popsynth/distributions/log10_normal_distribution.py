@@ -3,10 +3,10 @@ import numpy as np
 from popsynth.population_synth import LuminosityDistribution
 
 
-class Log10NormalPopulation(LuminosityDistribution):
+class Log10NormalDistribution(LuminosityDistribution):
     def __init__(self, mu, tau, seed=1234, name="_lognorm"):
 
-        super(Log10NormalPopulation, self).__init__( name=name, seed=seed)
+        super(Log10NormalDistribution, self).__init__( name=name, seed=seed)
 
         self.set_luminosity_function_parameters(mu=mu, tau=tau)
 

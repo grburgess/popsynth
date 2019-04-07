@@ -1,32 +1,32 @@
+import scipy.special as sf
 import numpy as np
 
 from popsynth.population_synth import LuminosityDistribution
 
 
-class ParetoPopulation(LuminosityDistribution):
-    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name="pareto"):
+class SchechterDistribution(LuminosityDistribution):
+    def __init__(self, Lmin, alpha, seed=1234, name="shechter"):
         """
-        A Pareto luminosity function
+        A Schechter luminosity function
 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :param name: 
-        :returns: 
+        :param Lmin: the minimum luminosity
+        :param alpha: the power law index
+        :param r_max: the maximum distance to integrate 
+        :param seed: the random number seed
+        :param name: the name 
+        :returns: None
         :rtype: 
 
         """
 
-        super(ParetoPopulation, self).__init__(seed, name)
+        super(SchechterDistribution, self).__init__(name=name, seed=seed)
 
         self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha)
 
-        self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        self._lf_form = r"\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]"
 
     def phi(self, L):
-        """
-        The luminosity function
+        """FIXME! briefly describe function
 
         :param L: 
         :returns: 
@@ -34,13 +34,11 @@ class ParetoPopulation(LuminosityDistribution):
 
         """
 
-        out = np.zeros_like(L)
-
-        idx = L >= self.Lmin
-
-        out[idx] = self.alpha * self.Lmin ** self.alpha / L[idx] ** (self.alpha + 1)
-
-        return out
+        return (
+            L ** self.alpha
+            * np.exp(-L / self.Lmin)
+            / (self.Lmin ** (1 + self.alpha) * sf.gamma(1 + self.alpha))
+        )
 
     def draw_luminosity(self, size=1):
         """FIXME! briefly describe function
@@ -51,9 +49,8 @@ class ParetoPopulation(LuminosityDistribution):
 
         """
 
-        return (np.random.pareto(self._lf_params["alpha"], size) + 1) * self._lf_params[
-            "Lmin"
-        ]
+        xs = 1 - np.random.uniform(size=size)
+        return self.Lmin * sf.gammaincinv(1 + self.alpha, xs)
 
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
@@ -90,7 +87,3 @@ class ParetoPopulation(LuminosityDistribution):
         self.__set_alpha(alpha)
 
     alpha = property(___get_alpha, ___set_alpha, doc="""Gets or sets the alpha.""")
-
-    def generate_stan_code(self, stan_gen, **kwargs):
-
-        pass

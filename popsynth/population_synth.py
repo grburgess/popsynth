@@ -41,6 +41,23 @@ class SpatialDistribution(Distribution):
         raise RuntimeError("Must be implemented in derived class")
         pass
 
+
+    def time_adjustment(self, r):
+        """FIXME! briefly describe function
+
+        :param r: 
+        :returns: 
+        :rtype: 
+
+        """
+
+        return 1.0
+
+    @abc.abstractmethod
+    def transform(self, flux, distance):
+        pass
+
+    
     def set_spatial_distribution_params(self, **spatial_params):
         """
         Set the spatial parameters as keywords
@@ -172,7 +189,6 @@ class PopulationSynth(object):
         spatial_distribution,
         luminosity_distribution=None,
         seed=1234,
-        name="no_name",
     ):
         """FIXME! briefly describe function
 
@@ -251,20 +267,6 @@ class PopulationSynth(object):
 
         return 1.0
 
-    @abc.abstractmethod
-    def transform(self, flux, distance):
-        pass
-
-    def _prob_det(self, x, boundary, strength):
-        """
-        Soft detection threshold
-
-        :param x: values to test
-        :param boundary: mean value of the boundary
-        :param strength: the strength of the threshold
-        """
-
-        return sf.expit(strength * (x - boundary))
 
     def draw_log10_fobs(self, f, f_sigma, size=1):
         """

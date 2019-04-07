@@ -54,7 +54,7 @@ def differential_comoving_volume(z):
     return (dh * td * td / a(z)) * 1e-9  # Gpc^3
 
 
-class CosmologicalPopulation(SpatialDistribution):
+class CosmologicalDistribution(SpatialDistribution):
     def __init__(self, r_max=10, seed=1234, name="cosmo"):
 
         PopulationSynth.__init__(self, r_max, seed, name)
@@ -267,10 +267,10 @@ class CosmologicalPopulation(SpatialDistribution):
         stan_gen.blocks["model"].insert_code(code)
 
 
-class SFRPopulation(CosmologicalPopulation):
+class SFRDistribtution(CosmologicalDistribution):
     def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name="_sfrcosmo"):
 
-        CosmologicalPopulation.__init__(self, r_max, seed, name)
+        CosmologicalDistribution.__init__(self, r_max, seed, name)
 
         self.set_spatial_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
@@ -364,16 +364,16 @@ class SFRPopulation(CosmologicalPopulation):
 
     def generate_stan_code(self, stan_gen, **kwargs):
 
-        CosmologicalPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        CosmologicalDistribution.generate_stan_code(self, stan_gen, **kwargs)
 
         copy_package_data("sfr_functions.stan")
         stan_gen.blocks["functions"].add_include("sfr_functions.stan")
 
 
-class MergerPopulation(CosmologicalPopulation):
+class MergerDistribution(CosmologicalDistribution):
     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="_merger"):
 
-        CosmologicalPopulation.__init__(self, r_max, seed, name)
+        CosmologicalDistribution.__init__(self, r_max, seed, name)
 
         self.set_spatial_distribution_params(r0=r0, td=td, sigma=sigma)
 
@@ -489,7 +489,7 @@ class MergerPopulation(CosmologicalPopulation):
 
     def generate_stan_code(self, stan_gen, **kwargs):
 
-        CosmologicalPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        CosmologicalDistribution.generate_stan_code(self, stan_gen, **kwargs)
 
         copy_package_data("sfr_functions.stan")
         stan_gen.blocks["functions"].add_include("sfr_functions.stan")
