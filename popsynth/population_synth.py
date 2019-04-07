@@ -19,11 +19,15 @@ class Distribution(object):
         self._seed = seed
         self._name = name
 
+        self._params = {}
 
     @property
     def name(self):
         return self._name
 
+    
+
+    
 class SpatialDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
@@ -210,7 +214,7 @@ class PopulationSynth(object):
         if luminosity_distribution is not None:
             self._name = "%s_%s" % (self._name, luminosity_distribution.name)
         
-        self._r_max = r_max
+
 
         self._spatial_distribution = spatial_distribution
         self._luminosity_distribution = luminosity_distribution
@@ -218,6 +222,15 @@ class PopulationSynth(object):
         self._has_derived_luminosity = False
         self._derived_luminosity_sampler = None
 
+    @property
+    def spatial_distribution(self):
+        return self._spatial_distribution
+
+    @propery
+    def luminosity_distribution(self):
+        return self._luminosity_distribution
+
+        
     def add_model_space(self, name, start, stop, log=True):
         """
         Add a model space for stan generated quantities
@@ -298,20 +311,20 @@ class PopulationSynth(object):
 
         # create a callback of the integrand
         dNdr = (
-            lambda r: self.spatial_distribution.dNdV(r)
-            * self.spatial_distribution.differential_volume(r)
-            / self.spatial_distribution.time_adjustment(r)
+            lambda r: self._spatial_distribution.dNdV(r)
+            * self._spatial_distribution.differential_volume(r)
+            / self._spatial_distribution.time_adjustment(r)
         )
 
         # integrate the population to determine the true number of
         # objects
-        N = integrate.quad(dNdr, 0.0, self._r_max)[0]
+        N = integrate.quad(dNdr, 0.0, self._spatial_distribution._r_max)[0]
 
         # this should be poisson distributed
         n = np.random.poisson(N)
         #       pbar.update()
         #       pbar.set_description(desc='Drawing distances')
-        distances = self.spatial_distribution.draw_distance(size=n, verbose=verbose)
+        distances = self._spatial_distribution.draw_distance(size=n, verbose=verbose)
 
         if verbose:
             print("Expecting %d total objects" % n)
@@ -549,17 +562,17 @@ class PopulationSynth(object):
             flux_obs=np.power(10, log10_fluxes_obs),
             selection=selection,
             flux_sigma=flux_sigma,
-            r_max=self._r_max,
+            r_max=self._spatial_distribution.r_max,
             n_model=self._n_model,
-            lf_params=self._lf_params,
-            spatial_params=self._spatial_params,
+            lf_params=self._luminosity_distribution._lf_params,
+            spatial_params=self._spatial_distribution.spatial_params,
             model_spaces=self._model_spaces,
             boundary=boundary,
             strength=strength,
             seed=self._seed,
             name=self._name,
-            spatial_form=self._spatial_form,
-            lf_form=self._lf_form,
+            spatial_form=self._spatial_distribution.spatial_form,
+            lf_form=self._luminosity_distribution.lf_form,
             auxiliary_quantities=auxiliary_quantities,
         )
 

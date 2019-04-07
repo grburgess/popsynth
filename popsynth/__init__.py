@@ -6,7 +6,7 @@ from popsynth.population import Population
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 
 
-
+import popsynth.populations
 
 import numpy as np
 

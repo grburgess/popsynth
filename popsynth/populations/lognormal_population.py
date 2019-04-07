@@ -1,4 +1,4 @@
-from popsynth.populations.spatial_populations import SphericalPopulation, ZPowerSphericalPopulation, S
+from popsynth.populations.spatial_populations import SphericalPopulation, ZPowerSphericalPopulation, SFRPopulation
 
 from popsynth.distributions.log10_normal_distribution import Log10NormalDistribution
 from popsynth.distributions.log_normal_distribution import LogNormalDistribution
