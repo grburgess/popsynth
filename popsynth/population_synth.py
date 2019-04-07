@@ -15,18 +15,19 @@ from tqdm.autonotebook import tqdm as progress_bar
 
 
 class Distribution(object):
-    def __init__(self, seed):
+    def __init__(self,name, seed):
         self._seed = seed
-
+        self._name = name
+        
 
 class SpatialDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, r_max, seed):
+    def __init__(self, name, r_max, seed):
 
         self._r_max = r_max
 
-        super(SpatialDistribution, self).__init__(seed=seed)
+        super(SpatialDistribution, self).__init__(name=name, seed=seed)
 
     @abc.abstractmethod
     def differential_volume(self, distance):
@@ -125,9 +126,9 @@ class SpatialDistribution(Distribution):
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, seed):
+    def __init__(self,name, seed):
 
-        super(LuminosityDistribution, self).__init__(seed=seed)
+        super(LuminosityDistribution, self).__init__(name=nname, seed=seed)
 
     @abc.abstractmethod
     def phi(self, L):
