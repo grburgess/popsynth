@@ -24,15 +24,15 @@ def bpl(x, idx1, xbreak, idx2):
         return pow(x / xbreak, -idx2)
 
 
-from popsynth.population_synth import PopulationSynth
+from popsynth.population_synth import LuminosityDistribution
 
 
-class BPLPopulation(PopulationSynth):
+class BPLPopulation(LuminosityDistribution):
     def __init__(
-        self, Lmin, alpha, Lbreak, beta, Lmax, r_max=10, seed=1234, name="_pareto"
+        self, Lmin, alpha, Lbreak, beta, Lmax,  seed=1234, name="bpl"
     ):
 
-        PopulationSynth.__init__(self, r_max, seed, name)
+        PopulationSynth.__init__(self, name=name, seed=seed)
 
         self.set_luminosity_function_parameters(
             Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax

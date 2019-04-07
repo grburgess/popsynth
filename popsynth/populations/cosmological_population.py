@@ -3,7 +3,7 @@ import numpy as np
 
 from astropy.cosmology import WMAP9 as cosmo
 
-from popsynth.population_synth import PopulationSynth
+from popsynth.population_synth import SpatialDistribution
 from popsynth.utils.package_data import copy_package_data
 
 import scipy.integrate as integrate
@@ -54,7 +54,7 @@ def differential_comoving_volume(z):
     return (dh * td * td / a(z)) * 1e-9  # Gpc^3
 
 
-class CosmologicalPopulation(PopulationSynth):
+class CosmologicalPopulation(SpatialDistribution):
     def __init__(self, r_max=10, seed=1234, name="cosmo"):
 
         PopulationSynth.__init__(self, r_max, seed, name)

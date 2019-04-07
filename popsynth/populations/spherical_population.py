@@ -1,12 +1,12 @@
 import numpy as np
 
-from popsynth.population_synth import PopulationSynth
+from popsynth.population_synth import SpatialDistribution
 
 
-class SphericalPopulation(PopulationSynth):
+class SphericalPopulation(SpatialDistribution):
     def __init__(self, r_max=10, seed=1234, name="_sphere"):
 
-        PopulationSynth.__init__(self, r_max, seed, name)
+        super(SphericalPopulation, self).__init__( r_max, seed, name)
 
     def differential_volume(self, r):
 
@@ -17,7 +17,7 @@ class SphericalPopulation(PopulationSynth):
         return L / (4.0 * np.pi * (r + 1) * (r + 1))
 
 
-class ConstantSphericalPopulation(SphericalPopulation):
+class ConstantSphericalPopulation(SpatialDistribution):
     def __init__(self, Lambda=1.0, r_max=10.0, seed=1234, name="_cons_sphere"):
 
         super(ConstantSphericalPopulation, self).__init__(r_max, seed, name)
