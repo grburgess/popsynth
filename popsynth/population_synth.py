@@ -150,7 +150,7 @@ class LuminosityDistribution(Distribution):
 
     def __init__(self, name, seed):
 
-        super(LuminosityDistribution, self).__init__(name=nname, seed=seed)
+        super(LuminosityDistribution, self).__init__(name=name, seed=seed)
 
     @abc.abstractmethod
     def phi(self, L):
