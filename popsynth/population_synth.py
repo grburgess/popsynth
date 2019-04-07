@@ -14,6 +14,89 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from tqdm.autonotebook import tqdm as progress_bar
 
 
+class SpatialDistribution(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, r_max):
+
+        pass
+
+
+    @abc.abstractmethod
+    def differential_volume(self, distance):
+
+        raise RuntimeError("Must be implemented in derived class")
+        pass
+
+    @abc.abstractmethod
+    def dNdV(self, distance):
+
+        raise RuntimeError("Must be implemented in derived class")
+        pass
+
+    def draw_distance(self, size, verbose):
+    """
+    Draw the distances from the specified dN/dr model
+    """
+
+    # create a callback for the sampler
+    dNdr = (
+        lambda r: self.dNdV(r)
+        * self.differential_volume(r)
+        / self.time_adjustment(r)
+    )
+
+    # find the maximum point
+    tmp = np.linspace(0, self._r_max, 500)
+    ymax = np.max(dNdr(tmp))
+
+    # rejection sampling the distribution
+    r_out = []
+
+    if verbose:
+        for i in progress_bar(range(size), desc="Drawing distances"):
+            flag = True
+            while flag:
+
+                # get am rvs from 0 to the max of the function
+
+                y = np.random.uniform(low=0, high=ymax)
+
+                # get an rvs from 0 to the maximum distance
+
+                r = np.random.uniform(low=0, high=self._r_max)
+
+                # compare them
+
+                if y < dNdr(r):
+                    r_out.append(r)
+                    flag = False
+    else:
+
+        for i in range(size):
+            flag = True
+            while flag:
+
+                # get am rvs from 0 to the max of the function
+
+                y = np.random.uniform(low=0, high=ymax)
+
+                # get an rvs from 0 to the maximum distance
+
+                r = np.random.uniform(low=0, high=self._r_max)
+
+                # compare them
+
+                if y < dNdr(r):
+                    r_out.append(r)
+                    flag = False
+
+    return np.array(r_out)
+
+
+    
+
+
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
 
@@ -155,64 +238,6 @@ class PopulationSynth(object):
 
         return 1.0
 
-    def draw_distance(self, size, verbose):
-        """
-        Draw the distances from the specified dN/dr model
-        """
-
-        # create a callback for the sampler
-        dNdr = (
-            lambda r: self.dNdV(r)
-            * self.differential_volume(r)
-            / self.time_adjustment(r)
-        )
-
-        # find the maximum point
-        tmp = np.linspace(0, self._r_max, 500)
-        ymax = np.max(dNdr(tmp))
-
-        # rejection sampling the distribution
-        r_out = []
-
-        if verbose:
-            for i in progress_bar(range(size), desc="Drawing distances"):
-                flag = True
-                while flag:
-
-                    # get am rvs from 0 to the max of the function
-
-                    y = np.random.uniform(low=0, high=ymax)
-
-                    # get an rvs from 0 to the maximum distance
-
-                    r = np.random.uniform(low=0, high=self._r_max)
-
-                    # compare them
-
-                    if y < dNdr(r):
-                        r_out.append(r)
-                        flag = False
-        else:
-
-            for i in range(size):
-                flag = True
-                while flag:
-
-                    # get am rvs from 0 to the max of the function
-
-                    y = np.random.uniform(low=0, high=ymax)
-
-                    # get an rvs from 0 to the maximum distance
-
-                    r = np.random.uniform(low=0, high=self._r_max)
-
-                    # compare them
-
-                    if y < dNdr(r):
-                        r_out.append(r)
-                        flag = False
-
-        return np.array(r_out)
 
     @abc.abstractmethod
     def draw_luminosity(self, size):
