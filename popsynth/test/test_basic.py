@@ -1,4 +1,43 @@
 import popsynth
+import pytest
+
+class DemoSampler(popsynth.AuxiliarySampler):
+    def __init__(self, mu=2, tau=1.0, sigma=1):
+
+        self._mu = mu
+        self._tau = tau
+
+        super(DemoSampler, self).__init__("demo", sigma, observed=False)
+
+    def true_sampler(self, size):
+
+        self._true_values = np.random.normal(self._mu, self._tau, size=size)
+
+
+class DemoSampler2(popsynth.AuxiliarySampler):
+    def __init__(self, mu=2, tau=1.0, sigma=1):
+
+        self._mu = mu
+        self._tau = tau
+
+        super(DemoSampler2, self).__init__("demo2", sigma, observed=True)
+
+    def true_sampler(self, size):
+
+        secondary = self._secondary_samplers["demo"]
+
+        self._true_values = (
+            (np.random.normal(self._mu, self._tau, size=size))
+            + secondary.true_values
+            - np.log10(1 + self._distance)
+        )
+
+    def observation_sampler(self, size):
+
+        self._obs_values = self._true_values + np.random.normal(
+            0, self._sigma, size=size
+        )
+
 
 
 def test_basic_population():
@@ -40,44 +79,11 @@ def test_auxiliary_sampler():
         r0=10.0, rise=0.1, decay=2.0, peak=5.0, Lmin=1e52, alpha=1.0, seed=123
     )
 
-    class DemoSampler(popsynth.AuxiliarySampler):
-        def __init__(self, mu=2, tau=1.0, sigma=1):
-
-            self._mu = mu
-            self._tau = tau
-
-            super(DemoSampler, self).__init__("demo", sigma, observed=False)
-
-        def true_sampler(self, size):
-
-            self._true_values = np.random.normal(self._mu, self._tau, size=size)
-
-    class DemoSampler2(popsynth.AuxiliarySampler):
-        def __init__(self, mu=2, tau=1.0, sigma=1):
-
-            self._mu = mu
-            self._tau = tau
-
-            super(DemoSampler2, self).__init__("demo2", sigma, observed=True)
-
-        def true_sampler(self, size):
-
-            secondary = self._secondary_samplers["demo"]
-
-            self._true_values = (
-                (np.random.normal(self._mu, self._tau, size=size))
-                + secondary.true_values
-                - np.log10(1 + self._distance)
-            )
-
-        def observation_sampler(self, size):
-
-            self._obs_values = self._true_values + np.random.normal(
-                0, self._sigma, size=size
-            )
-
     d = DemoSampler(5, 1, 0.1)
 
     d2 = DemoSampler2(0, 1, 0.1)
 
     d2.set_secondary_sampler(d)
+
+
+    
