@@ -12,7 +12,7 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
-
+from numba import jit
 
 class Distribution(object):
     def __init__(self, name, seed, form):
@@ -101,7 +101,7 @@ class SpatialDistribution(Distribution):
     @abc.abstractmethod
     def transform(self, flux, distance):
         pass
-
+    
     def draw_distance(self, size, verbose):
         """
         Draw the distances from the specified dN/dr model
@@ -141,23 +141,7 @@ class SpatialDistribution(Distribution):
                         flag = False
         else:
 
-            for i in range(size):
-                flag = True
-                while flag:
-
-                    # get am rvs from 0 to the max of the function
-
-                    y = np.random.uniform(low=0, high=ymax)
-
-                    # get an rvs from 0 to the maximum distance
-
-                    r = np.random.uniform(low=0, high=self._r_max)
-
-                    # compare them
-
-                    if y < dNdr(r):
-                        r_out.append(r)
-                        flag = False
+            r_out = rejection_sample(size, ymax, self._r_max, dNdr)
 
         return np.array(r_out)
 
@@ -165,6 +149,36 @@ class SpatialDistribution(Distribution):
     def r_max(self):
         return self._r_max
 
+
+@jit(parallel=True)
+def rejection_sample(size, ymax, xmax, func):
+
+    r_out = []
+    
+    for i in range(size):
+        flag = True
+        while flag:
+        
+            # get am rvs from 0 to the max of the function
+
+            y = np.random.uniform(low=0, high=ymax)
+
+            # get an rvs from 0 to the maximum distance
+
+            r = np.random.uniform(low=0, high=xmax)
+
+            # compare them
+
+            if y < func(r):
+                r_out.append(r)
+                flag = False
+
+    return r_out
+    
+    
+
+
+    
 
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
