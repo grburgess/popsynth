@@ -194,7 +194,7 @@ def test_pareto():
 
 def test_schecter():
 
-    for pop, param in zip(_schecter_dict, _spatial_params):
+    for pop, param in zip(_schechter_dict, _spatial_params):
 
         for k, v in _pareto_params.items():
 
