@@ -3,7 +3,7 @@ import popsynth
 
 def test_basic_population():
 
-    homo_pareto_synth = popsynth.synths.ParetoHomogeneousSphericalPopulation(
+    homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
         Lambda=0.25, Lmin=1, alpha=2.0
     )
 
@@ -18,7 +18,7 @@ def test_basic_population():
     population.display_fluxes()
     population.display_flux_sphere()
 
-    homo_sch_synth = popsynth.synths.SchechterHomogeneousSphericalPopulation(
+    homo_sch_synth = popsynth.populations.SchechterHomogeneousSphericalPopulation(
         Lambda=0.1, Lmin=1, alpha=2.0
     )
     homo_sch_synth.display()
@@ -29,14 +29,14 @@ def test_basic_population():
     population.writeto("saved_pop.h5")
     population_reloaded = popsynth.Population.from_file("saved_pop.h5")
 
-    sfr_synth = popsynth.synths.ParetoSFRPopulation(
+    sfr_synth = popsynth.populations.ParetoSFRPopulation(
         r0=10.0, rise=0.1, decay=2.0, peak=5.0, Lmin=1e52, alpha=1.0, seed=123
     )
 
 
 def test_auxiliary_sampler():
 
-    sfr_synth = popsynth.synths.ParetoSFRPopulation(
+    sfr_synth = popsynth.populations.ParetoSFRPopulation(
         r0=10.0, rise=0.1, decay=2.0, peak=5.0, Lmin=1e52, alpha=1.0, seed=123
     )
 
