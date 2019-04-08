@@ -46,29 +46,29 @@ class Population(object):
     ):
         """FIXME! briefly describe function
 
-        :param luminosities: 
-        :param distances: 
-        :param known_distances: 
-        :param known_distance_idx: 
-        :param unknown_distance_idx: 
-        :param fluxes: 
-        :param flux_obs: 
-        :param selection: 
-        :param flux_sigma: 
-        :param r_max: 
-        :param boundary: 
-        :param strength: 
-        :param n_model: 
-        :param lf_params: 
-        :param spatial_params: 
-        :param model_spaces: 
-        :param seed: 
-        :param name: 
-        :param spatial_form: 
-        :param lf_form: 
-        :param auxiliary_quantities: 
-        :returns: 
-        :rtype: 
+        :param luminosities:
+        :param distances:
+        :param known_distances:
+        :param known_distance_idx:
+        :param unknown_distance_idx:
+        :param fluxes:
+        :param flux_obs:
+        :param selection:
+        :param flux_sigma:
+        :param r_max:
+        :param boundary:
+        :param strength:
+        :param n_model:
+        :param lf_params:
+        :param spatial_params:
+        :param model_spaces:
+        :param seed:
+        :param name:
+        :param spatial_form:
+        :param lf_form:
+        :param auxiliary_quantities:
+        :returns:
+        :rtype:
 
         """
 
@@ -116,12 +116,12 @@ class Population(object):
             self._no_detection = True
 
             print('THERE ARE NO DETECTED OBJECTS IN THE POPULATION')
-            
+
         else:
 
             self._no_detection = False
 
-        
+
         if auxiliary_quantities is not None:
 
             for k, v in auxiliary_quantities.items():
@@ -230,10 +230,10 @@ class Population(object):
     def generate_stan_code(self, model_name="model", population_synth=None):
         """FIXME! briefly describe function
 
-        :param model_name: 
-        :param population_synth: 
-        :returns: 
-        :rtype: 
+        :param model_name:
+        :param population_synth:
+        :returns:
+        :rtype:
 
         """
 
@@ -358,9 +358,9 @@ class Population(object):
     def writeto(self, file_name):
         """FIXME! briefly describe function
 
-        :param file_name: 
-        :returns: 
-        :rtype: 
+        :param file_name:
+        :returns:
+        :rtype:
 
         """
 
@@ -437,10 +437,10 @@ class Population(object):
     def from_file(cls, file_name):
         """FIXME! briefly describe function
 
-        :param cls: 
-        :param file_name: 
-        :returns: 
-        :rtype: 
+        :param cls:
+        :param file_name:
+        :returns:
+        :rtype:
 
         """
 
@@ -454,7 +454,7 @@ class Population(object):
                 spatial_params[key] = f["spatial_params"][key].value[0]
 
             # we must double check that there are LF params
-                
+
             if f.attrs['has_lf']:
                 lf_params = {}
                 for key in f["lf_params"].keys():
@@ -467,7 +467,7 @@ class Population(object):
                 lf_params = None
                 lf_form = None
 
-                    
+
             flux_sigma = f.attrs["flux_sigma"]
             boundary = f.attrs["boundary"]
             strength = f.attrs["strength"]
@@ -475,7 +475,7 @@ class Population(object):
             r_max = f.attrs["r_max"]
             seed = int(f.attrs["seed"])
             name = f.attrs["name"]
-            
+
             spatial_form = str(f.attrs["spatial_form"])
 
             luminosities = f["luminosities"].value
@@ -540,7 +540,7 @@ class Population(object):
     def display(self):
         """
         Display the simulation parameters
-        
+
         """
 
         info = "### %s simulation\nDetected %d out of %d objects" % (
@@ -578,10 +578,10 @@ class Population(object):
     def display_true_fluxes(self, ax=None, flux_color=dark, **kwargs):
         """FIXME! briefly describe function
 
-        :param ax: 
-        :param flux_color: 
-        :returns: 
-        :rtype: 
+        :param ax:
+        :param flux_color:
+        :returns:
+        :rtype:
 
         """
 
@@ -608,7 +608,7 @@ class Population(object):
         ax.set_yscale("log")
 
         try:
-        
+
             ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
 
         except:
@@ -621,16 +621,16 @@ class Population(object):
     def display_obs_fluxes(self, ax=None, flux_color=dark, **kwargs):
         """FIXME! briefly describe function
 
-        :param ax: 
-        :param flux_color: 
-        :returns: 
-        :rtype: 
+        :param ax:
+        :param flux_color:
+        :returns:
+        :rtype:
 
         """
 
         # do not try to plot if there is nothing
-        # to plot 
-        
+        # to plot
+
         if self._no_detection:
             print('There are no detections to display')
             if ax is not None:
@@ -641,9 +641,9 @@ class Population(object):
             else:
 
                 return
-             
-        
-        
+
+
+
         if ax is None:
             fig, ax = plt.subplots()
 
@@ -683,13 +683,13 @@ class Population(object):
     ):
         """FIXME! briefly describe function
 
-        :param ax: 
-        :param true_color: 
-        :param obs_color: 
-        :param arrow_color: 
-        :param with_arrows: 
-        :returns: 
-        :rtype: 
+        :param ax:
+        :param true_color:
+        :param obs_color:
+        :param arrow_color:
+        :param with_arrows:
+        :returns:
+        :rtype:
 
         """
 
@@ -735,12 +735,12 @@ class Population(object):
     ):
         """FIXME! briefly describe function
 
-        :param ax: 
-        :param cmap: 
-        :param distance_transform: 
-        :param use_log: 
-        :returns: 
-        :rtype: 
+        :param ax:
+        :param cmap:
+        :param distance_transform:
+        :param use_log:
+        :returns:
+        :rtype:
 
         """
 
@@ -756,7 +756,7 @@ class Population(object):
                 return
 
 
-        
+
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
 
@@ -886,12 +886,12 @@ class Population(object):
     ):
         """FIXME! briefly describe function
 
-        :param ax: 
-        :param cmap: 
-        :param distance_transform: 
-        :param use_log: 
-        :returns: 
-        :rtype: 
+        :param ax:
+        :param cmap:
+        :param distance_transform:
+        :param use_log:
+        :returns:
+        :rtype:
 
         """
 
@@ -970,13 +970,13 @@ class Population(object):
     ):
         """FIXME! briefly describe function
 
-        :param ax: 
-        :param seen_cmap: 
-        :param unseen_cmap: 
-        :param distance_transform: 
-        :param use_log: 
-        :returns: 
-        :rtype: 
+        :param ax:
+        :param seen_cmap:
+        :param unseen_cmap:
+        :param distance_transform:
+        :param use_log:
+        :returns:
+        :rtype:
 
         """
 
@@ -1033,9 +1033,9 @@ class Population(object):
     def display_distances(self, ax=None):
         """FIXME! briefly describe function
 
-        :param ax: 
-        :returns: 
-        :rtype: 
+        :param ax:
+        :returns:
+        :rtype:
 
         """
 
