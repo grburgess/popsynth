@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 import os
 import copy
-
+import matplotlib.pyplot as plt
 
 class DemoSampler(popsynth.AuxiliarySampler):
     def __init__(self, mu=2, tau=1.0, sigma=1):
@@ -132,11 +132,11 @@ class Popbuilder(object):
 
         fig = pop.display_fluxes()
 
-        del fig
+
 
         fig = pop.display_flux_sphere()
 
-        del fig
+
 
         pop.writeto("_saved_pop.h5")
 
@@ -152,11 +152,11 @@ class Popbuilder(object):
 
         fig = pop.display_fluxes()
 
-        del fig
+
 
         fig = pop.display_flux_sphere()
 
-        del fig
+
 
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
@@ -171,17 +171,20 @@ class Popbuilder(object):
 
         fig = pop.display_fluxes()
 
-        del fig
+
 
         fig = pop.display_flux_sphere()
 
-        del fig
+
 
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
         os.remove("_saved_pop.h5")
 
+        # clean up
+        plt.close('all')
+        
 
 def test_spatial_population_with_derived():
 
