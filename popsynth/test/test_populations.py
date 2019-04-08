@@ -4,6 +4,7 @@ import numpy as np
 import os
 import copy
 
+
 class DemoSampler(popsynth.AuxiliarySampler):
     def __init__(self, mu=2, tau=1.0, sigma=1):
 
@@ -123,6 +124,8 @@ class Popbuilder(object):
 
         self.pop_gen.display()
 
+        #####################
+
         pop = self.draw_hard()
 
         pop.display()
@@ -136,14 +139,17 @@ class Popbuilder(object):
         del fig
 
         pop.writeto("_saved_pop.h5")
+
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
         os.remove("_saved_pop.h5")
 
+        #####################
+
         pop = self.draw_soft()
 
         pop.display()
-        
+
         fig = pop.display_fluxes()
 
         del fig
@@ -156,6 +162,8 @@ class Popbuilder(object):
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
         os.remove("_saved_pop.h5")
+
+        #####################
 
         pop = self.draw_z_select()
 
@@ -179,9 +187,8 @@ def test_spatial_population_with_derived():
 
     for pop, param in zip(_spatial_dict, _spatial_params):
 
-
         param = copy.deepcopy(param)
-        
+
         pb = Popbuilder(pop, **param)
 
         # first make sure they all fail
@@ -203,7 +210,7 @@ def test_pareto():
     for pop, param in zip(_pareto_dict, _spatial_params):
 
         param = copy.deepcopy(param)
-        
+
         for k, v in _pareto_params.items():
 
             param[k] = v
@@ -217,13 +224,12 @@ def test_pareto():
         pb.test_it()
 
 
-
 def test_schecter():
 
     for pop, param in zip(_schechter_dict, _spatial_params):
 
         param = copy.deepcopy(param)
-        
+
         for k, v in _pareto_params.items():
 
             param[k] = v
@@ -242,7 +248,7 @@ def test_lnorm():
     for pop, param in zip(_lognorm_dict, _spatial_params):
 
         param = copy.deepcopy(param)
-        
+
         for k, v in _lognormal_params.items():
 
             param[k] = v
@@ -254,13 +260,14 @@ def test_lnorm():
         pb.pop_gen.add_observed_quantity(pb.d2)
 
         pb.test_it()
-        
+
+
 def test_l10norm():
 
     for pop, param in zip(_log10norm_dict, _spatial_params):
 
         param = copy.deepcopy(param)
-        
+
         for k, v in _lognormal_params.items():
 
             param[k] = v
@@ -272,4 +279,3 @@ def test_l10norm():
         pb.pop_gen.add_observed_quantity(pb.d2)
 
         pb.test_it()
-        

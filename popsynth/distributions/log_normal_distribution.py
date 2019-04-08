@@ -7,11 +7,14 @@ from popsynth.population_synth import LuminosityDistribution
 class LogNormalDistribution(LuminosityDistribution):
     def __init__(self, mu, tau, seed=1234, name="lognorm"):
 
-        super(LogNormalDistribution, self).__init__(name=name, seed=seed)
+
+        lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        
+        super(LogNormalDistribution, self).__init__(name=name, seed=seed, form=lf_form)
 
         self._construct_distribution_params(mu=mu, tau=tau)
 
-        self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        
 
     def phi(self, L):
 
