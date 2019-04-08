@@ -108,7 +108,7 @@ class Popbuilder(object):
 
     def draw_hard(self):
 
-        return self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.4, hard_cut=True)
+        return self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.4, hard_cut=True, verbose=False)
 
     def draw_soft(self):
 
