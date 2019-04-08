@@ -65,8 +65,8 @@ def test_basic_population():
     population.display_fluxes()
     population.display_fluxes_sphere()
 
-    population.writeto("saved_pop.h5")
-    population_reloaded = popsynth.Population.from_file("saved_pop.h5")
+    population.writeto("_saved_pop.h5")
+    population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
     os.remove('_saved_pop.h5')
     
