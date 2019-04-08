@@ -111,6 +111,17 @@ class Population(object):
 
         self._model_spaces = model_spaces
 
+        if sum(self._selection) == 0:
+
+            self._no_detection = True
+
+            print('THERE ARE NO DETECTED OBJECTS IN THE POPULATION')
+            
+        else:
+
+            self._no_detection = False
+
+        
         if auxiliary_quantities is not None:
 
             for k, v in auxiliary_quantities.items():
@@ -596,7 +607,13 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+        try:
+        
+            ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+
+        except:
+
+            ax.set_ylim(bottom=self._fluxes.min())
 
         ax.set_xlabel("distance")
         ax.set_ylabel("flux")
@@ -611,6 +628,22 @@ class Population(object):
 
         """
 
+        # do not try to plot if there is nothing
+        # to plot 
+        
+        if self._no_detection:
+            print('There are no detections to display')
+            if ax is not None:
+
+                fig =ax.get_figure()
+
+                return fig
+            else:
+
+                return
+             
+        
+        
         if ax is None:
             fig, ax = plt.subplots()
 
@@ -668,9 +701,11 @@ class Population(object):
             fig = ax.get_figure()
 
         self.display_true_fluxes(ax=ax, flux_color=true_color, **kwargs)
-        self.display_obs_fluxes(ax=ax, flux_color=obs_color, **kwargs)
 
-        if with_arrows:
+        if not self._no_detection:
+            self.display_obs_fluxes(ax=ax, flux_color=obs_color, **kwargs)
+
+        if (with_arrows) and (not self._no_detection):
             for start, stop, z in zip(
                 self._fluxes[self._selection],
                 self._flux_selected,
@@ -709,6 +744,19 @@ class Population(object):
 
         """
 
+        if self._no_detection:
+            print('There are no detections to display')
+            if ax is not None:
+
+                fig =ax.get_figure()
+
+                return fig
+            else:
+
+                return
+
+
+        
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
 
