@@ -21,7 +21,7 @@ class SchechterDistribution(LuminosityDistribution):
 
         super(SchechterDistribution, self).__init__(name=name, seed=seed)
 
-        self.set_distribution_params(Lmin=Lmin, alpha=alpha)
+        self._construct_distribution_params(Lmin=Lmin, alpha=alpha)
 
         self._lf_form = r"\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]"
 

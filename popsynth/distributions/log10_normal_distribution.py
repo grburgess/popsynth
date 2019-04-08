@@ -8,7 +8,7 @@ class Log10NormalDistribution(LuminosityDistribution):
 
         super(Log10NormalDistribution, self).__init__( name=name, seed=seed)
 
-        self.set_distribution_params(mu=mu, tau=tau)
+        self._construct_distribution_params(mu=mu, tau=tau)
 
         self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 

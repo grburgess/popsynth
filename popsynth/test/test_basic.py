@@ -39,7 +39,6 @@ class DemoSampler2(popsynth.AuxiliarySampler):
         )
 
 
-
 def test_basic_population():
 
     homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(

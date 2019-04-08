@@ -32,6 +32,17 @@ class Distribution(object):
     def params(self):
         return self._params
 
+    def _construct_distribution_params(self, **params):
+        """
+        Build the initial distributional parameters
+        """
+
+        self._params = {}
+
+        for k, v in params.items():
+
+            self._params[k] = v
+
     def set_distribution_params(self, **params):
         """
         Set the spatial parameters as keywords
@@ -162,8 +173,8 @@ class LuminosityDistribution(Distribution):
 
         super(LuminosityDistribution, self).__init__(name=name, seed=seed, form=form)
 
-        self._params=None
-        
+        self._params = None
+
     @abc.abstractmethod
     def phi(self, L):
 
@@ -204,6 +215,19 @@ class PopulationSynth(object):
 
         self._has_derived_luminosity = False
         self._derived_luminosity_sampler = None
+
+        self._params = {}
+
+        # keep a list of parameters here for checking
+
+        for k, v in self._spatial_distribution.params.items():
+
+            self._params[k] = v
+
+        if self._luminosity_distribution is not None:
+            for k, v in self._luminosity_distribution.params.items():
+
+                self._params[k] = v
 
     @property
     def spatial_distribution(self):
@@ -260,7 +284,6 @@ class PopulationSynth(object):
 
         return sf.expit(strength * (x - boundary))
 
-            
     @property
     def name(self):
         return self._name

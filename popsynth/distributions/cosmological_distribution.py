@@ -278,7 +278,7 @@ class SFRDistribtution(CosmologicalDistribution):
             r_max=r_max, seed=seed, name=name, form=spatial_form
         )
 
-        self.set_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
+        self._construct_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
     def dNdV(self, z):
         top = 1.0 + self.rise * z
@@ -382,7 +382,7 @@ class MergerDistribution(CosmologicalDistribution):
         
         super(MergerDistribution, self).__init__(r_max=r_max, seed=seed, name=name, form=spatial_form)
 
-        self.set_distribution_params(r0=r0, td=td, sigma=sigma)
+        self._construct_distribution_params(r0=r0, td=td, sigma=sigma)
 
         
 
