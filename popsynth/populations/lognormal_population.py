@@ -5,12 +5,12 @@ from popsynth.distributions.log_normal_distribution import LogNormalDistribution
 
 
 class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, mu, alpha, r_max=10, seed=1234):
+    def __init__(self, Lambda, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
         :param mu: 
-        :param alpha: 
+        :param tau: 
         :param r_max: 
         :param seed: 
         :returns: 
@@ -18,7 +18,7 @@ class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
 
         """
 
-        luminosity_distribution = LogNormalDistribution(mu=mu, alpha=alpha, seed=seed)
+        luminosity_distribution = LogNormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(LogNormalHomogeneousSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -27,13 +27,13 @@ class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
             luminosity_distribution=luminosity_distribution)
 
 class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self, Lambda, delta, mu, alpha, r_max=10, seed=1234):
+    def __init__(self, Lambda, delta, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
         :param delta:
         :param mu: 
-        :param alpha: 
+        :param tau: 
         :param r_max: 
         :param seed: 
         :returns: 
@@ -41,7 +41,7 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         """
 
-        luminosity_distribution = LogNormalDistribution(mu=mu, alpha=alpha, seed=seed)
+        luminosity_distribution = LogNormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(LogNormalZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -53,7 +53,7 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         
 class LogNormalSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, mu, alpha, r_max=10, seed=1234):
+    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
         :param r0: 
@@ -61,7 +61,7 @@ class LogNormalSFRPopulation(SFRPopulation):
         :param decay: 
         :param peak: 
          :param mu: 
-        :param alpha: 
+        :param tau: 
         :param r_max: 
         :param seed: 
         :returns: 
@@ -70,7 +70,7 @@ class LogNormalSFRPopulation(SFRPopulation):
         """
 
 
-        luminosity_distribution = LogNormalDistribution(mu=mu, alpha=alpha, seed=seed)
+        luminosity_distribution = LogNormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(LogNormalSFRPopulation, self).__init__(
             r0=r0,
@@ -82,12 +82,12 @@ class LogNormalSFRPopulation(SFRPopulation):
             luminosity_distribution=luminosity_distribution)
 
 class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, mu, alpha, r_max=10, seed=1234):
+    def __init__(self, Lambda, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
         :param mu: 
-        :param alpha: 
+        :param tau: 
         :param r_max: 
         :param seed: 
         :returns: 
@@ -95,7 +95,7 @@ class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
 
         """
 
-        luminosity_distribution = Log10NormalDistribution(mu=mu, alpha=alpha, seed=seed)
+        luminosity_distribution = Log10NormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(Log10NormalHomogeneousSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -104,13 +104,13 @@ class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
             luminosity_distribution=luminosity_distribution)
 
 class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self, Lambda, delta, mu, alpha, r_max=10, seed=1234):
+    def __init__(self, Lambda, delta, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
         :param delta:
         :param mu: 
-        :param alpha: 
+        :param tau: 
         :param r_max: 
         :param seed: 
         :returns: 
@@ -118,7 +118,7 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         """
 
-        luminosity_distribution = Log10NormalDistribution(mu=mu, alpha=alpha, seed=seed)
+        luminosity_distribution = Log10NormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(Log10NormalZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -130,7 +130,7 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         
 class Log10NormalSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, mu, alpha, r_max=10, seed=1234):
+    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
         :param r0: 
@@ -138,7 +138,7 @@ class Log10NormalSFRPopulation(SFRPopulation):
         :param decay: 
         :param peak: 
         :param mu: 
-        :param alpha: 
+        :param tau: 
         :param r_max: 
         :param seed: 
         :returns: 
@@ -147,7 +147,7 @@ class Log10NormalSFRPopulation(SFRPopulation):
         """
 
 
-        luminosity_distribution = Log10NormalDistribution(mu=mu, alpha=alpha, seed=seed)
+        luminosity_distribution = Log10NormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(Log10NormalSFRPopulation, self).__init__(
             r0=r0,

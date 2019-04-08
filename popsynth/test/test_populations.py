@@ -88,6 +88,7 @@ _spatial_params = [
     dict(r0=5.0, rise=0.5, decay=2.0, peak=1.5),
 ]
 _pareto_params = dict(Lmin=2.0, alpha=1.0)
+
 _lognormal_params = dict(mu=1.0, tau=1.0)
 
 
