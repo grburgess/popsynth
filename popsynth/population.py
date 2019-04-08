@@ -361,14 +361,22 @@ class Population(object):
 
                 spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
 
-            lum_grp = f.create_group("lf_params")
+            if self._lf_params is not None:
 
-            for k, v in self._lf_params.items():
+                lum_grp = f.create_group("lf_params")
 
-                lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                for k, v in self._lf_params.items():
+
+                    lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+
+                f.attrs["lf_form"] = np.string_(self._lf_form)
+
+                f.attrs["has_lf"] = True
+
+            else:
+                f.attrs["has_lf"] = False
 
             f.attrs["name"] = np.string_(self._name)
-            f.attrs["lf_form"] = np.string_(self._lf_form)
             f.attrs["spatial_form"] = np.string_(self._spatial_form)
             f.attrs["flux_sigma"] = self._flux_sigma
             f.attrs["n_model"] = self._n_model
@@ -428,16 +436,27 @@ class Population(object):
         with h5py.File(file_name, "r") as f:
 
             spatial_params = {}
-            lf_params = {}
+
 
             for key in f["spatial_params"].keys():
 
                 spatial_params[key] = f["spatial_params"][key].value[0]
 
-            for key in f["lf_params"].keys():
+            # we must double check that there are LF params
+                
+            if f.attrs['has_lf']:
+                lf_params = {}
+                for key in f["lf_params"].keys():
 
-                lf_params[key] = f["lf_params"][key].value[0]
+                    lf_params[key] = f["lf_params"][key].value[0]
+                lf_form = str(f.attrs["lf_form"])
 
+            else:
+
+                lf_params = None
+                lf_form = None
+
+                    
             flux_sigma = f.attrs["flux_sigma"]
             boundary = f.attrs["boundary"]
             strength = f.attrs["strength"]
@@ -445,7 +464,7 @@ class Population(object):
             r_max = f.attrs["r_max"]
             seed = int(f.attrs["seed"])
             name = f.attrs["name"]
-            lf_form = str(f.attrs["lf_form"])
+            
             spatial_form = str(f.attrs["spatial_form"])
 
             luminosities = f["luminosities"].value
@@ -522,7 +541,7 @@ class Population(object):
         display(Markdown(info))
 
         if self._lf_params is not None:
-        
+
             out = {"parameter": [], "value": []}
 
             display(Markdown("## Luminosity Function"))
