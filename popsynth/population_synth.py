@@ -19,7 +19,6 @@ class Distribution(object):
         self._seed = seed
         self._name = name
         self._form = form
-        self._params = None
 
     @property
     def name(self):
