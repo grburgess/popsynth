@@ -43,8 +43,9 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         luminosity_distribution = LogNormalDistribution(mu=mu, alpha=alpha, seed=seed)
 
-        super(LogNormalHomogeneousSphericalPopulation, self).__init__(
+        super(LogNormalZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
+            delta=delta,
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution)
@@ -119,8 +120,9 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         luminosity_distribution = Log10NormalDistribution(mu=mu, alpha=alpha, seed=seed)
 
-        super(Log10NormalHomogeneousSphericalPopulation, self).__init__(
+        super(Log10NormalZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
+            delta=delta,
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution)

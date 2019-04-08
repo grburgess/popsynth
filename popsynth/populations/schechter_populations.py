@@ -42,8 +42,9 @@ class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         luminosity_distribution = SchechterDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
 
-        super(SchechterHomogeneousSphericalPopulation, self).__init__(
+        super(SchechterZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
+            delta=delta,
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution)

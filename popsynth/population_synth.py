@@ -209,6 +209,9 @@ class PopulationSynth(object):
         self._name = "%s" % spatial_distribution.name
         if luminosity_distribution is not None:
             self._name = "%s_%s" % (self._name, luminosity_distribution.name)
+            assert isinstance(luminosity_distribution, LuminosityDistribution), 'the luminosity_distribution is the wrong type'
+
+        assert isinstance(spatial_distribution, SpatialDistribution), 'the spatial_distribution is the wrong type'
 
         self._spatial_distribution = spatial_distribution
         self._luminosity_distribution = luminosity_distribution
@@ -568,10 +571,9 @@ class PopulationSynth(object):
             print("No Objects detected")
         # return a Population object
 
-
         ## just to make sure we do not do anything nutty
         lf_params = None
-        lf_form=None
+        lf_form = None
         if self._luminosity_distribution is not None:
 
             lf_params = self._luminosity_distribution.params
@@ -606,10 +608,9 @@ class PopulationSynth(object):
         
         """
 
-        out = {"parameter": [], "value": []}
-
-
         if self._luminosity_distribution is not None:
+
+            out = {"parameter": [], "value": []}
 
             display(Markdown("## Luminosity Function"))
             for k, v in self._luminosity_distribution.params.items():
@@ -619,7 +620,7 @@ class PopulationSynth(object):
 
             display(Math(self._luminosity_distribution.form))
             display(pd.DataFrame(out))
-            out = {"parameter": [], "value": []}
+        out = {"parameter": [], "value": []}
 
         display(Markdown("## Spatial Function"))
 

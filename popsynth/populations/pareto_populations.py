@@ -42,8 +42,9 @@ class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         luminosity_distribution = ParetoDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
 
-        super(ParetoHomogeneousSphericalPopulation, self).__init__(
+        super(ParetoZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
+            delta=delta,
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,

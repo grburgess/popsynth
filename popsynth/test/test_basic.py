@@ -1,5 +1,6 @@
 import popsynth
 import pytest
+import os
 
 class DemoSampler(popsynth.AuxiliarySampler):
     def __init__(self, mu=2, tau=1.0, sigma=1):
@@ -67,6 +68,8 @@ def test_basic_population():
     population.writeto("saved_pop.h5")
     population_reloaded = popsynth.Population.from_file("saved_pop.h5")
 
+    os.remove('_saved_pop')
+    
     sfr_synth = popsynth.populations.ParetoSFRPopulation(
         r0=10.0, rise=0.1, decay=2.0, peak=5.0, Lmin=1e52, alpha=1.0, seed=123
     )
