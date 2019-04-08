@@ -3,7 +3,7 @@ import numpy as np
 
 from astropy.cosmology import WMAP9 as cosmo
 
-from popsynth.population_synth import PopulationSynth
+from popsynth.population_synth import SpatialDistribution
 from popsynth.utils.package_data import copy_package_data
 
 import scipy.integrate as integrate
@@ -54,10 +54,12 @@ def differential_comoving_volume(z):
     return (dh * td * td / a(z)) * 1e-9  # Gpc^3
 
 
-class CosmologicalPopulation(PopulationSynth):
-    def __init__(self, r_max=10, seed=1234, name="cosmo"):
+class CosmologicalDistribution(SpatialDistribution):
+    def __init__(self, r_max=10, seed=1234, name="cosmo", form=None):
 
-        PopulationSynth.__init__(self, r_max, seed, name)
+        super(CosmologicalDistribution, self).__init__(
+            r_max=r_max, seed=seed, name=name, form=form
+        )
 
     def differential_volume(self, z):
 
@@ -267,14 +269,16 @@ class CosmologicalPopulation(PopulationSynth):
         stan_gen.blocks["model"].insert_code(code)
 
 
-class SFRPopulation(CosmologicalPopulation):
-    def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name="_sfrcosmo"):
+class SFRDistribtution(CosmologicalDistribution):
+    def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name="sfr"):
 
-        CosmologicalPopulation.__init__(self, r_max, seed, name)
+        spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
-        self.set_spatial_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
+        super(SFRDistribtution, self).__init__(
+            r_max=r_max, seed=seed, name=name, form=spatial_form
+        )
 
-        self._spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
+        self._construct_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
     def dNdV(self, z):
         top = 1.0 + self.rise * z
@@ -284,7 +288,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __get_r0(self):
         """Calculates the 'r0' property."""
-        return self._spatial_params["r0"]
+        return self._params["r0"]
 
     def ___get_r0(self):
         """Indirect accessor for 'r0' property."""
@@ -292,7 +296,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __set_r0(self, r0):
         """Sets the 'r0' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=r0, rise=self.rise, decay=self.decay, peak=self.peak
         )
 
@@ -304,7 +308,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __get_rise(self):
         """Calculates the 'rise' property."""
-        return self._spatial_params["rise"]
+        return self._params["rise"]
 
     def ___get_rise(self):
         """Indirect accessor for 'rise' property."""
@@ -312,7 +316,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __set_rise(self, rise):
         """Sets the 'rise' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=self.r0, rise=rise, decay=self.decay, peak=self.peak
         )
 
@@ -324,7 +328,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __get_decay(self):
         """Calculates the 'decay' property."""
-        return self._spatial_params["decay"]
+        return self._params["decay"]
 
     def ___get_decay(self):
         """Indirect accessor for 'decay' property."""
@@ -332,7 +336,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __set_decay(self, decay):
         """Sets the 'decay' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=self.r0, rise=self.rise, decay=decay, peak=self.peak
         )
 
@@ -344,7 +348,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __get_peak(self):
         """Calculates the 'peak' property."""
-        return self._spatial_params["peak"]
+        return self._params["peak"]
 
     def ___get_peak(self):
         """Indirect accessor for 'peak' property."""
@@ -352,7 +356,7 @@ class SFRPopulation(CosmologicalPopulation):
 
     def __set_peak(self, peak):
         """Sets the 'peak' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=self.r0, rise=self.rise, decay=self.decay, peak=peak
         )
 
@@ -364,20 +368,23 @@ class SFRPopulation(CosmologicalPopulation):
 
     def generate_stan_code(self, stan_gen, **kwargs):
 
-        CosmologicalPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        CosmologicalDistribution.generate_stan_code(self, stan_gen, **kwargs)
 
         copy_package_data("sfr_functions.stan")
         stan_gen.blocks["functions"].add_include("sfr_functions.stan")
 
 
-class MergerPopulation(CosmologicalPopulation):
-    def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="_merger"):
+class MergerDistribution(CosmologicalDistribution):
+    def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 
-        CosmologicalPopulation.__init__(self, r_max, seed, name)
 
-        self.set_spatial_distribution_params(r0=r0, td=td, sigma=sigma)
+        spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
+        
+        super(MergerDistribution, self).__init__(r_max=r_max, seed=seed, name=name, form=spatial_form)
 
-        self._spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
+        self._construct_distribution_params(r0=r0, td=td, sigma=sigma)
+
+        
 
         self._td = td
         self._sigma = sigma
@@ -412,7 +419,7 @@ class MergerPopulation(CosmologicalPopulation):
 
     def __get_r0(self):
         """Calculates the 'r0' property."""
-        return self._spatial_params["r0"]
+        return self._params["r0"]
 
     def ___get_r0(self):
         """Indirect accessor for 'r0' property."""
@@ -420,7 +427,7 @@ class MergerPopulation(CosmologicalPopulation):
 
     def __set_r0(self, r0):
         """Sets the 'r0' property."""
-        self.set_spatial_distribution_params(
+        self.set_distribution_params(
             r0=r0, rise=self.rise, decay=self.decay, peak=self.peak
         )
 
@@ -489,7 +496,7 @@ class MergerPopulation(CosmologicalPopulation):
 
     def generate_stan_code(self, stan_gen, **kwargs):
 
-        CosmologicalPopulation.generate_stan_code(self, stan_gen, **kwargs)
+        CosmologicalDistribution.generate_stan_code(self, stan_gen, **kwargs)
 
         copy_package_data("sfr_functions.stan")
         stan_gen.blocks["functions"].add_include("sfr_functions.stan")

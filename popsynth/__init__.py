@@ -5,8 +5,8 @@ from popsynth.aux_samplers import *
 from popsynth.population import Population
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 
-from popsynth import synths
 
+import popsynth.populations
 
 import numpy as np
 

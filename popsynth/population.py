@@ -111,6 +111,17 @@ class Population(object):
 
         self._model_spaces = model_spaces
 
+        if sum(self._selection) == 0:
+
+            self._no_detection = True
+
+            print('THERE ARE NO DETECTED OBJECTS IN THE POPULATION')
+            
+        else:
+
+            self._no_detection = False
+
+        
         if auxiliary_quantities is not None:
 
             for k, v in auxiliary_quantities.items():
@@ -361,14 +372,22 @@ class Population(object):
 
                 spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
 
-            lum_grp = f.create_group("lf_params")
+            if self._lf_params is not None:
 
-            for k, v in self._lf_params.items():
+                lum_grp = f.create_group("lf_params")
 
-                lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                for k, v in self._lf_params.items():
+
+                    lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+
+                f.attrs["lf_form"] = np.string_(self._lf_form)
+
+                f.attrs["has_lf"] = True
+
+            else:
+                f.attrs["has_lf"] = False
 
             f.attrs["name"] = np.string_(self._name)
-            f.attrs["lf_form"] = np.string_(self._lf_form)
             f.attrs["spatial_form"] = np.string_(self._spatial_form)
             f.attrs["flux_sigma"] = self._flux_sigma
             f.attrs["n_model"] = self._n_model
@@ -428,16 +447,27 @@ class Population(object):
         with h5py.File(file_name, "r") as f:
 
             spatial_params = {}
-            lf_params = {}
+
 
             for key in f["spatial_params"].keys():
 
                 spatial_params[key] = f["spatial_params"][key].value[0]
 
-            for key in f["lf_params"].keys():
+            # we must double check that there are LF params
+                
+            if f.attrs['has_lf']:
+                lf_params = {}
+                for key in f["lf_params"].keys():
 
-                lf_params[key] = f["lf_params"][key].value[0]
+                    lf_params[key] = f["lf_params"][key].value[0]
+                lf_form = str(f.attrs["lf_form"])
 
+            else:
+
+                lf_params = None
+                lf_form = None
+
+                    
             flux_sigma = f.attrs["flux_sigma"]
             boundary = f.attrs["boundary"]
             strength = f.attrs["strength"]
@@ -445,7 +475,7 @@ class Population(object):
             r_max = f.attrs["r_max"]
             seed = int(f.attrs["seed"])
             name = f.attrs["name"]
-            lf_form = str(f.attrs["lf_form"])
+            
             spatial_form = str(f.attrs["spatial_form"])
 
             luminosities = f["luminosities"].value
@@ -521,16 +551,18 @@ class Population(object):
 
         display(Markdown(info))
 
-        out = {"parameter": [], "value": []}
+        if self._lf_params is not None:
 
-        display(Markdown("## Luminosity Function"))
-        for k, v in self._lf_params.items():
+            out = {"parameter": [], "value": []}
 
-            out["parameter"].append(k)
-            out["value"].append(v)
+            display(Markdown("## Luminosity Function"))
+            for k, v in self._lf_params.items():
 
-        display(Math(self._lf_form))
-        display(pd.DataFrame(out))
+                out["parameter"].append(k)
+                out["value"].append(v)
+
+            display(Math(self._lf_form))
+            display(pd.DataFrame(out))
         out = {"parameter": [], "value": []}
 
         display(Markdown("## Spatial Function"))
@@ -575,7 +607,13 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+        try:
+        
+            ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+
+        except:
+
+            ax.set_ylim(bottom=self._fluxes.min())
 
         ax.set_xlabel("distance")
         ax.set_ylabel("flux")
@@ -590,6 +628,22 @@ class Population(object):
 
         """
 
+        # do not try to plot if there is nothing
+        # to plot 
+        
+        if self._no_detection:
+            print('There are no detections to display')
+            if ax is not None:
+
+                fig =ax.get_figure()
+
+                return fig
+            else:
+
+                return
+             
+        
+        
         if ax is None:
             fig, ax = plt.subplots()
 
@@ -647,9 +701,11 @@ class Population(object):
             fig = ax.get_figure()
 
         self.display_true_fluxes(ax=ax, flux_color=true_color, **kwargs)
-        self.display_obs_fluxes(ax=ax, flux_color=obs_color, **kwargs)
 
-        if with_arrows:
+        if not self._no_detection:
+            self.display_obs_fluxes(ax=ax, flux_color=obs_color, **kwargs)
+
+        if (with_arrows) and (not self._no_detection):
             for start, stop, z in zip(
                 self._fluxes[self._selection],
                 self._flux_selected,
@@ -688,6 +744,19 @@ class Population(object):
 
         """
 
+        if self._no_detection:
+            print('There are no detections to display')
+            if ax is not None:
+
+                fig =ax.get_figure()
+
+                return fig
+            else:
+
+                return
+
+
+        
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
 

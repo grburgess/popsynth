@@ -1,18 +1,20 @@
 import numpy as np
 import scipy.stats as stats
 
+from popsynth.population_synth import LuminosityDistribution
 
-from popsynth.population_synth import PopulationSynth
+
+class LogNormalDistribution(LuminosityDistribution):
+    def __init__(self, mu, tau, seed=1234, name="lognorm"):
 
 
-class LogNormalPopulation(PopulationSynth):
-    def __init__(self, mu, tau, r_max=10, seed=1234, name="_lognorm"):
+        lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        
+        super(LogNormalDistribution, self).__init__(name=name, seed=seed, form=lf_form)
 
-        PopulationSynth.__init__(self, r_max, seed, name)
+        self._construct_distribution_params(mu=mu, tau=tau)
 
-        self.set_luminosity_function_parameters(mu=mu, tau=tau)
-
-        self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        
 
     def phi(self, L):
 
@@ -26,7 +28,7 @@ class LogNormalPopulation(PopulationSynth):
 
     def __get_mu(self):
         """Calculates the 'mu' property."""
-        return self._lf_params["mu"]
+        return self._params["mu"]
 
     def ___get_mu(self):
         """Indirect accessor for 'mu' property."""
@@ -34,7 +36,7 @@ class LogNormalPopulation(PopulationSynth):
 
     def __set_mu(self, mu):
         """Sets the 'mu' property."""
-        self.set_luminosity_function_parameters(mu=mu, tau=self.tau)
+        self.set_distribution_params(mu=mu, tau=self.tau)
 
     def ___set_mu(self, mu):
         """Indirect setter for 'mu' property."""
@@ -44,7 +46,7 @@ class LogNormalPopulation(PopulationSynth):
 
     def __get_tau(self):
         """Calculates the 'tau' property."""
-        return self._lf_params["tau"]
+        return self._params["tau"]
 
     def ___get_tau(self):
         """Indirect accessor for 'tau' property."""
@@ -52,7 +54,7 @@ class LogNormalPopulation(PopulationSynth):
 
     def __set_tau(self, tau):
         """Sets the 'tau' property."""
-        self.set_luminosity_function_parameters(mu=self.mu, tau=tau)
+        self.set_distribution_params(mu=self.mu, tau=tau)
 
     def ___set_tau(self, tau):
         """Indirect setter for 'tau' property."""
