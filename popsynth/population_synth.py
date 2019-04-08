@@ -90,9 +90,9 @@ class SpatialDistribution(Distribution):
     def time_adjustment(self, r):
         """FIXME! briefly describe function
 
-        :param r: 
-        :returns: 
-        :rtype: 
+        :param r:
+        :returns:
+        :rtype:
 
         """
 
@@ -101,7 +101,7 @@ class SpatialDistribution(Distribution):
     @abc.abstractmethod
     def transform(self, flux, distance):
         pass
-    
+
     def draw_distance(self, size, verbose):
         """
         Draw the distances from the specified dN/dr model
@@ -154,11 +154,11 @@ class SpatialDistribution(Distribution):
 def rejection_sample(size, ymax, xmax, func):
 
     r_out = []
-    
+
     for i in prange(size):
         flag = True
         while flag:
-        
+
             # get am rvs from 0 to the max of the function
 
             y = np.random.uniform(low=0, high=ymax)
@@ -174,11 +174,11 @@ def rejection_sample(size, ymax, xmax, func):
                 flag = False
 
     return r_out
-    
-    
 
 
-    
+
+
+
 
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
@@ -207,11 +207,11 @@ class PopulationSynth(object):
     def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234):
         """FIXME! briefly describe function
 
-        :param r_max: 
-        :param seed: 
-        :param name: 
-        :returns: 
-        :rtype: 
+        :param r_max:
+        :param seed:
+        :param name:
+        :returns:
+        :rtype:
 
         """
 
@@ -257,7 +257,7 @@ class PopulationSynth(object):
     def add_model_space(self, name, start, stop, log=True):
         """
         Add a model space for stan generated quantities
-    
+
         :param name: name that Stan will use
         :param start: start of the grid
         :param stop: stop of the grid
@@ -276,9 +276,9 @@ class PopulationSynth(object):
     def add_observed_quantity(self, auxiliary_sampler):
         """FIXME! briefly describe function
 
-        :param auxiliary_sampler: 
-        :returns: 
-        :rtype: 
+        :param auxiliary_sampler:
+        :returns:
+        :rtype:
 
         """
 
@@ -521,7 +521,7 @@ class PopulationSynth(object):
             else:
 
                 for p in detection_probability:
-                    
+
                     # make a bernoulli draw given the detection probability
                     if stats.bernoulli.rvs(p) == 1:
 
@@ -530,8 +530,8 @@ class PopulationSynth(object):
                     else:
 
                         selection.append(False)
-                    
-                        
+
+
             selection = np.array(selection)
 
         else:
@@ -550,8 +550,8 @@ class PopulationSynth(object):
 
         # pbar.update()
         if sum(selection) == n:
-            
-    
+
+
             if verbose:
                 print("NO HIDDEN OBJECTS")
 
@@ -597,9 +597,9 @@ class PopulationSynth(object):
 
                         unknown_distance_idx.append(i)
 
-                
-                        
-                        
+
+
+
             if verbose:
                 print("Detected %d distances" % len(known_distances))
 
@@ -659,7 +659,7 @@ class PopulationSynth(object):
     def display(self):
         """
         Display the simulation parameters
-        
+
         """
 
         if self._luminosity_distribution is not None:
