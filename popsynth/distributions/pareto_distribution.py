@@ -4,7 +4,7 @@ from popsynth.population_synth import LuminosityDistribution
 
 
 class ParetoDistribution(LuminosityDistribution):
-    def __init__(self, Lmin, alpha, r_max=10, seed=1234, name="pareto"):
+    def __init__(self, Lmin, alpha, seed=1234, name="pareto"):
         """
         A Pareto luminosity function
 
