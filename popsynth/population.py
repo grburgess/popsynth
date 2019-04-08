@@ -521,17 +521,19 @@ class Population(object):
 
         display(Markdown(info))
 
-        out = {"parameter": [], "value": []}
+        if self._lf_params is not None:
+        
+            out = {"parameter": [], "value": []}
 
-        display(Markdown("## Luminosity Function"))
-        for k, v in self._lf_params.items():
+            display(Markdown("## Luminosity Function"))
+            for k, v in self._lf_params.items():
 
-            out["parameter"].append(k)
-            out["value"].append(v)
+                out["parameter"].append(k)
+                out["value"].append(v)
 
-        display(Math(self._lf_form))
-        display(pd.DataFrame(out))
-        out = {"parameter": [], "value": []}
+            display(Math(self._lf_form))
+            display(pd.DataFrame(out))
+            out = {"parameter": [], "value": []}
 
         display(Markdown("## Spatial Function"))
 
