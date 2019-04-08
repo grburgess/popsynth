@@ -172,7 +172,7 @@ class CosmologicalDistribution(SpatialDistribution):
         vector[M] log_dvdz_tilde;
         vector[M] log_pndet;
 
-        
+
 
         """
 
@@ -181,16 +181,16 @@ class CosmologicalDistribution(SpatialDistribution):
         if not distance_flag:
 
             code = """
-        
+
             log_flux_obs ~ normal(log10(flux_latent), flux_sigma);
-            
+
             // add the differential of the inhomogeneous process on
             // and detection probability
-        
+
             target += total_static_prob;
             target += sum(log(dNdV(known_z_obs, r0, rise, decay, peak)));
-            
-            
+
+
             // unkown z
             target += sum( log( differential_comoving_volume(z, Om, Ode, hubble_distance, Om_reduced,Om_sqrt,phi_0) ) - log(1+z) );
             target += sum( log( dNdV(z, r0, rise, decay, peak) ) );
@@ -199,7 +199,7 @@ class CosmologicalDistribution(SpatialDistribution):
         else:
 
             code = """
-        
+
             log_flux_obs ~ normal(log10(flux_latent), flux_sigma);
 
 
@@ -218,7 +218,7 @@ class CosmologicalDistribution(SpatialDistribution):
 
 
         log_flux_tilde_latent = log10(transform(lum_tilde_latent, z_tilde, hubble_distance, Om_reduced, Om_sqrt, phi_0));
-        
+
 
         log_dndv_tilde =  log(dNdV(z_tilde, r0, rise, decay, peak));
         log_dvdz_tilde = log(differential_comoving_volume(z_tilde, Om, Ode, hubble_distance, Om_reduced,Om_sqrt,phi_0))-log(1+z_tilde);
@@ -245,7 +245,7 @@ class CosmologicalDistribution(SpatialDistribution):
         }
 
         // Poisson normalization for the integral rate
-        
+
         // (Distinguishiable) Poisson process model
 
         params[1] = r0;
@@ -264,8 +264,8 @@ class CosmologicalDistribution(SpatialDistribution):
         integration_result = integrate_ode_rk45(N_integrand, state0, 0.0, zout, params, x_r, x_i);
         Lambda = integration_result[1,1];
 
-        
-        
+
+
         target += - Lambda - Lambda0;
         """
 
@@ -285,7 +285,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
     def dNdV(self, z):
         return _dndv(z, self._params['r0'], self._params['rise'], self._params['decay'], self._params['peak'])
-  
+
 
     def __get_r0(self):
         """Calculates the 'r0' property."""
@@ -382,18 +382,18 @@ def _dndv(z, r0, rise, decay, peak):
 
     return r0 * top / bottom
 
-        
+
 class MergerDistribution(CosmologicalDistribution):
     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 
 
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
-        
+
         super(MergerDistribution, self).__init__(r_max=r_max, seed=seed, name=name, form=spatial_form)
 
         self._construct_distribution_params(r0=r0, td=td, sigma=sigma)
 
-        
+
 
         self._td = td
         self._sigma = sigma

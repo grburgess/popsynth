@@ -24,9 +24,9 @@ class AuxiliarySampler(object):
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
 
-        :param luminosity: 
-        :returns: 
-        :rtype: 
+        :param luminosity:
+        :returns:
+        :rtype:
 
         """
 
@@ -35,9 +35,9 @@ class AuxiliarySampler(object):
     def set_distance(self, distance):
         """FIXME! briefly describe function
 
-        :param distance: 
-        :returns: 
-        :rtype: 
+        :param distance:
+        :returns:
+        :rtype:
 
         """
 
@@ -121,9 +121,9 @@ class AuxiliarySampler(object):
     def get_secondary_properties(self, recursive_secondaries=None):
         """FIXME! briefly describe function
 
-        :param recursive_secondaries: 
-        :returns: 
-        :rtype: 
+        :param recursive_secondaries:
+        :returns:
+        :rtype:
 
         """
 
@@ -192,8 +192,8 @@ class AuxiliarySampler(object):
         """
         The true values
 
-        :returns: 
-        :rtype: 
+        :returns:
+        :rtype:
 
         """
 
@@ -203,8 +203,8 @@ class AuxiliarySampler(object):
     def obs_values(self):
         """
         The observed values
-        :returns: 
-        :rtype: 
+        :returns:
+        :rtype:
 
         """
 
@@ -215,7 +215,7 @@ class AuxiliarySampler(object):
         """
         The selection function
 
-        :returns: 
+        :returns:
         :rtype: np.ndarray
 
         """
@@ -238,11 +238,11 @@ class DerivedLumAuxSampler(AuxiliarySampler):
     def __init__(self, name, sigma, observed=True):
         """FIXME! briefly describe function
 
-        :param name: 
-        :param sigma: 
-        :param observed: 
-        :returns: 
-        :rtype: 
+        :param name:
+        :param sigma:
+        :param observed:
+        :returns:
+        :rtype:
 
         """
 

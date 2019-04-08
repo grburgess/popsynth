@@ -71,7 +71,7 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
         self._construct_distribution_params(Lambda=Lambda, delta=delta)
 
 
-        
+
     def __get_delta(self):
         """Calculates the 'delta' property."""
         return self._params["delta"]

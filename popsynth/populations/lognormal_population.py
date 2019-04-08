@@ -8,13 +8,13 @@ class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
     def __init__(self, Lambda, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param mu: 
-        :param tau: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -30,14 +30,14 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
     def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
+        :param Lambda:
         :param delta:
-        :param mu: 
-        :param tau: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -51,21 +51,21 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
             luminosity_distribution=luminosity_distribution)
 
 
-        
+
 class LogNormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-         :param mu: 
-        :param tau: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param r0:
+        :param rise:
+        :param decay:
+        :param peak:
+         :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -85,13 +85,13 @@ class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
     def __init__(self, Lambda, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param mu: 
-        :param tau: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -107,14 +107,14 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
     def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
+        :param Lambda:
         :param delta:
-        :param mu: 
-        :param tau: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -128,21 +128,21 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
             luminosity_distribution=luminosity_distribution)
 
 
-        
+
 class Log10NormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-        :param mu: 
-        :param tau: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param r0:
+        :param rise:
+        :param decay:
+        :param peak:
+        :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -157,4 +157,3 @@ class Log10NormalSFRPopulation(SFRPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution)
-

@@ -11,11 +11,11 @@ class SchechterDistribution(LuminosityDistribution):
 
         :param Lmin: the minimum luminosity
         :param alpha: the power law index
-        :param r_max: the maximum distance to integrate 
+        :param r_max: the maximum distance to integrate
         :param seed: the random number seed
-        :param name: the name 
+        :param name: the name
         :returns: None
-        :rtype: 
+        :rtype:
 
         """
 
@@ -28,9 +28,9 @@ class SchechterDistribution(LuminosityDistribution):
     def phi(self, L):
         """FIXME! briefly describe function
 
-        :param L: 
-        :returns: 
-        :rtype: 
+        :param L:
+        :returns:
+        :rtype:
 
         """
 
@@ -43,9 +43,9 @@ class SchechterDistribution(LuminosityDistribution):
     def draw_luminosity(self, size=1):
         """FIXME! briefly describe function
 
-        :param size: 
-        :returns: 
-        :rtype: 
+        :param size:
+        :returns:
+        :rtype:
 
         """
 

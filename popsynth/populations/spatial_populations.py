@@ -5,7 +5,7 @@ from popsynth.distributions.spherical_distribution import (
 from popsynth.distributions.cosmological_distribution import (
     SFRDistribtution,
     MergerDistribution,
-    
+
 )
 
 from popsynth.population_synth import PopulationSynth
@@ -17,12 +17,12 @@ class SphericalPopulation(PopulationSynth):
     def __init__(self, Lambda, r_max=5.0, seed=1234, luminosity_distribution=None):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param r_max: 
-        :param seed: 
-        :param luminosity_distribution: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param r_max:
+        :param seed:
+        :param luminosity_distribution:
+        :returns:
+        :rtype:
 
         """
 
@@ -43,13 +43,13 @@ class ZPowerSphericalPopulation(PopulationSynth):
     ):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param delta: 
-        :param r_max: 
-        :param seed: 
-        :param luminosity_distribution: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param delta:
+        :param r_max:
+        :param seed:
+        :param luminosity_distribution:
+        :returns:
+        :rtype:
 
         """
 
@@ -70,15 +70,15 @@ class SFRPopulation(PopulationSynth):
     ):
         """FIXME! briefly describe function
 
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-        :param r_max: 
-        :param seed: 
-        :param luminosity_distribution: 
-        :returns: 
-        :rtype: 
+        :param r0:
+        :param rise:
+        :param decay:
+        :param peak:
+        :param r_max:
+        :param seed:
+        :param luminosity_distribution:
+        :returns:
+        :rtype:
 
         """
 
@@ -91,4 +91,3 @@ class SFRPopulation(PopulationSynth):
             luminosity_distribution=luminosity_distribution,
             seed=seed,
         )
-

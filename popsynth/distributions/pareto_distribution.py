@@ -8,13 +8,13 @@ class ParetoDistribution(LuminosityDistribution):
         """
         A Pareto luminosity function
 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :param name: 
-        :returns: 
-        :rtype: 
+        :param Lmin:
+        :param alpha:
+        :param r_max:
+        :param seed:
+        :param name:
+        :returns:
+        :rtype:
 
         """
 
@@ -23,15 +23,15 @@ class ParetoDistribution(LuminosityDistribution):
 
         self._construct_distribution_params(Lmin=Lmin, alpha=alpha)
 
-        
+
 
     def phi(self, L):
         """
         The luminosity function
 
-        :param L: 
-        :returns: 
-        :rtype: 
+        :param L:
+        :returns:
+        :rtype:
 
         """
 
@@ -46,9 +46,9 @@ class ParetoDistribution(LuminosityDistribution):
     def draw_luminosity(self, size=1):
         """FIXME! briefly describe function
 
-        :param size: 
-        :returns: 
-        :rtype: 
+        :param size:
+        :returns:
+        :rtype:
 
         """
 
