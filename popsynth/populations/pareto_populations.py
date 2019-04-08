@@ -3,7 +3,7 @@ from popsynth.distributions.pareto_distribution import ParetoDistribution
 
 
 class ParetoHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, Lmin, alpha, r_max=10, seed=1234):
+    def __init__(self, Lambda, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
@@ -26,7 +26,7 @@ class ParetoHomogeneousSphericalPopulation(SphericalPopulation):
         )
 
 class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self, Lambda, delta, Lmin, alpha, r_max=10, seed=1234):
+    def __init__(self, Lambda, delta, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
@@ -53,7 +53,7 @@ class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         
 class ParetoSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
+    def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param r0: 

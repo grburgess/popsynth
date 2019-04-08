@@ -4,7 +4,7 @@ from popsynth.population_synth import LuminosityDistribution
 
 
 class Log10NormalDistribution(LuminosityDistribution):
-    def __init__(self, mu, tau, seed=1234, name="lognorm"):
+    def __init__(self, mu, tau, seed=1234, name="log10norm"):
 
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
         

@@ -5,7 +5,7 @@ from popsynth.distributions.log_normal_distribution import LogNormalDistribution
 
 
 class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, mu, tau, r_max=10, seed=1234):
+    def __init__(self, Lambda, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
@@ -27,7 +27,7 @@ class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
             luminosity_distribution=luminosity_distribution)
 
 class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self, Lambda, delta, mu, tau, r_max=10, seed=1234):
+    def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
@@ -53,7 +53,7 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         
 class LogNormalSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=10, seed=1234):
+    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param r0: 
@@ -82,7 +82,7 @@ class LogNormalSFRPopulation(SFRPopulation):
             luminosity_distribution=luminosity_distribution)
 
 class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, mu, tau, r_max=10, seed=1234):
+    def __init__(self, Lambda, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
@@ -104,7 +104,7 @@ class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
             luminosity_distribution=luminosity_distribution)
 
 class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self, Lambda, delta, mu, tau, r_max=10, seed=1234):
+    def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
@@ -130,7 +130,7 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         
 class Log10NormalSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=10, seed=1234):
+    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param r0: 
