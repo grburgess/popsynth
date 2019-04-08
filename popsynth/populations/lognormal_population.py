@@ -51,7 +51,7 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
         
-class LogNormalSFRPopulation(SphericalPopulation):
+class LogNormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, alpha, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
@@ -127,7 +127,7 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
         
-class Log10NormalSFRPopulation(SphericalPopulation):
+class Log10NormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, alpha, r_max=10, seed=1234):
         """FIXME! briefly describe function
 

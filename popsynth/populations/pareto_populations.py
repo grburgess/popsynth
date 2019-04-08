@@ -51,7 +51,7 @@ class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
         
-class ParetoSFRPopulation(SphericalPopulation):
+class ParetoSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
         """FIXME! briefly describe function
 
