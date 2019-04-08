@@ -32,7 +32,7 @@ class ZPowerSphericalPopulation(PopulationSynth):
         self, Lambda, delta, r_max=10.0, seed=1234, luminosity_distribution=None
     ):
 
-        spatial_distribution = ZPowerConstantSphericalDistribution(
+        spatial_distribution = ZPowerSphericalDistribution(
             Lambda=Lambda, delta=delta, r_max=r_max, seed=seed
         )
 
