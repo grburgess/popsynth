@@ -29,6 +29,7 @@ REQUIRED = [
     "Cython",
     "stan_utility",
     "tqdm",
+    "numba"
 ]
 
 # What packages are optional?

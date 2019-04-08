@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 
 from astropy.cosmology import WMAP9 as cosmo
 
@@ -8,6 +8,9 @@ from popsynth.utils.package_data import copy_package_data
 
 import scipy.integrate as integrate
 from astropy.constants import c as sol
+
+from numba import jit, njit
+
 
 sol = sol.value
 
@@ -19,7 +22,7 @@ Om_reduced = (1 - Om) / Om
 Om_sqrt = np.sqrt(Om)
 Ode = 1 - Om - (cosmo.Onu0 + cosmo.Ogamma0)
 
-
+@njit(fastmath=True)
 def Phi(x):
     x2 = x * x
     x3 = x * x * x
@@ -27,28 +30,28 @@ def Phi(x):
     bottom = 1.0 + 1.392 * x + 0.5121 * x2 + 0.03944 * x3
     return top / bottom
 
-
+@njit(fastmath=True)
 def xx(z):
-    return Om_reduced / np.power(1 + z, 3)
+    return Om_reduced / np.power(1. + z, 3)
 
-
+@njit(fastmath=True)
 def luminosity_distance(z):
     x = xx(z)
-    z1 = 1 + z
+    z1 = 1. + z
     val = (
         (2 * dh * z1 / Om_sqrt) * (Phi(xx(0)) - 1.0 / (np.sqrt(z1)) * Phi(x)) * 3.086e24
     )  # in cm
     return val
 
-
+@njit(fastmath=True)
 def a(z):
     return np.sqrt(np.power(1 + z, 3.0) * Om + Ode)
 
-
+@njit(fastmath=True)
 def comoving_transverse_distance(z):
     return luminosity_distance(z) / (1.0 + z)
 
-
+@njit(fastmath=True)
 def differential_comoving_volume(z):
     td = comoving_transverse_distance(z) / 3.086e24
     return (dh * td * td / a(z)) * 1e-9  # Gpc^3
@@ -281,10 +284,8 @@ class SFRDistribtution(CosmologicalDistribution):
         self._construct_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
     def dNdV(self, z):
-        top = 1.0 + self.rise * z
-        bottom = 1 + np.power(z / self.peak, self.decay)
-
-        return self.r0 * top / bottom
+        return _dndv(z, self._params['r0'], self._params['rise'], self._params['decay'], self._params['peak'])
+  
 
     def __get_r0(self):
         """Calculates the 'r0' property."""
@@ -374,6 +375,14 @@ class SFRDistribtution(CosmologicalDistribution):
         stan_gen.blocks["functions"].add_include("sfr_functions.stan")
 
 
+@njit(fastmath=True)
+def _dndv(z, r0, rise, decay, peak):
+    top = 1.0 + rise * z
+    bottom = 1. + np.power(z / peak, decay)
+
+    return r0 * top / bottom
+
+        
 class MergerDistribution(CosmologicalDistribution):
     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 

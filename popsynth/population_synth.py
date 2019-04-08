@@ -12,7 +12,7 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
-
+from numba import jit, njit, prange, float64
 
 class Distribution(object):
     def __init__(self, name, seed, form):
@@ -101,7 +101,7 @@ class SpatialDistribution(Distribution):
     @abc.abstractmethod
     def transform(self, flux, distance):
         pass
-
+    
     def draw_distance(self, size, verbose):
         """
         Draw the distances from the specified dN/dr model
@@ -115,7 +115,7 @@ class SpatialDistribution(Distribution):
         )
 
         # find the maximum point
-        tmp = np.linspace(0, self._r_max, 500)
+        tmp = np.linspace(0., self._r_max, 500, dtype=np.float64)
         ymax = np.max(dNdr(tmp))
 
         # rejection sampling the distribution
@@ -141,23 +141,7 @@ class SpatialDistribution(Distribution):
                         flag = False
         else:
 
-            for i in range(size):
-                flag = True
-                while flag:
-
-                    # get am rvs from 0 to the max of the function
-
-                    y = np.random.uniform(low=0, high=ymax)
-
-                    # get an rvs from 0 to the maximum distance
-
-                    r = np.random.uniform(low=0, high=self._r_max)
-
-                    # compare them
-
-                    if y < dNdr(r):
-                        r_out.append(r)
-                        flag = False
+            r_out = rejection_sample(size, ymax, self._r_max, dNdr)
 
         return np.array(r_out)
 
@@ -165,6 +149,36 @@ class SpatialDistribution(Distribution):
     def r_max(self):
         return self._r_max
 
+
+@jit(parallel=True, fastmath=True)
+def rejection_sample(size, ymax, xmax, func):
+
+    r_out = []
+    
+    for i in prange(size):
+        flag = True
+        while flag:
+        
+            # get am rvs from 0 to the max of the function
+
+            y = np.random.uniform(low=0, high=ymax)
+
+            # get an rvs from 0 to the maximum distance
+
+            r = np.random.uniform(low=0, high=xmax)
+
+            # compare them
+
+            if y < func(r):
+                r_out.append(r)
+                flag = False
+
+    return r_out
+    
+    
+
+
+    
 
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
@@ -396,8 +410,8 @@ class PopulationSynth(object):
                 "sigma": self._derived_luminosity_sampler.sigma,
                 "selection": self._derived_luminosity_sampler.selection,
             }
-
-            print("Getting luminosity from derived sampler")
+            if verbose:
+                print("Getting luminosity from derived sampler")
             luminosities = self._derived_luminosity_sampler.compute_luminosity()
 
             # collect anything that was sampled here
@@ -490,19 +504,34 @@ class PopulationSynth(object):
         if not hard_cut:
 
             selection = []
-            for p in progress_bar(
-                detection_probability, desc="samping detection probability"
-            ):
+            if verbose:
+                for p in progress_bar(
+                    detection_probability, desc="samping detection probability"
+                ):
 
-                # make a bernoulli draw given the detection probability
-                if stats.bernoulli.rvs(p) == 1:
+                    # make a bernoulli draw given the detection probability
+                    if stats.bernoulli.rvs(p) == 1:
 
-                    selection.append(True)
+                        selection.append(True)
 
-                else:
+                    else:
 
-                    selection.append(False)
+                        selection.append(False)
 
+            else:
+
+                for p in detection_probability:
+                    
+                    # make a bernoulli draw given the detection probability
+                    if stats.bernoulli.rvs(p) == 1:
+
+                        selection.append(True)
+
+                    else:
+
+                        selection.append(False)
+                    
+                        
             selection = np.array(selection)
 
         else:
@@ -521,7 +550,10 @@ class PopulationSynth(object):
 
         # pbar.update()
         if sum(selection) == n:
-            print("NO HIDDEN OBJECTS")
+            
+    
+            if verbose:
+                print("NO HIDDEN OBJECTS")
 
         if distance_probability is not None:
             # pbar.set_description(desc='Selecting sistances')
@@ -533,9 +565,26 @@ class PopulationSynth(object):
                 distance_probability <= 1.0
             ), "the distance detection must be between 0 and 1"
 
-            with progress_bar(
-                len(distances[selection]), desc="Selecting distances"
-            ) as pbar2:
+            if verbose:
+                with progress_bar(
+                    len(distances[selection]), desc="Selecting distances"
+                ) as pbar2:
+                    for i, d in enumerate(distances[selection]):
+
+                        # see if we detect the distance
+                        if stats.bernoulli.rvs(distance_probability) == 1:
+
+                            known_distances.append(d)
+                            known_distance_idx.append(i)
+
+                        else:
+
+                            unknown_distance_idx.append(i)
+
+                        pbar2.update()
+
+            else:
+
                 for i, d in enumerate(distances[selection]):
 
                     # see if we detect the distance
@@ -548,8 +597,11 @@ class PopulationSynth(object):
 
                         unknown_distance_idx.append(i)
 
-                    pbar2.update()
-            print("Detected %d distances" % len(known_distances))
+                
+                        
+                        
+            if verbose:
+                print("Detected %d distances" % len(known_distances))
 
         else:
 
@@ -561,14 +613,16 @@ class PopulationSynth(object):
         known_distance_idx = np.array(known_distance_idx)
         unknown_distance_idx = np.array(unknown_distance_idx)
 
-        try:
-            print(
-                "Deteced %d objects or to a distance of %.2f"
-                % (sum(selection), max(known_distances))
-            )
+        if verbose:
+            try:
 
-        except:
-            print("No Objects detected")
+                print(
+                    "Deteced %d objects or to a distance of %.2f"
+                    % (sum(selection), max(known_distances))
+                )
+
+            except:
+                print("No Objects detected")
         # return a Population object
 
         ## just to make sure we do not do anything nutty
