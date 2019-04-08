@@ -14,64 +14,46 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from tqdm.autonotebook import tqdm as progress_bar
 
 
-class PopulationSynth(object):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, r_max=10, seed=1234, name="no_name"):
-        """FIXME! briefly describe function
-
-        :param r_max: 
-        :param seed: 
-        :param name: 
-        :returns: 
-        :rtype: 
-
-        """
-
-        self._n_model = 500
-        self._seed = int(seed)
-        self._model_spaces = {}
-        self._auxiliary_observations = {}
+class Distribution(object):
+    def __init__(self, name, seed, form):
+        self._seed = seed
         self._name = name
+        self._form = form
 
-        self._r_max = r_max
+    @property
+    def name(self):
+        return self._name
 
-        self._has_derived_luminosity = False
-        self._derived_luminosity_sampler = None
+    @property
+    def form(self):
+        return self._form
 
-    def set_luminosity_function_parameters(self, **lf_params):
+    @property
+    def params(self):
+        return self._params
+
+    def _construct_distribution_params(self, **params):
         """
-        Set the luminosity function parameters as keywords
+        Build the initial distributional parameters
         """
 
-        try:
-            for k, v in lf_params.items():
+        self._params = {}
 
-                if k in self._lf_params:
-                    self._lf_params[k] = v
+        for k, v in params.items():
 
-                else:
-                    RuntimeWarning(
-                        "%s was not originally in the parameters... ignoring." % k
-                    )
+            self._params[k] = v
 
-        except:
-
-            # we have not set params before
-
-            self._lf_params = lf_params
-
-    def set_spatial_distribution_params(self, **spatial_params):
+    def set_distribution_params(self, **params):
         """
         Set the spatial parameters as keywords
         """
 
         try:
 
-            for k, v in spatial_params.items():
+            for k, v in params.items():
 
-                if k in self._spatial_params:
-                    self._spatial_params[k] = v
+                if k in self._params:
+                    self._params[k] = v
                 else:
                     RuntimeWarning(
                         "%s was not originally in the parameters... ignoring." % k
@@ -81,56 +63,17 @@ class PopulationSynth(object):
 
             # we have not set these before
 
-            self._spatial_params = spatial_params
+            self._params = params
 
-    def add_model_space(self, name, start, stop, log=True):
-        """
-        Add a model space for stan generated quantities
-    
-        :param name: name that Stan will use
-        :param start: start of the grid
-        :param stop: stop of the grid
-        :param log: use log10 or not
 
-        """
-        if log:
-            space = np.logspace(np.log10(start), np.log10(stop), self._n_model)
+class SpatialDistribution(Distribution):
+    __metaclass__ = abc.ABCMeta
 
-        else:
+    def __init__(self, name, r_max, seed, form=None):
 
-            space = np.linspace(start, stop, self._n_model)
+        self._r_max = r_max
 
-        self._model_spaces[name] = space
-
-    def add_observed_quantity(self, auxiliary_sampler):
-        """FIXME! briefly describe function
-
-        :param auxiliary_sampler: 
-        :returns: 
-        :rtype: 
-
-        """
-
-        if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
-            self._has_derived_luminosity = True
-            self._derived_luminosity_sampler = auxiliary_sampler
-
-        else:
-
-            self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
-
-    @property
-    def name(self):
-        return self._name
-
-    # The following methods must be implemented in subclasses
-
-    @abc.abstractmethod
-    def phi(self, L):
-
-        raise RuntimeError("Must be implemented in derived class")
-
-        pass
+        super(SpatialDistribution, self).__init__(name=name, seed=seed, form=form)
 
     @abc.abstractmethod
     def differential_volume(self, distance):
@@ -154,6 +97,10 @@ class PopulationSynth(object):
         """
 
         return 1.0
+
+    @abc.abstractmethod
+    def transform(self, flux, distance):
+        pass
 
     def draw_distance(self, size, verbose):
         """
@@ -214,13 +161,120 @@ class PopulationSynth(object):
 
         return np.array(r_out)
 
+    @property
+    def r_max(self):
+        return self._r_max
+
+
+class LuminosityDistribution(Distribution):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, name, seed, form=None):
+
+        super(LuminosityDistribution, self).__init__(name=name, seed=seed, form=form)
+
+        self._params = None
+
+    @abc.abstractmethod
+    def phi(self, L):
+
+        raise RuntimeError("Must be implemented in derived class")
+
+        pass
+
     @abc.abstractmethod
     def draw_luminosity(self, size):
         pass
 
-    @abc.abstractmethod
-    def transform(self, flux, distance):
-        pass
+
+class PopulationSynth(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234):
+        """FIXME! briefly describe function
+
+        :param r_max: 
+        :param seed: 
+        :param name: 
+        :returns: 
+        :rtype: 
+
+        """
+
+        self._n_model = 500
+        self._seed = int(seed)
+        self._model_spaces = {}
+        self._auxiliary_observations = {}
+
+        self._name = "%s" % spatial_distribution.name
+        if luminosity_distribution is not None:
+            self._name = "%s_%s" % (self._name, luminosity_distribution.name)
+            assert isinstance(luminosity_distribution, LuminosityDistribution), 'the luminosity_distribution is the wrong type'
+
+        assert isinstance(spatial_distribution, SpatialDistribution), 'the spatial_distribution is the wrong type'
+
+        self._spatial_distribution = spatial_distribution
+        self._luminosity_distribution = luminosity_distribution
+
+        self._has_derived_luminosity = False
+        self._derived_luminosity_sampler = None
+
+        self._params = {}
+
+        # keep a list of parameters here for checking
+
+        for k, v in self._spatial_distribution.params.items():
+
+            self._params[k] = v
+
+        if self._luminosity_distribution is not None:
+            for k, v in self._luminosity_distribution.params.items():
+
+                self._params[k] = v
+
+    @property
+    def spatial_distribution(self):
+        return self._spatial_distribution
+
+    @property
+    def luminosity_distribution(self):
+        return self._luminosity_distribution
+
+    def add_model_space(self, name, start, stop, log=True):
+        """
+        Add a model space for stan generated quantities
+    
+        :param name: name that Stan will use
+        :param start: start of the grid
+        :param stop: stop of the grid
+        :param log: use log10 or not
+
+        """
+        if log:
+            space = np.logspace(np.log10(start), np.log10(stop), self._n_model)
+
+        else:
+
+            space = np.linspace(start, stop, self._n_model)
+
+        self._model_spaces[name] = space
+
+    def add_observed_quantity(self, auxiliary_sampler):
+        """FIXME! briefly describe function
+
+        :param auxiliary_sampler: 
+        :returns: 
+        :rtype: 
+
+        """
+
+        if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
+            self._has_derived_luminosity = True
+            self._derived_luminosity_sampler = auxiliary_sampler
+
+        else:
+
+            self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
 
     def _prob_det(self, x, boundary, strength):
         """
@@ -232,6 +286,10 @@ class PopulationSynth(object):
         """
 
         return sf.expit(strength * (x - boundary))
+
+    @property
+    def name(self):
+        return self._name
 
     def draw_log10_fobs(self, f, f_sigma, size=1):
         """
@@ -272,20 +330,20 @@ class PopulationSynth(object):
 
         # create a callback of the integrand
         dNdr = (
-            lambda r: self.dNdV(r)
-            * self.differential_volume(r)
-            / self.time_adjustment(r)
+            lambda r: self._spatial_distribution.dNdV(r)
+            * self._spatial_distribution.differential_volume(r)
+            / self._spatial_distribution.time_adjustment(r)
         )
 
         # integrate the population to determine the true number of
         # objects
-        N = integrate.quad(dNdr, 0.0, self._r_max)[0]
+        N = integrate.quad(dNdr, 0.0, self._spatial_distribution._r_max)[0]
 
         # this should be poisson distributed
         n = np.random.poisson(N)
         #       pbar.update()
         #       pbar.set_description(desc='Drawing distances')
-        distances = self.draw_distance(size=n, verbose=verbose)
+        distances = self._spatial_distribution.draw_distance(size=n, verbose=verbose)
 
         if verbose:
             print("Expecting %d total objects" % n)
@@ -304,6 +362,10 @@ class PopulationSynth(object):
 
         # this means the luminosity is not
         # simulated directy
+
+        if self.luminosity_distribution is None:
+
+            assert self._has_derived_luminosity
 
         if self._has_derived_luminosity:
 
@@ -357,10 +419,10 @@ class PopulationSynth(object):
         else:
             # pbar.update()
             # draw all the values
-            luminosities = self.draw_luminosity(size=n)
+            luminosities = self.luminosity_distribution.draw_luminosity(size=n)
 
         # transform the fluxes
-        fluxes = self.transform(luminosities, distances)
+        fluxes = self._spatial_distribution.transform(luminosities, distances)
 
         # now sample any auxilary quantities
         # if needed
@@ -549,6 +611,13 @@ class PopulationSynth(object):
                 print("No Objects detected")
         # return a Population object
 
+        ## just to make sure we do not do anything nutty
+        lf_params = None
+        lf_form = None
+        if self._luminosity_distribution is not None:
+
+            lf_params = self._luminosity_distribution.params
+            lf_form = self._luminosity_distribution.form
         return Population(
             luminosities=luminosities,
             distances=distances,
@@ -559,17 +628,17 @@ class PopulationSynth(object):
             flux_obs=np.power(10, log10_fluxes_obs),
             selection=selection,
             flux_sigma=flux_sigma,
-            r_max=self._r_max,
+            r_max=self._spatial_distribution.r_max,
             n_model=self._n_model,
-            lf_params=self._lf_params,
-            spatial_params=self._spatial_params,
+            lf_params=lf_params,
+            spatial_params=self._spatial_distribution.params,
             model_spaces=self._model_spaces,
             boundary=boundary,
             strength=strength,
             seed=self._seed,
             name=self._name,
-            spatial_form=self._spatial_form,
-            lf_form=self._lf_form,
+            spatial_form=self._spatial_distribution.form,
+            lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
         )
 
@@ -579,26 +648,28 @@ class PopulationSynth(object):
         
         """
 
-        out = {"parameter": [], "value": []}
+        if self._luminosity_distribution is not None:
 
-        display(Markdown("## Luminosity Function"))
-        for k, v in self._lf_params.items():
+            out = {"parameter": [], "value": []}
 
-            out["parameter"].append(k)
-            out["value"].append(v)
+            display(Markdown("## Luminosity Function"))
+            for k, v in self._luminosity_distribution.params.items():
 
-        display(Math(self._lf_form))
-        display(pd.DataFrame(out))
+                out["parameter"].append(k)
+                out["value"].append(v)
+
+            display(Math(self._luminosity_distribution.form))
+            display(pd.DataFrame(out))
         out = {"parameter": [], "value": []}
 
         display(Markdown("## Spatial Function"))
 
-        for k, v in self._spatial_params.items():
+        for k, v in self._spatial_distribution.params.items():
 
             out["parameter"].append(k)
             out["value"].append(v)
 
-        display(Math(self._spatial_form))
+        display(Math(self._spatial_distribution.form))
         display(pd.DataFrame(out))
 
     def generate_stan_code(self, stan_gen, **kwargs):

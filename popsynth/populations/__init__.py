@@ -1,19 +1,43 @@
-from .spherical_population import SphericalPopulation
-from .cosmological_population import CosmologicalPopulation, SFRPopulation
-from .pareto_population import ParetoPopulation
-from .log10_normal_population import Log10NormalPopulation
-from .log_normal_population import LogNormalPopulation
-from .schechter_population import SchechterPopulation
-from .bpl_population import BPLPopulation
+from .spatial_populations import (
+    SphericalPopulation,
+    SFRPopulation,
+    ZPowerSphericalPopulation,
+)
+from .pareto_populations import (
+    ParetoHomogeneousSphericalPopulation,
+    ParetoSFRPopulation,
+    ParetoZPowerSphericalPopulation,
+)
 
+from .schechter_populations import (
+    SchechterHomogeneousSphericalPopulation,
+    SchechterSFRPopulation,
+    SchechterZPowerSphericalPopulation,
+)
+
+from .lognormal_population import (
+    Log10NormalSFRPopulation,
+    Log10NormalHomogeneousSphericalPopulation,
+    Log10NormalZPowerSphericalPopulation,
+    LogNormalHomogeneousSphericalPopulation,
+    LogNormalSFRPopulation,
+    LogNormalZPowerSphericalPopulation,
+)
 
 __all__ = [
     "SphericalPopulation",
-    "CosmologicalPopulation",
     "SFRPopulation",
-    "ParetoPopulation",
-    "Log10NormalPopulation",
-    "LogNormalPopulation",
-    "SchechterPopulation",
-    "BPLPopulation",
+    "ZPowerSphericalPopulation",
+    "ParetoHomogeneousSphericalPopulation",
+    "ParetoSFRPopulation",
+    "ParetoZPowerSphericalPopulation",
+    "SchechterHomogeneousSphericalPopulation",
+    "SchechterSFRPopulation",
+    "SchechterZPowerSphericalPopulation",
+    "Log10NormalHomogeneousSphericalPopulation",
+    "Log10NormalSFRPopulation",
+    "Log10NormalZPowerSphericalPopulation",
+    "LogNormalHomogeneousSphericalPopulation",
+    "LogNormalSFRPopulation",
+    "LogNormalZPowerSphericalPopulation",
 ]

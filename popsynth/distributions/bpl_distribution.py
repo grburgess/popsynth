@@ -24,17 +24,17 @@ def bpl(x, idx1, xbreak, idx2):
         return pow(x / xbreak, -idx2)
 
 
-from popsynth.population_synth import PopulationSynth
+from popsynth.population_synth import LuminosityDistribution
 
 
-class BPLPopulation(PopulationSynth):
+class BPLPopulation(LuminosityDistribution):
     def __init__(
-        self, Lmin, alpha, Lbreak, beta, Lmax, r_max=10, seed=1234, name="_pareto"
+        self, Lmin, alpha, Lbreak, beta, Lmax,  seed=1234, name="bpl"
     ):
 
-        PopulationSynth.__init__(self, r_max, seed, name)
+        PopulationSynth.__init__(self, name=name, seed=seed)
 
-        self.set_luminosity_function_parameters(
+        self.set_distribution_params(
             Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax
         )
 
@@ -84,7 +84,7 @@ class BPLPopulation(PopulationSynth):
 
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
-        return self._lf_params["Lmin"]
+        return self._params["Lmin"]
 
     def ___get_Lmin(self):
         """Indirect accessor for 'Lmin' property."""
@@ -92,7 +92,7 @@ class BPLPopulation(PopulationSynth):
 
     def __set_Lmin(self, Lmin):
         """Sets the 'Lmin' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lmin=Lmin)
+        self.set_distribution_params(alpha=self.alpha, Lmin=Lmin)
 
     def ___set_Lmin(self, Lmin):
         """Indirect setter for 'Lmin' property."""
@@ -102,7 +102,7 @@ class BPLPopulation(PopulationSynth):
 
     def __get_Lmax(self):
         """Calculates the 'Lmax' property."""
-        return self._lf_params["Lmax"]
+        return self._params["Lmax"]
 
     def ___get_Lmax(self):
         """Indirect accessor for 'Lmax' property."""
@@ -110,7 +110,7 @@ class BPLPopulation(PopulationSynth):
 
     def __set_Lmax(self, Lmax):
         """Sets the 'Lmax' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lmax=Lmax)
+        self.set_distribution_params(alpha=self.alpha, Lmax=Lmax)
 
     def ___set_Lmax(self, Lmax):
         """Indirect setter for 'Lmax' property."""
@@ -120,7 +120,7 @@ class BPLPopulation(PopulationSynth):
 
     def __get_Lbreak(self):
         """Calculates the 'Lbreak' property."""
-        return self._lf_params["Lbreak"]
+        return self._params["Lbreak"]
 
     def ___get_Lbreak(self):
         """Indirect accessor for 'Lbreak' property."""
@@ -128,7 +128,7 @@ class BPLPopulation(PopulationSynth):
 
     def __set_Lbreak(self, Lbreak):
         """Sets the 'Lbreak' property."""
-        self.set_luminosity_function_parameters(alpha=self.alpha, Lbreak=Lbreak)
+        self.set_distribution_params(alpha=self.alpha, Lbreak=Lbreak)
 
     def ___set_Lbreak(self, Lbreak):
         """Indirect setter for 'Lbreak' property."""
@@ -138,7 +138,7 @@ class BPLPopulation(PopulationSynth):
 
     def __get_alpha(self):
         """Calculates the 'alpha' property."""
-        return self._lf_params["alpha"]
+        return self._params["alpha"]
 
     def ___get_alpha(self):
         """Indirect accessor for 'alpha' property."""
@@ -146,7 +146,7 @@ class BPLPopulation(PopulationSynth):
 
     def __set_alpha(self, alpha):
         """Sets the 'alpha' property."""
-        self.set_luminosity_function_parameters(alpha=alpha, Lmin=self.Lmin)
+        self.set_distribution_params(alpha=alpha, Lmin=self.Lmin)
 
     def ___set_alpha(self, alpha):
         """Indirect setter for 'alpha' property."""
@@ -156,7 +156,7 @@ class BPLPopulation(PopulationSynth):
 
     def __get_beta(self):
         """Calculates the 'beta' property."""
-        return self._lf_params["beta"]
+        return self._params["beta"]
 
     def ___get_beta(self):
         """Indirect accessor for 'beta' property."""
@@ -164,7 +164,7 @@ class BPLPopulation(PopulationSynth):
 
     def __set_beta(self, beta):
         """Sets the 'beta' property."""
-        self.set_luminosity_function_parameters(beta=beta, Lmin=self.Lmin)
+        self.set_distribution_params(beta=beta, Lmin=self.Lmin)
 
     def ___set_beta(self, beta):
         """Indirect setter for 'beta' property."""
