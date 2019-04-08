@@ -568,6 +568,14 @@ class PopulationSynth(object):
             print("No Objects detected")
         # return a Population object
 
+
+        ## just to make sure we do not do anything nutty
+        lf_params = None
+        lf_form=None
+        if self._luminosity_distribution is not None:
+
+            lf_params = self._luminosity_distribution.params
+            lf_form = self._luminosity_distribution.form
         return Population(
             luminosities=luminosities,
             distances=distances,
@@ -580,7 +588,7 @@ class PopulationSynth(object):
             flux_sigma=flux_sigma,
             r_max=self._spatial_distribution.r_max,
             n_model=self._n_model,
-            lf_params=self._luminosity_distribution.params,
+            lf_params=lf_params,
             spatial_params=self._spatial_distribution.params,
             model_spaces=self._model_spaces,
             boundary=boundary,
@@ -588,7 +596,7 @@ class PopulationSynth(object):
             seed=self._seed,
             name=self._name,
             spatial_form=self._spatial_distribution.form,
-            lf_form=self._luminosity_distribution.form,
+            lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
         )
 
@@ -600,15 +608,18 @@ class PopulationSynth(object):
 
         out = {"parameter": [], "value": []}
 
-        display(Markdown("## Luminosity Function"))
-        for k, v in self._luminosity_distribution.params.items():
 
-            out["parameter"].append(k)
-            out["value"].append(v)
+        if self._luminosity_distribution is not None:
 
-        display(Math(self._luminosity_distribution.form))
-        display(pd.DataFrame(out))
-        out = {"parameter": [], "value": []}
+            display(Markdown("## Luminosity Function"))
+            for k, v in self._luminosity_distribution.params.items():
+
+                out["parameter"].append(k)
+                out["value"].append(v)
+
+            display(Math(self._luminosity_distribution.form))
+            display(pd.DataFrame(out))
+            out = {"parameter": [], "value": []}
 
         display(Markdown("## Spatial Function"))
 
