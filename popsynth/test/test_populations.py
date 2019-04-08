@@ -126,8 +126,15 @@ class Popbuilder(object):
         pop = self.draw_hard()
 
         pop.display()
-        pop.display_fluxes()
-        pop.display_flux_sphere()
+
+        fig = pop.display_fluxes()
+
+        del fig
+
+        fig = pop.display_flux_sphere()
+
+        del fig
+
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
@@ -136,8 +143,15 @@ class Popbuilder(object):
         pop = self.draw_soft()
 
         pop.display()
-        pop.display_fluxes()
-        pop.display_flux_sphere()
+        
+        fig = pop.display_fluxes()
+
+        del fig
+
+        fig = pop.display_flux_sphere()
+
+        del fig
+
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
@@ -146,8 +160,15 @@ class Popbuilder(object):
         pop = self.draw_z_select()
 
         pop.display()
-        pop.display_fluxes()
-        pop.display_flux_sphere()
+
+        fig = pop.display_fluxes()
+
+        del fig
+
+        fig = pop.display_flux_sphere()
+
+        del fig
+
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
