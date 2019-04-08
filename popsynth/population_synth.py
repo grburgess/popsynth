@@ -595,7 +595,7 @@ class PopulationSynth(object):
             out["parameter"].append(k)
             out["value"].append(v)
 
-        display(Math(self._spatial_distribution.2form))
+        display(Math(self._spatial_distribution.form))
         display(pd.DataFrame(out))
 
     def generate_stan_code(self, stan_gen, **kwargs):
