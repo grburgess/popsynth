@@ -533,7 +533,7 @@ class Population(object):
 
             display(Math(self._lf_form))
             display(pd.DataFrame(out))
-            out = {"parameter": [], "value": []}
+        out = {"parameter": [], "value": []}
 
         display(Markdown("## Spatial Function"))
 
