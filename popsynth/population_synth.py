@@ -12,7 +12,7 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
-from numba import jit
+from numba import jit, njit, prange, float64
 
 class Distribution(object):
     def __init__(self, name, seed, form):
@@ -115,7 +115,7 @@ class SpatialDistribution(Distribution):
         )
 
         # find the maximum point
-        tmp = np.linspace(0, self._r_max, 500)
+        tmp = np.linspace(0., self._r_max, 500, dtype=np.float64)
         ymax = np.max(dNdr(tmp))
 
         # rejection sampling the distribution
@@ -150,12 +150,12 @@ class SpatialDistribution(Distribution):
         return self._r_max
 
 
-@jit(parallel=True)
+@jit(parallel=True, fastmath=True)
 def rejection_sample(size, ymax, xmax, func):
 
     r_out = []
     
-    for i in range(size):
+    for i in prange(size):
         flag = True
         while flag:
         
