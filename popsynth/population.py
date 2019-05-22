@@ -455,18 +455,25 @@ class Population(object):
 
             # we must double check that there are LF params
 
-            if f.attrs['has_lf']:
-                lf_params = {}
-                for key in f["lf_params"].keys():
+            try:
+            
+                if f.attrs['has_lf']:
+                    lf_params = {}
+                    for key in f["lf_params"].keys():
 
-                    lf_params[key] = f["lf_params"][key].value[0]
-                lf_form = str(f.attrs["lf_form"])
+                        lf_params[key] = f["lf_params"][key].value[0]
+                    lf_form = str(f.attrs["lf_form"])
 
-            else:
+                else:
+
+                    lf_params = None
+                    lf_form = None
+            except:
 
                 lf_params = None
                 lf_form = None
-
+                
+                    
 
             flux_sigma = f.attrs["flux_sigma"]
             boundary = f.attrs["boundary"]
@@ -817,6 +824,8 @@ class Population(object):
         ax.set_ylim(-R, R)
         ax.set_zlim(-R, R)
 
+        return fig
+
     def display_fluxes_sphere(
         self, ax=None, cmap="magma", distance_transform=None, use_log=False, **kwargs
     ):
@@ -959,6 +968,9 @@ class Population(object):
         # ax.set_ylim(-R, R)
         # ax.set_zlim(-R, R)
 
+
+        return fig
+        
     def display_flux_sphere(
         self,
         ax=None,

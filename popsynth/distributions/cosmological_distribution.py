@@ -383,6 +383,48 @@ def _dndv(z, r0, rise, decay, peak):
     return r0 * top / bottom
 
 
+
+class ZPowerCosmoDistribution(CosmologicalDistribution):
+    def __init__(
+        self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="zpow_sphere"
+    ):
+
+        spatial_form = r"\Lambda (z+1)^{\delta}"
+
+        super(ZPowerCosmoDistribution, self).__init__(
+            Lambda, r_max, seed, name, form=spatial_form
+        )
+
+
+        self._construct_distribution_params(Lambda=Lambda, delta=delta)
+
+
+
+    def __get_delta(self):
+        """Calculates the 'delta' property."""
+        return self._params["delta"]
+
+    def ___get_delta(self):
+        """Indirect accessor for 'delta' property."""
+        return self.__get_delta()
+
+    def __set_delta(self, delta):
+        """Sets the 'delta' property."""
+        self.set_distribution_params(delta=delta)
+
+    def ___set_delta(self, delta):
+        """Indirect setter for 'delta' property."""
+        self.__set_delta(delta)
+
+    delta = property(___get_delta, ___set_delta, doc="""Gets or sets the delta.""")
+
+    def dNdV(self, distance):
+
+        return self._params["Lambda"] * np.power(distance + 1.0, self._params["delta"])
+
+
+
+
 class MergerDistribution(CosmologicalDistribution):
     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 

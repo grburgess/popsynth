@@ -5,7 +5,7 @@ from popsynth.distributions.spherical_distribution import (
 from popsynth.distributions.cosmological_distribution import (
     SFRDistribtution,
     MergerDistribution,
-
+    ZPowerCosmoDistribution
 )
 
 from popsynth.population_synth import PopulationSynth
@@ -63,6 +63,34 @@ class ZPowerSphericalPopulation(PopulationSynth):
             seed=seed,
         )
 
+
+class ZPowerCosmoPopulation(PopulationSynth):
+    def __init__(
+        self, Lambda, delta, r_max=5.0, seed=1234, luminosity_distribution=None
+    ):
+        """FIXME! briefly describe function
+
+        :param Lambda:
+        :param delta:
+        :param r_max:
+        :param seed:
+        :param luminosity_distribution:
+        :returns:
+        :rtype:
+
+        """
+
+        spatial_distribution = ZPoweCosmoDistribution(
+            Lambda=Lambda, delta=delta, r_max=r_max, seed=seed
+        )
+
+        super(ZPowerSphericalPopulation, self).__init__(
+            spatial_distribution=spatial_distribution,
+            luminosity_distribution=luminosity_distribution,
+            seed=seed,
+        )
+
+        
 
 class SFRPopulation(PopulationSynth):
     def __init__(

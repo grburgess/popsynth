@@ -115,7 +115,7 @@ class SpatialDistribution(Distribution):
         )
 
         # find the maximum point
-        tmp = np.linspace(0., self._r_max, 500, dtype=np.float64)
+        tmp = np.linspace(0.0, self._r_max, 500, dtype=np.float64)
         ymax = np.max(dNdr(tmp))
 
         # rejection sampling the distribution
@@ -176,10 +176,6 @@ def rejection_sample(size, ymax, xmax, func):
     return r_out
 
 
-
-
-
-
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
@@ -223,9 +219,13 @@ class PopulationSynth(object):
         self._name = "%s" % spatial_distribution.name
         if luminosity_distribution is not None:
             self._name = "%s_%s" % (self._name, luminosity_distribution.name)
-            assert isinstance(luminosity_distribution, LuminosityDistribution), 'the luminosity_distribution is the wrong type'
+            assert isinstance(
+                luminosity_distribution, LuminosityDistribution
+            ), "the luminosity_distribution is the wrong type"
 
-        assert isinstance(spatial_distribution, SpatialDistribution), 'the spatial_distribution is the wrong type'
+        assert isinstance(
+            spatial_distribution, SpatialDistribution
+        ), "the spatial_distribution is the wrong type"
 
         self._spatial_distribution = spatial_distribution
         self._luminosity_distribution = luminosity_distribution
@@ -531,7 +531,6 @@ class PopulationSynth(object):
 
                         selection.append(False)
 
-
             selection = np.array(selection)
 
         else:
@@ -550,7 +549,6 @@ class PopulationSynth(object):
 
         # pbar.update()
         if sum(selection) == n:
-
 
             if verbose:
                 print("NO HIDDEN OBJECTS")
@@ -596,9 +594,6 @@ class PopulationSynth(object):
                     else:
 
                         unknown_distance_idx.append(i)
-
-
-
 
             if verbose:
                 print("Detected %d distances" % len(known_distances))
