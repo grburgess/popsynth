@@ -15,8 +15,8 @@ class SphericalDistribution(SpatialDistribution):
         return 4 * np.pi * r * r
 
     def transform(self, L, r):
-
-        return L / (4.0 * np.pi * (r + 1) * (r + 1))
+            
+        return L / (4.0 * np.pi * r * r)
 
 
 class ConstantSphericalDistribution(SphericalDistribution):
