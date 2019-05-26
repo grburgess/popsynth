@@ -2,6 +2,7 @@ from .spatial_populations import (
     SphericalPopulation,
     SFRPopulation,
     ZPowerSphericalPopulation,
+    ZPowerCosmoPopulation
 )
 from .pareto_populations import (
     ParetoHomogeneousSphericalPopulation,
@@ -28,6 +29,7 @@ __all__ = [
     "SphericalPopulation",
     "SFRPopulation",
     "ZPowerSphericalPopulation",
+    "ZPowerCosmoPopulation",
     "ParetoHomogeneousSphericalPopulation",
     "ParetoSFRPopulation",
     "ParetoZPowerSphericalPopulation",
