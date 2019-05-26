@@ -89,7 +89,3 @@ class ParetoDistribution(LuminosityDistribution):
         self.__set_alpha(alpha)
 
     alpha = property(___get_alpha, ___set_alpha, doc="""Gets or sets the alpha.""")
-
-    def generate_stan_code(self, stan_gen, **kwargs):
-
-        pass
