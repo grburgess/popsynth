@@ -1,4 +1,8 @@
-from popsynth.populations.spatial_populations import SphericalPopulation, ZPowerSphericalPopulation, SFRPopulation
+from popsynth.populations.spatial_populations import (
+    SphericalPopulation,
+    ZPowerSphericalPopulation,
+    SFRPopulation,
+)
 
 from popsynth.distributions.log10_normal_distribution import Log10NormalDistribution
 from popsynth.distributions.log_normal_distribution import LogNormalDistribution
@@ -24,7 +28,9 @@ class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
             Lambda=Lambda,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
+            luminosity_distribution=luminosity_distribution,
+        )
+
 
 class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
     def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
@@ -48,8 +54,8 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
             delta=delta,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
-
+            luminosity_distribution=luminosity_distribution,
+        )
 
 
 class LogNormalSFRPopulation(SFRPopulation):
@@ -69,7 +75,6 @@ class LogNormalSFRPopulation(SFRPopulation):
 
         """
 
-
         luminosity_distribution = LogNormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(LogNormalSFRPopulation, self).__init__(
@@ -79,7 +84,9 @@ class LogNormalSFRPopulation(SFRPopulation):
             peak=peak,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
+            luminosity_distribution=luminosity_distribution,
+        )
+
 
 class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
     def __init__(self, Lambda, mu, tau, r_max=5, seed=1234):
@@ -101,7 +108,9 @@ class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
             Lambda=Lambda,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
+            luminosity_distribution=luminosity_distribution,
+        )
+
 
 class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
     def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
@@ -125,8 +134,8 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
             delta=delta,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
-
+            luminosity_distribution=luminosity_distribution,
+        )
 
 
 class Log10NormalSFRPopulation(SFRPopulation):
@@ -146,7 +155,6 @@ class Log10NormalSFRPopulation(SFRPopulation):
 
         """
 
-
         luminosity_distribution = Log10NormalDistribution(mu=mu, tau=tau, seed=seed)
 
         super(Log10NormalSFRPopulation, self).__init__(
@@ -156,4 +164,5 @@ class Log10NormalSFRPopulation(SFRPopulation):
             peak=peak,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
+            luminosity_distribution=luminosity_distribution,
+        )

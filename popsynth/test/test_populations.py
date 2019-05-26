@@ -5,6 +5,7 @@ import os
 import copy
 import matplotlib.pyplot as plt
 
+
 class DemoSampler(popsynth.AuxiliarySampler):
     def __init__(self, mu=2, tau=1.0, sigma=1):
 
@@ -108,7 +109,9 @@ class Popbuilder(object):
 
     def draw_hard(self):
 
-        return self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.4, hard_cut=True, verbose=False)
+        return self.pop_gen.draw_survey(
+            boundary=1e-6, flux_sigma=0.4, hard_cut=True, verbose=False
+        )
 
     def draw_soft(self):
 
@@ -132,11 +135,7 @@ class Popbuilder(object):
 
         fig = pop.display_fluxes()
 
-
-
         fig = pop.display_flux_sphere()
-
-
 
         pop.writeto("_saved_pop.h5")
 
@@ -152,11 +151,7 @@ class Popbuilder(object):
 
         fig = pop.display_fluxes()
 
-
-
         fig = pop.display_flux_sphere()
-
-
 
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
@@ -171,11 +166,7 @@ class Popbuilder(object):
 
         fig = pop.display_fluxes()
 
-
-
         fig = pop.display_flux_sphere()
-
-
 
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
@@ -183,8 +174,8 @@ class Popbuilder(object):
         os.remove("_saved_pop.h5")
 
         # clean up
-        plt.close('all')
-        
+        plt.close("all")
+
 
 def test_spatial_population_with_derived():
 

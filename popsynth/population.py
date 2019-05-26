@@ -115,12 +115,11 @@ class Population(object):
 
             self._no_detection = True
 
-            print('THERE ARE NO DETECTED OBJECTS IN THE POPULATION')
+            print("THERE ARE NO DETECTED OBJECTS IN THE POPULATION")
 
         else:
 
             self._no_detection = False
-
 
         if auxiliary_quantities is not None:
 
@@ -448,7 +447,6 @@ class Population(object):
 
             spatial_params = {}
 
-
             for key in f["spatial_params"].keys():
 
                 spatial_params[key] = f["spatial_params"][key].value[0]
@@ -456,8 +454,8 @@ class Population(object):
             # we must double check that there are LF params
 
             try:
-            
-                if f.attrs['has_lf']:
+
+                if f.attrs["has_lf"]:
                     lf_params = {}
                     for key in f["lf_params"].keys():
 
@@ -472,8 +470,6 @@ class Population(object):
 
                 lf_params = None
                 lf_form = None
-                
-                    
 
             flux_sigma = f.attrs["flux_sigma"]
             boundary = f.attrs["boundary"]
@@ -639,17 +635,15 @@ class Population(object):
         # to plot
 
         if self._no_detection:
-            print('There are no detections to display')
+            print("There are no detections to display")
             if ax is not None:
 
-                fig =ax.get_figure()
+                fig = ax.get_figure()
 
                 return fig
             else:
 
                 return
-
-
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -752,17 +746,15 @@ class Population(object):
         """
 
         if self._no_detection:
-            print('There are no detections to display')
+            print("There are no detections to display")
             if ax is not None:
 
-                fig =ax.get_figure()
+                fig = ax.get_figure()
 
                 return fig
             else:
 
                 return
-
-
 
         if ax is None:
             fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
@@ -968,9 +960,8 @@ class Population(object):
         # ax.set_ylim(-R, R)
         # ax.set_zlim(-R, R)
 
-
         return fig
-        
+
     def display_flux_sphere(
         self,
         ax=None,

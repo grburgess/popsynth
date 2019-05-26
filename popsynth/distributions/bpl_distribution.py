@@ -28,9 +28,7 @@ from popsynth.population_synth import LuminosityDistribution
 
 
 class BPLPopulation(LuminosityDistribution):
-    def __init__(
-        self, Lmin, alpha, Lbreak, beta, Lmax,  seed=1234, name="bpl"
-    ):
+    def __init__(self, Lmin, alpha, Lbreak, beta, Lmax, seed=1234, name="bpl"):
 
         PopulationSynth.__init__(self, name=name, seed=seed)
 

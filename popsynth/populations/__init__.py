@@ -2,7 +2,7 @@ from .spatial_populations import (
     SphericalPopulation,
     SFRPopulation,
     ZPowerSphericalPopulation,
-    ZPowerCosmoPopulation
+    ZPowerCosmoPopulation,
 )
 from .pareto_populations import (
     ParetoHomogeneousSphericalPopulation,

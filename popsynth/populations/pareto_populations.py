@@ -1,4 +1,8 @@
-from popsynth.populations.spatial_populations import SphericalPopulation, ZPowerSphericalPopulation, SFRPopulation
+from popsynth.populations.spatial_populations import (
+    SphericalPopulation,
+    ZPowerSphericalPopulation,
+    SFRPopulation,
+)
 from popsynth.distributions.pareto_distribution import ParetoDistribution
 
 
@@ -24,6 +28,7 @@ class ParetoHomogeneousSphericalPopulation(SphericalPopulation):
             seed=seed,
             luminosity_distribution=luminosity_distribution,
         )
+
 
 class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
     def __init__(self, Lambda, delta, Lmin, alpha, r_max=5, seed=1234):
@@ -51,7 +56,6 @@ class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
         )
 
 
-        
 class ParetoSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
@@ -69,7 +73,6 @@ class ParetoSFRPopulation(SFRPopulation):
 
         """
 
-
         luminosity_distribution = ParetoDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
 
         super(ParetoSFRPopulation, self).__init__(
@@ -81,4 +84,3 @@ class ParetoSFRPopulation(SFRPopulation):
             seed=seed,
             luminosity_distribution=luminosity_distribution,
         )
-

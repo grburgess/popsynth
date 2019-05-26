@@ -14,6 +14,7 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from tqdm.autonotebook import tqdm as progress_bar
 from numba import jit, njit, prange, float64
 
+
 class Distribution(object):
     def __init__(self, name, seed, form):
         self._seed = seed

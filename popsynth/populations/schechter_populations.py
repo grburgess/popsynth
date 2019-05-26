@@ -1,4 +1,8 @@
-from popsynth.populations.spatial_populations import SphericalPopulation, ZPowerSphericalPopulation, SFRPopulation
+from popsynth.populations.spatial_populations import (
+    SphericalPopulation,
+    ZPowerSphericalPopulation,
+    SFRPopulation,
+)
 
 from popsynth.distributions.schechter_distribution import SchechterDistribution
 
@@ -17,13 +21,17 @@ class SchechterHomogeneousSphericalPopulation(SphericalPopulation):
 
         """
 
-        luminosity_distribution = SchechterDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
+        luminosity_distribution = SchechterDistribution(
+            Lmin=Lmin, alpha=alpha, seed=seed
+        )
 
         super(SchechterHomogeneousSphericalPopulation, self).__init__(
             Lambda=Lambda,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
+            luminosity_distribution=luminosity_distribution,
+        )
+
 
 class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
     def __init__(self, Lambda, delta, Lmin, alpha, r_max=10, seed=1234):
@@ -40,17 +48,19 @@ class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         """
 
-        luminosity_distribution = SchechterDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
+        luminosity_distribution = SchechterDistribution(
+            Lmin=Lmin, alpha=alpha, seed=seed
+        )
 
         super(SchechterZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
             delta=delta,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
+            luminosity_distribution=luminosity_distribution,
+        )
 
 
-        
 class SchechterSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
         """FIXME! briefly describe function
@@ -68,8 +78,9 @@ class SchechterSFRPopulation(SFRPopulation):
 
         """
 
-
-        luminosity_distribution = SchechterDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
+        luminosity_distribution = SchechterDistribution(
+            Lmin=Lmin, alpha=alpha, seed=seed
+        )
 
         super(SchechterSFRPopulation, self).__init__(
             r0=r0,
@@ -78,5 +89,5 @@ class SchechterSFRPopulation(SFRPopulation):
             peak=peak,
             r_max=r_max,
             seed=seed,
-            luminosity_distribution=luminosity_distribution)
-
+            luminosity_distribution=luminosity_distribution,
+        )

@@ -15,7 +15,7 @@ class SphericalDistribution(SpatialDistribution):
         return 4 * np.pi * r * r
 
     def transform(self, L, r):
-            
+
         return L / (4.0 * np.pi * r * r)
 
 
@@ -67,10 +67,7 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
             Lambda, r_max, seed, name, form=spatial_form
         )
 
-
         self._construct_distribution_params(Lambda=Lambda, delta=delta)
-
-
 
     def __get_delta(self):
         """Calculates the 'delta' property."""

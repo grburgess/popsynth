@@ -5,7 +5,7 @@ from popsynth.distributions.spherical_distribution import (
 from popsynth.distributions.cosmological_distribution import (
     SFRDistribtution,
     MergerDistribution,
-    ZPowerCosmoDistribution
+    ZPowerCosmoDistribution,
 )
 
 from popsynth.population_synth import PopulationSynth
@@ -90,7 +90,6 @@ class ZPowerCosmoPopulation(PopulationSynth):
             seed=seed,
         )
 
-        
 
 class SFRPopulation(PopulationSynth):
     def __init__(

@@ -7,12 +7,12 @@ class Log10NormalDistribution(LuminosityDistribution):
     def __init__(self, mu, tau, seed=1234, name="log10norm"):
 
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
-        
-        super(Log10NormalDistribution, self).__init__( name=name, seed=seed, form=lf_form)
+
+        super(Log10NormalDistribution, self).__init__(
+            name=name, seed=seed, form=lf_form
+        )
 
         self._construct_distribution_params(mu=mu, tau=tau)
-
-        
 
     def phi(self, L):
 

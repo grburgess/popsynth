@@ -22,6 +22,7 @@ Om_reduced = (1 - Om) / Om
 Om_sqrt = np.sqrt(Om)
 Ode = 1 - Om - (cosmo.Onu0 + cosmo.Ogamma0)
 
+
 @njit(fastmath=True)
 def Phi(x):
     x2 = x * x
@@ -30,26 +31,31 @@ def Phi(x):
     bottom = 1.0 + 1.392 * x + 0.5121 * x2 + 0.03944 * x3
     return top / bottom
 
+
 @njit(fastmath=True)
 def xx(z):
-    return Om_reduced / np.power(1. + z, 3)
+    return Om_reduced / np.power(1.0 + z, 3)
+
 
 @njit(fastmath=True)
 def luminosity_distance(z):
     x = xx(z)
-    z1 = 1. + z
+    z1 = 1.0 + z
     val = (
         (2 * dh * z1 / Om_sqrt) * (Phi(xx(0)) - 1.0 / (np.sqrt(z1)) * Phi(x)) * 3.086e24
     )  # in cm
     return val
 
+
 @njit(fastmath=True)
 def a(z):
     return np.sqrt(np.power(1 + z, 3.0) * Om + Ode)
 
+
 @njit(fastmath=True)
 def comoving_transverse_distance(z):
     return luminosity_distance(z) / (1.0 + z)
+
 
 @njit(fastmath=True)
 def differential_comoving_volume(z):
@@ -284,8 +290,13 @@ class SFRDistribtution(CosmologicalDistribution):
         self._construct_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
     def dNdV(self, z):
-        return _dndv(z, self._params['r0'], self._params['rise'], self._params['decay'], self._params['peak'])
-
+        return _dndv(
+            z,
+            self._params["r0"],
+            self._params["rise"],
+            self._params["decay"],
+            self._params["peak"],
+        )
 
     def __get_r0(self):
         """Calculates the 'r0' property."""
@@ -378,10 +389,9 @@ class SFRDistribtution(CosmologicalDistribution):
 @njit(fastmath=True)
 def _dndv(z, r0, rise, decay, peak):
     top = 1.0 + rise * z
-    bottom = 1. + np.power(z / peak, decay)
+    bottom = 1.0 + np.power(z / peak, decay)
 
     return r0 * top / bottom
-
 
 
 class ZPowerCosmoDistribution(CosmologicalDistribution):
@@ -395,10 +405,7 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
             Lambda, r_max, seed, name, form=spatial_form
         )
 
-
         self._construct_distribution_params(Lambda=Lambda, delta=delta)
-
-
 
     def __get_delta(self):
         """Calculates the 'delta' property."""
@@ -423,19 +430,16 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
         return self._params["Lambda"] * np.power(distance + 1.0, self._params["delta"])
 
 
-
-
 class MergerDistribution(CosmologicalDistribution):
     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 
-
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
-        super(MergerDistribution, self).__init__(r_max=r_max, seed=seed, name=name, form=spatial_form)
+        super(MergerDistribution, self).__init__(
+            r_max=r_max, seed=seed, name=name, form=spatial_form
+        )
 
         self._construct_distribution_params(r0=r0, td=td, sigma=sigma)
-
-
 
         self._td = td
         self._sigma = sigma
