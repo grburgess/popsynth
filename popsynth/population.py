@@ -667,9 +667,9 @@ class Population(object):
         ax.plot_wireframe(x2, y2, z2, color="grey", alpha=0.9, rcount=4, ccount=2)
 
         ax._axis3don = False
-        ax.set_xlim(-R, R)
-        ax.set_ylim(-R, R)
-        ax.set_zlim(-R, R)
+        ax.set_xlim(-self._r_max, self._r_max)
+        ax.set_ylim(-self._r_max, self._r_max)
+        ax.set_zlim(-self._r_max, self._r_max)
 
         return fig
 
@@ -713,9 +713,9 @@ class Population(object):
         ax.plot_wireframe(x2, y2, z2, color="grey", alpha=0.9, rcount=4, ccount=2)
 
         ax._axis3don = False
-        ax.set_xlim(-R, R)
-        ax.set_ylim(-R, R)
-        ax.set_zlim(-R, R)
+        ax.set_xlim(-self._r_max, self._r_max)
+        ax.set_ylim(-self._r_max, self._r_max)
+        ax.set_zlim(-self._r_max, self._r_max)
 
         return fig
 
@@ -776,9 +776,9 @@ class Population(object):
         ax.plot_wireframe(x2, y2, z2, color="grey", alpha=0.9, rcount=4, ccount=2)
 
         ax._axis3don = False
-        # ax.set_xlim(-R, R)
-        # ax.set_ylim(-R, R)
-        # ax.set_zlim(-R, R)
+        # ax.set_xlim(-self._r_max, self._r_max)
+        # ax.set_ylim(-self._r_max, self._r_max)
+        # ax.set_zlim(-self._r_max, self._r_max)
 
         return fig
 
