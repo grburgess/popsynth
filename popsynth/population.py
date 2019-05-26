@@ -649,28 +649,9 @@ class Population(object):
 
             distance = self._distance_selected
 
-        x, y, z = xyz(distance, theta, phi)
 
-        R = self._r_max
-
-        u = np.linspace(0, 2 * np.pi, 100)
-        v = np.linspace(0, np.pi, 100)
-        x2 = R * np.outer(np.cos(u), np.sin(v))
-        y2 = R * np.outer(np.sin(u), np.sin(v))
-        z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
-
-        if use_log:
-
-            x = np.log10(x)
-            y = np.log10(y)
-            z = np.log10(z)
-
-            x2 = np.log10(x2)
-            y2 = np.log10(y2)
-            z2 = np.log10(z2)
-
-            R = np.log10(R)
-
+        x,y,z, x2,y2,z2 = _create_sphere_variables(self._r_max, distance, theta, phi)
+            
         ax.scatter3D(
             x,
             y,
@@ -715,28 +696,8 @@ class Population(object):
 
             distance = self._distances
 
-        x, y, z = xyz(distance, theta, phi)
-
-        R = self._r_max
-
-        u = np.linspace(0, 2 * np.pi, 100)
-        v = np.linspace(0, np.pi, 100)
-        x2 = R * np.outer(np.cos(u), np.sin(v))
-        y2 = R * np.outer(np.sin(u), np.sin(v))
-        z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
-
-        if use_log:
-
-            x = np.log10(x)
-            y = np.log10(y)
-            z = np.log10(z)
-
-            x2 = np.log10(x2)
-            y2 = np.log10(y2)
-            z2 = np.log10(z2)
-
-            R = np.log10(R)
-
+        x,y,z, x2,y2,z2 = _create_sphere_variables(self._r_max, distance, theta, phi)
+            
         ax.scatter3D(
             x,
             y,
@@ -794,26 +755,7 @@ class Population(object):
 
             distance = self._distance_hidden
 
-        x, y, z = xyz(distance, theta, phi)
-
-        R = self._r_max
-
-        u = np.linspace(0, 2 * np.pi, 100)
-        v = np.linspace(0, np.pi, 100)
-        x2 = R * np.outer(np.cos(u), np.sin(v))
-        y2 = R * np.outer(np.sin(u), np.sin(v))
-        z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
-
-        if use_log:
-
-            x = np.log10(x)
-            y = np.log10(y)
-            z = np.log10(z)
-
-            x2 = np.log10(x2)
-            y2 = np.log10(y2)
-            z2 = np.log10(z2)
-            R = np.log10(R)
+        x,y,z, x2,y2,z2 = _create_sphere_variables(self._r_max, distance, theta, phi)
 
         ax.scatter3D(
             x,
@@ -945,3 +887,14 @@ class Population(object):
         ax.set_xlabel("z")
         ax.legend()
         # sns.despine(offset=5, trim=True);
+def _create_sphere_variables(R, distance, theta, phi):
+    x, y, z = xyz(distance, theta, phi)
+
+    
+    u = np.linspace(0, 2 * np.pi, 100)
+    v = np.linspace(0, np.pi, 100)
+    x2 = R * np.outer(np.cos(u), np.sin(v))
+    y2 = R * np.outer(np.sin(u), np.sin(v))
+    z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
+
+    return x,y,z, x2, y2, z2
