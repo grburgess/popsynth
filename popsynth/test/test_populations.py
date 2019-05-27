@@ -54,6 +54,7 @@ _spatial_dict = [
     popsynth.populations.SphericalPopulation,
     popsynth.populations.ZPowerSphericalPopulation,
     popsynth.populations.SFRPopulation,
+    popsynth.populations.ZPowerCosmoPopulation,
 ]
 
 _pareto_dict = [

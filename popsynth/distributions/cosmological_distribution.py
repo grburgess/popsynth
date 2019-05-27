@@ -200,7 +200,7 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
         super(ZPowerCosmoDistribution, self).__init__(
-            Lambda, r_max, seed, name, form=spatial_form
+            r_max=r_max, seed=seed, name=name, form=spatial_form
         )
 
         self._construct_distribution_params(Lambda=Lambda, delta=delta)

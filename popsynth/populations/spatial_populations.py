@@ -83,8 +83,8 @@ class ZPowerCosmoPopulation(PopulationSynth):
         spatial_distribution = ZPowerCosmoDistribution(
             Lambda=Lambda, delta=delta, r_max=r_max, seed=seed
         )
-
-        super(ZPowerSphericalPopulation, self).__init__(
+        
+        super(ZPowerCosmoPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
             luminosity_distribution=luminosity_distribution,
             seed=seed,
