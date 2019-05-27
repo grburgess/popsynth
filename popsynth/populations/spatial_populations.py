@@ -80,7 +80,7 @@ class ZPowerCosmoPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = ZPoweCosmoDistribution(
+        spatial_distribution = ZPowerCosmoDistribution(
             Lambda=Lambda, delta=delta, r_max=r_max, seed=seed
         )
 
