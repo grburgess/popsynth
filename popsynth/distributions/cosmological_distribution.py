@@ -14,13 +14,13 @@ from numba import jit, njit
 
 sol = sol.value
 
-
-h0 = 69.3
+h0 = 67.7
 dh = sol * 1.0e-3 / h0
-Om = 0.286
+Om = 0.307
 Om_reduced = (1 - Om) / Om
 Om_sqrt = np.sqrt(Om)
 Ode = 1 - Om - (cosmo.Onu0 + cosmo.Ogamma0)
+
 
 
 @njit(fastmath=True)
