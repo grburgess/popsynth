@@ -391,7 +391,7 @@ class PopulationSynth(object):
             # sample the true and obs
             # values which are held internally
 
-            self._derived_luminosity_sampler.draw(size=n)
+            self._derived_luminosity_sampler.draw(size=n, verbose=verbose)
 
             # check to make sure we sampled!
             assert (
@@ -460,7 +460,7 @@ class PopulationSynth(object):
             # values which are held internally
             # this will also invoke secondary samplers
 
-            v.draw(size=n)
+            v.draw(size=n, verbose=verbose)
 
             # check to make sure we sampled!
             assert v.true_values is not None and len(v.true_values) == n

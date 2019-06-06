@@ -65,7 +65,7 @@ class AuxiliarySampler(object):
         self._secondary_samplers[sampler.name] = sampler
         self._has_secondary = True
 
-    def draw(self, size=1):
+    def draw(self, size=1, verbose=True):
         """
         Draw the primary and secondary samplers. This is the main call.
 
@@ -73,11 +73,12 @@ class AuxiliarySampler(object):
         """
         # do not resample!
         if not self._is_sampled:
-
-            print("Sampling: %s" % self.name)
+            if verbose:
+                print("Sampling: %s" % self.name)
 
             if self._has_secondary:
-                print("%s is sampling its secondary quantities" % self.name)
+                if verbose:
+                    print("%s is sampling its secondary quantities" % self.name)
 
             for k, v in self._secondary_samplers.items():
 
@@ -87,7 +88,7 @@ class AuxiliarySampler(object):
                 # quantities to derive a luminosity
                 # as it should be the last thing dervied
 
-                v.draw(size=size)
+                v.draw(size=size, verbose=verbose)
 
             # Now, it is assumed that if this sampler depends on the previous samplers,
             # then those properties have been drawn
