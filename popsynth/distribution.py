@@ -3,8 +3,8 @@ import abc
 
 
 from popsynth.utils.rejection_sample import rejection_sample
-from popsynth.utils.progress_bar import progress_bar
 
+from tqdm.autonotebook import tqdm as progress_bar
 class Distribution(object):
     def __init__(self, name, seed, form, truth={}):
         """FIXME! briefly describe function
