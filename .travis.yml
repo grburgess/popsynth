@@ -2,8 +2,8 @@ language: python
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
   - "3.5"
-#  - "3.6"
-#  - "3.7-dev"
+  - "3.6"
+  - "3.7"
 install:
   - pip install numpy ipython scipy h5py matplotlib pystan betagen coverage pytest pytest-cov cython codecov
   - python setup.py install
