@@ -19,7 +19,9 @@ class SchechterDistribution(LuminosityDistribution):
 
         """
 
-        super(SchechterDistribution, self).__init__(name=name, seed=seed)
+        truth = dict(Lmin=Lmin, alpha=alpha)
+        
+        super(SchechterDistribution, self).__init__(name=name, seed=seed, truth=truth)
 
         self._construct_distribution_params(Lmin=Lmin, alpha=alpha)
 

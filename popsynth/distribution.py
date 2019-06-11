@@ -22,7 +22,7 @@ class Distribution(object):
         self._seed = seed
         self._name = name
         self._form = form
-        self._truth = {}
+        self._truth = truth
 
     @property
     def name(self):
@@ -92,6 +92,7 @@ class SpatialDistribution(Distribution):
 
         self._r_max = r_max
 
+        
         super(SpatialDistribution, self).__init__(
             name=name, seed=seed, form=form, truth=truth
         )

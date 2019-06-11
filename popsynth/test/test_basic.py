@@ -9,20 +9,26 @@ class DemoSampler(popsynth.AuxiliarySampler):
         self._mu = mu
         self._tau = tau
 
-        super(DemoSampler, self).__init__("demo", sigma, observed=False)
+
+        truth = dict(mu=mu,tau=tau)
+        
+        super(DemoSampler, self).__init__("demo", sigma, observed=False, truth=truth)
 
     def true_sampler(self, size):
 
         self._true_values = np.random.normal(self._mu, self._tau, size=size)
 
 
-class DemoSampler2(popsynth.AuxiliarySampler):
+class DemoSampler2(popsynth.DerivedLumAuxSampler):
     def __init__(self, mu=2, tau=1.0, sigma=1):
 
         self._mu = mu
         self._tau = tau
 
-        super(DemoSampler2, self).__init__("demo2", sigma, observed=True)
+
+        truth = dict(mu=mu,tau=tau)
+        
+        super(DemoSampler2, self).__init__("demo2", sigma, observed=True, truth=truth)
 
     def true_sampler(self, size):
 
@@ -39,6 +45,14 @@ class DemoSampler2(popsynth.AuxiliarySampler):
         self._obs_values = self._true_values + np.random.normal(
             0, self._sigma, size=size
         )
+
+    def compute_luminosity(self):
+
+        secondary = self._secondary_samplers["demo"]
+
+        return (10 ** (self._true_values + 54)) / secondary.true_values
+
+
 
 
 def test_basic_population():
@@ -58,6 +72,9 @@ def test_basic_population():
     population.display_fluxes()
     population.display_flux_sphere()
 
+    print(population.truth)
+
+    
     homo_sch_synth = popsynth.populations.SchechterHomogeneousSphericalPopulation(
         Lambda=0.1, Lmin=1, alpha=2.0
     )
@@ -66,6 +83,8 @@ def test_basic_population():
     population.display_fluxes()
     population.display_fluxes_sphere()
 
+    print(population.truth)
+    
     population.writeto("_saved_pop.h5")
     population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
