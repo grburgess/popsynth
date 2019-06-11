@@ -22,13 +22,14 @@ class PopulationSynth(object):
     def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234):
         """FIXME! briefly describe function
 
-        :param r_max:
-        :param seed:
-        :param name:
-        :returns:
-        :rtype:
+        :param spatial_distribution: 
+        :param luminosity_distribution: 
+        :param seed: 
+        :returns: 
+        :rtype: 
 
         """
+
 
         self._n_model = 500
         self._seed = int(seed)

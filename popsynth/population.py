@@ -10,7 +10,10 @@ import pandas as pd
 from IPython.display import display, Math, Markdown
 
 from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
-from popsynth.utils.hdf5_utils import recursively_save_dict_contents_to_group, recursively_save_dict_contents_to_group
+from popsynth.utils.hdf5_utils import (
+    recursively_save_dict_contents_to_group,
+    recursively_load_dict_contents_from_group,
+)
 
 from betagen import betagen
 
@@ -42,7 +45,7 @@ class Population(object):
         spatial_form=None,
         lf_form=None,
         auxiliary_quantities=None,
-        truth={}
+        truth={},
     ):
         """FIXME! briefly describe function
 
@@ -113,7 +116,6 @@ class Population(object):
 
         self._truth = truth
 
-        
         if sum(self._selection) == 0:
 
             self._no_detection = True
@@ -149,9 +151,9 @@ class Population(object):
         :rtype: 
 
         """
-        
+
         return self._truth
-                
+
     @property
     def luminosities(self):
         """
@@ -321,11 +323,9 @@ class Population(object):
 
                 model_grp.create_dataset(k, data=v, compression="lzf")
 
-
             # now store the truths
-            recursively_save_dict_contents_to_group(f, 'truth/', self._truth)
+            recursively_save_dict_contents_to_group(f, "truth/", self._truth)
 
-                
     @classmethod
     def from_file(cls, file_name):
         """FIXME! briefly describe function
@@ -410,9 +410,8 @@ class Population(object):
                     "sigma": f["auxiliary_quantities"][k].attrs["sigma"],
                 }
 
-            truth = recursively_load_dict_contents_from_group(f,'truth/')
+            truth = recursively_load_dict_contents_from_group(f, "truth/")
 
-                
         return cls(
             luminosities=luminosities,
             distances=distances,
@@ -435,7 +434,7 @@ class Population(object):
             spatial_form=spatial_form,
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
-            truth = truth
+            truth=truth,
         )
 
     def display(self):
