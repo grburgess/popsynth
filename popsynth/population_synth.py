@@ -10,7 +10,7 @@ from IPython.display import display, Math, Markdown
 from popsynth.population import Population
 from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.utils.rejection_sample import rejection_sample
-from population.distribution import LuminosityDistribution, SpatialDistribution
+from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
