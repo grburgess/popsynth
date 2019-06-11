@@ -1,7 +1,7 @@
 from numba import jit, njit, prange, float64
 import numpy as np
 
-@jit(parallel=True)
+@jit(parallel=True, forceobj=True)
 def rejection_sample(size, ymax, xmax, func):
     """FIXME! briefly describe function
 
