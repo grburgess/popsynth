@@ -1,7 +1,7 @@
 import scipy.special as sf
 import numpy as np
 
-from popsynth.population_synth import LuminosityDistribution
+from popsynth.distribution import LuminosityDistribution
 
 
 class SchechterDistribution(LuminosityDistribution):

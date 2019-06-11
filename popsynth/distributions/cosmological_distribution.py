@@ -3,7 +3,7 @@ import math
 
 from astropy.cosmology import WMAP9 as cosmo
 
-from popsynth.population_synth import SpatialDistribution
+from popsynth.distribution import SpatialDistribution
 from popsynth.utils.package_data import copy_package_data
 
 import scipy.integrate as integrate
@@ -64,10 +64,10 @@ def differential_comoving_volume(z):
 
 
 class CosmologicalDistribution(SpatialDistribution):
-    def __init__(self, r_max=10, seed=1234, name="cosmo", form=None):
+    def __init__(self, r_max=10, seed=1234, name="cosmo", form=None, truth={}):
 
         super(CosmologicalDistribution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=form
+            r_max=r_max, seed=seed, name=name, form=form, truth=truth
         )
 
     def differential_volume(self, z):
@@ -88,10 +88,18 @@ class SFRDistribtution(CosmologicalDistribution):
 
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
+
+        truth = dict(r0=r0, rise=rise, decay=decay, peak=peak)
+        
+        
         super(SFRDistribtution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=spatial_form
+            r_max=r_max, seed=seed, name=name, form=spatial_form, truth=truth
         )
 
+
+        
+
+        
         self._construct_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
     def dNdV(self, z):
@@ -194,13 +202,17 @@ def _dndv(z, r0, rise, decay, peak):
 
 class ZPowerCosmoDistribution(CosmologicalDistribution):
     def __init__(
-        self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="zpow_sphere"
+        self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="zpow_cosmo"
     ):
 
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
+
+        truth = dict(Lambda=Lambda, delta=delta)
+
+        
         super(ZPowerCosmoDistribution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=spatial_form
+            r_max=r_max, seed=seed, name=name, form=spatial_form, truth=truth
         )
 
         self._construct_distribution_params(Lambda=Lambda, delta=delta)

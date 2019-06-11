@@ -1,6 +1,6 @@
 import numpy as np
 import multiprocessing as mp
-
+from popsynth.distribution import LuminosityDistribution
 
 def sample_one(ymax, idx1, xbreak, idx2, xmin, xmax, i):
 
@@ -24,7 +24,7 @@ def bpl(x, idx1, xbreak, idx2):
         return pow(x / xbreak, -idx2)
 
 
-from popsynth.population_synth import LuminosityDistribution
+
 
 
 class BPLPopulation(LuminosityDistribution):

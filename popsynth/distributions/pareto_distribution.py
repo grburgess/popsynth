@@ -1,6 +1,6 @@
 import numpy as np
 
-from popsynth.population_synth import LuminosityDistribution
+from popsynth.distribution import LuminosityDistribution
 
 
 class ParetoDistribution(LuminosityDistribution):
@@ -18,8 +18,11 @@ class ParetoDistribution(LuminosityDistribution):
 
         """
 
+
+        truth = dict(Lmin=Lmin, alpha=alpha)
+
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
-        super(ParetoDistribution, self).__init__(seed=seed, name=name, form=lf_form)
+        super(ParetoDistribution, self).__init__(seed=seed, name=name, form=lf_form, truth=truth)
 
         self._construct_distribution_params(Lmin=Lmin, alpha=alpha)
 

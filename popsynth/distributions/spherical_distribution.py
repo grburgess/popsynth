@@ -1,6 +1,6 @@
 import numpy as np
 
-from popsynth.population_synth import SpatialDistribution
+from popsynth.distribution import SpatialDistribution
 
 
 class SphericalDistribution(SpatialDistribution):
