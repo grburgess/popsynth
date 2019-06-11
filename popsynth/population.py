@@ -324,7 +324,7 @@ class Population(object):
                 model_grp.create_dataset(k, data=v, compression="lzf")
 
             # now store the truths
-            recursively_save_dict_contents_to_group(f, "truth_", self._truth)
+            recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
     @classmethod
     def from_file(cls, file_name):
@@ -414,7 +414,7 @@ class Population(object):
             
 
                 
-            truth = recursively_load_dict_contents_from_group(f, "truth_")
+            truth = recursively_load_dict_contents_from_group(f, "truth")
 
         return cls(
             luminosities=luminosities,
