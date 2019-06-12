@@ -8,7 +8,7 @@ from tqdm.autonotebook import tqdm as progress_bar
 
 
 class Distribution(object):
-    def __init__(self, name, seed, form, truth={}):
+    def __init__(self, name, seed, form, truth=None):
         """FIXME! briefly describe function
 
         :param name: 
@@ -22,7 +22,13 @@ class Distribution(object):
         self._seed = seed
         self._name = name
         self._form = form
-        self._truth = truth
+
+        if truth is None:
+            self._truth = {}
+
+        else:
+
+            self._truth = truth
 
     @property
     def name(self):
@@ -77,7 +83,7 @@ class Distribution(object):
 class SpatialDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, r_max, seed, form=None, truth={}):
+    def __init__(self, name, r_max, seed, form=None, truth=None):
         """FIXME! briefly describe function
 
         :param name: 
@@ -92,7 +98,6 @@ class SpatialDistribution(Distribution):
 
         self._r_max = r_max
 
-        
         super(SpatialDistribution, self).__init__(
             name=name, seed=seed, form=form, truth=truth
         )
@@ -175,7 +180,7 @@ class SpatialDistribution(Distribution):
 class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, seed, form=None, truth={}):
+    def __init__(self, name, seed, form=None, truth=None):
         """FIXME! briefly describe function
 
         :param name: 

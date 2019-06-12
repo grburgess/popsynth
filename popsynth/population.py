@@ -410,10 +410,6 @@ class Population(object):
                     "sigma": f["auxiliary_quantities"][k].attrs["sigma"],
                 }
 
-
-            
-
-                
             truth = recursively_load_dict_contents_from_group(f, "truth")
 
         return cls(

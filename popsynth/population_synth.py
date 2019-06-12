@@ -16,6 +16,7 @@ from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from tqdm.autonotebook import tqdm as progress_bar
 from numba import jit, njit, prange, float64
 
+
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
 
@@ -29,7 +30,6 @@ class PopulationSynth(object):
         :rtype: 
 
         """
-
 
         self._n_model = 500
         self._seed = int(seed)
@@ -157,14 +157,12 @@ class PopulationSynth(object):
         :return: a Population object
         """
 
-
         # this stores all the "true" population values from all the samplers
         truth = dict()
 
         # store the spatial distribution truths
         truth[self._spatial_distribution.name] = self._spatial_distribution.truth
 
-        
         # set the random seed
 
         #        pbar = progress_bar(total=5, desc='Integrating volume')
@@ -244,11 +242,12 @@ class PopulationSynth(object):
 
             # collect anything that was sampled here
 
-
             # store the truth from the derived lum sampler
 
-            truth[self._derived_luminosity_sampler.name] = self._derived_luminosity_sampler.truth
-            
+            truth[
+                self._derived_luminosity_sampler.name
+            ] = self._derived_luminosity_sampler.truth
+
             for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
 
                 # first we tell the sampler to go and retrieve all of
@@ -264,7 +263,7 @@ class PopulationSynth(object):
                 # store the secondary truths
                 # this will _could_ be clobbered later
                 # but that is ok
-                    
+
                 truth[v2.name] = v2.truth
 
             # pbar.update()
@@ -274,11 +273,11 @@ class PopulationSynth(object):
             # draw all the values
             luminosities = self.luminosity_distribution.draw_luminosity(size=n)
 
-
             # store the truths from the luminosity distribution
-            truth[self.luminosity_distribution.name] = self.luminosity_distribution.truth
+            truth[
+                self.luminosity_distribution.name
+            ] = self.luminosity_distribution.truth
 
-            
         # transform the fluxes
         fluxes = self._spatial_distribution.transform(luminosities, distances)
 
@@ -307,7 +306,7 @@ class PopulationSynth(object):
 
             # store the auxilliary truths
             truth[v.name] = v.truth
-            
+
             # check to make sure we sampled!
             assert v.true_values is not None and len(v.true_values) == n
             assert v.obs_values is not None and len(v.obs_values) == n
@@ -334,9 +333,8 @@ class PopulationSynth(object):
                     # now attach them
                     auxiliary_quantities[k3] = v3
 
-
                 # store the secondary truths
-                    
+
                 truth[v2.name] = v2.truth
 
         # pbar.update()
@@ -501,7 +499,7 @@ class PopulationSynth(object):
             spatial_form=self._spatial_distribution.form,
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
-            truth=truth
+            truth=truth,
         )
 
     def display(self):

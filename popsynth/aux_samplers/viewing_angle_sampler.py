@@ -15,16 +15,17 @@ class ViewingAngleSampler(AuxiliarySampler):
 
         """
 
-
         truth = dict(max_angle=max_angle)
-        
+
         assert (max_angle > 0.0) and (
             max_angle <= 90
         ), "angle must be between 0 and 90."
 
         self._max_angle = np.deg2rad(max_angle)
 
-        super(ViewingAngleSampler, self).__init__("va", sigma=1.0, observed=False, truth=truth)
+        super(ViewingAngleSampler, self).__init__(
+            "va", sigma=1.0, observed=False, truth=truth
+        )
 
     def true_sampler(self, size):
         """

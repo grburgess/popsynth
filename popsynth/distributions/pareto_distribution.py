@@ -18,11 +18,12 @@ class ParetoDistribution(LuminosityDistribution):
 
         """
 
-
         truth = dict(Lmin=Lmin, alpha=alpha)
 
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
-        super(ParetoDistribution, self).__init__(seed=seed, name=name, form=lf_form, truth=truth)
+        super(ParetoDistribution, self).__init__(
+            seed=seed, name=name, form=lf_form, truth=truth
+        )
 
         self._construct_distribution_params(Lmin=Lmin, alpha=alpha)
 

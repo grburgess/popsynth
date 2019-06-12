@@ -22,7 +22,6 @@ Om_sqrt = np.sqrt(Om)
 Ode = 1 - Om - (cosmo.Onu0 + cosmo.Ogamma0)
 
 
-
 @njit(fastmath=True)
 def Phi(x):
     x2 = x * x
@@ -88,18 +87,12 @@ class SFRDistribtution(CosmologicalDistribution):
 
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
-
         truth = dict(r0=r0, rise=rise, decay=decay, peak=peak)
-        
-        
+
         super(SFRDistribtution, self).__init__(
             r_max=r_max, seed=seed, name=name, form=spatial_form, truth=truth
         )
 
-
-        
-
-        
         self._construct_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
 
     def dNdV(self, z):
@@ -201,16 +194,12 @@ def _dndv(z, r0, rise, decay, peak):
 
 
 class ZPowerCosmoDistribution(CosmologicalDistribution):
-    def __init__(
-        self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="zpow_cosmo"
-    ):
+    def __init__(self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="zpow_cosmo"):
 
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
-
         truth = dict(Lambda=Lambda, delta=delta)
 
-        
         super(ZPowerCosmoDistribution, self).__init__(
             r_max=r_max, seed=seed, name=name, form=spatial_form, truth=truth
         )

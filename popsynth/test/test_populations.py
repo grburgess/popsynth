@@ -12,9 +12,8 @@ class DemoSampler(popsynth.AuxiliarySampler):
         self._mu = mu
         self._tau = tau
 
+        truth = dict(mu=mu, tau=tau)
 
-        truth = dict(mu=mu,tau=tau)
-        
         super(DemoSampler, self).__init__("demo", sigma, observed=False, truth=truth)
 
     def true_sampler(self, size):
@@ -28,9 +27,8 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
         self._mu = mu
         self._tau = tau
 
+        truth = dict(mu=mu, tau=tau)
 
-        truth = dict(mu=mu,tau=tau)
-        
         super(DemoSampler2, self).__init__("demo2", sigma, observed=True, truth=truth)
 
     def true_sampler(self, size):

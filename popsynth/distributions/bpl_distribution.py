@@ -2,6 +2,7 @@ import numpy as np
 import multiprocessing as mp
 from popsynth.distribution import LuminosityDistribution
 
+
 def sample_one(ymax, idx1, xbreak, idx2, xmin, xmax, i):
 
     np.random.seed(int((i + 1) * 1000))
@@ -22,9 +23,6 @@ def bpl(x, idx1, xbreak, idx2):
         return pow(x / xbreak, -idx1)
     else:
         return pow(x / xbreak, -idx2)
-
-
-
 
 
 class BPLPopulation(LuminosityDistribution):

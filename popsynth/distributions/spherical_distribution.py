@@ -21,7 +21,13 @@ class SphericalDistribution(SpatialDistribution):
 
 class ConstantSphericalDistribution(SphericalDistribution):
     def __init__(
-            self, Lambda=1.0, r_max=10.0, seed=1234, name="cons_sphere", form=None, truth=None
+        self,
+        Lambda=1.0,
+        r_max=10.0,
+        seed=1234,
+        name="cons_sphere",
+        form=None,
+        truth=None,
     ):
 
         if form is None:
@@ -30,7 +36,7 @@ class ConstantSphericalDistribution(SphericalDistribution):
         if truth is None:
 
             truth = dict(Lambda=Lambda)
-            
+
         super(ConstantSphericalDistribution, self).__init__(
             r_max=r_max, seed=seed, name=name, form=form, truth=truth
         )

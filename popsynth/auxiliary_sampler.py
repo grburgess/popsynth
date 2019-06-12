@@ -5,7 +5,7 @@ import numpy as np
 class AuxiliarySampler(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, sigma, observed=True, truth={}):
+    def __init__(self, name, sigma, observed=True, truth=None):
 
         self._sigma = sigma
 
@@ -20,7 +20,14 @@ class AuxiliarySampler(object):
         self._has_secondary = False
         self._is_sampled = False
         self._selection = None
-        self._truth = truth
+
+        if truth is None:
+
+            self._truth = {}
+
+        else:
+
+            self._truth = truth
 
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
@@ -224,11 +231,10 @@ class AuxiliarySampler(object):
 
         return self._selection
 
-
     @property
     def truth(self):
         return self._truth
-    
+
     @property
     @abc.abstractmethod
     def true_sampler(self, size=1):
@@ -242,7 +248,7 @@ class AuxiliarySampler(object):
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
-    def __init__(self, name, sigma, observed=True, truth={}):
+    def __init__(self, name, sigma, observed=True, truth=None):
         """FIXME! briefly describe function
 
         :param name:
@@ -253,7 +259,9 @@ class DerivedLumAuxSampler(AuxiliarySampler):
 
         """
 
-        super(DerivedLumAuxSampler, self).__init__(name, sigma, observed=observed, truth=truth)
+        super(DerivedLumAuxSampler, self).__init__(
+            name, sigma, observed=observed, truth=truth
+        )
 
     def compute_luminosity(self):
 
