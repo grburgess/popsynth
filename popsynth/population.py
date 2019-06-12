@@ -10,7 +10,10 @@ import pandas as pd
 from IPython.display import display, Math, Markdown
 
 from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
-
+from popsynth.utils.hdf5_utils import (
+    recursively_save_dict_contents_to_group,
+    recursively_load_dict_contents_from_group,
+)
 
 from betagen import betagen
 
@@ -42,35 +45,36 @@ class Population(object):
         spatial_form=None,
         lf_form=None,
         auxiliary_quantities=None,
+        truth={},
     ):
         """FIXME! briefly describe function
 
-        :param luminosities:
-        :param distances:
-        :param known_distances:
-        :param known_distance_idx:
-        :param unknown_distance_idx:
-        :param fluxes:
-        :param flux_obs:
-        :param selection:
-        :param flux_sigma:
-        :param r_max:
-        :param boundary:
-        :param strength:
-        :param n_model:
-        :param lf_params:
-        :param spatial_params:
-        :param model_spaces:
-        :param seed:
-        :param name:
-        :param spatial_form:
-        :param lf_form:
-        :param auxiliary_quantities:
-        :returns:
-        :rtype:
+        :param luminosities: 
+        :param distances: 
+        :param known_distances: 
+        :param known_distance_idx: 
+        :param unknown_distance_idx: 
+        :param fluxes: 
+        :param flux_obs: 
+        :param selection: 
+        :param flux_sigma: 
+        :param r_max: 
+        :param boundary: 
+        :param strength: 
+        :param n_model: 
+        :param lf_params: 
+        :param spatial_params: 
+        :param model_spaces: 
+        :param seed: 
+        :param name: 
+        :param spatial_form: 
+        :param lf_form: 
+        :param auxiliary_quantities: 
+        :param truth: 
+        :returns: 
+        :rtype: 
 
         """
-
         self._luminosities = luminosities
 
         self._distances = distances
@@ -110,6 +114,8 @@ class Population(object):
 
         self._model_spaces = model_spaces
 
+        self._truth = truth
+
         if sum(self._selection) == 0:
 
             self._no_detection = True
@@ -135,6 +141,18 @@ class Population(object):
             for k, v in model_spaces.items():
 
                 assert len(v) == n_model
+
+    @property
+    def truth(self):
+        """
+        the simulated truth parameters
+
+        :returns: 
+        :rtype: 
+
+        """
+
+        return self._truth
 
     @property
     def luminosities(self):
@@ -305,6 +323,9 @@ class Population(object):
 
                 model_grp.create_dataset(k, data=v, compression="lzf")
 
+            # now store the truths
+            recursively_save_dict_contents_to_group(f, "truth", self._truth)
+
     @classmethod
     def from_file(cls, file_name):
         """FIXME! briefly describe function
@@ -322,7 +343,7 @@ class Population(object):
 
             for key in f["spatial_params"].keys():
 
-                spatial_params[key] = f["spatial_params"][key].value[0]
+                spatial_params[key] = f["spatial_params"][key][()][0]
 
             # we must double check that there are LF params
 
@@ -332,7 +353,7 @@ class Population(object):
                     lf_params = {}
                     for key in f["lf_params"].keys():
 
-                        lf_params[key] = f["lf_params"][key].value[0]
+                        lf_params[key] = f["lf_params"][key][()][0]
                     lf_form = str(f.attrs["lf_form"])
 
                 else:
@@ -354,14 +375,14 @@ class Population(object):
 
             spatial_form = str(f.attrs["spatial_form"])
 
-            luminosities = f["luminosities"].value
-            distances = f["distances"].value
+            luminosities = f["luminosities"][()]
+            distances = f["distances"][()]
 
             # right now this is just for older pops
             try:
-                known_distances = f["known_distances"].value
-                known_distance_idx = (f["known_distance_idx"].value).astype(int)
-                unknown_distance_idx = (f["unknown_distance_idx"].value).astype(int)
+                known_distances = f["known_distances"][()]
+                known_distance_idx = (f["known_distance_idx"][()]).astype(int)
+                unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
 
             except:
 
@@ -369,25 +390,31 @@ class Population(object):
                 known_distance_idx = None
                 unknown_distance_idx = None
 
-            fluxes = f["fluxes"].value
-            flux_obs = f["flux_obs"].value
-            selection = f["selection"].value
+            fluxes = f["fluxes"][()]
+            flux_obs = f["flux_obs"][()]
+            selection = f["selection"][()]
 
             model_spaces = {}
 
             for k in f["model_spaces"].keys():
 
-                model_spaces[str(k)] = f["model_spaces"][k].value
+                model_spaces[str(k)] = f["model_spaces"][k][()]
 
             auxiliary_quantities = {}
 
             for k in f["auxiliary_quantities"].keys():
 
                 auxiliary_quantities[str(k)] = {
-                    "true_values": f["auxiliary_quantities"][k]["true_values"].value,
-                    "obs_values": f["auxiliary_quantities"][k]["obs_values"].value,
+                    "true_values": f["auxiliary_quantities"][k]["true_values"][()],
+                    "obs_values": f["auxiliary_quantities"][k]["obs_values"][()],
                     "sigma": f["auxiliary_quantities"][k].attrs["sigma"],
                 }
+
+
+            
+
+                
+            truth = recursively_load_dict_contents_from_group(f, "truth")
 
         return cls(
             luminosities=luminosities,
@@ -411,6 +438,7 @@ class Population(object):
             spatial_form=spatial_form,
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
+            truth=truth,
         )
 
     def display(self):

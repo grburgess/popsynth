@@ -13,7 +13,7 @@ DESCRIPTION = "A population synthesis code for testing"
 URL = "https://github.com/grburgess/popsynth"
 EMAIL = "jmichaelburgess@gmail.com"
 AUTHOR = "J. Michael Burgess"
-REQUIRES_PYTHON = ">=2.7.0"
+REQUIRES_PYTHON = ">=3.6.0"
 VERSION = None
 
 REQUIRED = [

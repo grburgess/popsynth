@@ -1,13 +1,13 @@
 import numpy as np
 
-from popsynth.population_synth import SpatialDistribution
+from popsynth.distribution import SpatialDistribution
 
 
 class SphericalDistribution(SpatialDistribution):
-    def __init__(self, r_max=10, seed=1234, name="sphere", form=None):
+    def __init__(self, r_max=10, seed=1234, name="sphere", form=None, truth={}):
 
         super(SphericalDistribution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=form
+            r_max=r_max, seed=seed, name=name, form=form, truth=truth
         )
 
     def differential_volume(self, r):
@@ -21,14 +21,18 @@ class SphericalDistribution(SpatialDistribution):
 
 class ConstantSphericalDistribution(SphericalDistribution):
     def __init__(
-        self, Lambda=1.0, r_max=10.0, seed=1234, name="cons_sphere", form=None
+            self, Lambda=1.0, r_max=10.0, seed=1234, name="cons_sphere", form=None, truth=None
     ):
 
         if form is None:
             form = r"\Lambda"
 
+        if truth is None:
+
+            truth = dict(Lambda=Lambda)
+            
         super(ConstantSphericalDistribution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=form
+            r_max=r_max, seed=seed, name=name, form=form, truth=truth
         )
 
         self._construct_distribution_params(Lambda=Lambda)
@@ -63,8 +67,10 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
 
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
+        truth = dict(Lambda=Lambda, delta=delta)
+
         super(ZPowerSphericalDistribution, self).__init__(
-            Lambda, r_max, seed, name, form=spatial_form
+            Lambda, r_max, seed, name, form=spatial_form, truth=truth
         )
 
         self._construct_distribution_params(Lambda=Lambda, delta=delta)

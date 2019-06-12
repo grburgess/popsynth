@@ -1,6 +1,6 @@
 import numpy as np
 
-from popsynth.population_synth import LuminosityDistribution
+from popsynth.distribution import LuminosityDistribution
 
 
 class Log10NormalDistribution(LuminosityDistribution):

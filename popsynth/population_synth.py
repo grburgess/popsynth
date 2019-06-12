@@ -9,194 +9,12 @@ from IPython.display import display, Math, Markdown
 
 from popsynth.population import Population
 from popsynth.auxiliary_sampler import DerivedLumAuxSampler
+from popsynth.utils.rejection_sample import rejection_sample
+from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
 from numba import jit, njit, prange, float64
-
-
-class Distribution(object):
-    def __init__(self, name, seed, form):
-        self._seed = seed
-        self._name = name
-        self._form = form
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def form(self):
-        return self._form
-
-    @property
-    def params(self):
-        return self._params
-
-    def _construct_distribution_params(self, **params):
-        """
-        Build the initial distributional parameters
-        """
-
-        self._params = {}
-
-        for k, v in params.items():
-
-            self._params[k] = v
-
-    def set_distribution_params(self, **params):
-        """
-        Set the spatial parameters as keywords
-        """
-
-        try:
-
-            for k, v in params.items():
-
-                if k in self._params:
-                    self._params[k] = v
-                else:
-                    RuntimeWarning(
-                        "%s was not originally in the parameters... ignoring." % k
-                    )
-
-        except:
-
-            # we have not set these before
-
-            self._params = params
-
-
-class SpatialDistribution(Distribution):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, name, r_max, seed, form=None):
-
-        self._r_max = r_max
-
-        super(SpatialDistribution, self).__init__(name=name, seed=seed, form=form)
-
-    @abc.abstractmethod
-    def differential_volume(self, distance):
-
-        raise RuntimeError("Must be implemented in derived class")
-        pass
-
-    @abc.abstractmethod
-    def dNdV(self, distance):
-
-        raise RuntimeError("Must be implemented in derived class")
-        pass
-
-    def time_adjustment(self, r):
-        """FIXME! briefly describe function
-
-        :param r:
-        :returns:
-        :rtype:
-
-        """
-
-        return 1.0
-
-    @abc.abstractmethod
-    def transform(self, flux, distance):
-        pass
-
-    def draw_distance(self, size, verbose):
-        """
-        Draw the distances from the specified dN/dr model
-        """
-
-        # create a callback for the sampler
-        dNdr = (
-            lambda r: self.dNdV(r)
-            * self.differential_volume(r)
-            / self.time_adjustment(r)
-        )
-
-        # find the maximum point
-        tmp = np.linspace(0.0, self._r_max, 500, dtype=np.float64)
-        ymax = np.max(dNdr(tmp))
-
-        # rejection sampling the distribution
-        r_out = []
-
-        if verbose:
-            for i in progress_bar(range(size), desc="Drawing distances"):
-                flag = True
-                while flag:
-
-                    # get am rvs from 0 to the max of the function
-
-                    y = np.random.uniform(low=0, high=ymax)
-
-                    # get an rvs from 0 to the maximum distance
-
-                    r = np.random.uniform(low=0, high=self._r_max)
-
-                    # compare them
-
-                    if y < dNdr(r):
-                        r_out.append(r)
-                        flag = False
-        else:
-
-            r_out = rejection_sample(size, ymax, self._r_max, dNdr)
-
-        return np.array(r_out)
-
-    @property
-    def r_max(self):
-        return self._r_max
-
-
-@jit(parallel=True, fastmath=True)
-def rejection_sample(size, ymax, xmax, func):
-
-    r_out = []
-
-    for i in prange(size):
-        flag = True
-        while flag:
-
-            # get am rvs from 0 to the max of the function
-
-            y = np.random.uniform(low=0, high=ymax)
-
-            # get an rvs from 0 to the maximum distance
-
-            r = np.random.uniform(low=0, high=xmax)
-
-            # compare them
-
-            if y < func(r):
-                r_out.append(r)
-                flag = False
-
-    return r_out
-
-
-class LuminosityDistribution(Distribution):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, name, seed, form=None):
-
-        super(LuminosityDistribution, self).__init__(name=name, seed=seed, form=form)
-
-        self._params = None
-
-    @abc.abstractmethod
-    def phi(self, L):
-
-        raise RuntimeError("Must be implemented in derived class")
-
-        pass
-
-    @abc.abstractmethod
-    def draw_luminosity(self, size):
-        pass
-
 
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
@@ -204,13 +22,14 @@ class PopulationSynth(object):
     def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234):
         """FIXME! briefly describe function
 
-        :param r_max:
-        :param seed:
-        :param name:
-        :returns:
-        :rtype:
+        :param spatial_distribution: 
+        :param luminosity_distribution: 
+        :param seed: 
+        :returns: 
+        :rtype: 
 
         """
+
 
         self._n_model = 500
         self._seed = int(seed)
@@ -338,6 +157,14 @@ class PopulationSynth(object):
         :return: a Population object
         """
 
+
+        # this stores all the "true" population values from all the samplers
+        truth = dict()
+
+        # store the spatial distribution truths
+        truth[self._spatial_distribution.name] = self._spatial_distribution.truth
+
+        
         # set the random seed
 
         #        pbar = progress_bar(total=5, desc='Integrating volume')
@@ -417,6 +244,11 @@ class PopulationSynth(object):
 
             # collect anything that was sampled here
 
+
+            # store the truth from the derived lum sampler
+
+            truth[self._derived_luminosity_sampler.name] = self._derived_luminosity_sampler.truth
+            
             for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
 
                 # first we tell the sampler to go and retrieve all of
@@ -429,6 +261,12 @@ class PopulationSynth(object):
                     # now attach them
                     auxiliary_quantities[k3] = v3
 
+                # store the secondary truths
+                # this will _could_ be clobbered later
+                # but that is ok
+                    
+                truth[v2.name] = v2.truth
+
             # pbar.update()
 
         else:
@@ -436,6 +274,11 @@ class PopulationSynth(object):
             # draw all the values
             luminosities = self.luminosity_distribution.draw_luminosity(size=n)
 
+
+            # store the truths from the luminosity distribution
+            truth[self.luminosity_distribution.name] = self.luminosity_distribution.truth
+
+            
         # transform the fluxes
         fluxes = self._spatial_distribution.transform(luminosities, distances)
 
@@ -462,6 +305,9 @@ class PopulationSynth(object):
 
             v.draw(size=n, verbose=verbose)
 
+            # store the auxilliary truths
+            truth[v.name] = v.truth
+            
             # check to make sure we sampled!
             assert v.true_values is not None and len(v.true_values) == n
             assert v.obs_values is not None and len(v.obs_values) == n
@@ -487,6 +333,11 @@ class PopulationSynth(object):
 
                     # now attach them
                     auxiliary_quantities[k3] = v3
+
+
+                # store the secondary truths
+                    
+                truth[v2.name] = v2.truth
 
         # pbar.update()
 
@@ -650,6 +501,7 @@ class PopulationSynth(object):
             spatial_form=self._spatial_distribution.form,
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
+            truth=truth
         )
 
     def display(self):
@@ -682,6 +534,6 @@ class PopulationSynth(object):
         display(Math(self._spatial_distribution.form))
         display(pd.DataFrame(out))
 
-    def generate_stan_code(self, stan_gen, **kwargs):
+    # def generate_stan_code(self, stan_gen, **kwargs):
 
-        pass
+    #     pass
