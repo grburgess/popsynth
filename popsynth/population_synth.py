@@ -179,6 +179,9 @@ class PopulationSynth(object):
         # objects
         N = integrate.quad(dNdr, 0.0, self._spatial_distribution._r_max)[0]
 
+        if verbose:
+            print("The volume integral is %f" % N)
+
         # this should be poisson distributed
         n = np.random.poisson(N)
         #       pbar.update()
