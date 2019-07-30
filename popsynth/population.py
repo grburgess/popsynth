@@ -49,23 +49,23 @@ class Population(object):
     ):
         """FIXME! briefly describe function
 
-        :param luminosities: 
-        :param distances: 
-        :param known_distances: 
-        :param known_distance_idx: 
-        :param unknown_distance_idx: 
-        :param fluxes: 
-        :param flux_obs: 
-        :param selection: 
-        :param flux_sigma: 
-        :param r_max: 
-        :param boundary: 
-        :param strength: 
+        :param luminosities: the luminosities
+        :param distances: the distances
+        :param known_distances: the known distances
+        :param known_distance_idx: the index of the known distances
+        :param unknown_distance_idx:  the index of the unknown distances
+        :param fluxes: the latent fluxes
+        :param flux_obs: the observed fluxes
+        :param selection: the selection vector
+        :param flux_sigma: the uncertainty on the observed flux
+        :param r_max: the maximum distance of the survey
+        :param boundary: the flux boundary
+        :param strength: the strength of the sofft boundary
         :param n_model: 
         :param lf_params: 
         :param spatial_params: 
         :param model_spaces: 
-        :param seed: 
+        :param seed: the random seed
         :param name: 
         :param spatial_form: 
         :param lf_form: 
@@ -86,7 +86,10 @@ class Population(object):
             selection
         ), "the distances are not the correct size"
 
+        # latent fluxes
         self._fluxes = fluxes
+
+        # observed fluxes
         self._flux_obs = flux_obs
         self._selection = selection
         self._flux_sigma = flux_sigma
@@ -170,27 +173,92 @@ class Population(object):
 
     @property
     def distances(self):
+        """
+        The distances to the objects
+        """
         return self._distances
 
     @property
     def known_distances(self):
+        """
+        The observed distances
+        """
+
         return self._known_distances
 
     @property
     def selection(self):
+        """
+        The selection vector
+        """
         return self._selection
 
     @property
     def flux_observed_all(self):
+        """
+        All of the observed fluxes, i.e.,
+        scattered with error
+
+        """
         return self._flux_obs
 
     @property
     def selected_fluxes(self):
+        """
+        The selected obs fluxes
+        """
+
+        DeprecationWarning("Use selected_observed_fluxes")
+
         return self._flux_selected
 
     @property
+    def selected_observed_fluxes(self):
+        """
+        The selected obs fluxes
+        """
+
+        return self._flux_selected
+
+    @property
+    def selected_latent_fluxes(self):
+        """
+        The selected latent fluxes
+        """
+
+        return self._fluxes[self._selection]
+
+    @property
     def selected_distances(self):
+        """
+        The selected distances. Note, this is different than
+        the KNOWN distances
+        """
         return self._distance_selected
+
+    @property
+    def hidden_observed_fluxes(self):
+        """
+        The observed fluxes that are hidden by the selection
+        """
+
+        return self._flux_hidden
+
+    @property
+    def hidden_distances(self):
+        """
+        The distances that are hidden by the selection
+        """
+
+        return self._distance_hidden
+
+    @property
+    def hidden_latent_fluxes(self):
+        """
+        The latent fluxes that are hidden by the selection
+        """
+
+        return self._fluxes[~self._selection]
 
     @property
     def luminosity_parameters(self):
