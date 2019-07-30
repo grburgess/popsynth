@@ -356,6 +356,10 @@ class PopulationSynth(object):
 
         if not hard_cut:
 
+            if verbose:
+
+                print("Applyign soft boundary")
+
             selection = []
             if verbose:
                 for p in progress_bar(
@@ -388,6 +392,10 @@ class PopulationSynth(object):
 
         else:
 
+            if verbose:
+
+                print("Applying hard boundary")
+
             # simply apply a hard cut selection in the data
 
             selection = np.power(10, log10_fluxes_obs) >= boundary
@@ -397,6 +405,23 @@ class PopulationSynth(object):
         for k, v in auxiliary_quantities.items():
 
             auxiliary_selection = np.logical_and(auxiliary_selection, v["selection"])
+
+            if verbose:
+
+                if sum(~v["selection"]) > 0:
+
+                    print(
+                        "Applying selection from %s which selected %d of %d objects"
+                        % (k, sum(v["selection"]), len(v["selection"]))
+                    )
+
+        if verbose:
+
+            if sum(~auxiliary_selection) > 0:
+                print(
+                    "Before auxiliary selection there were %d objects selected"
+                    % sum(selection)
+                )
 
         selection = np.logical_and(selection, auxiliary_selection)
 
