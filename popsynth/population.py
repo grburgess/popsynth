@@ -46,6 +46,8 @@ class Population(object):
         lf_form=None,
         auxiliary_quantities=None,
         truth={},
+        hard_cut=False,
+        distance_probability=1.0,
     ):
         """FIXME! briefly describe function
 
@@ -71,6 +73,8 @@ class Population(object):
         :param lf_form: 
         :param auxiliary_quantities: 
         :param truth: 
+        :param hard_cut: 
+        :param distance_probability: 
         :returns: 
         :rtype: 
 
@@ -118,6 +122,9 @@ class Population(object):
         self._model_spaces = model_spaces
 
         self._truth = truth
+
+        self._hard_cut = hard_cut
+        self._distance_probability = distance_probability
 
         if sum(self._selection) == 0:
 
@@ -353,6 +360,8 @@ class Population(object):
             f.attrs["boundary"] = self._boundary
             f.attrs["strength"] = self._strength
             f.attrs["seed"] = int(self._seed)
+            f.attrs["distance_probability"] = self._distance_probability
+            f.attrs["hard_cut"] = self._hard_cut
 
             f.create_dataset("luminosities", data=self._luminosities, compression="lzf")
             f.create_dataset("distances", data=self._distances, compression="lzf")
@@ -440,8 +449,9 @@ class Population(object):
             r_max = f.attrs["r_max"]
             seed = int(f.attrs["seed"])
             name = f.attrs["name"]
-
+            distance_probability = f.attrs["distance_probability"]
             spatial_form = str(f.attrs["spatial_form"])
+            hard_cut = f.attrs["hard_cut"]
 
             luminosities = f["luminosities"][()]
             distances = f["distances"][()]
@@ -503,6 +513,8 @@ class Population(object):
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
             truth=truth,
+            distance_probability=distance_probability,
+            hard_cut=hard_cut,
         )
 
     def display(self):
