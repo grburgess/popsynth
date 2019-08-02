@@ -533,7 +533,7 @@ class PopulationSynth(object):
             auxiliary_quantities=auxiliary_quantities,
             truth=truth,
             hard_cut=hard_cut,
-            distance_probility=distance_probability
+            distance_probability=distance_probability
         )
 
     def display(self):
