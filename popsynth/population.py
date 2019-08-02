@@ -267,6 +267,16 @@ class Population(object):
 
         return self._fluxes[~self._selection]
 
+
+
+    @property
+    def hard_cut(self):
+        return self._hard_cut
+
+    @property
+    def distance_probability(self):
+        return self._distance_probability
+    
     @property
     def luminosity_parameters(self):
         return self._lf_params

@@ -146,6 +146,8 @@ class Popbuilder(object):
 
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
+        assert population_reloaded.hard_cut
+
         os.remove("_saved_pop.h5")
 
         #####################
@@ -161,6 +163,10 @@ class Popbuilder(object):
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
+        assert not population_reloaded.hard_cut
+
+        assert population_reloaded.distance_probability == 1.
+        
         os.remove("_saved_pop.h5")
 
         #####################
@@ -176,6 +182,8 @@ class Popbuilder(object):
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
+        assert population_reloaded.distance_probability < 1.
+        
         os.remove("_saved_pop.h5")
 
         # clean up
