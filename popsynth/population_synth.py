@@ -346,12 +346,6 @@ class PopulationSynth(object):
         # this is homoskedastic for now
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
-        # compute the detection probability  for the observed values
-        # pbar.set_description(desc='Selecting objects')
-        detection_probability = self._prob_det(
-            log10_fluxes_obs, np.log10(boundary), strength
-        )
-
         # now select them
 
         if not hard_cut:
@@ -359,6 +353,12 @@ class PopulationSynth(object):
             if verbose:
 
                 print("Applyign soft boundary")
+
+            # compute the detection probability  for the observed values
+
+            detection_probability = self._prob_det(
+                log10_fluxes_obs, np.log10(boundary), strength
+            )
 
             selection = []
             if verbose:
@@ -505,6 +505,10 @@ class PopulationSynth(object):
 
             lf_params = self._luminosity_distribution.params
             lf_form = self._luminosity_distribution.form
+
+        if distance_probability is None:
+            distance_probability = 1.
+
         return Population(
             luminosities=luminosities,
             distances=distances,
@@ -528,6 +532,8 @@ class PopulationSynth(object):
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
             truth=truth,
+            hard_cut=hard_cut,
+            distance_probility=distance_probability
         )
 
     def display(self):
