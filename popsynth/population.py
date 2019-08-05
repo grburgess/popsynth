@@ -995,8 +995,8 @@ class Population(object):
         ax.hist(
             self._distance_selected,
             bins=bins,
-            facecolor=blue,
-            edgecolor=blue_highlight,
+#            facecolor=blue,
+#            edgecolor=blue_highlight,
             lw=1.5,
             alpha=1,
             label="Obs. Pop.",
