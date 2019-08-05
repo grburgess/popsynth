@@ -57,20 +57,29 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
 _spatial_dict = [
     popsynth.populations.SphericalPopulation,
     popsynth.populations.ZPowerSphericalPopulation,
-    popsynth.populations.SFRPopulation,
     popsynth.populations.ZPowerCosmoPopulation,
+    popsynth.populations.SFRPopulation,
 ]
 
 _pareto_dict = [
     popsynth.populations.ParetoHomogeneousSphericalPopulation,
     popsynth.populations.ParetoZPowerSphericalPopulation,
+    popsynth.populations.ParetoZPowerCosmoPopulation,
     popsynth.populations.ParetoSFRPopulation,
 ]
 
 
+_bpl_dict = [
+    popsynth.populations.BPLHomogeneousSphericalPopulation,
+    popsynth.populations.BPLZPowerCosmoPopulation,
+    popsynth.populations.BPLZPowerSphericalPopulation,
+    popsynth.populations.BPLSFRPopulation,
+]
+
 _schechter_dict = [
     popsynth.populations.SchechterHomogeneousSphericalPopulation,
     popsynth.populations.SchechterZPowerSphericalPopulation,
+    popsynth.populations.SchechterZPowerCosmoPopulation,
     popsynth.populations.SchechterSFRPopulation,
 ]
 
@@ -78,6 +87,7 @@ _schechter_dict = [
 _lognorm_dict = [
     popsynth.populations.LogNormalHomogeneousSphericalPopulation,
     popsynth.populations.LogNormalZPowerSphericalPopulation,
+    popsynth.populations.LogNormalZPowerCosmoPopulation,
     popsynth.populations.LogNormalSFRPopulation,
 ]
 
@@ -85,6 +95,7 @@ _lognorm_dict = [
 _log10norm_dict = [
     popsynth.populations.Log10NormalHomogeneousSphericalPopulation,
     popsynth.populations.Log10NormalZPowerSphericalPopulation,
+    popsynth.populations.Log10NormalZPowerCosmoPopulation,
     popsynth.populations.Log10NormalSFRPopulation,
 ]
 
@@ -92,9 +103,12 @@ _log10norm_dict = [
 _spatial_params = [
     dict(Lambda=1.0),
     dict(Lambda=5.0, delta=0.1),
+    dict(Lambda=5.0, delta=0.1),
     dict(r0=5.0, rise=0.5, decay=2.0, peak=1.5),
 ]
 _pareto_params = dict(Lmin=2.0, alpha=1.0)
+
+_bpl_params = dict(Lmin=10.0, alpha=-0.5, Lbreak=100, beta=-2.0, Lmax=1000.0)
 
 _lognormal_params = dict(mu=1.0, tau=1.0)
 
@@ -208,8 +222,6 @@ class Popbuilder(object):
         pop = self.draw_all(verbose=True)
         pop = self.draw_all(verbose=False)
 
-
-        
         pop.to_stan_data()
         pop.display_obs_fluxes()
         pop.display_distances()
@@ -218,7 +230,6 @@ class Popbuilder(object):
         pop.selected_latent_fluxes
         pop.selected_observed_fluxes
 
-        
         pop.display()
 
         fig = pop.display_fluxes()
@@ -248,7 +259,7 @@ class Popbuilder(object):
         pop.selected_distances
         pop.selected_latent_fluxes
         pop.selected_observed_fluxes
-        
+
         fig = pop.display_fluxes()
 
         fig = pop.display_flux_sphere()
@@ -256,8 +267,6 @@ class Popbuilder(object):
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
-        print(pop.flux_observed_all)
-        
         assert sum(population_reloaded.selection) == 0
 
         os.remove("_saved_pop.h5")
@@ -295,6 +304,25 @@ def test_pareto():
         param = copy.deepcopy(param)
 
         for k, v in _pareto_params.items():
+
+            param[k] = v
+
+        pb = Popbuilder(pop, **param)
+
+        pb.test_it()
+
+        pb.pop_gen.add_observed_quantity(pb.d2)
+
+        pb.test_it()
+
+
+def test_bpl():
+
+    for pop, param in zip(_bpl_dict, _spatial_params):
+
+        param = copy.deepcopy(param)
+
+        for k, v in _bpl_params.items():
 
             param[k] = v
 

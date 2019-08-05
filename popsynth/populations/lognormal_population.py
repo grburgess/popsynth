@@ -1,6 +1,7 @@
 from popsynth.populations.spatial_populations import (
     SphericalPopulation,
     ZPowerSphericalPopulation,
+    ZPowerCosmoPopulation,
     SFRPopulation,
 )
 
@@ -57,6 +58,33 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
             luminosity_distribution=luminosity_distribution,
         )
 
+class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
+    def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
+        """FIXME! briefly describe function
+
+        :param Lambda:
+        :param delta:
+        :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
+
+        """
+
+        luminosity_distribution = LogNormalDistribution(mu=mu, tau=tau, seed=seed)
+
+        super(LogNormalZPowerCosmoPopulation, self).__init__(
+            Lambda=Lambda,
+            delta=delta,
+            r_max=r_max,
+            seed=seed,
+            luminosity_distribution=luminosity_distribution,
+        )
+
+
+        
 
 class LogNormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
@@ -137,6 +165,33 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
             luminosity_distribution=luminosity_distribution,
         )
 
+
+class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
+    def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
+        """FIXME! briefly describe function
+
+        :param Lambda:
+        :param delta:
+        :param mu:
+        :param tau:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
+
+        """
+
+        luminosity_distribution = Log10NormalDistribution(mu=mu, tau=tau, seed=seed)
+
+        super(Log10NormalZPowerCosmoPopulation, self).__init__(
+            Lambda=Lambda,
+            delta=delta,
+            r_max=r_max,
+            seed=seed,
+            luminosity_distribution=luminosity_distribution,
+        )
+
+        
 
 class Log10NormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):

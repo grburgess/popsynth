@@ -1,5 +1,5 @@
 import numpy as np
-
+import scipy.stats as stats
 from popsynth.distribution import LuminosityDistribution
 
 
@@ -12,22 +12,26 @@ def integrate_pl(x0, x1, x2, a1, a2):
     a2: upper power low index
     
     """
-    
+
     # compute the integral of each piece analytically
-    int_1 = (np.power(x1, a1+1.) - np.power(x0, a1+1.))/(a1+1)
-    int_2 = np.power(x1,a1-a2)*(np.power(x2, a2+1.) - np.power(x1, a2+1.))/(a2+1)
-    
+    int_1 = (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) / (a1 + 1)
+    int_2 = (
+        np.power(x1, a1 - a2)
+        * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
+        / (a2 + 1)
+    )
+
     # compute the total integral
     total = int_1 + int_2
-    
+
     # compute the weights of each piece of the function
-    w1 = int_1/total
-    w2 = int_2/total
-    
+    w1 = int_1 / total
+    w2 = int_2 / total
+
     return w1, w2, total
-    
-    
-def bpl(x,x0, x1, x2, a1, a2):
+
+
+def bpl(x, x0, x1, x2, a1, a2):
     """
     x: the domain of the function
     x0: lower bound
@@ -37,25 +41,26 @@ def bpl(x,x0, x1, x2, a1, a2):
     a2: upper power low index
     
     """
-    
+
     # creatre a holder for the values
     out = np.empty_like(x)
-    
+
     # get the total integral to compute the normalization
-    _,_,C = integrate_pl(x0, x1, x2, a1, a2)
-    norm = 1./C
-    
+    _, _, C = integrate_pl(x0, x1, x2, a1, a2)
+    norm = 1.0 / C
+
     # create an index to select each piece of the function
-    idx = x<x1
-    
+    idx = x < x1
+
     # compute the lower power law
-    out[idx] = np.power(x[idx],a1)
-    
+    out[idx] = np.power(x[idx], a1)
+
     # compute the upper power law
-    out[~idx] = np.power(x[~idx],a2) * np.power(x1,a1-a2)
-    
-    return out* norm
-    
+    out[~idx] = np.power(x[~idx], a2) * np.power(x1, a1 - a2)
+
+    return out * norm
+
+
 def sample_bpl(u, x0, x1, x2, a1, a2):
     """
     u: uniform random number between on {0,1}
@@ -83,28 +88,43 @@ def sample_bpl(u, x0, x1, x2, a1, a2):
         + np.power(x0, a1 + 1.0),
         1.0 / (1 + a1),
     )
-    
+
     # inverse transform sample the upper part for the "failures"
     out[~idx] = np.power(
         u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
         + np.power(x1, a2 + 1.0),
         1.0 / (1 + a2),
     )
-    
-    
+
     return out
 
 
-class BPLPopulation(LuminosityDistribution):
+class BPLDistribution(LuminosityDistribution):
     def __init__(self, Lmin, alpha, Lbreak, beta, Lmax, seed=1234, name="bpl"):
+        """FIXME! briefly describe function
 
-        PopulationSynth.__init__(self, name=name, seed=seed)
+        :param Lmin: 
+        :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
+        :param seed: 
+        :param name: 
+        :returns: 
+        :rtype: 
 
-        self.set_distribution_params(
-            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax
+        """
+
+        truth = dict(Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax)
+
+        lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        super(BPLDistribution, self).__init__(
+            seed=seed, name=name, form=lf_form, truth=truth
         )
 
-        self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        self._construct_distribution_params(
+            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax
+        )
 
     def phi(self, L):
 
@@ -122,7 +142,6 @@ class BPLPopulation(LuminosityDistribution):
 
         return sample_bpl(u, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta)
 
-        
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
         return self._params["Lmin"]

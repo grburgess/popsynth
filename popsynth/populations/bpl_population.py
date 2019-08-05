@@ -4,29 +4,30 @@ from popsynth.populations.spatial_populations import (
     ZPowerCosmoPopulation,
     SFRPopulation,
 )
+from popsynth.distributions.bpl_distribution import BPLDistribution
 
-from popsynth.distributions.schechter_distribution import SchechterDistribution
 
-
-class SchechterHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, Lmin, alpha, r_max=10, seed=1234):
+class BPLHomogeneousSphericalPopulation(SphericalPopulation):
+    def __init__(self, Lambda, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda: 
         :param Lmin: 
         :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
         :param r_max: 
         :param seed: 
         :returns: 
         :rtype: 
 
         """
-
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
+        luminosity_distribution = BPLDistribution(
+            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
         )
 
-        super(SchechterHomogeneousSphericalPopulation, self).__init__(
+        super(BPLHomogeneousSphericalPopulation, self).__init__(
             Lambda=Lambda,
             r_max=r_max,
             seed=seed,
@@ -34,26 +35,62 @@ class SchechterHomogeneousSphericalPopulation(SphericalPopulation):
         )
 
 
-class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self, Lambda, delta, Lmin, alpha, r_max=10, seed=1234):
+class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
+    def __init__(
+        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
+    ):
         """FIXME! briefly describe function
 
         :param Lambda: 
-        :param delta:
+        :param delta: 
         :param Lmin: 
         :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
         :param r_max: 
         :param seed: 
         :returns: 
         :rtype: 
 
         """
-
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
+        luminosity_distribution = BPLDistribution(
+            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
         )
 
-        super(SchechterZPowerSphericalPopulation, self).__init__(
+        super(BPLZPowerSphericalPopulation, self).__init__(
+            Lambda=Lambda,
+            delta=delta,
+            r_max=r_max,
+            seed=seed,
+            luminosity_distribution=luminosity_distribution,
+        )
+
+
+class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
+    def __init__(
+        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
+    ):
+        """FIXME! briefly describe function
+
+        :param Lambda: 
+        :param delta: 
+        :param Lmin: 
+        :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
+
+        """
+        luminosity_distribution = BPLDistribution(
+            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
+        )
+
+        super(BPLZPowerCosmoPopulation, self).__init__(
             Lambda=Lambda,
             delta=delta,
             r_max=r_max,
@@ -62,37 +99,10 @@ class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
         )
 
 
-class SchechterZPowerCosmoPopulation(ZPowerCosmoPopulation):
-    def __init__(self, Lambda, delta, Lmin, alpha, r_max=10, seed=1234):
-        """FIXME! briefly describe function
-
-        :param Lambda: 
-        :param delta:
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
-
-        """
-
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
-        )
-
-        super(SchechterZPowerCosmoPopulation, self).__init__(
-            Lambda=Lambda,
-            delta=delta,
-            r_max=r_max,
-            seed=seed,
-            luminosity_distribution=luminosity_distribution,
-        )
-
-        
-
-class SchechterSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
+class BPLSFRPopulation(SFRPopulation):
+    def __init__(
+        self, r0, rise, decay, peak, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
+    ):
         """FIXME! briefly describe function
 
         :param r0: 
@@ -101,18 +111,20 @@ class SchechterSFRPopulation(SFRPopulation):
         :param peak: 
         :param Lmin: 
         :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
         :param r_max: 
         :param seed: 
         :returns: 
         :rtype: 
 
         """
-
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
+        luminosity_distribution = BPLDistribution(
+            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
         )
 
-        super(SchechterSFRPopulation, self).__init__(
+        super(BPLSFRPopulation, self).__init__(
             r0=r0,
             rise=rise,
             decay=decay,
