@@ -4,7 +4,7 @@ import math
 from astropy.cosmology import WMAP9 as cosmo
 
 from popsynth.distribution import SpatialDistribution
-from popsynth.utils.package_data import copy_package_data
+#from popsynth.utils.package_data import copy_package_data
 
 import scipy.integrate as integrate
 from astropy.constants import c as sol
