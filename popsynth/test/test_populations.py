@@ -208,6 +208,17 @@ class Popbuilder(object):
         pop = self.draw_all(verbose=True)
         pop = self.draw_all(verbose=False)
 
+
+        
+        pop.to_stan_data()
+        pop.display_obs_fluxes()
+        pop.display_distances()
+        pop.display_luminosty()
+        pop.selected_distances
+        pop.selected_latent_fluxes
+        pop.selected_observed_fluxes
+
+        
         pop.display()
 
         fig = pop.display_fluxes()
@@ -230,6 +241,14 @@ class Popbuilder(object):
 
         pop.display()
 
+        pop.to_stan_data()
+        pop.display_obs_fluxes()
+        pop.display_distances()
+        pop.display_luminosty()
+        pop.selected_distances
+        pop.selected_latent_fluxes
+        pop.selected_observed_fluxes
+        
         fig = pop.display_fluxes()
 
         fig = pop.display_flux_sphere()
