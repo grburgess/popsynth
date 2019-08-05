@@ -112,20 +112,34 @@ class Popbuilder(object):
 
             assert k in self.pop_gen._params
 
-    def draw_hard(self):
+    def draw_hard(self, verbose):
 
         return self.pop_gen.draw_survey(
-            boundary=1e-6, flux_sigma=0.4, hard_cut=True, verbose=False
+            boundary=1e-6, flux_sigma=0.4, hard_cut=True, verbose=verbose
         )
 
-    def draw_soft(self):
-
-        return self.pop_gen.draw_survey(boundary=1e-4, flux_sigma=0.1, hard_cut=False)
-
-    def draw_z_select(self):
+    def draw_all(self, verbose):
 
         return self.pop_gen.draw_survey(
-            boundary=1e-6, flux_sigma=0.5, distance_probability=0.5
+            boundary=1e-999, flux_sigma=0.1, hard_cut=True, verbose=verbose
+        )
+
+    def draw_none(self, verbose):
+
+        return self.pop_gen.draw_survey(
+            boundary=1e999, flux_sigma=0.1, hard_cut=True, verbose=verbose
+        )
+
+    def draw_soft(self, verbose):
+
+        return self.pop_gen.draw_survey(
+            boundary=1e-4, flux_sigma=0.1, hard_cut=False, verbose=verbose
+        )
+
+    def draw_z_select(self, verbose):
+
+        return self.pop_gen.draw_survey(
+            boundary=1e-6, flux_sigma=0.5, distance_probability=0.5, verbose=verbose
         )
 
     def test_it(self):
@@ -134,7 +148,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_hard()
+        pop = self.draw_hard(verbose=True)
+        pop = self.draw_hard(verbose=False)
 
         pop.display()
 
@@ -152,7 +167,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_soft()
+        pop = self.draw_soft(verbose=True)
+        pop = self.draw_soft(verbose=False)
 
         pop.display()
 
@@ -165,13 +181,14 @@ class Popbuilder(object):
 
         assert not population_reloaded.hard_cut
 
-        assert population_reloaded.distance_probability == 1.
-        
+        assert population_reloaded.distance_probability == 1.0
+
         os.remove("_saved_pop.h5")
 
         #####################
 
-        pop = self.draw_z_select()
+        pop = self.draw_z_select(verbose=True)
+        pop = self.draw_z_select(verbose=False)
 
         pop.display()
 
@@ -182,8 +199,48 @@ class Popbuilder(object):
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
-        assert population_reloaded.distance_probability < 1.
+        assert population_reloaded.distance_probability < 1.0
+
+        os.remove("_saved_pop.h5")
+
+        #####################
+
+        pop = self.draw_all(verbose=True)
+        pop = self.draw_all(verbose=False)
+
+        pop.display()
+
+        fig = pop.display_fluxes()
+
+        fig = pop.display_flux_sphere()
+
+        pop.writeto("_saved_pop.h5")
+        population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
+
+        assert sum(~population_reloaded.selection) == 0
+
+        os.remove("_saved_pop.h5")
+
+        # clean up
+
+        #####################
+
+        pop = self.draw_none(verbose=True)
+        pop = self.draw_none(verbose=False)
+
+        pop.display()
+
+        fig = pop.display_fluxes()
+
+        fig = pop.display_flux_sphere()
+
+        pop.writeto("_saved_pop.h5")
+        population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
+
+        print(pop.flux_observed_all)
         
+        assert sum(population_reloaded.selection) == 0
+
         os.remove("_saved_pop.h5")
 
         # clean up
@@ -201,11 +258,11 @@ def test_spatial_population_with_derived():
         # first make sure they all fail
 
         with pytest.raises(AssertionError):
-            pb.draw_hard()
+            pb.draw_hard(verbose=True)
         with pytest.raises(AssertionError):
-            pb.draw_soft()
+            pb.draw_soft(verbose=True)
         with pytest.raises(AssertionError):
-            pb.draw_z_select()
+            pb.draw_z_select(verbose=True)
 
         pb.pop_gen.add_observed_quantity(pb.d2)
 
