@@ -6,6 +6,9 @@ python:
 install:
   - pip install --upgrade numpy ipython scipy h5py matplotlib pystan betagen coverage pytest pytest-cov cython codecov
   - python setup.py install
+env:
+  NUMBA_DISABLE_JIT=1
+
 script:
   - python -m pytest -vv --cov=popsynth/
   - codecov --token=2adee64a-60b0-4c7e-b94c-512ea2b8e794
