@@ -1,28 +1,98 @@
 import numpy as np
-import multiprocessing as mp
+
 from popsynth.distribution import LuminosityDistribution
 
 
-def sample_one(ymax, idx1, xbreak, idx2, xmin, xmax, i):
+def integrate_pl(x0, x1, x2, a1, a2):
+    """
+    x0: lower bound
+    x1: break point
+    x2: upper bound
+    a1: lower power law index
+    a2: upper power low index
+    
+    """
+    
+    # compute the integral of each piece analytically
+    int_1 = (np.power(x1, a1+1.) - np.power(x0, a1+1.))/(a1+1)
+    int_2 = np.power(x1,a1-a2)*(np.power(x2, a2+1.) - np.power(x1, a2+1.))/(a2+1)
+    
+    # compute the total integral
+    total = int_1 + int_2
+    
+    # compute the weights of each piece of the function
+    w1 = int_1/total
+    w2 = int_2/total
+    
+    return w1, w2, total
+    
+    
+def bpl(x,x0, x1, x2, a1, a2):
+    """
+    x: the domain of the function
+    x0: lower bound
+    x1: break point
+    x2: upper bound
+    a1: lower power law index
+    a2: upper power low index
+    
+    """
+    
+    # creatre a holder for the values
+    out = np.empty_like(x)
+    
+    # get the total integral to compute the normalization
+    _,_,C = integrate_pl(x0, x1, x2, a1, a2)
+    norm = 1./C
+    
+    # create an index to select each piece of the function
+    idx = x<x1
+    
+    # compute the lower power law
+    out[idx] = np.power(x[idx],a1)
+    
+    # compute the upper power law
+    out[~idx] = np.power(x[~idx],a2) * np.power(x1,a1-a2)
+    
+    return out* norm
+    
+def sample_bpl(u, x0, x1, x2, a1, a2):
+    """
+    u: uniform random number between on {0,1}
+    x0: lower bound
+    x1: break point
+    x2: upper bound
+    a1: lower power law index
+    a2: upper power low index
+    """
 
-    np.random.seed(int((i + 1) * 1000))
+    # compute the weights with our integral function
+    w1, w2, _ = integrate_pl(x0, x1, x2, a1, a2)
 
-    flag = True
-    while flag:
-        y_guess = np.random.uniform(0, ymax)
-        x_guess = np.random.uniform(1, xmax / xmin)
+    # create a holder array for our output
+    out = np.empty_like(u)
 
-        x_test = bpl(x_guess, idx1, xbreak / xmin, idx2)
-        if y_guess <= x_test:
-            flag = False
-    return x_guess
+    # compute the bernoulli trials for lower piece of the function
+    # *if we wanted to do the upper part... we just reverse our index*
+    # We also compute these to bools for numpy array selection
+    idx = stats.bernoulli.rvs(w1, size=len(u)).astype(bool)
 
-
-def bpl(x, idx1, xbreak, idx2):
-    if x < xbreak:
-        return pow(x / xbreak, -idx1)
-    else:
-        return pow(x / xbreak, -idx2)
+    # inverse transform sample the lower part for the "successes"
+    out[idx] = np.power(
+        u[idx] * (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0))
+        + np.power(x0, a1 + 1.0),
+        1.0 / (1 + a1),
+    )
+    
+    # inverse transform sample the upper part for the "failures"
+    out[~idx] = np.power(
+        u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
+        + np.power(x1, a2 + 1.0),
+        1.0 / (1 + a2),
+    )
+    
+    
+    return out
 
 
 class BPLPopulation(LuminosityDistribution):
@@ -48,36 +118,11 @@ class BPLPopulation(LuminosityDistribution):
 
     def draw_luminosity(self, size=1):
 
-        ymax = bpl(1.0, self.alpha, self.Lbreak / self.Lmin, self.beta)
+        u = np.atleast_1d(np.random.uniform(size=size))
 
-        result_list = []
+        return sample_bpl(u, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta)
 
-        def log_result(result):
-            # This is called whenever foo_pool(i) returns a result.
-            # result_list is modified only by the main process, not the pool workers.
-            result_list.append(result)
-
-        with mp.Pool(8) as pool:
-
-            for i in range(size):
-                pool.apply_async(
-                    sample_one,
-                    args=(
-                        ymax,
-                        self.alpha,
-                        self.Lbreak,
-                        self.beta,
-                        self.Lmin,
-                        self.Lmax,
-                        i,
-                    ),
-                    callback=log_result,
-                )
-            pool.close()
-            pool.join()
-
-        return np.array(result_list) * self.Lmin
-
+        
     def __get_Lmin(self):
         """Calculates the 'Lmin' property."""
         return self._params["Lmin"]
