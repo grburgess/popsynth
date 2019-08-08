@@ -68,8 +68,28 @@ def test_basic_population():
     population.display_fluxes()
     population.display_flux_sphere()
 
-    print(population.truth)
 
+    # Test the dist prob extremes
+
+    population = homo_pareto_synth.draw_survey(
+        boundary=1e-2, strength=20, flux_sigma=0.1,
+        distance_probability =0.5
+    )
+
+
+    population = homo_pareto_synth.draw_survey(
+        boundary=1e-2, strength=20, flux_sigma=0.1,
+        distance_probability = 1.
+    )
+
+
+    population = homo_pareto_synth.draw_survey(
+    boundary=1e-2, strength=20, flux_sigma=0.1,
+        distance_probability = 0.
+    )
+
+
+    
     homo_sch_synth = popsynth.populations.SchechterHomogeneousSphericalPopulation(
         Lambda=0.1, Lmin=1, alpha=2.0
     )
