@@ -431,7 +431,7 @@ class PopulationSynth(object):
             if verbose:
                 print("NO HIDDEN OBJECTS")
 
-        if distance_probability is not None:
+        if (distance_probability is not None) or (distance_probability == 1.) :
             # pbar.set_description(desc='Selecting sistances')
             known_distances = []
             known_distance_idx = []
