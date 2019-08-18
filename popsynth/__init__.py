@@ -6,13 +6,24 @@ from popsynth.population import Population
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 
 
-import popsynth.populations
+import popsynth.populations as populations
 
-import numpy as np
 
-chance = np.random.uniform(0, 1, size=1)
+import scipy.stats as stats
 
-if chance <= 0.3:
+
+__all__ = [
+    "AuxiliarySampler",
+    "DerivedLumAuxSampler",
+    "populations",
+    "Population",
+    "PopulationSynth",
+]
+
+
+chance = stats.bernoulli.rvs(0.3)
+
+if chance:
 
     from IPython.display import display, YouTubeVideo
 
