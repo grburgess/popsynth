@@ -58,6 +58,7 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
             luminosity_distribution=luminosity_distribution,
         )
 
+
 class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
     def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
         """FIXME! briefly describe function
@@ -83,8 +84,6 @@ class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
             luminosity_distribution=luminosity_distribution,
         )
 
-
-        
 
 class LogNormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
@@ -191,7 +190,6 @@ class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
             luminosity_distribution=luminosity_distribution,
         )
 
-        
 
 class Log10NormalSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):

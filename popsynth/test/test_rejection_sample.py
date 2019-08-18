@@ -45,9 +45,9 @@ class LinearFuncGen(FunctionGen):
 
 
 @given(
-    st.floats(min_value=0, max_value=10.),
-    st.floats(min_value=1., max_value=5.),
-    st.floats(min_value=10., max_value=1000),
+    st.floats(min_value=0, max_value=10.0),
+    st.floats(min_value=1.0, max_value=5.0),
+    st.floats(min_value=10.0, max_value=1000),
     st.integers(min_value=1, max_value=100),
 )
 @settings(deadline=None)

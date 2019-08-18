@@ -431,7 +431,7 @@ class PopulationSynth(object):
             if verbose:
                 print("NO HIDDEN OBJECTS")
 
-        if (distance_probability is not None) or (distance_probability == 1.) :
+        if (distance_probability is not None) or (distance_probability == 1.0):
             # pbar.set_description(desc='Selecting sistances')
             known_distances = []
             known_distance_idx = []
@@ -507,7 +507,7 @@ class PopulationSynth(object):
             lf_form = self._luminosity_distribution.form
 
         if distance_probability is None:
-            distance_probability = 1.
+            distance_probability = 1.0
 
         return Population(
             luminosities=luminosities,
@@ -533,7 +533,7 @@ class PopulationSynth(object):
             auxiliary_quantities=auxiliary_quantities,
             truth=truth,
             hard_cut=hard_cut,
-            distance_probability=distance_probability
+            distance_probability=distance_probability,
         )
 
     def display(self):

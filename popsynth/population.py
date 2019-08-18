@@ -267,8 +267,6 @@ class Population(object):
 
         return self._fluxes[~self._selection]
 
-
-
     @property
     def hard_cut(self):
         return self._hard_cut
@@ -276,7 +274,7 @@ class Population(object):
     @property
     def distance_probability(self):
         return self._distance_probability
-    
+
     @property
     def luminosity_parameters(self):
         return self._lf_params
@@ -995,8 +993,8 @@ class Population(object):
         ax.hist(
             self._distance_selected,
             bins=bins,
-#            facecolor=blue,
-#            edgecolor=blue_highlight,
+            #            facecolor=blue,
+            #            edgecolor=blue_highlight,
             lw=1.5,
             alpha=1,
             label="Obs. Pop.",
