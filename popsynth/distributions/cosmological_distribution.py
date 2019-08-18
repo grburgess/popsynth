@@ -4,7 +4,8 @@ import math
 from astropy.cosmology import WMAP9 as cosmo
 
 from popsynth.distribution import SpatialDistribution
-#from popsynth.utils.package_data import copy_package_data
+
+# from popsynth.utils.package_data import copy_package_data
 
 import scipy.integrate as integrate
 from astropy.constants import c as sol
@@ -63,11 +64,14 @@ def differential_comoving_volume(z):
 
 
 class CosmologicalDistribution(SpatialDistribution):
-    def __init__(self, r_max=10, seed=1234, name="cosmo", form=None, truth={}):
+    def __init__(
+        self, r_max=10, seed=1234, name="cosmo", form=None, truth={}, is_rate=True
+    ):
 
         super(CosmologicalDistribution, self).__init__(
             r_max=r_max, seed=seed, name=name, form=form, truth=truth
         )
+        self._is_rate = is_rate
 
     def differential_volume(self, z):
 
@@ -79,18 +83,28 @@ class CosmologicalDistribution(SpatialDistribution):
         return L / (4.0 * np.pi * luminosity_distance(z) ** 2)
 
     def time_adjustment(self, z):
-        return 1 + z
+        if self._is_rate:
+            return 1 + z
+        else:
+            return 1.0
 
 
 class SFRDistribtution(CosmologicalDistribution):
-    def __init__(self, r0, rise, decay, peak, r_max=10, seed=1234, name="sfr"):
+    def __init__(
+        self, r0, rise, decay, peak, r_max=10, seed=1234, name="sfr", is_rate=True
+    ):
 
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
         truth = dict(r0=r0, rise=rise, decay=decay, peak=peak)
 
         super(SFRDistribtution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=spatial_form, truth=truth
+            r_max=r_max,
+            seed=seed,
+            name=name,
+            form=spatial_form,
+            truth=truth,
+            is_rate=is_rate,
         )
 
         self._construct_distribution_params(r0=r0, rise=rise, decay=decay, peak=peak)
@@ -194,14 +208,27 @@ def _dndv(z, r0, rise, decay, peak):
 
 
 class ZPowerCosmoDistribution(CosmologicalDistribution):
-    def __init__(self, Lambda=1.0, delta=1.0, r_max=10.0, seed=1234, name="zpow_cosmo"):
+    def __init__(
+        self,
+        Lambda=1.0,
+        delta=1.0,
+        r_max=10.0,
+        seed=1234,
+        name="zpow_cosmo",
+        is_rate=True,
+    ):
 
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
         truth = dict(Lambda=Lambda, delta=delta)
 
         super(ZPowerCosmoDistribution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=spatial_form, truth=truth
+            r_max=r_max,
+            seed=seed,
+            name=name,
+            form=spatial_form,
+            truth=truth,
+            is_rate=is_rate,
         )
 
         self._construct_distribution_params(Lambda=Lambda, delta=delta)
