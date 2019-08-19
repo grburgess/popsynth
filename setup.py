@@ -25,6 +25,7 @@ REQUIRED = [
     "pandas",
     "astropy",
     "cython",
+    "betagen",
 #    "stan_utility",
     "tqdm",
     "numba",
