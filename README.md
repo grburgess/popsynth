@@ -4,6 +4,8 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 # popsynth
 
-A simple OO population synthesis code designed for testing population inference in Stan. It also makes a lot of pretty pictures.
+A simple object oreinted  population synthesis framework designed for testing population inference in Stan.
+It has grown passed its orginal intent to be able to produce populations/catalogs from a variety of luminosity functions, redshift distributions, and even more abstractions. Documentation coming soon.
+It also makes a lot of pretty pictures.
 
 ![alt text](https://raw.githubusercontent.com/grburgess/popsynth/master/external/pop.gif)
