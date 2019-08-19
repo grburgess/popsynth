@@ -7,14 +7,16 @@ Welcome to popsynth's documentation!
 ====================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 5
 
    notebooks/intro.ipynb
    notebooks/quickstart.ipynb
    notebooks/custom.ipynb
    notebooks/aux.ipynb
 
+.. automodule:: popsynth
+   :members:
+   :show-inheritance:
 
 Indices and tables
 ==================
