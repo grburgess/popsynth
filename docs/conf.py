@@ -60,8 +60,13 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+html_theme = 'p-green'
+import os
+from PSphinxTheme import utils
 
-html_theme = 'groundwork'
+p, html_theme, needs_sphinx = utils.set_psphinxtheme(html_theme)
+html_theme_path = p
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
