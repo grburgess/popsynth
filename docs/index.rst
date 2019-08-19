@@ -5,6 +5,8 @@
 
 Welcome to popsynth's documentation!
 ====================================
+.. image:: ../external/pop.gif
+
 
 .. toctree::
    :maxdepth: 5
