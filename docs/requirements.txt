@@ -3,3 +3,4 @@ nbsphinx
 ipykernel
 cython
 jupyterthemes
+PSphinxTheme
