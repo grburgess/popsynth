@@ -24,7 +24,7 @@ REQUIRED = [
     "h5py",
     "pandas",
     "astropy",
-    "Cython",
+    "cython",
     "stan_utility",
     "tqdm",
     "numba",
