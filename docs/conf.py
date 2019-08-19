@@ -38,7 +38,8 @@ extensions = ['nbsphinx',
               'sphinx.ext.autodoc',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
-              'sphinx.ext.autodoc'
+              'sphinx.ext.autodoc',
+              'sphinx.ext.githubpages'
 ]
 
 napoleon_google_docstring = True
