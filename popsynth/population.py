@@ -565,7 +565,7 @@ class Population(object):
         display(pd.DataFrame(out))
 
     def display_true_fluxes(self, ax=None, flux_color=dark, **kwargs):
-        """FIXME! briefly describe function
+        """Display the fluxes
 
         :param ax:
         :param flux_color:

@@ -248,7 +248,7 @@ class AuxiliarySampler(object):
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
-    def __init__(self, name, sigma, observed=True, truth=None):
+    def __init__(self, name, sigma, truth=None):
         """FIXME! briefly describe function
 
         :param name:
@@ -260,9 +260,16 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         """
 
         super(DerivedLumAuxSampler, self).__init__(
-            name, sigma, observed=observed, truth=truth
+            name, sigma, observed=False, truth=truth
         )
 
+    def observation_sampler(self, size):
+        """
+        OVERLOADED
+        """
+        return self._true_values
+
+        
     def compute_luminosity(self):
 
         raise RuntimeError("Must be implemented in derived class")
