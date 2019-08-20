@@ -16,10 +16,9 @@ Welcome to popsynth's documentation!
    notebooks/custom.ipynb
    notebooks/aux.ipynb
 
-.. automodule:: popsynth
-   :members:
-   :show-inheritance:
+   
 
+   
 Indices and tables
 ==================
 
