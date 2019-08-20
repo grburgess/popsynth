@@ -208,7 +208,7 @@ class LuminosityDistribution(Distribution):
             name=name, seed=seed, form=form, truth=truth
         )
 
-        self._params = None
+
 
     @abc.abstractmethod
     def phi(self, luminosity):
