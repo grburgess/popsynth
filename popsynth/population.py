@@ -49,7 +49,8 @@ class Population(object):
         hard_cut=False,
         distance_probability=1.0,
     ):
-        """FIXME! briefly describe function
+        """
+        A population containing all the simulated variables
 
         :param luminosities: the luminosities
         :param distances: the distances
@@ -329,7 +330,8 @@ class Population(object):
         return output
 
     def writeto(self, file_name):
-        """FIXME! briefly describe function
+        """
+        write population to an HDF5 file
 
         :param file_name:
         :returns:
@@ -413,9 +415,8 @@ class Population(object):
 
     @classmethod
     def from_file(cls, file_name):
-        """FIXME! briefly describe function
-
-        :param cls:
+        """
+        load a population from a file
         :param file_name:
         :returns:
         :rtype:
