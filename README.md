@@ -10,6 +10,6 @@ A simple object oreinted  population synthesis framework designed for testing po
 It has grown passed its orginal intent to be able to produce populations/catalogs from a variety of luminosity functions, redshift distributions, and even more abstractions. Documentation coming soon.
 It also makes a lot of pretty pictures.
 
-Note: **This is no synth pop!** If you were looking for some hard driving beats out of a yamaha keyboard with bells... look elsewhere
+Note: **This is not synth pop!** If you were looking for some hard driving beats out of a yamaha keyboard with bells... look elsewhere
 
 ![alt text](https://raw.githubusercontent.com/grburgess/popsynth/master/external/pop.gif)
