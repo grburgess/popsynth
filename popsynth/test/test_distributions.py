@@ -28,6 +28,9 @@ class DummySDistribution(SpatialDistribution):
         # luminosity to flux
         return L / (4.0 * np.pi * r * r)
 
+    def dNdV(self,r):
+        return 1.
+    
 
 class DummyLDistribution(LuminosityDistribution):
     def __init__(self, seed=1234, name="dummy"):
