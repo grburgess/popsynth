@@ -26,7 +26,7 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
 
         truth = dict(mu=mu, tau=tau)
 
-        super(DemoSampler2, self).__init__("demo2", sigma, observed=True, truth=truth)
+        super(DemoSampler2, self).__init__("demo2", sigma, truth=truth)
 
     def true_sampler(self, size):
 
