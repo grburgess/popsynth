@@ -9,12 +9,13 @@ from tqdm.autonotebook import tqdm as progress_bar
 
 class Distribution(object):
     def __init__(self, name, seed, form, truth=None):
-        """FIXME! briefly describe function
+        """
+        A distribution base class
 
-        :param name: 
-        :param seed: 
-        :param form: 
-        :param truth: 
+        :param name: the name of the distribution
+        :param seed: the random seed
+        :param form: the latex form
+        :param truth: dictionary holding true parameters
         :returns: 
         :rtype: 
 
@@ -29,6 +30,10 @@ class Distribution(object):
         else:
 
             self._truth = truth
+
+        # construct the params
+        # just in case there are none
+        self._construct_distribution_params()
 
     @property
     def name(self):
@@ -84,16 +89,16 @@ class SpatialDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, name, r_max, seed, form=None, truth=None):
-        """FIXME! briefly describe function
+        """
+        A spatial distribution such as a redshift
+        distribution
 
-        :param name: 
-        :param r_max: 
-        :param seed: 
-        :param form: 
-        :param truth: 
-        :returns: 
-        :rtype: 
-
+        :param name: the name of the distribution
+        :param r_max: the maximum distance to sample
+        :param seed: the random seed
+        :param form: the latex form
+        :param truth: the true parameter dictionary
+        
         """
 
         self._r_max = r_max
@@ -104,9 +109,16 @@ class SpatialDistribution(Distribution):
 
     @abc.abstractmethod
     def differential_volume(self, distance):
+        """
+        the differential volume
+
+        :param distance: 
+        :returns: 
+        :rtype: 
+
+        """
 
         raise RuntimeError("Must be implemented in derived class")
-        pass
 
     @abc.abstractmethod
     def dNdV(self, distance):
@@ -181,14 +193,14 @@ class LuminosityDistribution(Distribution):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, name, seed, form=None, truth=None):
-        """FIXME! briefly describe function
+        """
+        A luminosity distribution such as a 
+        distribution
 
-        :param name: 
-        :param seed: 
-        :param form: 
-        :param truth: 
-        :returns: 
-        :rtype: 
+        :param name: the name of the distribution
+        :param seed: the random seed
+        :param form: the latex form
+        :param truth: the true parameter dictionary
 
         """
 
@@ -199,11 +211,17 @@ class LuminosityDistribution(Distribution):
         self._params = None
 
     @abc.abstractmethod
-    def phi(self, L):
+    def phi(self, luminosity):
+        """
+        The functional form of the distribution
+
+        :param L: 
+        :returns: 
+        :rtype: 
+
+        """
 
         raise RuntimeError("Must be implemented in derived class")
-
-        pass
 
     @abc.abstractmethod
     def draw_luminosity(self, size):
