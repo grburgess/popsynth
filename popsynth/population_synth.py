@@ -20,7 +20,7 @@ from numba import jit, njit, prange, float64
 class PopulationSynth(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234):
+    def __init__(self, spatial_distribution, luminosity_distribution=None, seed=1234, verbose=True):
         """FIXME! briefly describe function
 
         :param spatial_distribution: 
@@ -36,6 +36,8 @@ class PopulationSynth(object):
         self._model_spaces = {}
         self._auxiliary_observations = {}
 
+        self._verbose = verbose
+        
         self._name = "%s" % spatial_distribution.name
         if luminosity_distribution is not None:
             self._name = "%s_%s" % (self._name, luminosity_distribution.name)
@@ -65,6 +67,9 @@ class PopulationSynth(object):
             for k, v in self._luminosity_distribution.params.items():
 
                 self._params[k] = v
+
+
+                
 
     @property
     def spatial_distribution(self):
@@ -103,10 +108,17 @@ class PopulationSynth(object):
         """
 
         if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
+            if self._verbose:
+                print('registering derived luminosity sampler: %s' % auxiliary_sampler.name)
+
             self._has_derived_luminosity = True
             self._derived_luminosity_sampler = auxiliary_sampler
 
         else:
+
+            if self._verbose:
+                print('registering auxilary sampler: %s' % auxiliary_sampler.name)
+
 
             self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
 
@@ -352,7 +364,7 @@ class PopulationSynth(object):
 
             if verbose:
 
-                print("Applyign soft boundary")
+                print("Applying soft boundary")
 
             # compute the detection probability  for the observed values
 
