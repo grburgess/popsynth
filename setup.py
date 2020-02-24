@@ -21,11 +21,10 @@ REQUIRED = [
     "scipy",
     "ipython",
     "matplotlib",
-    "h5py",
-    "pandas",
     "astropy",
+    "h5py",
     "cython",
-    "betagen",
+    "betagen"
     "tqdm",
     "numba",
 ]
