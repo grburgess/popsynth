@@ -24,7 +24,7 @@ REQUIRED = [
     "astropy",
     "h5py",
     "cython",
-    "betagen"
+    "betagen",
     "tqdm",
     "numba",
 ]
