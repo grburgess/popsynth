@@ -28,7 +28,6 @@ REQUIRED = [
     "betagen",
     "tqdm",
     "numba",
-    "hypothesis"
 ]
 
 # What packages are optional?
