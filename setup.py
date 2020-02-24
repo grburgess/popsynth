@@ -27,6 +27,7 @@ REQUIRED = [
     "betagen",
     "tqdm",
     "numba",
+    "pandas"
 ]
 
 # What packages are optional?
