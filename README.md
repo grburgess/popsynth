@@ -6,6 +6,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3372456.svg)](https://doi.org/10.5281/zenodo.3372456)
 # popsynth
 
+![alt text](https://raw.githubusercontent.com/grburgess/popsynth/master/external/logo.png)
+
 A simple object oreinted  population synthesis framework designed for testing population inference in Stan.
 It has grown passed its orginal intent to be able to produce populations/catalogs from a variety of luminosity functions, redshift distributions, and even more abstractions. Documentation coming soon.
 It also makes a lot of pretty pictures.
