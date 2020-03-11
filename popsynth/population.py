@@ -940,31 +940,37 @@ class Population(object):
 
         return fig
 
-    def display_luminosty(self, ax=None, **kwargs):
+    # def display_luminosty(self, ax=None, **kwargs):
 
-        if ax is None:
-            fig, ax = plt.subplots()
+    #     if self._no_detection:
+    #         return
+        
+    #     if ax is None:
+    #         fig, ax = plt.subplots()
 
-        else:
+    #     else:
 
-            fig = ax.get_figure()
+    #         fig = ax.get_figure()
 
-        bins = np.logspace(
-            np.log10(self._luminosities.min()), np.log10(self._luminosities.max()), 30
-        )
+    #     bins = np.logspace(
+    #         np.log10(self._luminosities.min()), np.log10(self._luminosities.max()), 30
+    #     )
 
-        ax.hist(
-            self._luminosities,
-            bins=bins,
-            normed=True,
-            fc=dark,
-            ec=dark_highlight,
-            lw=1.5,
-        )
+        
 
-        ax.set_xscale("log")
-        ax.set_yscale("log")
-        ax.set_xlabel("L")
+        
+    #     ax.hist(
+    #         self._luminosities,
+    #         #bins=bins,
+    #         #density=True,
+    #         fc=dark,
+    #         ec=dark_highlight,
+    #         lw=1.5,
+    #     )
+
+    #     ax.set_xscale("log")
+    #     ax.set_yscale("log")
+    #     ax.set_xlabel("L")
 
     def display_distances(self, ax=None):
         """FIXME! briefly describe function
