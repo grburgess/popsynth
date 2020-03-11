@@ -4,6 +4,8 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Documentation Status](https://readthedocs.org/projects/popsynth/badge/?version=latest)](https://popsynth.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3372456.svg)](https://doi.org/10.5281/zenodo.3372456)
+![PyPI](https://img.shields.io/pypi/v/popsynth)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/popsynth)
 # popsynth
 
 ![alt text](https://raw.githubusercontent.com/grburgess/popsynth/master/external/logo.png)
