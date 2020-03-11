@@ -1,14 +1,20 @@
 language: python
 python:
-  # We don't actually use the Travis Python, but this keeps it organized.
-  - "3.6"
-  - "3.7"
+- '3.6'
+- '3.7'
 install:
-  - pip install --upgrade numpy ipython scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
-  - python setup.py install
-env:
-  NUMBA_DISABLE_JIT=1
-
+- pip install --upgrade numpy ipython scipy h5py matplotlib hypothesis pystan betagen
+  coverage pytest pytest-cov cython codecov
+- python setup.py install
+env: NUMBA_DISABLE_JIT=1
 script:
-  - python -m pytest -vv --cov=popsynth/
-  - codecov --token=2adee64a-60b0-4c7e-b94c-512ea2b8e794
+- python -m pytest -vv --cov=popsynth/
+- codecov --token=2adee64a-60b0-4c7e-b94c-512ea2b8e794
+deploy:
+  user: "__token__"
+  password:
+    secure: cfboSSfY+DLbQwd+29NLta9d7nt1LTrgvbKJO0p1YdWP1GwIfqn9ffg1mROIyI1sKpxwDVV65ZtmLP6Ccep9Ymki2V2ZxvyJS31t6jhgXeBp7necsYuLscnVGAWDJ+mCGCa36f9Nbw3cnuThaQZt/uc+ylP4LKj5lDbT2oWWLyPCxBSak1VGUUavRgQcTq9PIxD3lJ2iH3UJQcWkeVhR2F9zat1/tk1qmo2aWBsZe60SSOlE+9iwBdYs+8QIxgyEsvn92T5wfe0bSG41McTjLMiu/fxTkS1YtPb3hIPIBeFF2jY1hwI6qa8eSbG5HrU9W7Xirl5vBTL8WZJvGq364GmIZbnfOs9Kj7jrfjJxlxPeS7JVQuX9ShAuZ9q7jhY8uAgqEJ9UF1LjCLu+Y2DaPsR0E2FaDP0BF1TFiptOKvKBsikULRAvu7TDy7I6CFXtPZb2MPm1q5c5jfgcfoe8PPt4hmkxjc8+TVErz1iLH5aKtgJe/M+nj8eRwtCetQSV5tBWkc/Y2AO7h6SbKwMgV2Ga7GPBbU0vCmg1TWd/l26FZoaZyrejZn44IJD2gGjwa7WSMNLg8D3Qtvx35Emlce9zC/qWQl+h1MMfaG/IonckRmknill5yLoh4Z055TS47JYYneNXrfgUvgh8NMWlVMqZo51xkFaq96xN0JuJScI=
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel" # Your distributions here
+  skip_existing: true

@@ -28,3 +28,7 @@ if chance:
     from IPython.display import display, YouTubeVideo
 
     display(YouTubeVideo("FYJ1dbyDcrI"))
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
