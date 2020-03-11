@@ -944,7 +944,7 @@ class Population(object):
 
     #     if self._no_detection:
     #         return
-        
+
     #     if ax is None:
     #         fig, ax = plt.subplots()
 
@@ -956,9 +956,6 @@ class Population(object):
     #         np.log10(self._luminosities.min()), np.log10(self._luminosities.max()), 30
     #     )
 
-        
-
-        
     #     ax.hist(
     #         self._luminosities,
     #         #bins=bins,

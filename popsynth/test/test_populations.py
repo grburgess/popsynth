@@ -225,7 +225,7 @@ class Popbuilder(object):
         pop.to_stan_data()
         pop.display_obs_fluxes()
         pop.display_distances()
-        #pop.display_luminosty()
+        # pop.display_luminosty()
         pop.selected_distances
         pop.selected_latent_fluxes
         pop.selected_observed_fluxes
@@ -255,7 +255,7 @@ class Popbuilder(object):
         pop.to_stan_data()
         pop.display_obs_fluxes()
         pop.display_distances()
-  #      pop.display_luminosty()
+        #      pop.display_luminosty()
         pop.selected_distances
         pop.selected_latent_fluxes
         pop.selected_observed_fluxes

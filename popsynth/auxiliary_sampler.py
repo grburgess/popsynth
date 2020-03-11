@@ -269,7 +269,6 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         """
         return self._true_values
 
-        
     def compute_luminosity(self):
 
         raise RuntimeError("Must be implemented in derived class")

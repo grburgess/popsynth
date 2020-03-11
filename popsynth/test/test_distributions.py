@@ -28,20 +28,17 @@ class DummySDistribution(SpatialDistribution):
         # luminosity to flux
         return L / (4.0 * np.pi * r * r)
 
-    def dNdV(self,r):
-        return 1.
-    
+    def dNdV(self, r):
+        return 1.0
+
 
 class DummyLDistribution(LuminosityDistribution):
     def __init__(self, seed=1234, name="dummy"):
 
-
         # the latex formula for the ditribution
         lf_form = r"1"
 
-        super(DummyLDistribution, self).__init__(
-            seed=seed, name="pareto", form=lf_form
-        )
+        super(DummyLDistribution, self).__init__(seed=seed, name="pareto", form=lf_form)
 
     def phi(self, L):
 
@@ -73,4 +70,4 @@ def test_distribution_with_no_parameters():
 
     popgen = MyPopulation()
 
-    popgen.draw_survey(1E-50)
+    popgen.draw_survey(1e-50)
