@@ -61,7 +61,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'haiku'
+html_theme = 'sphinx_rtd_theme'
 # html_theme = 'p-green'
 # import os
 # from PSphinxTheme import utils
@@ -77,6 +77,8 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'popsynthdoc'
+
+html_logo ='media/logo.png'
 
 
 # -- Options for LaTeX output ---------------------------------------------
