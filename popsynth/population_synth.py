@@ -161,6 +161,7 @@ class PopulationSynth(object):
         strength=10.0,
         hard_cut=False,
         distance_probability=None,
+        no_selection=False,
         verbose=True,
     ):
         """
@@ -441,7 +442,13 @@ class PopulationSynth(object):
                 )
 
         selection = np.logical_and(selection, auxiliary_selection)
+        if no_selection:
+            if self._verbose:
+                print("No Selection! Added back all objects")
 
+            selection = np.ones_like(selection, dtype=bool)
+
+        
         # pbar.update()
         if sum(selection) == n:
 
@@ -526,6 +533,7 @@ class PopulationSynth(object):
         if distance_probability is None:
             distance_probability = 1.0
 
+            
         return Population(
             luminosities=luminosities,
             distances=distances,
