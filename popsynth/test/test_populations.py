@@ -160,6 +160,8 @@ class Popbuilder(object):
 
         self.pop_gen.display()
 
+        self.pop_gen.graph()
+        
         #####################
 
         pop = self.draw_hard(verbose=True)

@@ -600,6 +600,14 @@ class PopulationSynth(object):
 
     #     pass
 
+
+    @property
+    def graph(self):
+
+        self._build_graph()
+
+        return self._graph
+    
     def _build_graph(self):
         """
         builds the graph for all the samplers
