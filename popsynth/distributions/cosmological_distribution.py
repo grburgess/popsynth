@@ -278,7 +278,7 @@ class MergerDistribution(CosmologicalDistribution):
 
     def _delay_time(self, tau):
         return np.exp(
-            -(np.log(tau) - np.log(self._td)) ** 2 / (2 * self._sigma ** 2)
+            -((np.log(tau) - np.log(self._td)) ** 2) / (2 * self._sigma ** 2)
         ) / (np.sqrt(2 * np.pi) * self._sigma)
 
     def dNdV(self, z):
