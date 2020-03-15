@@ -33,3 +33,33 @@ def recursively_load_dict_contents_from_group(h5file, path):
                 h5file, path + "/" + key + "/"
             )
     return ans
+
+
+# these two functions add and clean
+# a networkx graph dict so that it will be stored in
+# an hdf5 file
+
+def fill_graph_dict(graph_dict):
+    new_dict = {}
+    
+    for k, v in graph_dict.items():
+        if len(v)==0:
+            # this is an empty dict
+            # so fill it
+            new_dict[k] = 1.
+        else:
+            new_dict[k] = fill_graph_dict(v)
+    return new_dict
+
+def clean_graph_dict(graph_dict):
+    new_dict = {}
+    
+    for k, v in graph_dict.items():
+        if isinstance(v, int):
+            # this is an empty dict
+            # so fill it
+            new_dict[k] = {}
+        else:
+            new_dict[k] = clean_graph_dict(v)
+    return new_dict
+    
