@@ -3,7 +3,7 @@ import scipy.stats as stats
 from popsynth.auxiliary_sampler import AuxiliarySampler
 
 
-class TruncatedNormalAuxSampler(popsynth.AuxiliarySampler):
+class TruncatedNormalAuxSampler(AuxiliarySampler):
     def __init__(self, name, lower, upper, mu=0.0, tau=1.0, sigma=None, observed=True):
         """FIXME! briefly describe function
 

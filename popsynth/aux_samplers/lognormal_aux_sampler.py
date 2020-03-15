@@ -3,9 +3,10 @@ import scipy.stats as stats
 from popsynth.auxiliary_sampler import AuxiliarySampler
 
 
-class LogNormalAuxSampler(popsynth.AuxiliarySampler):
+class LogNormalAuxSampler(AuxiliarySampler):
     def __init__(self, name, mu=0.0, tau=1.0, sigma=None, observed=True):
-        """FIXME! briefly describe function
+        """
+        A Log normal sampler. None the tru values are in log
 
         :param name: 
         :param mu: 
