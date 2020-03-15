@@ -1,5 +1,5 @@
 import scipy.stats as stats
-import numnpy as np
+import numpy as np
 
 from popsynth.auxiliary_sampler import AuxiliarySampler
 
