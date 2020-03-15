@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import importlib
-
+import networkx as nx
 importlib.import_module("mpl_toolkits.mplot3d").Axes3D
 import pandas as pd
 from IPython.display import display, Math, Markdown
@@ -420,6 +420,8 @@ class Population(object):
             # now store the truths
             recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
+            recursively_save_dict_contents_to_group(f, "graph", self._graph.to_dict_of_dicts())
+            
     @classmethod
     def from_file(cls, file_name):
         """
@@ -506,6 +508,8 @@ class Population(object):
 
             truth = recursively_load_dict_contents_from_group(f, "truth")
 
+            graph = nx.from_dict_of_dicts(recursively_load_dict_contents_from_group(f, "graph"))
+
         return cls(
             luminosities=luminosities,
             distances=distances,
@@ -531,6 +535,7 @@ class Population(object):
             truth=truth,
             distance_probability=distance_probability,
             hard_cut=hard_cut,
+            graph = graph
         )
 
     def display(self):

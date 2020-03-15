@@ -242,6 +242,8 @@ class Popbuilder(object):
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
+        pop.graph
+        
         assert sum(~population_reloaded.selection) == 0
 
         os.remove("_saved_pop.h5")
