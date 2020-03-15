@@ -46,7 +46,7 @@ def fill_graph_dict(graph_dict):
         if len(v)==0:
             # this is an empty dict
             # so fill it
-            new_dict[k] = np.array([0.])
+            new_dict[k] = 1
         else:
             new_dict[k] = fill_graph_dict(v)
     return new_dict
@@ -55,7 +55,7 @@ def clean_graph_dict(graph_dict):
     new_dict = {}
     
     for k, v in graph_dict.items():
-        if isinstance(v, np.ndarray):
+        if not isinstance(v, dict):
             # this is an empty dict
             # so fill it
             new_dict[k] = {}
