@@ -160,7 +160,7 @@ class Popbuilder(object):
 
         self.pop_gen.display()
 
-        self.pop_gen.graph()
+        self.pop_gen.graph
         
         #####################
 
@@ -232,6 +232,7 @@ class Popbuilder(object):
         pop.selected_latent_fluxes
         pop.selected_observed_fluxes
 
+        self.pop_gen.graph
         pop.display()
 
         fig = pop.display_fluxes()
