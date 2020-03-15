@@ -137,7 +137,7 @@ class AuxiliarySampler(object):
 
         self._is_secondary = True
 
-    def get_secondary_properties(self, recursive_secondaries=None, graph=None, primary=None):
+    def get_secondary_properties(self, recursive_secondaries=None, graph=None, primary=None, spatial_distribution=None):
         """FIXME! briefly describe function
 
         :param recursive_secondaries:
@@ -158,15 +158,20 @@ class AuxiliarySampler(object):
 
                 if graph is not None:
 
-                    graph.add_node(k)
+                    graph.add_node(k, observed=False)
                     graph.add_edge(k, primary)
 
                     if v.observed:
-                        self._graph.add_edge(k, v.obs_name)
+                        graph.add_node(v.obs_name, observed=False)
+                        graph.add_edge(k, v.obs_name)
+                        
+                    if v.uses_distance:
+
+                        self._graph.add_edge(spatial_distribution.name, k)
 
                     
                 recursive_secondaries = v.get_secondary_properties(
-                    recursive_secondaries, graph, k
+                    recursive_secondaries, graph, k, spatial_distribution
                 )
 
         # add our own on

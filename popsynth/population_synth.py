@@ -566,7 +566,7 @@ class PopulationSynth(object):
             truth=truth,
             hard_cut=hard_cut,
             distance_probability=distance_probability,
-            graph=self.graph
+            graph=self.graph,
         )
 
     def display(self):
@@ -603,14 +603,13 @@ class PopulationSynth(object):
 
     #     pass
 
-
     @property
     def graph(self):
 
         self._build_graph()
 
         return self._graph
-    
+
     def _build_graph(self):
         """
         builds the graph for all the samplers
@@ -622,14 +621,14 @@ class PopulationSynth(object):
 
         # first check out the luminosity sampler
 
-        self._graph.add_node('obs_flux')
-        self._graph.add_edge(self._spatial_distribution.name ,'obs_flux')
+        self._graph.add_node("obs_flux", observed=True)
+        self._graph.add_edge(self._spatial_distribution.name, "obs_flux")
         if self._has_derived_luminosity:
 
-            self._graph.add_node(self._derived_luminosity_sampler.name, )
-            
-            self._graph.add_edge(self._derived_luminosity_sampler.name, 'obs_flux')
-            
+            self._graph.add_node(self._derived_luminosity_sampler.name,)
+
+            self._graph.add_edge(self._derived_luminosity_sampler.name, "obs_flux")
+
             if self._derived_luminosity_sampler.uses_distance:
 
                 self._graph.add_edge(
@@ -644,11 +643,11 @@ class PopulationSynth(object):
 
                 # pass the graph and the primary
 
-                properties = v2.get_secondary_properties(graph=self._graph, primary=k2)
+                properties = v2.get_secondary_properties(graph=self._graph, primary=k2, spatital_distribution=self._spatial_distribution)
 
         else:
-                
-            self._graph.add_edge(self._luminosity_distribution.name, 'obs_flux')
+
+            self._graph.add_edge(self._luminosity_distribution.name, "obs_flux")
         # now do the same fro everything else
 
         for k, v in self._auxiliary_observations.items():
@@ -657,20 +656,32 @@ class PopulationSynth(object):
                 not v.is_secondary
             ), "This is a secondary sampler. You cannot sample it in the main sampler"
 
-            self._graph.add_node(k)
+            self._graph.add_node(k, observed=False)
+
             if v.observed:
+                self._graph.add_node(v.obs_name, observed=False)
                 self._graph.add_edge(k, v.obs_name)
+
+                if v.uses_distance:
+
+                    self._graph.add_edge(self._spatial_distribution.name, k)
 
             for k2, v2 in v.secondary_samplers.items():
 
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
 
-                self._graph.add_node(k2)
                 self._graph.add_edge(k2, k)
+                self._graph.add_node(k2, observed=False)
+
+                if v2.uses_distance:
+
+                    self._graph.add_edge(self._spatial_distribution.name, k2 )
+
 
                 if v2.observed:
+
+                    self._graph.add_node(v2.obs_name, observed=True)
                     self._graph.add_edge(k2, v2.obs_name)
 
-                
-                properties = v2.get_secondary_properties(graph=self._graph, primary=k2)
+                properties = v2.get_secondary_properties(graph=self._graph, primary=k2, spatital_distribution=self._spatial_distribution)
