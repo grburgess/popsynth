@@ -56,7 +56,7 @@ def test_norm_sampler(mu, tau, size):
 
 
 @given(
-    st.floats(),
+    st.floats(min_value=-10, max_value=10),
     st.floats(min_value=0.01, max_value=10.0),
     st.integers(min_value=2, max_value=1000),
 )
