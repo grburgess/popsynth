@@ -28,14 +28,16 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size):
 
-        self._true_values = stats.norm.rvs(loc=np.log10(self._mu), scale=self._tau, size=size)
+        self._true_values = stats.norm.rvs(
+            loc=np.log10(self._mu), scale=self._tau, size=size
+        )
 
     def observation_sampler(self, size):
 
         if self._is_observed:
 
             self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self._sigma
+                loc=self._true_values, scale=self._sigma, size=size
             )
 
         else:

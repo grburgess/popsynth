@@ -9,7 +9,7 @@ import hypothesis.strategies as st
 
 @given(
     st.floats(min_value=0.01,),
-    st.floats(min_value=0.01,max_value=10.  ),
+    st.floats(min_value=0.01, max_value=10.0),
     st.integers(min_value=2, max_value=1000),
 )
 def test_lognorm_sampler(mu, tau, size):
@@ -32,7 +32,9 @@ def test_lognorm_sampler(mu, tau, size):
 
 
 @given(
-    st.floats(), st.floats(min_value=0.01,max_value=10.  ), st.integers(min_value=2, max_value=1000)
+    st.floats(),
+    st.floats(min_value=0.01, max_value=10.0),
+    st.integers(min_value=2, max_value=1000),
 )
 def test_norm_sampler(mu, tau, size):
 
@@ -54,7 +56,9 @@ def test_norm_sampler(mu, tau, size):
 
 
 @given(
-    st.floats(), st.floats(min_value=0.01,max_value=10.  ), st.integers(min_value=2, max_value=1000)
+    st.floats(),
+    st.floats(min_value=0.01, max_value=10.0),
+    st.integers(min_value=2, max_value=1000),
 )
 def test_truncnorm_sampler(mu, tau, size):
 

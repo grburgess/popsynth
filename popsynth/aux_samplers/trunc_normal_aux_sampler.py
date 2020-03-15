@@ -33,6 +33,7 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
             (self._upper - self._mu) / self._tau,
             loc=self._mu,
             scale=self._tau,
+            size=size,
         )
 
     def observation_sampler(self, size):
@@ -40,7 +41,7 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
         if self._is_observed:
 
             self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self._sigma
+                loc=self._true_values, scale=self._sigma, size=size
             )
 
         else:
