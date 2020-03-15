@@ -32,9 +32,7 @@ class NormalAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.normal.rvs(
-                loc=self._true_values, scale=self._sigma
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values, scale=self._sigma)
 
         else:
 

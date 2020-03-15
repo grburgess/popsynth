@@ -1,4 +1,5 @@
 import scipy.stats as stats
+import numnpy as np
 
 from popsynth.auxiliary_sampler import AuxiliarySampler
 
@@ -33,7 +34,7 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.normal.rvs(
+            self._obs_values = stats.norm.rvs(
                 loc=self._true_values, scale=self._sigma
             )
 
