@@ -92,9 +92,10 @@ def test_basic_population():
 
     print(population.truth)
 
+    homo_sch_synth.draw_survey(
+        boundary=1e-2, strength=50, flux_sigma=0.1, no_selection=True
+    )
 
-    homo_sch_synth.draw_survey(boundary=1e-2, strength=50, flux_sigma=0.1, no_selection=True)
-    
     population.writeto("_saved_pop.h5")
     population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 

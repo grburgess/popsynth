@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import importlib
+import networkx as nx
 
 importlib.import_module("mpl_toolkits.mplot3d").Axes3D
 import pandas as pd
@@ -13,6 +14,8 @@ from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
 from popsynth.utils.hdf5_utils import (
     recursively_save_dict_contents_to_group,
     recursively_load_dict_contents_from_group,
+    fill_graph_dict,
+    clean_graph_dict,
 )
 
 from betagen import betagen
@@ -48,6 +51,7 @@ class Population(object):
         truth={},
         hard_cut=False,
         distance_probability=1.0,
+        graph=None,
     ):
         """
         A population containing all the simulated variables
@@ -127,6 +131,8 @@ class Population(object):
         self._hard_cut = hard_cut
         self._distance_probability = distance_probability
 
+        self._graph = graph
+
         if sum(self._selection) == 0:
 
             self._no_detection = True
@@ -152,6 +158,10 @@ class Population(object):
             for k, v in model_spaces.items():
 
                 assert len(v) == n_model
+
+    @property
+    def graph(self):
+        return self._graph
 
     @property
     def truth(self):
@@ -413,6 +423,10 @@ class Population(object):
             # now store the truths
             recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
+            recursively_save_dict_contents_to_group(
+                f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph))
+            )
+
     @classmethod
     def from_file(cls, file_name):
         """
@@ -499,6 +513,10 @@ class Population(object):
 
             truth = recursively_load_dict_contents_from_group(f, "truth")
 
+            graph = nx.from_dict_of_dicts(
+                clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
+            )
+
         return cls(
             luminosities=luminosities,
             distances=distances,
@@ -524,6 +542,7 @@ class Population(object):
             truth=truth,
             distance_probability=distance_probability,
             hard_cut=hard_cut,
+            graph=graph,
         )
 
     def display(self):

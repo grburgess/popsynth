@@ -5,7 +5,15 @@ import numpy as np
 class AuxiliarySampler(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, sigma, observed=True, truth=None):
+    def __init__(
+        self,
+        name,
+        sigma,
+        observed=True,
+        truth=None,
+        uses_distance=False,
+        uses_luminosity=False,
+    ):
 
         self._sigma = sigma
 
@@ -20,6 +28,8 @@ class AuxiliarySampler(object):
         self._has_secondary = False
         self._is_sampled = False
         self._selection = None
+        self._uses_distance = uses_distance
+        self._uses_luminoity = uses_luminosity
 
         if truth is None:
 
@@ -127,7 +137,13 @@ class AuxiliarySampler(object):
 
         self._is_secondary = True
 
-    def get_secondary_properties(self, recursive_secondaries=None):
+    def get_secondary_properties(
+        self,
+        recursive_secondaries=None,
+        graph=None,
+        primary=None,
+        spatial_distribution=None,
+    ):
         """FIXME! briefly describe function
 
         :param recursive_secondaries:
@@ -146,8 +162,21 @@ class AuxiliarySampler(object):
 
             for k, v in self._secondary_samplers.items():
 
+                if graph is not None:
+
+                    graph.add_node(k, observed=False)
+                    graph.add_edge(k, primary)
+
+                    if v.observed:
+                        graph.add_node(v.obs_name, observed=False)
+                        graph.add_edge(k, v.obs_name)
+
+                    if v.uses_distance:
+
+                        self._graph.add_edge(spatial_distribution.name, k)
+
                 recursive_secondaries = v.get_secondary_properties(
-                    recursive_secondaries
+                    recursive_secondaries, graph, k, spatial_distribution
                 )
 
         # add our own on
@@ -236,6 +265,14 @@ class AuxiliarySampler(object):
         return self._truth
 
     @property
+    def uses_distance(self):
+        return self._uses_distance
+
+    @property
+    def uses_luminosity(self):
+        return self._luminosity
+
+    @property
     @abc.abstractmethod
     def true_sampler(self, size=1):
 
@@ -248,7 +285,7 @@ class AuxiliarySampler(object):
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
-    def __init__(self, name, sigma, truth=None):
+    def __init__(self, name, sigma, truth=None, uses_distance=False):
         """FIXME! briefly describe function
 
         :param name:
@@ -260,7 +297,7 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         """
 
         super(DerivedLumAuxSampler, self).__init__(
-            name, sigma, observed=False, truth=truth
+            name, sigma, observed=False, truth=truth, uses_distance=uses_distance
         )
 
     def observation_sampler(self, size):
