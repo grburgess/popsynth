@@ -21,7 +21,7 @@ def test_lognorm_sampler(mu, tau ,size):
     assert len(sampler._true_values) == size
 
     
-    sampler = LogNormalAuxSampler('test', mu, tau, sigma=1.,  observed=true)
+    sampler = LogNormalAuxSampler('test', mu, tau, sigma=1.,  observed=True)
 
     sampler.true_sampler(size)
 
@@ -43,7 +43,7 @@ def test_norm_sampler(mu, tau ,size):
     assert len(sampler._true_values) == size
 
     
-    sampler = NormalAuxSampler('test', mu, tau, sigma=1.,  observed=true)
+    sampler = NormalAuxSampler('test', mu, tau, sigma=1.,  observed=True)
 
     sampler.true_sampler(size)
 
@@ -65,7 +65,7 @@ def test_truncnorm_sampler(mu, tau ,size):
     assert len(sampler._true_values) == size
 
     
-    sampler = TruncatedNormalAuxSampler('test', 0, 10, mu, tau, sigma=1.,  observed=true)
+    sampler = TruncatedNormalAuxSampler('test', 0, 10, mu, tau, sigma=1.,  observed=True)
 
     sampler.true_sampler(size)
 
