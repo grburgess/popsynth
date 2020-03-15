@@ -420,7 +420,7 @@ class Population(object):
             # now store the truths
             recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
-            recursively_save_dict_contents_to_group(f, "graph", self._graph.to_dict_of_dicts())
+            recursively_save_dict_contents_to_group(f, "graph", nx.to_dict_of_dicts(self._graph))
             
     @classmethod
     def from_file(cls, file_name):
