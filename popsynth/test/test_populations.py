@@ -160,6 +160,8 @@ class Popbuilder(object):
 
         self.pop_gen.display()
 
+        self.pop_gen.graph
+
         #####################
 
         pop = self.draw_hard(verbose=True)
@@ -230,6 +232,7 @@ class Popbuilder(object):
         pop.selected_latent_fluxes
         pop.selected_observed_fluxes
 
+        self.pop_gen.graph
         pop.display()
 
         fig = pop.display_fluxes()
@@ -238,6 +241,8 @@ class Popbuilder(object):
 
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
+
+        pop.graph
 
         assert sum(~population_reloaded.selection) == 0
 

@@ -1,0 +1,3 @@
+ignore:
+  - "popsynth/test"
+  - "popsynth/_version.py"
