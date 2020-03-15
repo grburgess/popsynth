@@ -71,7 +71,7 @@ def test_truncnorm_sampler(mu, tau, size):
     assert len(sampler._true_values) == size
 
     sampler = TruncatedNormalAuxSampler(
-        "test", 0, 10, mu, tau, sigma=1.0, observed=True
+        "test", -10, 10, mu, tau, sigma=1.0, observed=True
     )
 
     sampler.true_sampler(size)
