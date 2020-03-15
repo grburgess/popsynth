@@ -59,7 +59,9 @@ def clean_graph_dict(graph_dict):
             # this is an empty dict
             # so fill it
             new_dict[k] = {}
+
         else:
+            
             new_dict[k] = clean_graph_dict(v)
     return new_dict
     

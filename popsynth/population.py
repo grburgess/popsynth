@@ -513,11 +513,10 @@ class Population(object):
 
             truth = recursively_load_dict_contents_from_group(f, "truth")
 
-            graph = clean_graph_dict(
-                nx.from_dict_of_dicts(
-                    recursively_load_dict_contents_from_group(f, "graph")
+            graph = nx.from_dict_of_dicts(
+                    clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
                 )
-            )
+            
 
         return cls(
             luminosities=luminosities,
