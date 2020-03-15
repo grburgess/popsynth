@@ -48,6 +48,7 @@ class Population(object):
         truth={},
         hard_cut=False,
         distance_probability=1.0,
+        graph=None
     ):
         """
         A population containing all the simulated variables
@@ -127,6 +128,8 @@ class Population(object):
         self._hard_cut = hard_cut
         self._distance_probability = distance_probability
 
+        self._graph = graph
+        
         if sum(self._selection) == 0:
 
             self._no_detection = True
@@ -153,6 +156,10 @@ class Population(object):
 
                 assert len(v) == n_model
 
+    @property
+    def graph(self):
+        return self._graph
+    
     @property
     def truth(self):
         """

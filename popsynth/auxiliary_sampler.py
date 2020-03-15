@@ -161,6 +161,10 @@ class AuxiliarySampler(object):
                     graph.add_node(k)
                     graph.add_edge(k, primary)
 
+                    if v.observed:
+                        self._graph.add_edge(k, v.obs_name)
+
+                    
                 recursive_secondaries = v.get_secondary_properties(
                     recursive_secondaries, graph, k
                 )
