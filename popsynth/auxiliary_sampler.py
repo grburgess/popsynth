@@ -278,16 +278,15 @@ class AuxiliarySampler(object, metaclass=abc.ABCMeta):
     def uses_luminosity(self):
         return self._luminosity
 
-    @property
     @abc.abstractmethod
     def true_sampler(self, size=1):
 
         pass
 
-    @abc.abstractmethod
+
     def observation_sampler(self, size=1):
 
-        pass
+        return self._true_values
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
@@ -306,11 +305,6 @@ class DerivedLumAuxSampler(AuxiliarySampler):
             name, sigma, observed=False, truth=truth, uses_distance=uses_distance
         )
 
-    def observation_sampler(self, size):
-        """
-        OVERLOADED
-        """
-        return self._true_values
 
     def compute_luminosity(self):
 
