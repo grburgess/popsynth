@@ -1,4 +1,3 @@
-# Scientific libraries
 import numpy as np
 import scipy.stats as stats
 import scipy.special as sf
@@ -129,6 +128,8 @@ class PopulationSynth(object):
 
         else:
 
+            assert not auxiliary_sampler.is_secondary, f'{auxiliary_sampler.name} is already set as a secondary sampler!'
+            assert auxiliary_sampler.name not in self._auxiliary_observations, f'{auxiliary_sampler.name} is already registered!'
             if self._verbose:
                 print("registering auxilary sampler: %s" % auxiliary_sampler.name)
 
@@ -280,7 +281,7 @@ class PopulationSynth(object):
 
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
-
+                
                 properties = v2.get_secondary_properties()
 
                 for k3, v3 in properties.items():
