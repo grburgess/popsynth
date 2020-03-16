@@ -2,8 +2,8 @@ import abc
 import numpy as np
 
 
-class AuxiliarySampler(object):
-    __metaclass__ = abc.ABCMeta
+class AuxiliarySampler(object, metaclass= abc.ABCMeta):
+
 
     def __init__(
         self,
@@ -15,6 +15,10 @@ class AuxiliarySampler(object):
         uses_luminosity=False,
     ):
 
+        if sigma is None:
+
+            sigma =1
+                        
         self._sigma = sigma
 
         self._name = name
@@ -88,7 +92,7 @@ class AuxiliarySampler(object):
         self._has_secondary = True
 
     def draw(self, size=1, verbose=True):
-        """
+,        """
         Draw the primary and secondary samplers. This is the main call.
 
         :param size: the number of samples to draw
