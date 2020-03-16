@@ -19,8 +19,7 @@ from tqdm.autonotebook import tqdm as progress_bar
 from numba import jit, njit, prange, float64
 
 
-class PopulationSynth(object):
-    __metaclass__ = abc.ABCMeta
+class PopulationSynth(object, metaclass=abc.ABCMeta):
 
     def __init__(
         self,
