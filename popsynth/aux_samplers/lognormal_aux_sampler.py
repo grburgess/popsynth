@@ -22,8 +22,10 @@ class LogNormalAuxSampler(AuxiliarySampler):
         self._mu = mu
         self._tau = tau
 
+        truth = dict(mu=mu, tau=tau)
+        
         super(LogNormalAuxSampler, self).__init__(
-            name=name, sigma=sigma, observed=observed
+            name=name, sigma=sigma, observed=observed, truth=truth
         )
 
     def true_sampler(self, size):

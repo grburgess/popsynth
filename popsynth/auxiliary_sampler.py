@@ -2,9 +2,7 @@ import abc
 import numpy as np
 
 
-class AuxiliarySampler(object):
-    __metaclass__ = abc.ABCMeta
-
+class AuxiliarySampler(object, metaclass=abc.ABCMeta):
     def __init__(
         self,
         name,
@@ -14,6 +12,10 @@ class AuxiliarySampler(object):
         uses_distance=False,
         uses_luminosity=False,
     ):
+
+        if sigma is None:
+
+            sigma = 1
 
         self._sigma = sigma
 
@@ -122,8 +124,12 @@ class AuxiliarySampler(object):
                 self._obs_values = self._true_values
 
             # check to make sure we sampled!
-            assert self.true_values is not None and len(self.true_values) == size
-            assert self.obs_values is not None and len(self.obs_values) == size
+            assert (
+                self.true_values is not None and len(self.true_values) == size
+            ), f"{self.name} likely has a bad true_sampler function"
+            assert (
+                self.obs_values is not None and len(self.obs_values) == size
+            ), f"{self.name} likely has a observation_sampler function"
 
             # now apply the selection to yourself
             # if there is nothing coded, it will be
@@ -272,16 +278,15 @@ class AuxiliarySampler(object):
     def uses_luminosity(self):
         return self._luminosity
 
-    @property
     @abc.abstractmethod
     def true_sampler(self, size=1):
 
         pass
 
-    @abc.abstractmethod
+
     def observation_sampler(self, size=1):
 
-        pass
+        return self._true_values
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
@@ -300,11 +305,6 @@ class DerivedLumAuxSampler(AuxiliarySampler):
             name, sigma, observed=False, truth=truth, uses_distance=uses_distance
         )
 
-    def observation_sampler(self, size):
-        """
-        OVERLOADED
-        """
-        return self._true_values
 
     def compute_luminosity(self):
 

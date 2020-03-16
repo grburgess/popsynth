@@ -22,8 +22,10 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
         self._lower = lower
         self._upper = upper
 
+        truth = dict(mu=mu, tau=tau, lower=lower, upper=upper)
+        
         super(TruncatedNormalAuxSampler, self).__init__(
-            name=name, sigma=sigma, observed=observed
+            name=name, sigma=sigma, observed=observed, truth=truth
         )
 
     def true_sampler(self, size):
