@@ -39,6 +39,10 @@ class AuxiliarySampler(object):
 
             self._truth = truth
 
+
+        
+
+            
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
 
@@ -122,8 +126,8 @@ class AuxiliarySampler(object):
                 self._obs_values = self._true_values
 
             # check to make sure we sampled!
-            assert self.true_values is not None and len(self.true_values) == size
-            assert self.obs_values is not None and len(self.obs_values) == size
+            assert self.true_values is not None and len(self.true_values) == size, f"{self.name} likely has a bad true_sampler function"
+            assert self.obs_values is not None and len(self.obs_values) == size, f"{self.name} likely has a observation_sampler function"
 
             # now apply the selection to yourself
             # if there is nothing coded, it will be
