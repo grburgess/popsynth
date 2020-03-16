@@ -2,9 +2,7 @@ import abc
 import numpy as np
 
 
-class AuxiliarySampler(object, metaclass= abc.ABCMeta):
-
-
+class AuxiliarySampler(object, metaclass=abc.ABCMeta):
     def __init__(
         self,
         name,
@@ -17,8 +15,8 @@ class AuxiliarySampler(object, metaclass= abc.ABCMeta):
 
         if sigma is None:
 
-            sigma =1
-                        
+            sigma = 1
+
         self._sigma = sigma
 
         self._name = name
@@ -43,10 +41,6 @@ class AuxiliarySampler(object, metaclass= abc.ABCMeta):
 
             self._truth = truth
 
-
-        
-
-            
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
 
@@ -92,7 +86,7 @@ class AuxiliarySampler(object, metaclass= abc.ABCMeta):
         self._has_secondary = True
 
     def draw(self, size=1, verbose=True):
-,        """
+        """
         Draw the primary and secondary samplers. This is the main call.
 
         :param size: the number of samples to draw
@@ -130,8 +124,12 @@ class AuxiliarySampler(object, metaclass= abc.ABCMeta):
                 self._obs_values = self._true_values
 
             # check to make sure we sampled!
-            assert self.true_values is not None and len(self.true_values) == size, f"{self.name} likely has a bad true_sampler function"
-            assert self.obs_values is not None and len(self.obs_values) == size, f"{self.name} likely has a observation_sampler function"
+            assert (
+                self.true_values is not None and len(self.true_values) == size
+            ), f"{self.name} likely has a bad true_sampler function"
+            assert (
+                self.obs_values is not None and len(self.obs_values) == size
+            ), f"{self.name} likely has a observation_sampler function"
 
             # now apply the selection to yourself
             # if there is nothing coded, it will be
