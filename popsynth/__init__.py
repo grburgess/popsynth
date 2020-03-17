@@ -21,13 +21,13 @@ __all__ = [
 ]
 
 
-chance = stats.bernoulli.rvs(0.3)
+# chance = stats.bernoulli.rvs(0.3)
 
-if chance:
+# if chance:
 
-    from IPython.display import display, YouTubeVideo
+#     from IPython.display import display, YouTubeVideo
 
-    display(YouTubeVideo("FYJ1dbyDcrI"))
+#     display(YouTubeVideo("FYJ1dbyDcrI"))
 
 from ._version import get_versions
 
