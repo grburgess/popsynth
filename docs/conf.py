@@ -62,17 +62,51 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-# html_theme = 'p-green'
-# import os
-# from PSphinxTheme import utils
-
-# p, html_theme, needs_sphinx = utils.set_psphinxtheme(html_theme)
-# html_theme_path = p
-
-# Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+
+html_show_sourcelink = False
+html_favicon = "media/favicon.ico"
+
+html_show_sphinx = False
+
+
+# If true, `todo` and `todoList` produce output, else they produce nothing.
+todo_include_todos = False
+
+autosectionlabel_prefix_document = True
+
+# avoid time-out when running the doc
+nbsphinx_timeout = 30 * 60
+
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc={'figure.dpi': 96}",
+]
+
+# autodoc_member_order = 'bysource'
+
+# autoclass_content = 'both'
+
+
+# edit_on_github_project = 'JohannesBuchner/UltraNest'
+# edit_on_github_branch = 'master'
+# #edit_on_github_url
+# edit_on_github_src = 'docs/'  # optional. default: ''
+
+
+
+html_theme_options = {
+ #   'canonical_url': 'https://johannesbuchner.github.io/UltraNest/',
+    'style_external_links': True,
+    # 'vcs_pageview_mode': 'edit',
+    'style_nav_header_background': '#470E80',
+    #'only_logo': False,
+}
+
 
 
 # Output file base name for HTML help builder.
