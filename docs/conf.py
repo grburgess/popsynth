@@ -47,6 +47,18 @@ napoleon_google_docstring = True
 napoleon_use_param = False
 
 
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'custom/custom.css',
+]
+
+
+html_js_files = [
+    'custom/custom.js',
+]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
