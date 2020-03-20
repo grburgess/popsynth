@@ -48,16 +48,6 @@ napoleon_use_param = False
 
 
 
-# These paths are either relative to html_static_path
-# or fully qualified paths (eg. https://...)
-html_css_files = [
-    'custom/custom.css',
-]
-
-
-html_js_files = [
-    'custom/custom.js',
-]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -74,9 +64,24 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
+
 html_static_path = ['_static']
+
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'css/custom.css',
+]
+
+
+html_js_files = [
+    'css/custom.js',
+]
+
 
 
 
@@ -116,7 +121,7 @@ html_theme_options = {
     'style_external_links': True,
     # 'vcs_pageview_mode': 'edit',
     'style_nav_header_background': '#470E80',
-    #'only_logo': False,
+    #'only_logo': True,
 }
 
 
