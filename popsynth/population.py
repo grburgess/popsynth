@@ -3,6 +3,9 @@ import importlib
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import ipyvolume as ipv
+import pythreejs
+import ipywidgets as widgets
 import importlib
 import networkx as nx
 
@@ -11,6 +14,7 @@ import pandas as pd
 from IPython.display import display, Math, Markdown
 
 from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
+from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
     recursively_save_dict_contents_to_group,
     recursively_load_dict_contents_from_group,
@@ -607,7 +611,7 @@ class Population(object):
             color=flux_color,
             edgecolors="none",
             label="True flux",
-            **kwargs
+            **kwargs,
         )
 
         ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
@@ -664,7 +668,7 @@ class Population(object):
             color=flux_color,
             edgecolors="none",
             label="Detected flux",
-            **kwargs
+            **kwargs,
         )
 
         ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
@@ -685,7 +689,7 @@ class Population(object):
         obs_color=dark,
         arrow_color="k",
         with_arrows=True,
-        **kwargs
+        **kwargs,
     ):
         """FIXME! briefly describe function
 
@@ -736,227 +740,145 @@ class Population(object):
 
         return fig
 
-    def display_obs_fluxes_sphere(
-        self, ax=None, cmap="magma", distance_transform=None, use_log=False, **kwargs
+    def _display_sphere(
+        self,
+        fluxes,
+        distances,
+        cmap="magma",
+        distance_transform=None,
+        use_log=False,
+        fig=None,
+        background_color="white",
+        **kwargs,
     ):
-        """FIXME! briefly describe function
 
-        :param ax:
-        :param cmap:
-        :param distance_transform:
-        :param use_log:
-        :returns:
-        :rtype:
-
-        """
-
-        if self._no_detection:
+        if len(fluxes) == 0:
             print("There are no detections to display")
-            if ax is not None:
-
-                fig = ax.get_figure()
-
-                return fig
-            else:
-
-                return
-
-        if ax is None:
-            fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
-
-        else:
-
-            fig = ax.get_figure()
-
-        n = sum(self._selection)
-
-        theta, phi = sample_theta_phi(n)
-
-        if distance_transform is not None:
-
-            distance = distance_transform(self._distance_selected)
-
-        else:
-
-            distance = self._distance_selected
-
-        x, y, z, x2, y2, z2 = _create_sphere_variables(
-            self._r_max, distance, theta, phi
-        )
-
-        ax.scatter3D(
-            x,
-            y,
-            z,
-            c=self._flux_selected,
-            cmap=cmap,
-            norm=mpl.colors.LogNorm(
-                vmin=min(self._flux_selected), vmax=max(self._flux_selected)
-            ),
-            **kwargs
-        )
-
-        ax.plot_wireframe(x2, y2, z2, color="grey", alpha=0.9, rcount=4, ccount=2)
-
-        ax._axis3don = False
-        ax.set_xlim(-self._r_max, self._r_max)
-        ax.set_ylim(-self._r_max, self._r_max)
-        ax.set_zlim(-self._r_max, self._r_max)
-
-        return fig
-
-    def display_fluxes_sphere(
-        self, ax=None, cmap="magma", distance_transform=None, use_log=False, **kwargs
-    ):
-
-        if ax is None:
-            fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
-
-        else:
-
-            fig = ax.get_figure()
-
-        n = len(self._fluxes)
-
-        theta, phi = sample_theta_phi(n)
-
-        if distance_transform is not None:
-
-            distance = distance_transform(self._distances)
-
-        else:
-
-            distance = self._distances
-
-        x, y, z, x2, y2, z2 = _create_sphere_variables(
-            self._r_max, distance, theta, phi
-        )
-
-        ax.scatter3D(
-            x,
-            y,
-            z,
-            c=self._flux_obs,
-            cmap=cmap,
-            norm=mpl.colors.LogNorm(vmin=min(self._fluxes), vmax=max(self._fluxes)),
-            **kwargs
-        )
-
-        ax.plot_wireframe(x2, y2, z2, color="grey", alpha=0.9, rcount=4, ccount=2)
-
-        ax._axis3don = False
-        ax.set_xlim(-self._r_max, self._r_max)
-        ax.set_ylim(-self._r_max, self._r_max)
-        ax.set_zlim(-self._r_max, self._r_max)
-
-        return fig
-
-    def display_hidden_fluxes_sphere(
-        self, ax=None, cmap="magma", distance_transform=None, use_log=False, **kwargs
-    ):
-        """FIXME! briefly describe function
-
-        :param ax:
-        :param cmap:
-        :param distance_transform:
-        :param use_log:
-        :returns:
-        :rtype:
-
-        """
-
-        # do not display if there is nothing hidden
-        if len(self._selection) == sum(self._selection):
 
             return
 
-        if ax is None:
-            fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
+        show = True
+        if fig is None:
+            show = False
+            fig = ipv.figure()
 
-        else:
-
-            fig = ax.get_figure()
-
-        n = len(self._flux_hidden)
+        ipv.pylab.style.box_off()
+        ipv.pylab.style.axes_off()
+        ipv.pylab.style.set_style_dark()
+        ipv.pylab.style.background_color(background_color)
+        n = len(fluxes)
 
         theta, phi = sample_theta_phi(n)
 
         if distance_transform is not None:
 
-            distance = distance_transform(self._distance_hidden)
+            distance = distance_transform(distances)
 
         else:
 
-            distance = self._distance_hidden
+            distance = distances
 
-        x, y, z, x2, y2, z2 = _create_sphere_variables(
-            self._r_max, distance, theta, phi
-        )
+        x, y, z = _create_sphere_variables(self._r_max, distance, theta, phi)
 
-        ax.scatter3D(
-            x,
-            y,
-            z,
-            c=self._flux_hidden,
+        _, colors = array_to_cmap(fluxes, cmap, use_log=True)
+
+        ipv.scatter(x, y, z, color=colors, marker="sphere", **kwargs)
+
+        # control = pythreejs.OrbitControls(controlling=fig.camera)
+        # fig.controls = control
+        # control.autoRotate = True
+        # fig.render_continuous = True
+        # control.autoRotate = True
+        # toggle_rotate = widgets.ToggleButton(description="Rotate")
+        # widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
+        # #        toggle_rotate
+
+        ipv.xyzlim(self._r_max)
+
+        return fig
+
+    def display_obs_fluxes_sphere(
+        self,
+        cmap="magma",
+        distance_transform=None,
+        use_log=False,
+        background_color="white",
+            show=True,
+        **kwargs,
+    ):
+
+        fig = self._display_sphere(
+            self._flux_selected,
+            self._distance_selected,
             cmap=cmap,
-            norm=mpl.colors.LogNorm(
-                vmin=min(self._flux_hidden), vmax=max(self._flux_hidden)
-            ),
-            **kwargs
+            distance_transform=distance_transform,
+            background_color=background_color,
+            use_log=use_log,
+            **kwargs,
         )
 
-        ax.plot_wireframe(x2, y2, z2, color="grey", alpha=0.9, rcount=4, ccount=2)
+        if show:
+            ipv.show()
+        
+        return fig
 
-        ax._axis3don = False
-        # ax.set_xlim(-self._r_max, self._r_max)
-        # ax.set_ylim(-self._r_max, self._r_max)
-        # ax.set_zlim(-self._r_max, self._r_max)
+    def display_hidden_fluxes_sphere(
+        self,
+        cmap="magma",
+        distance_transform=None,
+        use_log=False,
+        background_color="white",
+        show=True,
+        **kwargs,
+    ):
+
+        fig = self._display_sphere(
+            self._flux_hidden,
+            self._distance_hidden,
+            cmap=cmap,
+            distance_transform=distance_transform,
+            background_color=background_color,
+            use_log=use_log,
+            **kwargs,
+        )
+
+        if show:
+            ipv.show()
 
         return fig
 
     def display_flux_sphere(
         self,
-        ax=None,
-        seen_cmap="magma",
-        unseen_cmap="Greys",
+        seen_cmap="Reds",
+        unseen_cmap="Blues",
         distance_transform=None,
         use_log=False,
-        **kwargs
+        background_color="white",
+            show=False,
+        **kwargs,
     ):
-        """FIXME! briefly describe function
 
-        :param ax:
-        :param seen_cmap:
-        :param unseen_cmap:
-        :param distance_transform:
-        :param use_log:
-        :returns:
-        :rtype:
-
-        """
-
-        if ax is None:
-            fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
-
-        else:
-            fig = ax.get_figure()
-
-        self.display_obs_fluxes_sphere(
-            ax=ax,
+        fig = self.display_obs_fluxes_sphere(
             cmap=seen_cmap,
             distance_transform=distance_transform,
             use_log=use_log,
-            **kwargs
+            background_color=background_color,
+            show=False,
+            **kwargs,
         )
 
         self.display_hidden_fluxes_sphere(
-            ax=ax,
             cmap=unseen_cmap,
             distance_transform=distance_transform,
             use_log=use_log,
-            **kwargs
+            background_color=background_color,
+            fig=fig,
+            show=False,
+            **kwargs,
         )
 
+        ipv.show()
+        
         return fig
 
     # def display_luminosty(self, ax=None, **kwargs):
@@ -1031,10 +953,10 @@ class Population(object):
 def _create_sphere_variables(R, distance, theta, phi):
     x, y, z = xyz(distance, theta, phi)
 
-    u = np.linspace(0, 2 * np.pi, 100)
-    v = np.linspace(0, np.pi, 100)
-    x2 = R * np.outer(np.cos(u), np.sin(v))
-    y2 = R * np.outer(np.sin(u), np.sin(v))
-    z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
+    # u = np.linspace(0, 2 * np.pi, 100)
+    # v = np.linspace(0, np.pi, 100)
+    # x2 = R * np.outer(np.cos(u), np.sin(v))
+    # y2 = R * np.outer(np.sin(u), np.sin(v))
+    # z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))
 
-    return x, y, z, x2, y2, z2
+    return x, y, z
