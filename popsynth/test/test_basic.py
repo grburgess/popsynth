@@ -1,6 +1,7 @@
 import popsynth
 import pytest
 import os
+import numpy as np
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
@@ -88,7 +89,7 @@ def test_basic_population():
     homo_sch_synth.display()
     population = homo_sch_synth.draw_survey(boundary=1e-2, strength=50, flux_sigma=0.1)
     population.display_fluxes()
-    population.display_fluxes_sphere()
+    population.display_flux_sphere()
 
     print(population.truth)
 
