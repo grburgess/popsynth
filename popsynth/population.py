@@ -847,7 +847,7 @@ class Population(object):
 
         return fig
 
-    def display_flux_sphere(
+    def display_fluxes_sphere(
         self,
         seen_cmap="Reds",
         unseen_cmap="Blues",
