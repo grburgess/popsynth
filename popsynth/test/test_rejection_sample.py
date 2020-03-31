@@ -48,7 +48,7 @@ class LinearFuncGen(FunctionGen):
     st.floats(min_value=0, max_value=10.0),
     st.floats(min_value=1.0, max_value=5.0),
     st.floats(min_value=10.0, max_value=1000),
-    st.integers(min_value=1, max_value=100),
+    st.integers(min_value=10, max_value=100),
 )
 @settings(deadline=None)
 def test_linear_functions(alpha, beta, xmax, size):
@@ -57,4 +57,6 @@ def test_linear_functions(alpha, beta, xmax, size):
 
     out = rejection_sample(size, func_gen.ymax, func_gen.xmax, func_gen.func)
 
+    print(out)
+    
     assert len(out) == size

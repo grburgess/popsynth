@@ -1,8 +1,8 @@
-from numba import jit, njit, prange, float64
+#from numba import jit, njit, prange, float64
 import numpy as np
 
 
-@jit(parallel=True, forceobj=True)
+#@jit(parallel=False, forceobj=True)
 def rejection_sample(size, ymax, xmax, func):
     """FIXME! briefly describe function
 
@@ -15,11 +15,11 @@ def rejection_sample(size, ymax, xmax, func):
 
     """
 
-    r_out = []
+    r_out = np.zeros(size)
 
-    for i in prange(size):
-        flag = True
-        while flag:
+    for i in range(size):
+
+        while True:
 
             # get am rvs from 0 to the max of the function
 
@@ -32,7 +32,10 @@ def rejection_sample(size, ymax, xmax, func):
             # compare them
 
             if y < func(r):
-                r_out.append(r)
-                flag = False
+                r_out[i] = r
+                break
 
     return r_out
+
+
+
