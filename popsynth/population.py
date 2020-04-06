@@ -784,18 +784,20 @@ class Population(object):
 
         ipv.scatter(x, y, z, color=colors, marker="sphere", **kwargs)
 
-        # control = pythreejs.OrbitControls(controlling=fig.camera)
-        # fig.controls = control
-        # control.autoRotate = True
-        # fig.render_continuous = True
-        # control.autoRotate = True
-        # toggle_rotate = widgets.ToggleButton(description="Rotate")
-        # widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
-        # #        toggle_rotate
-
         ipv.xyzlim(self._r_max)
+        
+        control = pythreejs.OrbitControls(controlling=fig.camera)
+        fig.controls = control
+        control.autoRotate = True
+        fig.render_continuous = True
+        control.autoRotate = True
+        toggle_rotate = widgets.ToggleButton(description="Rotate")
+        widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
+        #        toggle_rotate
 
-        return fig
+
+
+        return toggle_rotate
 
     def display_obs_fluxes_sphere(
         self,
