@@ -749,6 +749,7 @@ class Population(object):
         use_log=False,
         fig=None,
         background_color="white",
+        show=True,
         **kwargs,
     ):
 
@@ -757,9 +758,9 @@ class Population(object):
 
             return
 
-        show = True
+
         if fig is None:
-            show = False
+
             fig = ipv.figure()
 
         ipv.pylab.style.box_off()
@@ -784,20 +785,23 @@ class Population(object):
 
         ipv.scatter(x, y, z, color=colors, marker="sphere", **kwargs)
 
-        ipv.xyzlim(self._r_max)
-        
-        control = pythreejs.OrbitControls(controlling=fig.camera)
-        fig.controls = control
-        control.autoRotate = True
-        fig.render_continuous = True
-        control.autoRotate = True
-        toggle_rotate = widgets.ToggleButton(description="Rotate")
-        widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
-        #        toggle_rotate
 
 
+        r_value = fig
 
-        return toggle_rotate
+        if show:
+
+            ipv.xyzlim(self._r_max)
+            control = pythreejs.OrbitControls(controlling=fig.camera)
+            fig.controls = control
+            control.autoRotate = True
+            fig.render_continuous = True
+            control.autoRotate = True
+            toggle_rotate = widgets.ToggleButton(description="Rotate")
+            widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
+            r_value = toggle_rotate
+
+        return r_value
 
     def display_obs_fluxes_sphere(
         self,
@@ -805,7 +809,7 @@ class Population(object):
         distance_transform=None,
         use_log=False,
         background_color="white",
-            show=True,
+        show=True,
         **kwargs,
     ):
 
@@ -816,12 +820,13 @@ class Population(object):
             distance_transform=distance_transform,
             background_color=background_color,
             use_log=use_log,
+            show=show,
             **kwargs,
         )
 
         if show:
             ipv.show()
-        
+
         return fig
 
     def display_hidden_fluxes_sphere(
@@ -841,6 +846,7 @@ class Population(object):
             distance_transform=distance_transform,
             background_color=background_color,
             use_log=use_log,
+            show=show,
             **kwargs,
         )
 
@@ -856,7 +862,6 @@ class Population(object):
         distance_transform=None,
         use_log=False,
         background_color="white",
-            show=False,
         **kwargs,
     ):
 
@@ -869,18 +874,16 @@ class Population(object):
             **kwargs,
         )
 
-        self.display_hidden_fluxes_sphere(
+        fig = self.display_hidden_fluxes_sphere(
             cmap=unseen_cmap,
             distance_transform=distance_transform,
             use_log=use_log,
             background_color=background_color,
             fig=fig,
-            show=False,
+            show=True,
             **kwargs,
         )
 
-        ipv.show()
-        
         return fig
 
     # def display_luminosty(self, ax=None, **kwargs):
