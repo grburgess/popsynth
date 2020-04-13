@@ -13,6 +13,8 @@ from popsynth.population import Population
 from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.utils.rejection_sample import rejection_sample
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
+from popsynth.aux_samplers.sky_sampler import SkySampler
+
 
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
@@ -27,6 +29,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         luminosity_distribution=None,
         seed=1234,
         verbose=True,
+        sky_sampler=None
+            
     ):
         """FIXME! briefly describe function
 
@@ -79,6 +83,20 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._graph.add_node(self._spatial_distribution.name)
 
+        # add the sky sampler
+
+        if sky_sampler is None:
+
+            sky_sampler = SkySampler()
+
+        else:
+
+            assert isinstance(sky_sampler, SkySampler)
+
+        self.add_observed_quantity(sky_sampler.ra_sampler)
+        self.add_observed_quantity(sky_sampler.dec_sampler)
+
+        
     @property
     def spatial_distribution(self):
         return self._spatial_distribution
