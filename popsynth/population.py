@@ -744,6 +744,8 @@ class Population(object):
         self,
         fluxes,
         distances,
+        theta,
+        phi,
         cmap="magma",
         distance_transform=None,
         use_log=False,
@@ -766,9 +768,7 @@ class Population(object):
         ipv.pylab.style.axes_off()
         ipv.pylab.style.set_style_dark()
         ipv.pylab.style.background_color(background_color)
-        n = len(fluxes)
 
-        theta, phi = sample_theta_phi(n)
 
         if distance_transform is not None:
 
@@ -803,13 +803,20 @@ class Population(object):
         distance_transform=None,
         use_log=False,
         background_color="white",
-            show=True,
+        show=True,
         **kwargs,
     ):
 
+
+        theta = self._auxiliary_quantites["dec"]["true_values"][self._selection]
+        phi = self._auxiliary_quantites["ra"]["true_values"][self._selection]
+
+        
         fig = self._display_sphere(
             self._flux_selected,
             self._distance_selected,
+            theta=theta,
+            phi=phi,
             cmap=cmap,
             distance_transform=distance_transform,
             background_color=background_color,
@@ -819,7 +826,7 @@ class Population(object):
 
         if show:
             ipv.show()
-        
+
         return fig
 
     def display_hidden_fluxes_sphere(
@@ -832,9 +839,15 @@ class Population(object):
         **kwargs,
     ):
 
+        theta = self._auxiliary_quantites["dec"]["true_values"][~self._selection]
+        phi = self._auxiliary_quantites["ra"]["true_values"][~self._selection]
+
+
         fig = self._display_sphere(
             self._flux_hidden,
             self._distance_hidden,
+            theta=theta,
+            phi=phi,
             cmap=cmap,
             distance_transform=distance_transform,
             background_color=background_color,
@@ -854,7 +867,7 @@ class Population(object):
         distance_transform=None,
         use_log=False,
         background_color="white",
-            show=False,
+        show=False,
         **kwargs,
     ):
 
@@ -878,7 +891,7 @@ class Population(object):
         )
 
         ipv.show()
-        
+
         return fig
 
     # def display_luminosty(self, ax=None, **kwargs):
