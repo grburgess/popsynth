@@ -490,7 +490,7 @@ class Population(object):
             distances = f["distances"][()]
             theta = f["theta"][()]
             phi = f["phi"][()]
-            
+
             # right now this is just for older pops
             try:
                 known_distances = f["known_distances"][()]
@@ -556,7 +556,7 @@ class Population(object):
             hard_cut=hard_cut,
             graph=graph,
             theta=theta,
-            phi=phi
+            phi=phi,
         )
 
     def display(self):
@@ -770,7 +770,6 @@ class Population(object):
 
             return
 
-
         if fig is None:
 
             fig = ipv.figure()
@@ -794,13 +793,12 @@ class Population(object):
 
         ipv.scatter(x, y, z, color=colors, marker="sphere", **kwargs)
 
-
-
         r_value = fig
 
         if show:
 
             ipv.xyzlim(self._r_max)
+            fig.camera.up = [1, 0, 0]
             control = pythreejs.OrbitControls(controlling=fig.camera)
             fig.controls = control
             control.autoRotate = True
@@ -810,7 +808,7 @@ class Population(object):
             widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
             r_value = toggle_rotate
 
-        return r_value
+        return fig
 
     def display_obs_fluxes_sphere(
         self,
@@ -853,11 +851,9 @@ class Population(object):
         **kwargs,
     ):
 
-        
         theta = self._theta[~self._selection]
         phi = self._phi[~self._selection]
 
-        
         fig = self._display_sphere(
             self._flux_hidden,
             self._distance_hidden,
