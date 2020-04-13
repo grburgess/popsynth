@@ -183,6 +183,15 @@ class Population(object):
 
         return self._truth
 
+
+    @property
+    def theta(self):
+        return self._theta
+
+    @property
+    def phi(self):
+        return self._phi
+    
     @property
     def luminosities(self):
         """
