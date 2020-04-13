@@ -14,6 +14,7 @@ from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.utils.rejection_sample import rejection_sample
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 
+
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
 from numba import jit, njit, prange, float64
@@ -79,6 +80,10 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._graph.add_node(self._spatial_distribution.name)
 
+        # add the sky sampler
+
+        
+        
     @property
     def spatial_distribution(self):
         return self._spatial_distribution
@@ -213,6 +218,10 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         #       pbar.set_description(desc='Drawing distances')
         distances = self._spatial_distribution.draw_distance(size=n, verbose=verbose)
 
+        # now draw the sky positions
+        
+        self._spatial_distribution.draw_sky_positions(size=n)
+        
         if verbose:
             print("Expecting %d total objects" % n)
 
@@ -567,6 +576,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             hard_cut=hard_cut,
             distance_probability=distance_probability,
             graph=self.graph,
+            theta = self._spatial_distribution.theta,
+            phi = self._spatial_distribution.phi
         )
 
     def display(self):

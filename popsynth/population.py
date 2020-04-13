@@ -2,18 +2,17 @@ import h5py
 import importlib
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import ipyvolume as ipv
 import pythreejs
 import ipywidgets as widgets
-import importlib
+
 import networkx as nx
 
-importlib.import_module("mpl_toolkits.mplot3d").Axes3D
+
 import pandas as pd
 from IPython.display import display, Math, Markdown
 
-from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
+from popsynth.utils.spherical_geometry import xyz
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
     recursively_save_dict_contents_to_group,
@@ -56,6 +55,8 @@ class Population(object):
         hard_cut=False,
         distance_probability=1.0,
         graph=None,
+        theta=None,
+        phi=None,
     ):
         """
         A population containing all the simulated variables
@@ -94,6 +95,9 @@ class Population(object):
         self._known_distances = known_distances
         self._known_distance_idx = known_distance_idx
         self._unknown_distance_idx = unknown_distance_idx
+
+        self._theta = theta
+        self._phi = phi
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
             selection
@@ -403,6 +407,8 @@ class Population(object):
             f.create_dataset("fluxes", data=self._fluxes, compression="lzf")
             f.create_dataset("flux_obs", data=self._flux_obs, compression="lzf")
             f.create_dataset("selection", data=self._selection, compression="lzf")
+            f.create_dataset("theta", data=self._theta, compression="lzf")
+            f.create_dataset("phi", data=self._phi, compression="lzf")
 
             aux_grp = f.create_group("auxiliary_quantities")
 
@@ -482,6 +488,8 @@ class Population(object):
 
             luminosities = f["luminosities"][()]
             distances = f["distances"][()]
+            theta = f["theta"][()]
+            phi = f["phi"][()]
 
             # right now this is just for older pops
             try:
@@ -547,6 +555,8 @@ class Population(object):
             distance_probability=distance_probability,
             hard_cut=hard_cut,
             graph=graph,
+            theta=theta,
+            phi=phi,
         )
 
     def display(self):
@@ -744,6 +754,8 @@ class Population(object):
         self,
         fluxes,
         distances,
+        theta,
+        phi,
         cmap="magma",
         distance_transform=None,
         use_log=False,
@@ -758,7 +770,6 @@ class Population(object):
 
             return
 
-
         if fig is None:
 
             fig = ipv.figure()
@@ -767,9 +778,6 @@ class Population(object):
         ipv.pylab.style.axes_off()
         ipv.pylab.style.set_style_dark()
         ipv.pylab.style.background_color(background_color)
-        n = len(fluxes)
-
-        theta, phi = sample_theta_phi(n)
 
         if distance_transform is not None:
 
@@ -785,13 +793,12 @@ class Population(object):
 
         ipv.scatter(x, y, z, color=colors, marker="sphere", **kwargs)
 
-
-
         r_value = fig
 
         if show:
 
             ipv.xyzlim(self._r_max)
+            fig.camera.up = [1, 0, 0]
             control = pythreejs.OrbitControls(controlling=fig.camera)
             fig.controls = control
             control.autoRotate = True
@@ -801,7 +808,7 @@ class Population(object):
             widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
             r_value = toggle_rotate
 
-        return r_value
+        return fig
 
     def display_obs_fluxes_sphere(
         self,
@@ -813,9 +820,14 @@ class Population(object):
         **kwargs,
     ):
 
+        theta = self._theta[self._selection]
+        phi = self._phi[self._selection]
+
         fig = self._display_sphere(
             self._flux_selected,
             self._distance_selected,
+            theta=theta,
+            phi=phi,
             cmap=cmap,
             distance_transform=distance_transform,
             background_color=background_color,
@@ -839,9 +851,14 @@ class Population(object):
         **kwargs,
     ):
 
+        theta = self._theta[~self._selection]
+        phi = self._phi[~self._selection]
+
         fig = self._display_sphere(
             self._flux_hidden,
             self._distance_hidden,
+            theta=theta,
+            phi=phi,
             cmap=cmap,
             distance_transform=distance_transform,
             background_color=background_color,

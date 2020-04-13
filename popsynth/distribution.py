@@ -3,7 +3,7 @@ import abc
 
 
 from popsynth.utils.rejection_sample import rejection_sample
-
+from popsynth.utils.spherical_geometry import sample_theta_phi
 from tqdm.autonotebook import tqdm as progress_bar
 
 
@@ -103,6 +103,9 @@ class SpatialDistribution(Distribution):
 
         self._r_max = r_max
 
+        self._theta = None
+        self._phi = None
+
         super(SpatialDistribution, self).__init__(
             name=name, seed=seed, form=form, truth=truth
         )
@@ -140,6 +143,18 @@ class SpatialDistribution(Distribution):
     @abc.abstractmethod
     def transform(self, flux, distance):
         pass
+
+    @property
+    def theta(self):
+        return self._theta
+
+    @property
+    def phi(self):
+        return self._phi
+
+    def draw_sky_positions(self, size):
+
+        self._theta, self._phi = sample_theta_phi(size)
 
     def draw_distance(self, size, verbose):
         """
@@ -181,6 +196,8 @@ class SpatialDistribution(Distribution):
         else:
 
             r_out = rejection_sample(size, ymax, self._r_max, dNdr)
+
+        self._distances = np.array(r_out)
 
         return np.array(r_out)
 

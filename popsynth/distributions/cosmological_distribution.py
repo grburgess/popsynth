@@ -77,7 +77,7 @@ class CosmologicalDistribution(SpatialDistribution):
 
         td = comoving_transverse_distance(z) / 3.086e24
         return (dh * td * td / a(z)) * 1e-9  # Gpc^3
-
+    
     def transform(self, L, z):
 
         return L / (4.0 * np.pi * luminosity_distance(z) ** 2)

@@ -8,6 +8,8 @@ from popsynth.distributions.cosmological_distribution import (
     ZPowerCosmoDistribution,
 )
 
+from popsynth.distributions.spiral_galaxy_distribution import SpiralGalaxyDistribution
+
 from popsynth.population_synth import PopulationSynth
 
 ## First create a bunch of spatial distributions
@@ -115,6 +117,30 @@ class SFRPopulation(PopulationSynth):
 
         super(SFRPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
+            luminosity_distribution=luminosity_distribution,
+            seed=seed,
+        )
+
+
+class MWRadialPopulation(PopulationSynth):
+    def __init__(
+        self,
+        rho,
+        a=1.64,
+        b=4.01,
+        R1=0.55,
+        R0=8.5,
+        r_max=20,
+        seed=1234,
+        luminosity_distribution=None,
+    ):
+
+        spatial_distribution = SpiralGalaxyDistribution(
+            rho=rho, a=a, b=b, R1=R1, R0=R0, r_max=r_max, seed=seed
+        )
+
+        super(MWRadialPopulation, self).__init__(
+            spatial_distribution,
             luminosity_distribution=luminosity_distribution,
             seed=seed,
         )
