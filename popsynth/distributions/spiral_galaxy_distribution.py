@@ -15,9 +15,7 @@ class SpiralGalaxyDistribution(SphericalDistribution):
 
     def __init__(self, seed=1234, name="spiral_galaxy", form=None):
 
-        super(SpiralGalaxyDistribution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=form
-        )
+        super(SpiralGalaxyDistribution, self).__init__(seed=seed, name=name, form=form)
 
     def dNdV(self, r):
 
