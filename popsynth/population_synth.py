@@ -270,7 +270,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {
                 "true_values": self._derived_luminosity_sampler.true_values,
                 "obs_values": self._derived_luminosity_sampler.obs_values,
-                "sigma": self._derived_luminosity_sampler.sigma,
                 "selection": self._derived_luminosity_sampler.selection,
             }
             if verbose:
@@ -351,7 +350,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # append these values to a dict
             auxiliary_quantities[k] = {
                 "true_values": v.true_values,
-                "sigma": v.sigma,
                 "obs_values": v.obs_values,
                 "selection": v.selection,
             }
