@@ -1,10 +1,13 @@
 import numpy as np
 
-from popsynth.auxiliary_sampler import AuxiliarySampler
+from popsynth.auxiliary_sampler import NonObservedAuxSampler, AuxiliaryParameter
 
 
-class ViewingAngleSampler(AuxiliarySampler):
-    def __init__(self, max_angle=90.0):
+class ViewingAngleSampler(NonObservedAuxSampler):
+
+    max_angle = AuxiliaryParameter(default=90, vmin=0, vmax=90)
+
+    def __init__(self):
         """ 
         A viewing angle sampler that samples from 0, max_angle.
         It assumes that this is NOT an observed property
@@ -15,17 +18,7 @@ class ViewingAngleSampler(AuxiliarySampler):
 
         """
 
-        truth = dict(max_angle=max_angle)
-
-        assert (max_angle > 0.0) and (
-            max_angle <= 90
-        ), "angle must be between 0 and 90."
-
-        self._max_angle = np.deg2rad(max_angle)
-
-        super(ViewingAngleSampler, self).__init__(
-            "va", sigma=1.0, observed=False, truth=truth
-        )
+        super(ViewingAngleSampler, self).__init__(name="va",)
 
     def true_sampler(self, size):
         """
@@ -37,6 +30,8 @@ class ViewingAngleSampler(AuxiliarySampler):
 
         """
 
-        theta_inverse = np.random.uniform(0.0, 1 - np.cos(self._max_angle), size=size)
+        theta_inverse = np.random.uniform(
+            0.0, 1 - np.cos(np.deg2rad(self.max_angle)), size=size
+        )
 
         self._true_values = np.arccos(1.0 - theta_inverse)

@@ -1,11 +1,16 @@
 import scipy.stats as stats
 import numpy as np
 
-from popsynth.auxiliary_sampler import AuxiliarySampler
+from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
 
 
 class LogNormalAuxSampler(AuxiliarySampler):
-    def __init__(self, name, mu=0.0, tau=1.0, sigma=None, observed=True):
+
+    mu = AuxiliaryParameter(default=0)
+    tau = AuxiliaryParameter(default=1, vmin=0)
+    sigma = AuxiliaryParameter(default=1, vmin=0)
+
+    def __init__(self, name, observed=True):
         """
         A Log normal sampler. None the tru values are in log
 
@@ -18,20 +23,12 @@ class LogNormalAuxSampler(AuxiliarySampler):
         :rtype: 
 
         """
-
-        self._mu = mu
-        self._tau = tau
-
-        truth = dict(mu=mu, tau=tau)
-        
-        super(LogNormalAuxSampler, self).__init__(
-            name=name, sigma=sigma, observed=observed, truth=truth
-        )
+        super(LogNormalAuxSampler, self).__init__(name=name, observed=observed)
 
     def true_sampler(self, size):
 
         self._true_values = stats.norm.rvs(
-            loc=np.log10(self._mu), scale=self._tau, size=size
+            loc=np.log10(self.mu), scale=self.tau, size=size
         )
 
     def observation_sampler(self, size):
@@ -39,7 +36,7 @@ class LogNormalAuxSampler(AuxiliarySampler):
         if self._is_observed:
 
             self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self._sigma, size=size
+                loc=self._true_values, scale=self.sigma, size=size
             )
 
         else:

@@ -22,9 +22,9 @@ class SchechterHomogeneousSphericalPopulation(SphericalPopulation):
 
         """
 
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
-        )
+        luminosity_distribution = SchechterDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(SchechterHomogeneousSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -49,9 +49,10 @@ class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         """
 
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
-        )
+        luminosity_distribution = SchechterDistribution(seed=seed)
+
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(SchechterZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -77,9 +78,10 @@ class SchechterZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
         """
 
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
-        )
+        luminosity_distribution = SchechterDistribution(seed=seed)
+
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(SchechterZPowerCosmoPopulation, self).__init__(
             Lambda=Lambda,
@@ -107,9 +109,10 @@ class SchechterSFRPopulation(SFRPopulation):
 
         """
 
-        luminosity_distribution = SchechterDistribution(
-            Lmin=Lmin, alpha=alpha, seed=seed
-        )
+        luminosity_distribution = SchechterDistribution(seed=seed)
+
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(SchechterSFRPopulation, self).__init__(
             r0=r0,

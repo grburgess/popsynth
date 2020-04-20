@@ -1,6 +1,6 @@
 import numpy as np
 
-from popsynth.auxiliary_sampler import AuxiliarySampler
+from popsynth.auxiliary_sampler import NonObservedAuxSampler
 from popsynth.utils.spherical_geometry import sample_theta_phi
 
 
@@ -38,7 +38,7 @@ class SkySampler(object):
         return self._dec_sampler
 
 
-class RASampler(AuxiliarySampler):
+class RASampler(NonObservedAuxSampler):
     def __init__(self):
         """
 
@@ -50,14 +50,14 @@ class RASampler(AuxiliarySampler):
 
         """
 
-        super(RASampler, self).__init__("ra", sigma=1.0, observed=False, truth={})
+        super(RASampler, self).__init__(name="ra")
 
     def true_sampler(self, size):
 
         self._true_values = np.random.uniform(0, 2 * np.pi, size=size)
 
 
-class DecSampler(AuxiliarySampler):
+class DecSampler(NonObservedAuxSampler):
     def __init__(self):
         """
         sampler the dec of the sky uniformly
@@ -69,7 +69,7 @@ class DecSampler(AuxiliarySampler):
 
         """
 
-        super(DecSampler, self).__init__("dec", sigma=1.0, observed=False, truth={})
+        super(DecSampler, self).__init__(name="dec")
 
     def true_sampler(self, size):
 

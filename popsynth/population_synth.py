@@ -207,7 +207,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # integrate the population to determine the true number of
         # objects
-        N = integrate.quad(dNdr, 0.0, self._spatial_distribution._r_max)[0]
+        N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[0]
 
         if verbose:
             print("The volume integral is %f" % N)
@@ -270,7 +270,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {
                 "true_values": self._derived_luminosity_sampler.true_values,
                 "obs_values": self._derived_luminosity_sampler.obs_values,
-                "sigma": self._derived_luminosity_sampler.sigma,
                 "selection": self._derived_luminosity_sampler.selection,
             }
             if verbose:
@@ -351,7 +350,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # append these values to a dict
             auxiliary_quantities[k] = {
                 "true_values": v.true_values,
-                "sigma": v.sigma,
                 "obs_values": v.obs_values,
                 "selection": v.selection,
             }
@@ -380,6 +378,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # this is homoskedastic for now
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
+        assert np.alltrue(np.isfinite(log10_fluxes_obs))
+        
         # now select them
 
         if not hard_cut:
@@ -401,6 +401,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 ):
 
                     # make a bernoulli draw given the detection probability
+
                     if stats.bernoulli.rvs(p) == 1:
 
                         selection.append(True)

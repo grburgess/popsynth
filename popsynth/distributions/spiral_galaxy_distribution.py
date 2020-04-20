@@ -2,28 +2,27 @@ import numpy as np
 from scipy import random as rd
 
 from popsynth.distributions.spherical_distribution import SphericalDistribution
+from popsynth.distribution import DistributionParameter
 
 
 class SpiralGalaxyDistribution(SphericalDistribution):
-    def __init__(
-        self, rho, a, b, R1, R0, r_max=20, seed=1234, name="spiral_galaxy", form=None
-    ):
 
-        truth = dict(rho=rho, a=a, b=b, R1=R1, R0=R0)
+    rho = DistributionParameter(vmin=0)
+    a = DistributionParameter()
+    b = DistributionParameter()
+    R1 = DistributionParameter()
+    R0 = DistributionParameter()
 
-        super(SpiralGalaxyDistribution, self).__init__(
-            r_max=r_max, seed=seed, name=name, form=form, truth=truth
-        )
+    def __init__(self, seed=1234, name="spiral_galaxy", form=None):
 
-        self._construct_distribution_params(rho=rho, a=a, b=b, R1=R1, R0=R0)
+        super(SpiralGalaxyDistribution, self).__init__(seed=seed, name=name, form=form)
 
     def dNdV(self, r):
 
-        return self._params["rho"] * np.power(
-            (r + self._params["R1"]) / (self._params["R0"] + self._params["R1"]),
-            self._params["a"],
-        ) * np.exp(
-            -self._params["b"] * (r - self._params["R0"]) / (self._params["R0"] + self._params["R1"])
+        return (
+            self.rho
+            * np.power((r + self.R1) / (self.R0 + self.R1), self.a,)
+            * np.exp(-self.b * (r - self.R0) / (self.R0 + self.R1))
         )
 
     def draw_sky_positions(self, size):

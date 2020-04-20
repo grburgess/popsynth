@@ -21,7 +21,9 @@ class ParetoHomogeneousSphericalPopulation(SphericalPopulation):
 
         """
 
-        luminosity_distribution = ParetoDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
+        luminosity_distribution = ParetoDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(ParetoHomogeneousSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -46,7 +48,9 @@ class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
         """
 
-        luminosity_distribution = ParetoDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
+        luminosity_distribution = ParetoDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(ParetoZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -72,7 +76,9 @@ class ParetoZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
         """
 
-        luminosity_distribution = ParetoDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
+        luminosity_distribution = ParetoDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(ParetoZPowerCosmoPopulation, self).__init__(
             Lambda=Lambda,
@@ -100,7 +106,9 @@ class ParetoSFRPopulation(SFRPopulation):
 
         """
 
-        luminosity_distribution = ParetoDistribution(Lmin=Lmin, alpha=alpha, seed=seed)
+        luminosity_distribution = ParetoDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
 
         super(ParetoSFRPopulation, self).__init__(
             r0=r0,
