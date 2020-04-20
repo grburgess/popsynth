@@ -207,7 +207,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # integrate the population to determine the true number of
         # objects
-        N = integrate.quad(dNdr, 0.0, self._spatial_distribution._r_max)[0]
+        N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[0]
 
         if verbose:
             print("The volume integral is %f" % N)

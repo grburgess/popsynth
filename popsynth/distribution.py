@@ -7,8 +7,104 @@ from popsynth.utils.spherical_geometry import sample_theta_phi
 from tqdm.autonotebook import tqdm as progress_bar
 
 
-class Distribution(object):
-    def __init__(self, name, seed, form, truth=None):
+class DistributionParameter(object):
+    def __init__(self, default=None, vmin=None, vmax=None):
+
+        self.name = None
+        self._vmin = vmin
+        self._vmax = vmax
+        self._default = default
+        self._is_set = False
+
+    def __get__(self, obj, type=None) -> object:
+        if not self._is_set:
+            obj._parameter_storage[self.name] = self._default
+
+        return obj._parameter_storage[self.name]
+
+    def __set__(self, obj, value) -> None:
+        self._is_set = True
+
+        if self._vmin is not None:
+            assert (
+                value >= self._vmin
+            ), f"trying to set {self.x} to a value below {self._vmin} is not allowed"
+
+        if self._vmax is not None:
+            assert (
+                value <= self._vmax
+            ), f"trying to set {self.x} to a value above {self._vmax} is not allowed"
+
+        obj._parameter_storage[self.name] = value
+
+
+class DistributionMeta(type):
+    @classmethod
+    def __prepare__(mcls, name, bases):
+
+        out = {}
+        out["_parameter_storage"] = {}
+
+        return out
+
+    def __new__(mcls, name, bases, attrs, **kwargs):
+        cls = super().__new__(mcls, name, bases, attrs, **kwargs)
+
+        # Compute set of abstract method names
+        abstracts = {
+            name
+            for name, value in attrs.items()
+            if getattr(value, "__isabstractmethod__", False)
+        }
+        for base in bases:
+            for name in getattr(base, "__abstractmethods__", set()):
+                value = getattr(cls, name, None)
+                if getattr(value, "__isabstractmethod__", False):
+                    abstracts.add(name)
+        cls.__abstractmethods__ = frozenset(abstracts)
+
+        for k, v in attrs.items():
+            if isinstance(v, DistributionParameter):
+                v.name = k
+
+        return cls
+
+    def __subclasscheck__(cls, subclass):
+        """Override for issubclass(subclass, cls)."""
+        if not isinstance(subclass, type):
+            raise TypeError("issubclass() arg 1 must be a class")
+        # Check cache
+
+        # Check the subclass hook
+        ok = cls.__subclasshook__(subclass)
+        if ok is not NotImplemented:
+            assert isinstance(ok, bool)
+            if ok:
+                cls._abc_cache.add(subclass)
+            else:
+                cls._abc_negative_cache.add(subclass)
+            return ok
+        # Check if it's a direct subclass
+        if cls in getattr(subclass, "__mro__", ()):
+            cls._abc_cache.add(subclass)
+            return True
+        # Check if it's a subclass of a registered class (recursive)
+        for rcls in cls._abc_registry:
+            if issubclass(subclass, rcls):
+                cls._abc_cache.add(subclass)
+                return True
+        # Check if it's a subclass of a subclass (recursive)
+        for scls in cls.__subclasses__():
+            if issubclass(subclass, scls):
+                cls._abc_cache.add(subclass)
+                return True
+        # No dice; update negative cache
+        cls._abc_negative_cache.add(subclass)
+        return False
+
+
+class Distribution(object, metaclass=DistributionMeta):
+    def __init__(self, name, seed, form):
         """
         A distribution base class
 
@@ -24,17 +120,6 @@ class Distribution(object):
         self._name = name
         self._form = form
 
-        if truth is None:
-            self._truth = {}
-
-        else:
-
-            self._truth = truth
-
-        # construct the params
-        # just in case there are none
-        self._construct_distribution_params()
-
     @property
     def name(self):
         return self._name
@@ -45,50 +130,18 @@ class Distribution(object):
 
     @property
     def params(self):
-        return self._params
+        return self._parameter_storage
 
     @property
     def truth(self):
-        return self._truth
-
-    def _construct_distribution_params(self, **params):
-        """
-        Build the initial distributional parameters
-        """
-
-        self._params = {}
-
-        for k, v in params.items():
-
-            self._params[k] = v
-
-    def set_distribution_params(self, **params):
-        """
-        Set the spatial parameters as keywords
-        """
-
-        try:
-
-            for k, v in params.items():
-
-                if k in self._params:
-                    self._params[k] = v
-                else:
-                    RuntimeWarning(
-                        "%s was not originally in the parameters... ignoring." % k
-                    )
-
-        except:
-
-            # we have not set these before
-
-            self._params = params
+        return self._parameter_storage
 
 
 class SpatialDistribution(Distribution):
-    __metaclass__ = abc.ABCMeta
 
-    def __init__(self, name, r_max, seed, form=None, truth=None):
+    r_max = DistributionParameter(vmin=0, default=10)
+
+    def __init__(self, name, seed, form=None):
         """
         A spatial distribution such as a redshift
         distribution
@@ -97,18 +150,12 @@ class SpatialDistribution(Distribution):
         :param r_max: the maximum distance to sample
         :param seed: the random seed
         :param form: the latex form
-        :param truth: the true parameter dictionary
         
         """
-
-        self._r_max = r_max
-
         self._theta = None
         self._phi = None
 
-        super(SpatialDistribution, self).__init__(
-            name=name, seed=seed, form=form, truth=truth
-        )
+        super(SpatialDistribution, self).__init__(name=name, seed=seed, form=form)
 
     @abc.abstractmethod
     def differential_volume(self, distance):
@@ -169,7 +216,7 @@ class SpatialDistribution(Distribution):
         )
 
         # find the maximum point
-        tmp = np.linspace(0.0, self._r_max, 500, dtype=np.float64)
+        tmp = np.linspace(0.0, self.r_max, 500, dtype=np.float64)
         ymax = np.max(dNdr(tmp))
 
         # rejection sampling the distribution
@@ -186,7 +233,7 @@ class SpatialDistribution(Distribution):
 
                     # get an rvs from 0 to the maximum distance
 
-                    r = np.random.uniform(low=0, high=self._r_max)
+                    r = np.random.uniform(low=0, high=self.r_max)
 
                     # compare them
 
@@ -195,21 +242,15 @@ class SpatialDistribution(Distribution):
                         flag = False
         else:
 
-            r_out = rejection_sample(size, ymax, self._r_max, dNdr)
+            r_out = rejection_sample(size, ymax, self.r_max, dNdr)
 
         self._distances = np.array(r_out)
 
         return np.array(r_out)
 
-    @property
-    def r_max(self):
-        return self._r_max
-
 
 class LuminosityDistribution(Distribution):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, name, seed, form=None, truth=None):
+    def __init__(self, name, seed, form=None):
         """
         A luminosity distribution such as a 
         distribution
@@ -217,12 +258,10 @@ class LuminosityDistribution(Distribution):
         :param name: the name of the distribution
         :param seed: the random seed
         :param form: the latex form
-        :param truth: the true parameter dictionary
-
         """
 
         super(LuminosityDistribution, self).__init__(
-            name=name, seed=seed, form=form, truth=truth
+            name=name, seed=seed, form=form,
         )
 
     @abc.abstractmethod

@@ -23,9 +23,12 @@ class BPLHomogeneousSphericalPopulation(SphericalPopulation):
         :rtype: 
 
         """
-        luminosity_distribution = BPLDistribution(
-            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
-        )
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
         super(BPLHomogeneousSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -54,9 +57,12 @@ class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
         :rtype: 
 
         """
-        luminosity_distribution = BPLDistribution(
-            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
-        )
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
         super(BPLZPowerSphericalPopulation, self).__init__(
             Lambda=Lambda,
@@ -86,9 +92,13 @@ class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
         :rtype: 
 
         """
-        luminosity_distribution = BPLDistribution(
-            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
-        )
+
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
         super(BPLZPowerCosmoPopulation, self).__init__(
             Lambda=Lambda,
@@ -120,9 +130,13 @@ class BPLSFRPopulation(SFRPopulation):
         :rtype: 
 
         """
-        luminosity_distribution = BPLDistribution(
-            Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax, seed=seed
-        )
+
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
         super(BPLSFRPopulation, self).__init__(
             r0=r0,

@@ -4,7 +4,7 @@ from popsynth.distributions.spherical_distribution import (
 )
 from popsynth.distributions.cosmological_distribution import (
     SFRDistribtution,
-    MergerDistribution,
+    #MergerDistribution,
     ZPowerCosmoDistribution,
 )
 
@@ -28,9 +28,9 @@ class SphericalPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = ConstantSphericalDistribution(
-            Lambda=Lambda, r_max=r_max, seed=seed
-        )
+        spatial_distribution = ConstantSphericalDistribution(seed=seed)
+        spatial_distribution.Lambda = Lambda
+        spatial_distribution.r_max = r_max
 
         super(SphericalPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
@@ -55,9 +55,11 @@ class ZPowerSphericalPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = ZPowerSphericalDistribution(
-            Lambda=Lambda, delta=delta, r_max=r_max, seed=seed
-        )
+        spatial_distribution = ZPowerSphericalDistribution(seed=seed)
+
+        spatial_distribution.Lambda = Lambda
+        spatial_distribution.r_max = r_max
+        spatial_distribution.delta = delta
 
         super(ZPowerSphericalPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
@@ -82,9 +84,11 @@ class ZPowerCosmoPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = ZPowerCosmoDistribution(
-            Lambda=Lambda, delta=delta, r_max=r_max, seed=seed
-        )
+        spatial_distribution = ZPowerCosmoDistribution(seed=seed)
+
+        spatial_distribution.Lambda = Lambda
+        spatial_distribution.r_max = r_max
+        spatial_distribution.delta = delta
 
         super(ZPowerCosmoPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
@@ -111,9 +115,13 @@ class SFRPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = SFRDistribtution(
-            r0=r0, rise=rise, decay=decay, peak=peak, r_max=r_max, seed=seed
-        )
+        spatial_distribution = SFRDistribtution(seed=seed)
+
+        spatial_distribution.r0 = r0
+        spatial_distribution.rise = rise
+        spatial_distribution.decay = decay
+        spatial_distribution.peak = peak
+        spatial_distribution.r_max = r_max
 
         super(SFRPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
@@ -135,9 +143,14 @@ class MWRadialPopulation(PopulationSynth):
         luminosity_distribution=None,
     ):
 
-        spatial_distribution = SpiralGalaxyDistribution(
-            rho=rho, a=a, b=b, R1=R1, R0=R0, r_max=r_max, seed=seed
-        )
+        spatial_distribution = SpiralGalaxyDistribution(seed=seed)
+
+        spatial_distribution.rho = rho
+        spatial_distribution.a = a
+        spatial_distribution.b = b
+        spatial_distribution.R1 = R1
+        spatial_distribution.R0 = R0
+        spatial_distribution.r_max = r_max
 
         super(MWRadialPopulation, self).__init__(
             spatial_distribution,
