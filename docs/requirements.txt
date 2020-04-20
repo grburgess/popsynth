@@ -3,10 +3,10 @@ nbsphinx
 ipykernel
 cython
 jupyterthemes
-PSphinxTheme
 numpy
 scipy
 ipython
+ipyvolume
 matplotlib
 h5py
 pandas
