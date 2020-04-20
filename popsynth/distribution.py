@@ -19,6 +19,7 @@ class DistributionParameter(object):
     def __get__(self, obj, type=None) -> object:
         if not self._is_set:
             obj._parameter_storage[self.name] = self._default
+            self._is_set = True
 
         return obj._parameter_storage[self.name]
 

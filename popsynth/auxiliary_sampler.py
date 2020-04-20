@@ -2,22 +2,107 @@ import abc
 import numpy as np
 
 
-class AuxiliarySampler(object, metaclass=abc.ABCMeta):
+class AuxiliaryParameter(object):
+    def __init__(self, default=None, vmin=None, vmax=None):
+
+        self.name = None
+        self._vmin = vmin
+        self._vmax = vmax
+        self._default = default
+        self._is_set = False
+
+    def __get__(self, obj, type=None) -> object:
+        if not self._is_set:
+            obj._parameter_storage[self.name] = self._default
+            self._is_set = True
+
+        return obj._parameter_storage[self.name]
+
+    def __set__(self, obj, value) -> None:
+        self._is_set = True
+
+        if self._vmin is not None:
+            assert (
+                value >= self._vmin
+            ), f"trying to set {self.x} to a value below {self._vmin} is not allowed"
+
+        if self._vmax is not None:
+            assert (
+                value <= self._vmax
+            ), f"trying to set {self.x} to a value above {self._vmax} is not allowed"
+
+        obj._parameter_storage[self.name] = value
+
+
+class AuxiliaryMeta(type):
+    @classmethod
+    def __prepare__(mcls, name, bases):
+
+        out = {}
+        out["_parameter_storage"] = {}
+
+        return out
+
+    def __new__(mcls, name, bases, attrs, **kwargs):
+        cls = super().__new__(mcls, name, bases, attrs, **kwargs)
+
+        # Compute set of abstract method names
+        abstracts = {
+            name
+            for name, value in attrs.items()
+            if getattr(value, "__isabstractmethod__", False)
+        }
+        for base in bases:
+            for name in getattr(base, "__abstractmethods__", set()):
+                value = getattr(cls, name, None)
+                if getattr(value, "__isabstractmethod__", False):
+                    abstracts.add(name)
+        cls.__abstractmethods__ = frozenset(abstracts)
+
+        for k, v in attrs.items():
+            if isinstance(v, AuxiliaryParameter):
+                v.name = k
+
+        return cls
+
+    def __subclasscheck__(cls, subclass):
+        """Override for issubclass(subclass, cls)."""
+        if not isinstance(subclass, type):
+            raise TypeError("issubclass() arg 1 must be a class")
+        # Check cache
+
+        # Check the subclass hook
+        ok = cls.__subclasshook__(subclass)
+        if ok is not NotImplemented:
+            assert isinstance(ok, bool)
+            if ok:
+                cls._abc_cache.add(subclass)
+            else:
+                cls._abc_negative_cache.add(subclass)
+            return ok
+        # Check if it's a direct subclass
+        if cls in getattr(subclass, "__mro__", ()):
+            cls._abc_cache.add(subclass)
+            return True
+        # Check if it's a subclass of a registered class (recursive)
+        for rcls in cls._abc_registry:
+            if issubclass(subclass, rcls):
+                cls._abc_cache.add(subclass)
+                return True
+        # Check if it's a subclass of a subclass (recursive)
+        for scls in cls.__subclasses__():
+            if issubclass(subclass, scls):
+                cls._abc_cache.add(subclass)
+                return True
+        # No dice; update negative cache
+        cls._abc_negative_cache.add(subclass)
+        return False
+
+
+class AuxiliarySampler(object, metaclass=AuxiliaryMeta):
     def __init__(
-        self,
-        name,
-        sigma,
-        observed=True,
-        truth=None,
-        uses_distance=False,
-        uses_luminosity=False,
+        self, name, observed=True, uses_distance=False, uses_luminosity=False,
     ):
-
-        if sigma is None:
-
-            sigma = 1
-
-        self._sigma = sigma
 
         self._name = name
         self._obs_name = "%s_obs" % name
@@ -32,14 +117,6 @@ class AuxiliarySampler(object, metaclass=abc.ABCMeta):
         self._selection = None
         self._uses_distance = uses_distance
         self._uses_luminoity = uses_luminosity
-
-        if truth is None:
-
-            self._truth = {}
-
-        else:
-
-            self._truth = truth
 
     def set_luminosity(self, luminosity):
         """FIXME! briefly describe function
@@ -188,7 +265,6 @@ class AuxiliarySampler(object, metaclass=abc.ABCMeta):
         # add our own on
         recursive_secondaries[self._name] = {
             "true_values": self._true_values,
-            "sigma": self._sigma,
             "obs_values": self._obs_values,
             "selection": self._selection,
         }
@@ -228,10 +304,6 @@ class AuxiliarySampler(object, metaclass=abc.ABCMeta):
         return self._obs_name
 
     @property
-    def sigma(self):
-        return self._sigma
-
-    @property
     def true_values(self):
         """
         The true values
@@ -268,7 +340,7 @@ class AuxiliarySampler(object, metaclass=abc.ABCMeta):
 
     @property
     def truth(self):
-        return self._truth
+        return self._parameter_storage
 
     @property
     def uses_distance(self):
@@ -283,14 +355,24 @@ class AuxiliarySampler(object, metaclass=abc.ABCMeta):
 
         pass
 
-
     def observation_sampler(self, size=1):
 
         return self._true_values
 
 
+class NonObservedAuxSampler(AuxiliarySampler):
+    def __init__(self, name, uses_distance=False, uses_luminosity=False):
+
+        super(NonObservedAuxSampler, self).__init__(
+            name=name,
+            observed=False,
+            uses_distance=uses_distance,
+            uses_luminosity=uses_luminosity,
+        )
+
+
 class DerivedLumAuxSampler(AuxiliarySampler):
-    def __init__(self, name, sigma, truth=None, uses_distance=False):
+    def __init__(self, name, uses_distance=False):
         """FIXME! briefly describe function
 
         :param name:
@@ -302,10 +384,10 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         """
 
         super(DerivedLumAuxSampler, self).__init__(
-            name, sigma, observed=False, truth=truth, uses_distance=uses_distance
+            name, observed=False, uses_distance=uses_distance
         )
 
-
+    @abc.abstractmethod
     def compute_luminosity(self):
 
         raise RuntimeError("Must be implemented in derived class")

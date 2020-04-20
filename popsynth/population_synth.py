@@ -380,6 +380,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # this is homoskedastic for now
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
+        assert np.alltrue(np.isfinite(log10_fluxes_obs))
+        
         # now select them
 
         if not hard_cut:
@@ -401,6 +403,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 ):
 
                     # make a bernoulli draw given the detection probability
+
                     if stats.bernoulli.rvs(p) == 1:
 
                         selection.append(True)

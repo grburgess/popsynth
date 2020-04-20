@@ -7,36 +7,35 @@ import matplotlib.pyplot as plt
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
-    def __init__(self, mu=2, tau=1.0, sigma=1):
 
-        self._mu = mu
-        self._tau = tau
+    mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=100)
+    tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=20, vmin=0)
 
-        truth = dict(mu=mu, tau=tau)
+    def __init__(self):
 
-        super(DemoSampler, self).__init__("demo", sigma, observed=False, truth=truth)
+        super(DemoSampler, self).__init__("demo", observed=False)
 
     def true_sampler(self, size):
 
-        self._true_values = np.random.normal(self._mu, self._tau, size=size)
+        self._true_values = np.random.normal(self.mu, self.tau, size=size)
 
 
 class DemoSampler2(popsynth.DerivedLumAuxSampler):
-    def __init__(self, mu=2, tau=1.0, sigma=1):
 
-        self._mu = mu
-        self._tau = tau
+    mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=0)
+    tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
+    sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=0.1, vmin=0)
 
-        truth = dict(mu=mu, tau=tau)
+    def __init__(self):
 
-        super(DemoSampler2, self).__init__("demo2", sigma, truth=truth)
+        super(DemoSampler2, self).__init__("demo2")
 
     def true_sampler(self, size):
 
         secondary = self._secondary_samplers["demo"]
 
         self._true_values = (
-            (np.random.normal(self._mu, self._tau, size=size))
+            (np.random.normal(self.mu, self.tau, size=size))
             + secondary.true_values
             - np.log10(1 + self._distance)
         )
@@ -44,7 +43,7 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
     def observation_sampler(self, size):
 
         self._obs_values = self._true_values + np.random.normal(
-            0, self._sigma, size=size
+            0, self.sigma, size=size
         )
 
     def compute_luminosity(self):
@@ -118,8 +117,8 @@ class Popbuilder(object):
 
         self.pop_gen = pop_class(**params)
 
-        self.d1 = DemoSampler(100, 20, 0.1)
-        self.d2 = DemoSampler2(0, 1, 0.1)
+        self.d1 = DemoSampler()
+        self.d2 = DemoSampler2()
         self.d2.set_secondary_sampler(self.d1)
 
         for k, v in params.items():

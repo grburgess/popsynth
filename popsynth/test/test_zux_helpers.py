@@ -14,15 +14,22 @@ import hypothesis.strategies as st
 )
 def test_lognorm_sampler(mu, tau, size):
 
-    sampler = LogNormalAuxSampler("test", mu, tau, observed=False)
+    sampler = LogNormalAuxSampler("test", observed=False)
 
     sampler.true_sampler(size)
+
+    sampler.mu = mu
+    sampler.tau = tau
 
     sampler.observation_sampler(size)
 
     assert len(sampler._true_values) == size
 
-    sampler = LogNormalAuxSampler("test", mu, tau, sigma=1.0, observed=True)
+    sampler = LogNormalAuxSampler("test", observed=True)
+
+    sampler.mu = mu
+    sampler.tau = tau
+    sampler.sigma = 1
 
     sampler.true_sampler(size)
 
@@ -38,15 +45,23 @@ def test_lognorm_sampler(mu, tau, size):
 )
 def test_norm_sampler(mu, tau, size):
 
-    sampler = NormalAuxSampler("test", mu, tau, observed=False)
+    sampler = NormalAuxSampler("test", observed=False)
 
     sampler.true_sampler(size)
+
+    sampler.mu = mu
+    sampler.tau = tau
+    sampler.sigma = 1
 
     sampler.observation_sampler(size)
 
     assert len(sampler._true_values) == size
 
-    sampler = NormalAuxSampler("test", mu, tau, sigma=1.0, observed=True)
+    sampler = NormalAuxSampler("test", observed=True)
+
+    sampler.mu = mu
+    sampler.tau = tau
+    sampler.sigma = 1
 
     sampler.true_sampler(size)
 
@@ -62,7 +77,13 @@ def test_norm_sampler(mu, tau, size):
 )
 def test_truncnorm_sampler(mu, tau, size):
 
-    sampler = TruncatedNormalAuxSampler("test", -10, 10, mu, tau, observed=False)
+    sampler = TruncatedNormalAuxSampler("test", observed=False)
+
+    sampler.mu = mu
+    sampler.tau = tau
+    sampler.lower = -10
+    sampler.upper = 10
+    sampler.sigma = 1
 
     sampler.true_sampler(size)
 
@@ -70,9 +91,13 @@ def test_truncnorm_sampler(mu, tau, size):
 
     assert len(sampler._true_values) == size
 
-    sampler = TruncatedNormalAuxSampler(
-        "test", -10, 10, mu, tau, sigma=1.0, observed=True
-    )
+    sampler = TruncatedNormalAuxSampler("test", observed=True)
+
+    sampler.mu = mu
+    sampler.tau = tau
+    sampler.lower = -10
+    sampler.upper = 10
+    sampler.sigma = 1
 
     sampler.true_sampler(size)
 

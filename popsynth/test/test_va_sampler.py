@@ -10,8 +10,10 @@ import hypothesis.strategies as st
 )
 def test_va_sampler(angle, size):
 
-    va_sample = ViewingAngleSampler(max_angle=angle)
+    va_sample = ViewingAngleSampler()
 
+    va_sample.max_angle = angle
+    
     va_sample.true_sampler(size)
 
     assert len(va_sample._true_values) == size

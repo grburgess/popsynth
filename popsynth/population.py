@@ -352,7 +352,7 @@ class Population(object):
         for k, v in self._auxiliary_quantites.items():
 
             output["%s_obs" % k] = v["obs_values"][self._selection]
-            output["%s_sigma" % k] = v["sigma"]
+            
 
         return output
 
@@ -431,7 +431,7 @@ class Population(object):
                     "obs_values", data=v["obs_values"], compression="lzf"
                 )
 
-                q_grp.attrs["sigma"] = v["sigma"]
+
 
             model_grp = f.create_group("model_spaces")
 
@@ -529,7 +529,6 @@ class Population(object):
                 auxiliary_quantities[str(k)] = {
                     "true_values": f["auxiliary_quantities"][k]["true_values"][()],
                     "obs_values": f["auxiliary_quantities"][k]["obs_values"][()],
-                    "sigma": f["auxiliary_quantities"][k].attrs["sigma"],
                 }
 
             truth = recursively_load_dict_contents_from_group(f, "truth")
