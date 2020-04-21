@@ -214,13 +214,15 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # this should be poisson distributed
         n = np.random.poisson(N)
-        #       pbar.update()
-        #       pbar.set_description(desc='Drawing distances')
-        distances = self._spatial_distribution.draw_distance(size=n, verbose=verbose)
+
+        
+        self._spatial_distribution.draw_distance(size=n, verbose=verbose)
 
         # now draw the sky positions
         
         self._spatial_distribution.draw_sky_positions(size=n)
+
+        distances = self._spatial_distribution.distances
         
         if verbose:
             print("Expecting %d total objects" % n)

@@ -200,6 +200,10 @@ class SpatialDistribution(Distribution):
     def phi(self):
         return self._phi
 
+    @property
+    def distances(self):
+        return self._distances
+
     def draw_sky_positions(self, size):
 
         self._theta, self._phi = sample_theta_phi(size)
@@ -246,8 +250,6 @@ class SpatialDistribution(Distribution):
             r_out = rejection_sample(size, ymax, self.r_max, dNdr)
 
         self._distances = np.array(r_out)
-
-        return np.array(r_out)
 
 
 class LuminosityDistribution(Distribution):

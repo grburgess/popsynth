@@ -56,6 +56,10 @@ class SpiralGalaxyDistribution(SphericalDistribution):
 
         zpos *= np.random.choice([-1, 1], size=size)
 
+        self._distances = self._distances + np.random.normal(
+            0, scale=0.07 * np.abs(self._distances), size=size
+        )
+
         phi = np.arccos(zpos / np.sqrt(self._distances ** 2 + zpos ** 2))
 
         self._theta = spiraltheta
