@@ -3,7 +3,8 @@ from popsynth.populations import *
 from popsynth.aux_samplers import *
 
 from popsynth.population import Population
-from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
+from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler, NonObservedAuxSampler, AuxiliaryParameter
+from popsynth.distribution import DistributionParameter, LuminosityDistribution, SpatialDistribution
 
 
 import popsynth.populations as populations
