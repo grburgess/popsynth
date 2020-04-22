@@ -35,17 +35,17 @@ class AuxiliaryParameter(object):
 
 
 class AuxiliaryMeta(type):
-    @classmethod
-    def __prepare__(mcls, name, bases):
+    # @classmethod
+    # def __prepare__(mcls, name, bases):
 
-        out = {}
-        out["_parameter_storage"] = {}
+    #     out = {}
+    #     out["_parameter_storage"] = {}
 
-        return out
+    #     return out
 
     def __new__(mcls, name, bases, attrs, **kwargs):
         cls = super().__new__(mcls, name, bases, attrs, **kwargs)
-
+        
         # Compute set of abstract method names
         abstracts = {
             name
@@ -104,6 +104,8 @@ class AuxiliarySampler(object, metaclass=AuxiliaryMeta):
         self, name, observed=True, uses_distance=False, uses_luminosity=False,
     ):
 
+        self._parameter_storage = {}
+        
         self._name = name
         self._obs_name = "%s_obs" % name
 

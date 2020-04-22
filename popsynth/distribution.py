@@ -40,13 +40,6 @@ class DistributionParameter(object):
 
 
 class DistributionMeta(type):
-    @classmethod
-    def __prepare__(mcls, name, bases):
-
-        out = {}
-        out["_parameter_storage"] = {}
-
-        return out
 
     def __new__(mcls, name, bases, attrs, **kwargs):
         cls = super().__new__(mcls, name, bases, attrs, **kwargs)
@@ -117,6 +110,9 @@ class Distribution(object, metaclass=DistributionMeta):
         :rtype: 
 
         """
+
+        self._parameter_storage = {}
+        
         self._seed = seed
         self._name = name
         self._form = form

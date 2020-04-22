@@ -1,4 +1,5 @@
 import scipy.stats as stats
+import numpy as np
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
 
@@ -31,6 +32,9 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
         self._true_values = stats.truncnorm.rvs(
             l, u, loc=self.mu, scale=self.tau, size=size,
         )
+
+        assert np.alltrue(self._true_values >= self.lower)
+        assert np.alltrue(self._true_values <= self.upper)
 
     def observation_sampler(self, size):
 
