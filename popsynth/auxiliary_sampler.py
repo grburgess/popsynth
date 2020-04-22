@@ -9,17 +9,17 @@ class AuxiliaryParameter(object):
         self._vmin = vmin
         self._vmax = vmax
         self._default = default
-        self._is_set = False
-
+        
+    @property
+    def default(self):
+        return self._default
+        
     def __get__(self, obj, type=None) -> object:
-        if not self._is_set:
-            obj._parameter_storage[self.name] = self._default
-            self._is_set = True
-
+        
         return obj._parameter_storage[self.name]
 
     def __set__(self, obj, value) -> None:
-        self._is_set = True
+        
 
         if self._vmin is not None:
             assert (
@@ -35,15 +35,13 @@ class AuxiliaryParameter(object):
 
 
 class AuxiliaryMeta(type):
-    # @classmethod
-    # def __prepare__(mcls, name, bases):
-
-    #     out = {}
-    #     out["_parameter_storage"] = {}
-
-    #     return out
 
     def __new__(mcls, name, bases, attrs, **kwargs):
+        
+        if "_parameter_storage" not in attrs:
+            attrs["_parameter_storage"] = {}
+
+        
         cls = super().__new__(mcls, name, bases, attrs, **kwargs)
         
         # Compute set of abstract method names
@@ -60,8 +58,10 @@ class AuxiliaryMeta(type):
         cls.__abstractmethods__ = frozenset(abstracts)
 
         for k, v in attrs.items():
+        
             if isinstance(v, AuxiliaryParameter):
                 v.name = k
+                attrs["_parameter_storage"][k] = v.default
 
         return cls
 
@@ -104,8 +104,6 @@ class AuxiliarySampler(object, metaclass=AuxiliaryMeta):
         self, name, observed=True, uses_distance=False, uses_luminosity=False,
     ):
 
-        self._parameter_storage = {}
-        
         self._name = name
         self._obs_name = "%s_obs" % name
 
