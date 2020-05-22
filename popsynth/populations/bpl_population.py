@@ -1,183 +1,149 @@
-import numpy as np
-import multiprocessing as mp
+from popsynth.populations.spatial_populations import (
+    SphericalPopulation,
+    ZPowerSphericalPopulation,
+    ZPowerCosmoPopulation,
+    SFRPopulation,
+)
+from popsynth.distributions.bpl_distribution import BPLDistribution
 
 
-def sample_one(ymax, idx1,  xbreak,  idx2,  xmin,  xmax, i):
-    
-    np.random.seed(int((i+1)*1000))
-    
-    flag = True
-    while(flag):
-        y_guess = np.random.uniform(0, ymax)
-        x_guess =  np.random.uniform(1, xmax/xmin)
+class BPLHomogeneousSphericalPopulation(SphericalPopulation):
+    def __init__(self, Lambda, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234):
+        """FIXME! briefly describe function
 
-        x_test = bpl( x_guess,  idx1,  xbreak/xmin,  idx2 )
-        if y_guess <= x_test:
-            flag = False
-    return x_guess
+        :param Lambda: 
+        :param Lmin: 
+        :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
 
-def bpl( x,  idx1,  xbreak,  idx2 ):
-    if x < xbreak:
-        return pow(x/xbreak,-idx1)
-    else:
-        return pow(x/xbreak,-idx2)
+        """
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
-
-
-
-
-from popsynth.population_synth import PopulationSynth
-
-
-class BPLPopulation(PopulationSynth):
-
-    def __init__(self, Lmin, alpha, Lbreak, beta, Lmax,  r_max=10, seed=1234, name='_pareto'):
-
-        PopulationSynth.__init__(self, r_max, seed, name)
-
-        self.set_luminosity_function_parameters(Lmin=Lmin, alpha=alpha, Lbreak=Lbreak, beta=beta, Lmax=Lmax)
+        super(BPLHomogeneousSphericalPopulation, self).__init__(
+            Lambda=Lambda,
+            r_max=r_max,
+            seed=seed,
+            luminosity_distribution=luminosity_distribution,
+        )
 
 
-        self._lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
-    
+class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
+    def __init__(
+        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
+    ):
+        """FIXME! briefly describe function
 
-    def phi(self, L):
+        :param Lambda: 
+        :param delta: 
+        :param Lmin: 
+        :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
 
-        out = np.zeros_like(L)
+        """
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
-        idx = L>=self.Lmin
-        
-        out[idx] =  self.alpha*self.Lmin**self.alpha / L[idx]**(self.alpha+1)
-
-        return out
-        
-    def draw_luminosity(self, size=1):
-
-        
-        ymax = bpl(1., self.alpha,  self.Lbreak/self.Lmin,  self.beta )
-    
-        result_list = []
-    
-    
-        def log_result(result):
-            # This is called whenever foo_pool(i) returns a result.
-            # result_list is modified only by the main process, not the pool workers.
-            result_list.append(result)
-                
-        with mp.Pool(8) as pool:
-    
-            for i in range(size):
-                pool.apply_async(sample_one, args=(ymax, self.alpha,  self.Lbreak,  self.beta,  self.Lmin,  self.Lmax, i), callback = log_result)
-            pool.close()
-            pool.join()
-  
-
-    
-        return np.array(result_list) * self.Lmin
-    
-        
-    def __get_Lmin(self):
-             """Calculates the 'Lmin' property."""
-             return self._lf_params['Lmin']
-
-    def ___get_Lmin(self):
-         """Indirect accessor for 'Lmin' property."""
-         return self.__get_Lmin()
-
-    def __set_Lmin(self, Lmin):
-         """Sets the 'Lmin' property."""
-         self.set_luminosity_function_parameters(alpha=self.alpha, Lmin=Lmin)
-
-    def ___set_Lmin(self, Lmin):
-         """Indirect setter for 'Lmin' property."""
-         self.__set_Lmin(Lmin)
-
-    Lmin = property(___get_Lmin, ___set_Lmin,
-                     doc="""Gets or sets the Lmin.""")
+        super(BPLZPowerSphericalPopulation, self).__init__(
+            Lambda=Lambda,
+            delta=delta,
+            r_max=r_max,
+            seed=seed,
+            luminosity_distribution=luminosity_distribution,
+        )
 
 
-    def __get_Lmax(self):
-             """Calculates the 'Lmax' property."""
-             return self._lf_params['Lmax']
+class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
+    def __init__(
+        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
+    ):
+        """FIXME! briefly describe function
 
-    def ___get_Lmax(self):
-         """Indirect accessor for 'Lmax' property."""
-         return self.__get_Lmax()
+        :param Lambda: 
+        :param delta: 
+        :param Lmin: 
+        :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
 
-    def __set_Lmax(self, Lmax):
-         """Sets the 'Lmax' property."""
-         self.set_luminosity_function_parameters(alpha=self.alpha, Lmax=Lmax)
+        """
 
-    def ___set_Lmax(self, Lmax):
-         """Indirect setter for 'Lmax' property."""
-         self.__set_Lmax(Lmax)
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
-    Lmax = property(___get_Lmax, ___set_Lmax,
-                     doc="""Gets or sets the Lmax.""")
-
-
-
-    
-
-    def __get_Lbreak(self):
-        """Calculates the 'Lbreak' property."""
-        return self._lf_params['Lbreak']
-
-    def ___get_Lbreak(self):
-         """Indirect accessor for 'Lbreak' property."""
-         return self.__get_Lbreak()
-
-    def __set_Lbreak(self, Lbreak):
-         """Sets the 'Lbreak' property."""
-         self.set_luminosity_function_parameters(alpha=self.alpha, Lbreak=Lbreak)
-
-    def ___set_Lbreak(self, Lbreak):
-         """Indirect setter for 'Lbreak' property."""
-         self.__set_Lbreak(Lbreak)
-
-    Lbreak = property(___get_Lbreak, ___set_Lbreak,
-                     doc="""Gets or sets the Lbreak.""")
+        super(BPLZPowerCosmoPopulation, self).__init__(
+            Lambda=Lambda,
+            delta=delta,
+            r_max=r_max,
+            seed=seed,
+            luminosity_distribution=luminosity_distribution,
+        )
 
 
-    
-    def __get_alpha(self):
-             """Calculates the 'alpha' property."""
-             return self._lf_params['alpha']
+class BPLSFRPopulation(SFRPopulation):
+    def __init__(
+        self, r0, rise, decay, peak, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
+    ):
+        """FIXME! briefly describe function
 
-    def ___get_alpha(self):
-         """Indirect accessor for 'alpha' property."""
-         return self.__get_alpha()
+        :param r0: 
+        :param rise: 
+        :param decay: 
+        :param peak: 
+        :param Lmin: 
+        :param alpha: 
+        :param Lbreak: 
+        :param beta: 
+        :param Lmax: 
+        :param r_max: 
+        :param seed: 
+        :returns: 
+        :rtype: 
 
-    def __set_alpha(self, alpha):
-         """Sets the 'alpha' property."""
-         self.set_luminosity_function_parameters(alpha=alpha,Lmin=self.Lmin)
+        """
 
-    def ___set_alpha(self, alpha):
-         """Indirect setter for 'alpha' property."""
-         self.__set_alpha(alpha)
+        luminosity_distribution = BPLDistribution(seed=seed)
+        luminosity_distribution.Lmin = Lmin
+        luminosity_distribution.alpha = alpha
+        luminosity_distribution.Lbreak = Lbreak
+        luminosity_distribution.beta = beta
+        luminosity_distribution.Lmax = Lmax
 
-    alpha = property(___get_alpha, ___set_alpha,
-                     doc="""Gets or sets the alpha.""")
-
-
-    def __get_beta(self):
-             """Calculates the 'beta' property."""
-             return self._lf_params['beta']
-
-    def ___get_beta(self):
-         """Indirect accessor for 'beta' property."""
-         return self.__get_beta()
-
-    def __set_beta(self, beta):
-         """Sets the 'beta' property."""
-         self.set_luminosity_function_parameters(beta=beta,Lmin=self.Lmin)
-
-    def ___set_beta(self, beta):
-         """Indirect setter for 'beta' property."""
-         self.__set_beta(beta)
-
-    beta = property(___get_beta, ___set_beta,
-                     doc="""Gets or sets the beta.""")
-
-
-
+        super(BPLSFRPopulation, self).__init__(
+            r0=r0,
+            rise=rise,
+            decay=decay,
+            peak=peak,
+            r_max=r_max,
+            seed=seed,
+            luminosity_distribution=luminosity_distribution,
+        )

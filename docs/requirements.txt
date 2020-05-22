@@ -1,0 +1,17 @@
+sphinx>=1.4
+nbsphinx
+ipykernel
+cython
+jupyterthemes
+numpy
+scipy
+ipython
+ipyvolume
+matplotlib
+h5py
+pandas
+astropy
+cython
+betagen
+tqdm
+numba
