@@ -1,30 +1,26 @@
-import h5py
 import importlib
-import numpy as np
-import matplotlib.pyplot as plt
+
+import h5py
 import ipyvolume as ipv
-import pythreejs
 import ipywidgets as widgets
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pythreejs
+from betagen import betagen
+from IPython.display import Markdown, Math, display
 
 import networkx as nx
-
-
-import pandas as pd
-from IPython.display import display, Math, Markdown
-
-from popsynth.utils.spherical_geometry import xyz
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
-    recursively_save_dict_contents_to_group,
+    clean_graph_dict, fill_graph_dict,
     recursively_load_dict_contents_from_group,
-    fill_graph_dict,
-    clean_graph_dict,
-)
-
-from betagen import betagen
+    recursively_save_dict_contents_to_group)
+from popsynth.utils.spherical_geometry import xyz
 
 wine = "#8F2727"
-dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
+dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
+    wine)
 
 
 class Population(object):
@@ -183,7 +179,6 @@ class Population(object):
 
         return self._truth
 
-
     @property
     def theta(self):
         return self._theta
@@ -191,21 +186,16 @@ class Population(object):
     @property
     def phi(self):
         return self._phi
-    
+
     @property
-    def luminosities(self):
+    def luminosities_latent(self):
         """
-        The true luminosities of the objects
+        The true luminosities of the objects. These are always latent
+        as one cannot directly observe them
         """
         return self._luminosities
-
-    @property
-    def latent_fluxes(self):
-        """
-        The latent fluxes of the objects
-        """
-        return self._fluxes
-
+    
+    
     @property
     def distances(self):
         """
@@ -229,7 +219,15 @@ class Population(object):
         return self._selection
 
     @property
-    def flux_observed_all(self):
+    def fluxes_latent(self):
+        """
+        The latent fluxes of the objects
+        """
+        return self._fluxes
+
+    
+    @property
+    def fluxes_observed(self):
         """
         All of the observed fluxes, i.e.,
         scattered with error
@@ -238,17 +236,7 @@ class Population(object):
         return self._flux_obs
 
     @property
-    def selected_fluxes(self):
-        """
-        The selected obs fluxes
-        """
-
-        DeprecationWarning("Use selected_observed_fluxes")
-
-        return self._flux_selected
-
-    @property
-    def selected_observed_fluxes(self):
+    def selected_fluxes_observed(self):
         """
         The selected obs fluxes
         """
@@ -256,7 +244,7 @@ class Population(object):
         return self._flux_selected
 
     @property
-    def selected_latent_fluxes(self):
+    def selected_fluxes_latent(self):
         """
         The selected latent fluxes
         """
@@ -272,7 +260,7 @@ class Population(object):
         return self._distance_selected
 
     @property
-    def hidden_observed_fluxes(self):
+    def hidden_fluxes_observed(self):
         """
         The observed fluxes that are hidden by the selection
         """
@@ -288,7 +276,7 @@ class Population(object):
         return self._distance_hidden
 
     @property
-    def hidden_latent_fluxes(self):
+    def hidden_fluxes_latent(self):
         """
         The latent fluxes that are hidden by the selection
         """
@@ -311,16 +299,6 @@ class Population(object):
     def spatial_parameters(self):
         return self._spatial_params
 
-    def _prob_det(self, x, boundary, strength):
-        """
-        Soft detection threshold
-
-        :param x: values to test
-        :param boundary: mean value of the boundary
-        :param strength: the strength of the threshold
-        """
-
-        return sf.expit(strength * (x - boundary))
 
     def to_stan_data(self):
         """
@@ -352,7 +330,6 @@ class Population(object):
         for k, v in self._auxiliary_quantites.items():
 
             output["%s_obs" % k] = v["obs_values"][self._selection]
-            
 
         return output
 
@@ -372,7 +349,8 @@ class Population(object):
 
             for k, v in self._spatial_params.items():
 
-                spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                spatial_grp.create_dataset(
+                    k, data=np.array([v]), compression="lzf")
 
             if self._lf_params is not None:
 
@@ -380,7 +358,8 @@ class Population(object):
 
                 for k, v in self._lf_params.items():
 
-                    lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                    lum_grp.create_dataset(
+                        k, data=np.array([v]), compression="lzf")
 
                 f.attrs["lf_form"] = np.string_(self._lf_form)
 
@@ -400,8 +379,10 @@ class Population(object):
             f.attrs["distance_probability"] = self._distance_probability
             f.attrs["hard_cut"] = self._hard_cut
 
-            f.create_dataset("luminosities", data=self._luminosities, compression="lzf")
-            f.create_dataset("distances", data=self._distances, compression="lzf")
+            f.create_dataset(
+                "luminosities", data=self._luminosities, compression="lzf")
+            f.create_dataset(
+                "distances", data=self._distances, compression="lzf")
             f.create_dataset(
                 "known_distances", data=self._known_distances, compression="lzf"
             )
@@ -414,8 +395,10 @@ class Population(object):
                 compression="lzf",
             )
             f.create_dataset("fluxes", data=self._fluxes, compression="lzf")
-            f.create_dataset("flux_obs", data=self._flux_obs, compression="lzf")
-            f.create_dataset("selection", data=self._selection, compression="lzf")
+            f.create_dataset("flux_obs", data=self._flux_obs,
+                             compression="lzf")
+            f.create_dataset(
+                "selection", data=self._selection, compression="lzf")
             f.create_dataset("theta", data=self._theta, compression="lzf")
             f.create_dataset("phi", data=self._phi, compression="lzf")
 
@@ -430,8 +413,6 @@ class Population(object):
                 q_grp.create_dataset(
                     "obs_values", data=v["obs_values"], compression="lzf"
                 )
-
-
 
             model_grp = f.create_group("model_spaces")
 
@@ -504,7 +485,8 @@ class Population(object):
             try:
                 known_distances = f["known_distances"][()]
                 known_distance_idx = (f["known_distance_idx"][()]).astype(int)
-                unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
+                unknown_distance_idx = (
+                    f["unknown_distance_idx"][()]).astype(int)
 
             except:
 
@@ -534,7 +516,8 @@ class Population(object):
             truth = recursively_load_dict_contents_from_group(f, "truth")
 
             graph = nx.from_dict_of_dicts(
-                clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
+                clean_graph_dict(
+                    recursively_load_dict_contents_from_group(f, "graph"))
             )
 
         return cls(
@@ -639,7 +622,8 @@ class Population(object):
 
         try:
 
-            ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+            ax.set_ylim(bottom=min(
+                [self._fluxes.min(), self._flux_selected.min()]))
 
         except:
 
@@ -693,7 +677,8 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+        ax.set_ylim(bottom=min(
+            [self._fluxes.min(), self._flux_selected.min()]))
         ax.set_xlim(right=self._r_max)
 
         ax.set_xlabel("distance")
@@ -758,6 +743,39 @@ class Population(object):
 
         return fig
 
+    def display_luminosities(
+        self,
+        ax=None,
+        true_color=light,
+        obs_color=dark,
+        **kwargs,
+    ):
+        """FIXME! briefly describe function
+
+        :param ax:
+        :param true_color:
+        :param obs_color:
+
+        :returns:
+        :rtype:
+
+        """
+
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        else:
+
+            fig = ax.get_figure()
+
+        ax.scatter(self._distance_selected, self._luminosity_selected, s=5, color=obs_color )
+        ax.scatter(self._distance_hidden, self._luminosity_hidden, s=5, color=true_color )
+            
+
+
+        return fig
+
+    
     def _display_sphere(
         self,
         fluxes,
