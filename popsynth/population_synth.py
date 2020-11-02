@@ -1,27 +1,23 @@
-import numpy as np
-import scipy.stats as stats
-import scipy.special as sf
-import scipy.integrate as integrate
-import pandas as pd
 import abc
-from IPython.display import display, Math, Markdown
 
 import networkx as nx
-
-
-from popsynth.population import Population
-from popsynth.auxiliary_sampler import DerivedLumAuxSampler
-from popsynth.utils.rejection_sample import rejection_sample
-from popsynth.distribution import LuminosityDistribution, SpatialDistribution
-
-
+import numpy as np
+import pandas as pd
+import scipy.integrate as integrate
+import scipy.special as sf
+import scipy.stats as stats
+from IPython.display import Markdown, Math, display
+from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
-from numba import jit, njit, prange, float64
+
+from popsynth.auxiliary_sampler import DerivedLumAuxSampler
+from popsynth.distribution import LuminosityDistribution, SpatialDistribution
+from popsynth.population import Population
+from popsynth.utils.rejection_sample import rejection_sample
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
-
     def __init__(
         self,
         spatial_distribution,
@@ -31,11 +27,11 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
     ):
         """FIXME! briefly describe function
 
-        :param spatial_distribution: 
-        :param luminosity_distribution: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param spatial_distribution:
+        :param luminosity_distribution:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -82,8 +78,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # add the sky sampler
 
-        
-        
     @property
     def spatial_distribution(self):
         return self._spatial_distribution
@@ -132,8 +126,12 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         else:
 
-            assert not auxiliary_sampler.is_secondary, f'{auxiliary_sampler.name} is already set as a secondary sampler!'
-            assert auxiliary_sampler.name not in self._auxiliary_observations, f'{auxiliary_sampler.name} is already registered!'
+            assert (
+                not auxiliary_sampler.is_secondary
+            ), f"{auxiliary_sampler.name} is already set as a secondary sampler!"
+            assert (
+                auxiliary_sampler.name not in self._auxiliary_observations
+            ), f"{auxiliary_sampler.name} is already registered!"
             if self._verbose:
                 print("registering auxilary sampler: %s" % auxiliary_sampler.name)
 
@@ -215,15 +213,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # this should be poisson distributed
         n = np.random.poisson(N)
 
-        
         self._spatial_distribution.draw_distance(size=n, verbose=verbose)
 
         # now draw the sky positions
-        
+
         self._spatial_distribution.draw_sky_positions(size=n)
 
         distances = self._spatial_distribution.distances
-        
+
         if verbose:
             print("Expecting %d total objects" % n)
 
@@ -290,7 +287,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
-                
+
                 properties = v2.get_secondary_properties()
 
                 for k3, v3 in properties.items():
@@ -381,7 +378,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
 
         assert np.alltrue(np.isfinite(log10_fluxes_obs))
-        
+
         # now select them
 
         if not hard_cut:
@@ -579,8 +576,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             hard_cut=hard_cut,
             distance_probability=distance_probability,
             graph=self.graph,
-            theta = self._spatial_distribution.theta,
-            phi = self._spatial_distribution.phi
+            theta=self._spatial_distribution.theta,
+            phi=self._spatial_distribution.phi,
         )
 
     def display(self):
@@ -628,8 +625,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         """
         builds the graph for all the samplers
 
-        :returns: 
-        :rtype: 
+        :returns:
+        :rtype:
 
         """
 

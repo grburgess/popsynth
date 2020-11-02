@@ -194,8 +194,7 @@ class Population(object):
         as one cannot directly observe them
         """
         return self._luminosities
-    
-    
+
     @property
     def distances(self):
         """
@@ -225,7 +224,6 @@ class Population(object):
         """
         return self._fluxes
 
-    
     @property
     def fluxes_observed(self):
         """
@@ -298,7 +296,6 @@ class Population(object):
     @property
     def spatial_parameters(self):
         return self._spatial_params
-
 
     def to_stan_data(self):
         """
@@ -768,14 +765,13 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distance_selected, self._luminosity_selected, s=5, color=obs_color )
-        ax.scatter(self._distance_hidden, self._luminosity_hidden, s=5, color=true_color )
-            
-
+        ax.scatter(self._distance_selected,
+                   self._luminosity_selected, s=5, color=obs_color)
+        ax.scatter(self._distance_hidden,
+                   self._luminosity_hidden, s=5, color=true_color)
 
         return fig
 
-    
     def _display_sphere(
         self,
         fluxes,
