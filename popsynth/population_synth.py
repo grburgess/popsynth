@@ -14,7 +14,6 @@ from tqdm.autonotebook import tqdm as progress_bar
 from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
-from popsynth.utils.rejection_sample import rejection_sample
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
