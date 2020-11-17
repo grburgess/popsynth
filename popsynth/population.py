@@ -4,13 +4,13 @@ import h5py
 import ipyvolume as ipv
 import ipywidgets as widgets
 import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
 import pandas as pd
 import pythreejs
 from betagen import betagen
 from IPython.display import Markdown, Math, display
 
-import networkx as nx
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
     clean_graph_dict, fill_graph_dict,
@@ -19,8 +19,7 @@ from popsynth.utils.hdf5_utils import (
 from popsynth.utils.spherical_geometry import xyz
 
 wine = "#8F2727"
-dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
-    wine)
+dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
 
 
 class Population(object):
@@ -36,20 +35,20 @@ class Population(object):
         selection: np.ndarray,
         flux_sigma: float,
         r_max: float,
-        boundary float,
+        boundary: float,
         strength: float,
         n_model: int,
         lf_params: dict,
-        spatial_params: dict=None,
+        spatial_params: dict = None,
         model_spaces=None,
-        seed:int=1234,
-        name:str=None,
-        spatial_form:dict=None,
-        lf_form=:dcitNone,
-        auxiliary_quantities:dict=None,
-        truth:dict={},
-        hard_cut=False,
-        distance_probability:float=1.0,
+        seed: int = 1234,
+        name: str = None,
+        spatial_form: dict = None,
+        lf_form: dict = None,
+        auxiliary_quantities: dict = None,
+        truth: dict = {},
+        hard_cut: bool = False,
+        distance_probability: float = 1.0,
         graph=None,
         theta=None,
         phi=None,
@@ -69,20 +68,20 @@ class Population(object):
         :param r_max: the maximum distance of the survey
         :param boundary: the flux boundary
         :param strength: the strength of the sofft boundary
-        :param n_model: 
-        :param lf_params: 
-        :param spatial_params: 
-        :param model_spaces: 
+        :param n_model:
+        :param lf_params:
+        :param spatial_params:
+        :param model_spaces:
         :param seed: the random seed
-        :param name: 
-        :param spatial_form: 
-        :param lf_form: 
-        :param auxiliary_quantities: 
-        :param truth: 
-        :param hard_cut: 
-        :param distance_probability: 
-        :returns: 
-        :rtype: 
+        :param name:
+        :param spatial_form:
+        :param lf_form:
+        :param auxiliary_quantities:
+        :param truth:
+        :param hard_cut:
+        :param distance_probability:
+        :returns:
+        :rtype:
 
         """
         self._luminosities = luminosities
@@ -172,8 +171,8 @@ class Population(object):
         """
         the simulated truth parameters
 
-        :returns: 
-        :rtype: 
+        :returns:
+        :rtype:
 
         """
 
@@ -197,18 +196,16 @@ class Population(object):
     def distance_probabilty(self) -> float:
         if self._distance_probabilty is None:
 
-            return 1.
+            return 1.0
 
         else:
 
             return self._distance_probability
-    
+
     @property
     def theta(self):
         return self._theta
 
-    
-    
     @property
     def phi(self):
         return self._phi
@@ -372,8 +369,7 @@ class Population(object):
 
             for k, v in self._spatial_params.items():
 
-                spatial_grp.create_dataset(
-                    k, data=np.array([v]), compression="lzf")
+                spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
 
             if self._lf_params is not None:
 
@@ -381,8 +377,7 @@ class Population(object):
 
                 for k, v in self._lf_params.items():
 
-                    lum_grp.create_dataset(
-                        k, data=np.array([v]), compression="lzf")
+                    lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
 
                 f.attrs["lf_form"] = np.string_(self._lf_form)
 
@@ -402,10 +397,8 @@ class Population(object):
             f.attrs["distance_probability"] = self._distance_probability
             f.attrs["hard_cut"] = self._hard_cut
 
-            f.create_dataset(
-                "luminosities", data=self._luminosities, compression="lzf")
-            f.create_dataset(
-                "distances", data=self._distances, compression="lzf")
+            f.create_dataset("luminosities", data=self._luminosities, compression="lzf")
+            f.create_dataset("distances", data=self._distances, compression="lzf")
             f.create_dataset(
                 "known_distances", data=self._known_distances, compression="lzf"
             )
@@ -418,10 +411,8 @@ class Population(object):
                 compression="lzf",
             )
             f.create_dataset("fluxes", data=self._fluxes, compression="lzf")
-            f.create_dataset("flux_obs", data=self._flux_obs,
-                             compression="lzf")
-            f.create_dataset(
-                "selection", data=self._selection, compression="lzf")
+            f.create_dataset("flux_obs", data=self._flux_obs, compression="lzf")
+            f.create_dataset("selection", data=self._selection, compression="lzf")
             f.create_dataset("theta", data=self._theta, compression="lzf")
             f.create_dataset("phi", data=self._phi, compression="lzf")
 
@@ -508,8 +499,7 @@ class Population(object):
             try:
                 known_distances = f["known_distances"][()]
                 known_distance_idx = (f["known_distance_idx"][()]).astype(int)
-                unknown_distance_idx = (
-                    f["unknown_distance_idx"][()]).astype(int)
+                unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
 
             except:
 
@@ -539,8 +529,7 @@ class Population(object):
             truth = recursively_load_dict_contents_from_group(f, "truth")
 
             graph = nx.from_dict_of_dicts(
-                clean_graph_dict(
-                    recursively_load_dict_contents_from_group(f, "graph"))
+                clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
             )
 
         return cls(
@@ -645,8 +634,7 @@ class Population(object):
 
         try:
 
-            ax.set_ylim(bottom=min(
-                [self._fluxes.min(), self._flux_selected.min()]))
+            ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
 
         except:
 
@@ -700,8 +688,7 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min(
-            [self._fluxes.min(), self._flux_selected.min()]))
+        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
         ax.set_xlim(right=self._r_max)
 
         ax.set_xlabel("distance")
@@ -791,10 +778,12 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distance_selected,
-                   self._luminosity_selected, s=5, color=obs_color)
-        ax.scatter(self._distance_hidden,
-                   self._luminosity_hidden, s=5, color=true_color)
+        ax.scatter(
+            self._distance_selected, self._luminosity_selected, s=5, color=obs_color
+        )
+        ax.scatter(
+            self._distance_hidden, self._luminosity_hidden, s=5, color=true_color
+        )
 
         return fig
 
