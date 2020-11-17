@@ -10,6 +10,7 @@ import pandas as pd
 import pythreejs
 from betagen import betagen
 from IPython.display import Markdown, Math, display
+from nptyping import NDArray
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
@@ -25,14 +26,14 @@ dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
 class Population(object):
     def __init__(
         self,
-        luminosities: np.ndarray,
-        distances: np.ndarray,
-        known_distances: np.ndarray,
-        known_distance_idx: np.ndarray,
-        unknown_distance_idx: np.ndarray,
-        fluxes: np.ndarray,
-        flux_obs: np.ndarray,
-        selection: np.ndarray,
+        luminosities: NDArray[np.float64],
+        distances: NDArray[np.float64],
+        known_distances: NDArray[np.float64],
+        known_distance_idx: NDArray[np.float64],
+        unknown_distance_idx: NDArray[np.float64],
+        fluxes: NDArray[np.float64],
+        flux_obs: NDArray[np.float64],
+        selection: NDArray[bool],
         flux_sigma: float,
         r_max: float,
         boundary: float,
@@ -84,45 +85,45 @@ class Population(object):
         :rtype:
 
         """
-        self._luminosities = luminosities
+        self._luminosities = luminosities  # type: NDArray[np.float64]
 
-        self._distances = distances
-        self._known_distances = known_distances
-        self._known_distance_idx = known_distance_idx
-        self._unknown_distance_idx = unknown_distance_idx
+        self._distances = distances  # type: NDArray[np.float64]
+        self._known_distances = known_distances  # type: NDArray[np.float64]
+        self._known_distance_idx = known_distance_idx  # type: NDArray[bool]
+        self._unknown_distance_idx = unknown_distance_idx  # type: NDArray[bool]
 
-        self._theta = theta
-        self._phi = phi
+        self._theta = theta  # type: NDArray[np.float64]
+        self._phi = phi  # type: NDArray[np.float64]
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
             selection
         ), "the distances are not the correct size"
 
         # latent fluxes
-        self._fluxes = fluxes
+        self._fluxes = fluxes  # type: NDArray[np.float64]
 
         # observed fluxes
-        self._flux_obs = flux_obs
-        self._selection = selection
-        self._flux_sigma = flux_sigma
+        self._flux_obs = flux_obs  # type: NDArray[np.float64]
+        self._selection = selection  # type: NDArrayfloat]
+        self._flux_sigma = flux_sigma  # type: float
 
-        self._r_max = r_max
+        self._r_max = r_max  # type: float
 
-        self._boundary = boundary
-        self._strength = strength
-        self._seed = seed
-        self._n_model = n_model
-        self._name = name
+        self._boundary = boundary  # type: float
+        self._strength = strength  # type: float
+        self._seed = seed  # type: int
+        self._n_model = n_model  # type: int
+        self._name = name  # type: str
         self._spatial_form = spatial_form
         self._lf_form = lf_form
 
-        self._flux_selected = flux_obs[selection]
-        self._distance_selected = distances[selection]
-        self._luminosity_selected = luminosities[selection]
+        self._flux_selected = flux_obs[selection]  # type: NDArray[np.float64]
+        self._distance_selected = distances[selection]  # type: NDArray[np.float64]
+        self._luminosity_selected = luminosities[selection]  # type: NDArray[np.float64]
 
-        self._flux_hidden = flux_obs[~selection]
-        self._distance_hidden = distances[~selection]
-        self._luminosity_hidden = luminosities[~selection]
+        self._flux_hidden = flux_obs[~selection]  # type: NDArray[np.float64]
+        self._distance_hidden = distances[~selection]  # type: NDArray[np.float64]
+        self._luminosity_hidden = luminosities[~selection]  # type: NDArray[np.float64]
 
         self._lf_params = lf_params
         self._spatial_params = spatial_params
@@ -131,8 +132,8 @@ class Population(object):
 
         self._truth = truth
 
-        self._hard_cut = hard_cut
-        self._distance_probability = distance_probability
+        self._hard_cut = hard_cut  # type: bool
+        self._distance_probability = distance_probability  # type: float
 
         self._graph = graph
 
@@ -179,7 +180,7 @@ class Population(object):
         return self._truth
 
     @property
-    def boundary(self):
+    def boundary(self) -> float:
         return self._boundary
 
     @property
@@ -188,7 +189,7 @@ class Population(object):
         return self._flux_sigma
 
     @property
-    def strength(self):
+    def strength(self) -> float:
 
         return self._strength
 
@@ -203,15 +204,15 @@ class Population(object):
             return self._distance_probability
 
     @property
-    def theta(self):
+    def theta(self) -> NDArray[np.float64]:
         return self._theta
 
     @property
-    def phi(self):
+    def phi(self) -> NDArray[np.float64]:
         return self._phi
 
     @property
-    def luminosities_latent(self):
+    def luminosities_latent(self) -> NDArray[np.float64]:
         """
         The true luminosities of the objects. These are always latent
         as one cannot directly observe them
@@ -219,14 +220,14 @@ class Population(object):
         return self._luminosities
 
     @property
-    def distances(self):
+    def distances(self) -> NDArray[np.float64]:
         """
         The distances to the objects
         """
         return self._distances
 
     @property
-    def known_distances(self):
+    def known_distances(self) -> NDArray[np.float64]:
         """
         The observed distances
         """
@@ -234,21 +235,21 @@ class Population(object):
         return self._known_distances
 
     @property
-    def selection(self):
+    def selection(self) -> NDArray[bool]:
         """
         The selection vector
         """
         return self._selection
 
     @property
-    def fluxes_latent(self):
+    def fluxes_latent(self) -> NDArray[np.float64]:
         """
         The latent fluxes of the objects
         """
         return self._fluxes
 
     @property
-    def fluxes_observed(self):
+    def fluxes_observed(self) -> NDArray[np.float64]:
         """
         All of the observed fluxes, i.e.,
         scattered with error
@@ -257,7 +258,7 @@ class Population(object):
         return self._flux_obs
 
     @property
-    def selected_fluxes_observed(self):
+    def selected_fluxes_observed(self) -> NDArray[np.float64]:
         """
         The selected obs fluxes
         """
@@ -265,7 +266,7 @@ class Population(object):
         return self._flux_selected
 
     @property
-    def selected_fluxes_latent(self):
+    def selected_fluxes_latent(self) -> NDArray[np.float64]:
         """
         The selected latent fluxes
         """
@@ -273,7 +274,7 @@ class Population(object):
         return self._fluxes[self._selection]
 
     @property
-    def selected_distances(self):
+    def selected_distances(self) -> NDArray[np.float64]:
         """
         The selected distances. Note, this is different than
         the KNOWN distances
@@ -281,7 +282,7 @@ class Population(object):
         return self._distance_selected
 
     @property
-    def hidden_fluxes_observed(self):
+    def hidden_fluxes_observed(self) -> NDArray[np.float64]:
         """
         The observed fluxes that are hidden by the selection
         """
@@ -289,7 +290,7 @@ class Population(object):
         return self._flux_hidden
 
     @property
-    def hidden_distances(self):
+    def hidden_distances(self) -> NDArray[np.float64]:
         """
         The distances that are hidden by the selection
         """
@@ -297,7 +298,7 @@ class Population(object):
         return self._distance_hidden
 
     @property
-    def hidden_fluxes_latent(self):
+    def hidden_fluxes_latent(self) -> NDArray[np.float64]:
         """
         The latent fluxes that are hidden by the selection
         """
@@ -305,11 +306,11 @@ class Population(object):
         return self._fluxes[~self._selection]
 
     @property
-    def hard_cut(self):
+    def hard_cut(self) -> bool:
         return self._hard_cut
 
     @property
-    def distance_probability(self):
+    def distance_probability(self) -> float:
         return self._distance_probability
 
     @property
