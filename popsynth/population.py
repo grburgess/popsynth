@@ -353,7 +353,7 @@ class Population(object):
 
         return output
 
-    def writeto(self, file_name) -> None:
+    def writeto(self, file_name: str) -> None:
         """
         write population to an HDF5 file
 

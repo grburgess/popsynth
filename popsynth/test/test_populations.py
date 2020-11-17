@@ -261,8 +261,8 @@ class Popbuilder(object):
         pop.display_distances()
         #      pop.display_luminosty()
         pop.selected_distances
-        pop.selected_latent_fluxes
-        pop.selected_observed_fluxes
+        pop.selected_fluxes_latent
+        pop.selected_fluxes_observed
 
         fig = pop.display_fluxes()
 
