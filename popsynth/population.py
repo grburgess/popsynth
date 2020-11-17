@@ -26,34 +26,34 @@ dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
 class Population(object):
     def __init__(
         self,
-        luminosities,
-        distances,
-        known_distances,
-        known_distance_idx,
-        unknown_distance_idx,
-        fluxes,
-        flux_obs,
-        selection,
-        flux_sigma,
-        r_max,
-        boundary,
-        strength,
-        n_model,
-        lf_params,
-        spatial_params=None,
+        luminosities: np.ndarray,
+        distances: np.ndarray,
+        known_distances: np.ndarray,
+        known_distance_idx: np.ndarray,
+        unknown_distance_idx: np.ndarray,
+        fluxes: np.ndarray,
+        flux_obs: np.ndarray,
+        selection: np.ndarray,
+        flux_sigma: float,
+        r_max: float,
+        boundary float,
+        strength: float,
+        n_model: int,
+        lf_params: dict,
+        spatial_params: dict=None,
         model_spaces=None,
-        seed=1234,
-        name=None,
-        spatial_form=None,
-        lf_form=None,
-        auxiliary_quantities=None,
-        truth={},
+        seed:int=1234,
+        name:str=None,
+        spatial_form:dict=None,
+        lf_form=:dcitNone,
+        auxiliary_quantities:dict=None,
+        truth:dict={},
         hard_cut=False,
-        distance_probability=1.0,
+        distance_probability:float=1.0,
         graph=None,
         theta=None,
         phi=None,
-    ):
+    ) -> None:
         """
         A population containing all the simulated variables
 
@@ -180,9 +180,35 @@ class Population(object):
         return self._truth
 
     @property
+    def boundary(self):
+        return self._boundary
+
+    @property
+    def flux_sigma(self) -> float:
+
+        return self._flux_sigma
+
+    @property
+    def strength(self):
+
+        return self._strength
+
+    @property
+    def distance_probabilty(self) -> float:
+        if self._distance_probabilty is None:
+
+            return 1.
+
+        else:
+
+            return self._distance_probability
+    
+    @property
     def theta(self):
         return self._theta
 
+    
+    
     @property
     def phi(self):
         return self._phi
@@ -297,7 +323,7 @@ class Population(object):
     def spatial_parameters(self):
         return self._spatial_params
 
-    def to_stan_data(self):
+    def to_stan_data(self) -> dict:
         """
         Create Stan input
         """
@@ -330,7 +356,7 @@ class Population(object):
 
         return output
 
-    def writeto(self, file_name):
+    def writeto(self, file_name) -> None:
         """
         write population to an HDF5 file
 
