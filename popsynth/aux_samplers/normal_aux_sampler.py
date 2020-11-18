@@ -9,7 +9,7 @@ class NormalAuxSampler(AuxiliarySampler):
     tau = AuxiliaryParameter(default=1, vmin=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
-    def __init__(self, name, observed=True):
+    def __init__(self, name: str, observed: bool=True):
         """FIXME! briefly describe function
 
         :param name: 
@@ -24,11 +24,11 @@ class NormalAuxSampler(AuxiliarySampler):
 
         super(NormalAuxSampler, self).__init__(name=name, observed=observed)
 
-    def true_sampler(self, size):
+    def true_sampler(self, size: int):
 
         self._true_values = stats.norm.rvs(loc=self.mu, scale=self.tau, size=size)
 
-    def observation_sampler(self, size):
+    def observation_sampler(self, size: int):
 
         if self._is_observed:
 

@@ -26,14 +26,14 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._name = name  # type: str
         self._obs_name = "%s_obs" % name  # type: str
 
-        self._obs_values = None
-        self._true_values = None
+        self._obs_values = None # type: NDArray[Any]
+        self._true_values = None # type: NDArray[Any]
         self._is_observed = observed  # type: bool
-        self._secondary_samplers = {}
+        self._secondary_samplers = {} # type: SamplerDict
         self._is_secondary = False  # type: bool
         self._has_secondary = False  # type: bool
         self._is_sampled = False  # type: bool
-        self._selection = None
+        self._selection = None # type: NDArray[np.bool_]
         self._uses_distance = uses_distance  # type: bool
         self._uses_luminoity = uses_luminosity  # type: bool
 
