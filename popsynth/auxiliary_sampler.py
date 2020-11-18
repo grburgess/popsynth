@@ -1,32 +1,43 @@
 import abc
+from typing import Any, Dict, Union
+
 import numpy as np
+from nptyping import NDArray
+
 from popsynth.utils.meta import Parameter, ParameterMeta
+
+SamplerDict = Dict[str, Dict[str, NDArray[Any]]]
+
 
 class AuxiliaryParameter(Parameter):
     pass
 
+
 class AuxiliarySampler(object, metaclass=ParameterMeta):
     def __init__(
-        self, name, observed=True, uses_distance=False, uses_luminosity=False,
-    ):
+        self,
+        name: str,
+        observed: bool = True,
+        uses_distance: bool = False,
+        uses_luminosity: bool = False,
+    ) -> None:
 
-
-        self._parameter_storage = {}
-        self._name = name
-        self._obs_name = "%s_obs" % name
+        self._parameter_storage = {}  # type: Dict[str, float]
+        self._name = name  # type: str
+        self._obs_name = "%s_obs" % name  # type: str
 
         self._obs_values = None
         self._true_values = None
-        self._is_observed = observed
+        self._is_observed = observed  # type: bool
         self._secondary_samplers = {}
-        self._is_secondary = False
-        self._has_secondary = False
-        self._is_sampled = False
+        self._is_secondary = False  # type: bool
+        self._has_secondary = False  # type: bool
+        self._is_sampled = False  # type: bool
         self._selection = None
-        self._uses_distance = uses_distance
-        self._uses_luminoity = uses_luminosity
+        self._uses_distance = uses_distance  # type: bool
+        self._uses_luminoity = uses_luminosity  # type: bool
 
-    def set_luminosity(self, luminosity):
+    def set_luminosity(self, luminosity: NDArray[np.float64]) -> None:
         """FIXME! briefly describe function
 
         :param luminosity:
@@ -35,9 +46,9 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         """
 
-        self._luminosity = luminosity
+        self._luminosity = luminosity  # type: NDArray[np.float64]
 
-    def set_distance(self, distance):
+    def set_distance(self, distance: NDArray[np.float64]) -> None:
         """FIXME! briefly describe function
 
         :param distance:
@@ -46,16 +57,18 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         """
 
-        self._distance = distance
+        self._distance = distance  # type: NDArray[np.float64]
 
-    def _apply_selection(self):
+    def _apply_selection(self) -> None:
         """
         Default selection if none is specfied in child class
         """
 
-        self._selection = np.ones_like(self._obs_values, dtype=bool)
+        self._selection = np.ones_like(
+            self._obs_values, dtype=bool
+        )  # type: NDArray[np.bool_]
 
-    def set_secondary_sampler(self, sampler):
+    def set_secondary_sampler(self, sampler) -> None:
         """
         Allows the setting of a secondary sampler from which to derive values
         """
@@ -68,9 +81,9 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         # attach the sampler to this class
 
         self._secondary_samplers[sampler.name] = sampler
-        self._has_secondary = True
+        self._has_secondary = True  # type: bool
 
-    def draw(self, size=1, verbose=True):
+    def draw(self, size: int = 1, verbose: bool = True):
         """
         Draw the primary and secondary samplers. This is the main call.
 
@@ -106,7 +119,9 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             else:
 
-                self._obs_values = self._true_values
+                self._obs_values = (
+                    self._true_values
+                )  # type: NDArray[(size,),np.float64]
 
             # check to make sure we sampled!
             assert (
@@ -124,17 +139,17 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             self._is_sampled = True
 
-    def make_secondary(self):
+    def make_secondary(self) -> None:
 
-        self._is_secondary = True
+        self._is_secondary = True  # type: bool
 
     def get_secondary_properties(
         self,
-        recursive_secondaries=None,
+        recursive_secondaries: Union[Dict[str, NDArray[Any]], None] = None,
         graph=None,
         primary=None,
         spatial_distribution=None,
-    ):
+    ) -> SamplerDict:
         """FIXME! briefly describe function
 
         :param recursive_secondaries:
@@ -146,7 +161,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         # if a holder was not passed, create one
         if recursive_secondaries is None:
 
-            recursive_secondaries = {}
+            recursive_secondaries = {}  # type: SamplerDict
 
         # now collect each property. This should keep recursing
         if self._has_secondary:
@@ -168,7 +183,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
                 recursive_secondaries = v.get_secondary_properties(
                     recursive_secondaries, graph, k, spatial_distribution
-                )
+                )  # type: SamplerDict
 
         # add our own on
         recursive_secondaries[self._name] = {
@@ -180,7 +195,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return recursive_secondaries
 
     @property
-    def secondary_samplers(self):
+    def secondary_samplers(self) -> SamplerDict:
         """
         Secondary samplers
         """
@@ -188,31 +203,30 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._secondary_samplers
 
     @property
-    def is_secondary(self):
+    def is_secondary(self) -> bool:
 
         return self._is_secondary
 
     @property
-    def has_secondary(self):
+    def has_secondary(self) -> bool:
 
         return self._has_secondary
 
     @property
-    def observed(self):
-        """
-        """
+    def observed(self) -> bool:
+        """"""
         return self._is_observed
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @property
-    def obs_name(self):
+    def obs_name(self) -> str:
         return self._obs_name
 
     @property
-    def true_values(self):
+    def true_values(self) -> NDArray[np.float64]:
         """
         The true values
 
@@ -224,7 +238,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._true_values
 
     @property
-    def obs_values(self):
+    def obs_values(self) -> NDArray[np.float64]:
         """
         The observed values
         :returns:
@@ -235,7 +249,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._obs_values
 
     @property
-    def selection(self):
+    def selection(self) -> NDArray[np.bool_]:
         """
         The selection function
 
@@ -247,29 +261,31 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._selection
 
     @property
-    def truth(self):
+    def truth(self) -> Dict[str, float]:
         return self._parameter_storage
 
     @property
-    def uses_distance(self):
+    def uses_distance(self) -> bool:
         return self._uses_distance
 
     @property
-    def uses_luminosity(self):
+    def uses_luminosity(self) -> NDArray[np.float64]:
         return self._luminosity
 
     @abc.abstractmethod
-    def true_sampler(self, size=1):
+    def true_sampler(self, size: int = 1):
 
         pass
 
-    def observation_sampler(self, size=1):
+    def observation_sampler(self, size: int = 1) -> NDArray[np.float64]:
 
         return self._true_values
 
 
 class NonObservedAuxSampler(AuxiliarySampler):
-    def __init__(self, name, uses_distance=False, uses_luminosity=False):
+    def __init__(
+        self, name: str, uses_distance: bool = False, uses_luminosity: bool = False
+    ):
 
         super(NonObservedAuxSampler, self).__init__(
             name=name,
@@ -280,7 +296,7 @@ class NonObservedAuxSampler(AuxiliarySampler):
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
-    def __init__(self, name, uses_distance=False):
+    def __init__(self, name: str, uses_distance: bool = False):
         """FIXME! briefly describe function
 
         :param name:
