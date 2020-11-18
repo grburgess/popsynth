@@ -1,5 +1,5 @@
 import abc
-from typing import Union
+from typing import Union, Dict
 from nptyping import NDArray
 import numpy as np
 from tqdm.autonotebook import tqdm as progress_bar
@@ -42,11 +42,11 @@ class Distribution(object, metaclass=ParameterMeta):
         return self._form
 
     @property
-    def params(self) -> dict:
+    def params(self) -> Dict[str, float]:
         return self._parameter_storage
 
     @property
-    def truth(self) -> dict:
+    def truth(self) -> Dict[str, float]:
         return self._parameter_storage
 
 

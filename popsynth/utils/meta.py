@@ -1,14 +1,17 @@
-class Parameter(object):
-    def __init__(self, default=None, vmin=None, vmax=None):
+from typing import Union, Dict
 
-        self.name = None
-        self._vmin = vmin
-        self._vmax = vmax
-        self._default = default
+
+class Parameter(object):
+    def __init__(self, default: Union[None, float]=None, vmin: Union[None, float]=None, vmax: Union[None, float]=None):
+
+        self.name = None # type: Union[None, str]
+        self._vmin = vmin # type: Union[None, float]
+        self._vmax = vmax # type: Union[None, float]
+        self._default = default # type: Union[None, float]
         
 
     @property
-    def default(self):
+    def default(self) -> Union[None, float]:
         return self._default
 
     def __get__(self, obj, type=None) -> object:
