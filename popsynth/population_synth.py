@@ -1,4 +1,5 @@
 import abc
+from typing import Union
 
 import networkx as nx
 import numpy as np
@@ -7,6 +8,7 @@ import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
 from IPython.display import Markdown, Math, display
+from nptyping import NDArray
 from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
@@ -19,12 +21,14 @@ from popsynth.population import Population
 class PopulationSynth(object, metaclass=abc.ABCMeta):
     def __init__(
         self,
-        spatial_distribution,
-        luminosity_distribution=None,
-        seed=1234,
-        verbose=True,
+        spatial_distribution: SpatialDistribution,
+        luminosity_distribution: Union[LuminosityDistribution, None] = None,
+        seed: int = 1234,
+        verbose: bool = True,
     ):
-        """FIXME! briefly describe function
+        """
+        Basic and generic population synth. One specifies the spatial and luminosity distribution OR
+        derived luminosity distribution and everything is setup.
 
         :param spatial_distribution:
         :param luminosity_distribution:
@@ -34,16 +38,20 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         """
 
-        self._n_model = 500
-        self._seed = int(seed)
-        self._model_spaces = {}
-        self._auxiliary_observations = {}
+        self._n_model = 500  # type: int
+        self._seed = int(seed)  # type: int
 
-        self._graph = nx.DiGraph()
+        # this is a container for things passed to
+        # stan
+        self._model_spaces = {}  # type: dict
 
-        self._verbose = verbose
+        self._auxiliary_observations = {}  # type: dict
 
-        self._name = "%s" % spatial_distribution.name
+        self._graph = nx.DiGraph()  # type: nx.Digraph
+
+        self._verbose = verbose  # type: bool
+
+        self._name = "%s" % spatial_distribution.name  # type: str
         if luminosity_distribution is not None:
             self._name = "%s_%s" % (self._name, luminosity_distribution.name)
             assert isinstance(
@@ -54,13 +62,17 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             spatial_distribution, SpatialDistribution
         ), "the spatial_distribution is the wrong type"
 
-        self._spatial_distribution = spatial_distribution
-        self._luminosity_distribution = luminosity_distribution
+        self._spatial_distribution = spatial_distribution  # type: SpatialDistribution
+        self._luminosity_distribution = (
+            luminosity_distribution
+        )  # type: Union[LuminosityDistribution, None]
 
-        self._has_derived_luminosity = False
-        self._derived_luminosity_sampler = None
+        self._has_derived_luminosity = False  # type: bool
+        self._derived_luminosity_sampler = (
+            None
+        )  # type: Union[DerivedLumAuxSampler, None]
 
-        self._params = {}
+        self._params = {}  # type: dict
 
         # keep a list of parameters here for checking
 
@@ -78,11 +90,11 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # add the sky sampler
 
     @property
-    def spatial_distribution(self):
+    def spatial_distribution(self) -> SpatialDistribution:
         return self._spatial_distribution
 
     @property
-    def luminosity_distribution(self):
+    def luminosity_distribution(self) -> Union[LuminosityDistribution, None]:
         return self._luminosity_distribution
 
     def add_model_space(self, name, start, stop, log=True):
@@ -136,7 +148,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
 
-    def _prob_det(self, x, boundary, strength):
+    def _prob_det(self, x, boundary, strength) -> NDArray[np.float64]:
         """
         Soft detection threshold
 
@@ -148,10 +160,10 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         return sf.expit(strength * (x - boundary))
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
-    def draw_log10_fobs(self, f, f_sigma, size=1):
+    def draw_log10_fobs(self, f, f_sigma, size=1) -> NDArray[np.float64]:
         """
         draw the log10 of the the fluxes
         """
@@ -165,14 +177,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
     def draw_survey(
         self,
-        boundary,
-        flux_sigma=1.0,
-        strength=10.0,
-        hard_cut=False,
-        distance_probability=None,
-        no_selection=False,
-        verbose=True,
-    ):
+        boundary: float,
+        flux_sigma: float = 1.0,
+        strength: float = 10.0,
+        hard_cut: bool = False,
+        distance_probability: Union[float, None] = None,
+        no_selection: bool = False,
+        verbose: bool = True,
+    ) -> Population:
         """
         Draw the total survey and return a Population object
 
@@ -185,7 +197,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         """
 
         # this stores all the "true" population values from all the samplers
-        truth = dict()
+        truth = dict()  # type: dict
 
         # store the spatial distribution truths
         truth[self._spatial_distribution.name] = self._spatial_distribution.truth
@@ -204,13 +216,15 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # integrate the population to determine the true number of
         # objects
-        N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[0]
+        N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
+            0
+        ]  # type: float
 
         if verbose:
             print("The volume integral is %f" % N)
 
         # this should be poisson distributed
-        n = np.random.poisson(N)
+        n = np.random.poisson(N)  # type: np.int64
 
         self._spatial_distribution.draw_distance(size=n, verbose=verbose)
 
@@ -218,7 +232,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._spatial_distribution.draw_sky_positions(size=n)
 
-        distances = self._spatial_distribution.distances
+        distances = (
+            self._spatial_distribution.distances
+        )  # type: NDArray[(n,), np.float64]
 
         if verbose:
             print("Expecting %d total objects" % n)
@@ -231,9 +247,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # now we set up the selection that _may_ come
         # from the auxilliary samplers
 
-        auxiliary_selection = np.ones(n, dtype=bool)
+        auxiliary_selection = np.ones(n, dtype=bool)  # type: NDArray[(n,), np.float64]
 
-        auxiliary_quantities = {}
+        auxiliary_quantities = {}  # type: dict
 
         # this means the luminosity is not
         # simulated directy
@@ -272,7 +288,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             }
             if verbose:
                 print("Getting luminosity from derived sampler")
-            luminosities = self._derived_luminosity_sampler.compute_luminosity()
+            luminosities = (
+                self._derived_luminosity_sampler.compute_luminosity()
+            )  # type: NDArray[(n,), np.float64]
 
             # collect anything that was sampled here
 
@@ -287,7 +305,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
 
-                properties = v2.get_secondary_properties()
+                properties = v2.get_secondary_properties()  # type: dict
 
                 for k3, v3 in properties.items():
 
@@ -305,7 +323,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         else:
             # pbar.update()
             # draw all the values
-            luminosities = self.luminosity_distribution.draw_luminosity(size=n)
+            luminosities = self.luminosity_distribution.draw_luminosity(
+                size=n
+            )  # type: NDArray[(n,), np.float64]
 
             # store the truths from the luminosity distribution
             truth[
@@ -313,7 +333,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             ] = self.luminosity_distribution.truth
 
         # transform the fluxes
-        fluxes = self._spatial_distribution.transform(luminosities, distances)
+        fluxes = self._spatial_distribution.transform(
+            luminosities, distances
+        )  # type: NDArray[(n,), np.float64]
 
         # now sample any auxilary quantities
         # if needed
@@ -350,7 +372,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 "true_values": v.true_values,
                 "obs_values": v.obs_values,
                 "selection": v.selection,
-            }
+            }  # type: dict
 
             # collect the secondary values
 
@@ -359,7 +381,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
 
-                properties = v2.get_secondary_properties()
+                properties = v2.get_secondary_properties()  # type: dict
 
                 for k3, v3 in properties.items():
 
@@ -374,7 +396,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # now draw all the observed fluxes
         # this is homoskedastic for now
-        log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma, size=n)
+        log10_fluxes_obs = self.draw_log10_fobs(
+            fluxes, flux_sigma, size=n
+        )  # type: NDArray[(n,), np.float64]
 
         assert np.alltrue(np.isfinite(log10_fluxes_obs))
 
@@ -390,7 +414,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             detection_probability = self._prob_det(
                 log10_fluxes_obs, np.log10(boundary), strength
-            )
+            )  # type: NDArray[(n,), np.float64]
 
             selection = []
             if verbose:
@@ -431,13 +455,17 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             # simply apply a hard cut selection in the data
 
-            selection = np.power(10, log10_fluxes_obs) >= boundary
+            selection = (
+                np.power(10, log10_fluxes_obs) >= boundary
+            )  # type: NDArray[(n,), np.bool_]
 
         # now apply the selection from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
 
-            auxiliary_selection = np.logical_and(auxiliary_selection, v["selection"])
+            auxiliary_selection = np.logical_and(
+                auxiliary_selection, v["selection"]
+            )  # type: NDArray[(n,), np.bool_]
 
             if verbose:
 
@@ -456,14 +484,18 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                     % sum(selection)
                 )
 
-        selection = np.logical_and(selection, auxiliary_selection)
+        selection = np.logical_and(
+            selection, auxiliary_selection
+        )  # type: NDArray[(n,), np.bool_]
 
         # if we do not want to add a selection effect
         if no_selection:
             if self._verbose:
                 print("No Selection! Added back all objects")
 
-            selection = np.ones_like(selection, dtype=bool)
+            selection = np.ones_like(
+                selection, dtype=bool
+            )  # type: NDArray[(n,), np.bool_]
 
         # pbar.update()
         if sum(selection) == n:
@@ -473,9 +505,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         if (distance_probability is not None) or (distance_probability == 1.0):
             # pbar.set_description(desc='Selecting sistances')
-            known_distances = []
-            known_distance_idx = []
-            unknown_distance_idx = []
+            known_distances = []  # type: list[np.float64]
+            known_distance_idx = []  # type: list[int]
+            unknown_distance_idx = []  # type: list[int]
 
             assert (distance_probability >= 0) and (
                 distance_probability <= 1.0
@@ -521,10 +553,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             known_distances = distances[selection]
             known_distance_idx = [i for i in range(sum(selection))]
             unknown_distance_idx = []
-        # pbar.update()
-        known_distances = np.array(known_distances)
-        known_distance_idx = np.array(known_distance_idx)
-        unknown_distance_idx = np.array(unknown_distance_idx)
+
+        # convert to numpy arrays
+
+        known_distances = np.array(known_distances)  # type: NDArray[np.float64]
+        known_distance_idx = np.array(known_distance_idx)  # type: NDArray[np.int64]
+        unknown_distance_idx = np.array(
+            unknown_distance_idx
+        )  # type: NDArray[(np.int64]
 
         if verbose:
             try:
@@ -579,7 +615,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             phi=self._spatial_distribution.phi,
         )
 
-    def display(self):
+    def display(self) -> None:
         """
         Display the simulation parameters
 

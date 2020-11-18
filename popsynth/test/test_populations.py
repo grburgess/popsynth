@@ -244,7 +244,9 @@ class Popbuilder(object):
         pop.graph
 
         assert sum(~population_reloaded.selection) == 0
-
+        assert population_reloaded.n_objects == population_reloaded.n_detections
+        assert population_reloaded.n_non_detections ==0
+        
         os.remove("_saved_pop.h5")
 
         # clean up
@@ -272,6 +274,9 @@ class Popbuilder(object):
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
         assert sum(population_reloaded.selection) == 0
+        assert population_reloaded.n_objects == population_reloaded.n_non_detections
+        assert population_reloaded.n_detections == 0
+
 
         os.remove("_saved_pop.h5")
 

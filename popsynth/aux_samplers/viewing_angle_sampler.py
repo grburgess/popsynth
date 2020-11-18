@@ -20,7 +20,7 @@ class ViewingAngleSampler(NonObservedAuxSampler):
 
         super(ViewingAngleSampler, self).__init__(name="va",)
 
-    def true_sampler(self, size):
+    def true_sampler(self, size: int) -> None:
         """
         Sample the viewing angle by inverse CDF 
 
