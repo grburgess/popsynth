@@ -16,6 +16,12 @@ from tqdm.autonotebook import tqdm as progress_bar
 from popsynth.auxiliary_sampler import DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
+from popsynth.selection_probability import (BernoulliSelection,
+                                            SelectionProbabilty,
+                                            UnitySelection,
+                                            HardFluxSelection,
+                                            SoftFluxSelection
+                                            )
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
@@ -71,6 +77,10 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         self._derived_luminosity_sampler = (
             None
         )  # type: Union[DerivedLumAuxSampler, None]
+
+        # set the selections be fully seen unless it is set by the user
+        self._distance_selector = UnitySelection()  # type: SelectionProbabilty
+        self._flux_selector = UnitySelection()  # type: SelectionProbabilty
 
         self._params = {}  # type: dict
 
@@ -147,6 +157,23 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 print("registering auxilary sampler: %s" % auxiliary_sampler.name)
 
             self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
+
+    def set_distance_selection(self, selector: SelectionProbabilty) -> None:
+        """
+        Set the selection type for the distance
+        """
+        
+        assert isinstance(selector, SelectionProbabilty)
+
+        self._distance_selector = selector
+
+    def set_flux_selection(self, selector: SelectionProbabilty) -> None:
+        """
+        Set the selection type for the distance
+        """
+        assert isinstance(selector, SelectionProbabilty)
+
+        self._flux_selector = selector
 
     def _prob_det(self, x, boundary, strength) -> NDArray[np.float64]:
         """
@@ -406,46 +433,15 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         if not hard_cut:
 
+            self._flux_selector = SoftFluxSelection(boundary, strength)
+
+
             if verbose:
 
                 print("Applying soft boundary")
 
-            # compute the detection probability  for the observed values
 
-            detection_probability = self._prob_det(
-                log10_fluxes_obs, np.log10(boundary), strength
-            )  # type: NDArray[(n,), np.float64]
-
-            selection = []
-            if verbose:
-                for p in progress_bar(
-                    detection_probability, desc="samping detection probability"
-                ):
-
-                    # make a bernoulli draw given the detection probability
-
-                    if stats.bernoulli.rvs(p) == 1:
-
-                        selection.append(True)
-
-                    else:
-
-                        selection.append(False)
-
-            else:
-
-                for p in detection_probability:
-
-                    # make a bernoulli draw given the detection probability
-                    if stats.bernoulli.rvs(p) == 1:
-
-                        selection.append(True)
-
-                    else:
-
-                        selection.append(False)
-
-            selection = np.array(selection)
+        
 
         else:
 
@@ -453,12 +449,15 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 print("Applying hard boundary")
 
-            # simply apply a hard cut selection in the data
 
-            selection = (
-                np.power(10, log10_fluxes_obs) >= boundary
-            )  # type: NDArray[(n,), np.bool_]
+            self._flux_selector = HardFluxSelection(boundary)
+            
+        self._flux_selector.set_observed_flux(10**log10_fluxes_obs)
 
+        self._flux_selector.draw(N)
+        
+        selection = self._flux_selector.selection
+        
         # now apply the selection from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
