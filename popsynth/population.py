@@ -137,7 +137,11 @@ class Population(object):
 
         self._graph = graph
 
-        if sum(self._selection) == 0:
+        self._n_objects = len(selection)  # type: int
+        self._n_detections = sum(self._selection)  # type: int
+        self._n_non_detections = self._n_objects - self._n_detections  # type: int
+
+        if self._n_detections == 0:
 
             self._no_detection = True
 
@@ -318,6 +322,37 @@ class Population(object):
         return self._lf_params
 
     @property
+    def n_objects(self) -> int:
+        """
+        The number of objects in the population
+        """
+        return self._n_objects
+
+    @property
+    def n_detections(self) -> int:
+        """
+        The number of DETECTED objects in the population
+        """
+
+        return self._n_detections
+
+    @property
+    def n_non_detections(self) -> int:
+        """
+        The number of NON-DETECTED objects in the population
+        """
+
+        return self._n_non_detections
+
+    @property
+    def has_detections(self) -> bool:
+        """
+        If the population has detections
+        """
+
+        return not self._no_detection
+
+    @property
     def spatial_parameters(self):
         return self._spatial_params
 
@@ -328,7 +363,7 @@ class Population(object):
 
         # create a dict for Stan
         output = dict(
-            N=self._selection.sum(),
+            N=self._n_detections,
             Nz=len(self._known_distances),
             Nnz=len(self._unknown_distance_idx),
             z_obs=self._distance_selected,
