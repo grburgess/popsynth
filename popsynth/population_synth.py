@@ -13,15 +13,13 @@ from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
 
-from popsynth.auxiliary_sampler import DerivedLumAuxSampler
+from popsynth.auxiliary_sampler import DerivedLumAuxSampler, AuxiliarySampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
 from popsynth.selection_probability import (BernoulliSelection,
-                                            SelectionProbabilty,
-                                            UnitySelection,
                                             HardFluxSelection,
-                                            SoftFluxSelection
-                                            )
+                                            SelectionProbabilty,
+                                            SoftFluxSelection, UnitySelection)
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
@@ -126,7 +124,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._model_spaces[name] = space
 
-    def add_observed_quantity(self, auxiliary_sampler):
+    def add_observed_quantity(self, auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]):
         """FIXME! briefly describe function
 
         :param auxiliary_sampler:
@@ -162,7 +160,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         """
         Set the selection type for the distance
         """
-        
+
         assert isinstance(selector, SelectionProbabilty)
 
         self._distance_selector = selector
@@ -435,13 +433,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             self._flux_selector = SoftFluxSelection(boundary, strength)
 
-
             if verbose:
 
                 print("Applying soft boundary")
-
-
-        
 
         else:
 
@@ -449,15 +443,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 print("Applying hard boundary")
 
-
             self._flux_selector = HardFluxSelection(boundary)
-            
-        self._flux_selector.set_observed_flux(10**log10_fluxes_obs)
 
-        self._flux_selector.draw(N)
-        
+        self._flux_selector.set_observed_flux(10 ** log10_fluxes_obs)
+
+        self._flux_selector.draw(n)
+
         selection = self._flux_selector.selection
-        
+
         # now apply the selection from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
@@ -503,63 +496,26 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 print("NO HIDDEN OBJECTS")
 
         if (distance_probability is not None) or (distance_probability == 1.0):
-            # pbar.set_description(desc='Selecting sistances')
-            known_distances = []  # type: list[np.float64]
-            known_distance_idx = []  # type: list[int]
-            unknown_distance_idx = []  # type: list[int]
 
-            assert (distance_probability >= 0) and (
-                distance_probability <= 1.0
-            ), "the distance detection must be between 0 and 1"
+            self._distance_selector = BernoulliSelection(distance_probability)
 
-            if verbose:
-                with progress_bar(
-                    len(distances[selection]), desc="Selecting distances"
-                ) as pbar2:
-                    for i, d in enumerate(distances[selection]):
+        self._distance_selector.draw(size=sum(selection), verbose=verbose)
 
-                        # see if we detect the distance
-                        if stats.bernoulli.rvs(distance_probability) == 1:
 
-                            known_distances.append(d)
-                            known_distance_idx.append(i)
+        known_distances = distances[selection][self._distance_selector.selection]
+        known_distance_idx = self._distance_selector.selection_index
+        unknown_distance_idx = self._distance_selector.non_selection_index
 
-                        else:
-
-                            unknown_distance_idx.append(i)
-
-                        pbar2.update()
-
-            else:
-
-                for i, d in enumerate(distances[selection]):
-
-                    # see if we detect the distance
-                    if stats.bernoulli.rvs(distance_probability) == 1:
-
-                        known_distances.append(d)
-                        known_distance_idx.append(i)
-
-                    else:
-
-                        unknown_distance_idx.append(i)
-
-            if verbose:
-                print("Detected %d distances" % len(known_distances))
-
-        else:
-
-            known_distances = distances[selection]
-            known_distance_idx = [i for i in range(sum(selection))]
-            unknown_distance_idx = []
+        if verbose:
+            print("Detected %d distances" % len(known_distances))
 
         # convert to numpy arrays
 
-        known_distances = np.array(known_distances)  # type: NDArray[np.float64]
-        known_distance_idx = np.array(known_distance_idx)  # type: NDArray[np.int64]
-        unknown_distance_idx = np.array(
-            unknown_distance_idx
-        )  # type: NDArray[(np.int64]
+        # known_distances = np.array(known_distances)  # type: NDArray[np.float64]
+        # known_distance_idx = np.array(known_distance_idx)  # type: NDArray[np.int64]
+        # unknown_distance_idx = np.array(
+        #     unknown_distance_idx
+        # )  # type: NDArray[(np.int64]
 
         if verbose:
             try:

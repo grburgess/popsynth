@@ -82,34 +82,34 @@ class UnitySelection(SelectionProbabilty):
         """
         A selection that returns all unity
         """
-        super(UnitySelection, self).__init__()
+        super(UnitySelection, self).__init__(name="unity")
 
-    def draw(self, size: int) -> None:
+    def draw(self, size: int, verbose: bool=False) -> None:
 
-        self._selection = np.ones(size, dtype=bool)
+        self._selection = np.ones(size,dtype=int).astype(bool)
 
 
 class BernoulliSelection(SelectionProbabilty):
-    def __init__(self, probabilty: float = 0.5) -> None:
+    def __init__(self, probability: float = 0.5) -> None:
 
-        assert probabilty <= 1.0
-        assert probabilty >= 0.0
+        assert probability <= 1.0
+        assert probability >= 0.0
 
-        super(BernoulliSelection, self).__init__()
+        super(BernoulliSelection, self).__init__(name="Bernoulli")
 
-        self._probabilty = probabilty  # type: float
+        self._probability = probability  # type: float
 
     def draw(self, size: int, verbose: bool = False) -> None:
 
         if verbose:
 
-            self._selection = np.zeros(size)  # type: NDArray[(size,), bool]
+            self._selection = np.zeros(size,dtype=int).astype(bool)  # type: NDArray[(size,), bool]
 
             with progress_bar(size, desc=f"Selecting {self._name}") as pbar2:
                 for i in range(size):
 
                     # see if we detect the distance
-                    if stats.bernoulli.rvs(self._probabailty) == 1:
+                    if stats.bernoulli.rvs(self._probability) == 1:
 
                         self._selection[i] = 1
 
@@ -117,7 +117,7 @@ class BernoulliSelection(SelectionProbabilty):
 
         else:
 
-            self._selection = stats.bernoulli.rvs(self._probabailty, size=size).astype(
+            self._selection = stats.bernoulli.rvs(self._probability, size=size).astype(
                 bool
             )  # type: NDArray[(size,), bool]
 
@@ -139,7 +139,7 @@ class HardFluxSelection(HardSelection):
 
         assert boundary >= 0
 
-        super(HardFluxSelection, self).__init__(self, boundary)
+        super(HardFluxSelection, self).__init__(boundary)
 
     def draw(self, size: int, verbose: bool = False):
 
@@ -160,7 +160,7 @@ class SoftSelection(SelectionProbabilty):
             self._strength * (values - self._boundary)
         )  # type: NDArray[np.float64]
 
-        return stats.bernoulli.rvs(probs, size=size)
+        return stats.bernoulli.rvs(probs, size=size).astype(bool)
 
 
 class SoftFluxSelection(SoftSelection):
