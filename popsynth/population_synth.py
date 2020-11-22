@@ -13,9 +13,13 @@ from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
 
-from popsynth.auxiliary_sampler import DerivedLumAuxSampler
+from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
+from popsynth.selection_probability import (BernoulliSelection,
+                                            HardFluxSelection,
+                                            SelectionProbabilty,
+                                            SoftFluxSelection, UnitySelection)
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
@@ -72,6 +76,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             None
         )  # type: Union[DerivedLumAuxSampler, None]
 
+        # set the selections be fully seen unless it is set by the user
+        self._distance_selector = UnitySelection()  # type: SelectionProbabilty
+        self._flux_selector = UnitySelection()  # type: SelectionProbabilty
+
+        # check to see if the selectors are set
+        self._distance_selector_set = False  # type: bool
+        self._flux_selector_set = False  # type: bool
+
         self._params = {}  # type: dict
 
         # keep a list of parameters here for checking
@@ -116,7 +128,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._model_spaces[name] = space
 
-    def add_observed_quantity(self, auxiliary_sampler):
+    def add_observed_quantity(
+        self, auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]
+    ):
         """FIXME! briefly describe function
 
         :param auxiliary_sampler:
@@ -147,6 +161,27 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 print("registering auxilary sampler: %s" % auxiliary_sampler.name)
 
             self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
+
+    def set_distance_selection(self, selector: SelectionProbabilty) -> None:
+        """
+        Set the selection type for the distance
+        """
+
+        assert isinstance(selector, SelectionProbabilty)
+
+        self._distance_selector = selector
+
+        self._distance_selector_set = True
+
+    def set_flux_selection(self, selector: SelectionProbabilty) -> None:
+        """
+        Set the selection type for the distance
+        """
+        assert isinstance(selector, SelectionProbabilty)
+
+        self._flux_selector = selector
+
+        self._flux_selector_set = True
 
     def _prob_det(self, x, boundary, strength) -> NDArray[np.float64]:
         """
@@ -244,11 +279,18 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         #      pbar.update()
 
+
+        # setup the global selection
+
+        global_selection = UnitySelection() # type: SelectionProbabilty
+        global_selection.draw(n,verbose=False)
+        
         # now we set up the selection that _may_ come
         # from the auxilliary samplers
 
-        auxiliary_selection = np.ones(n, dtype=bool)  # type: NDArray[(n,), np.float64]
-
+        auxiliary_selection = UnitySelection() # type: SelectionProbabilty
+        auxiliary_selection.draw(n,verbose=False)
+        
         auxiliary_quantities = {}  # type: dict
 
         # this means the luminosity is not
@@ -284,7 +326,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {
                 "true_values": self._derived_luminosity_sampler.true_values,
                 "obs_values": self._derived_luminosity_sampler.obs_values,
-                "selection": self._derived_luminosity_sampler.selection,
+                "selection": self._derived_luminosity_sampler.selector,
             }
             if verbose:
                 print("Getting luminosity from derived sampler")
@@ -371,7 +413,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             auxiliary_quantities[k] = {
                 "true_values": v.true_values,
                 "obs_values": v.obs_values,
-                "selection": v.selection,
+                "selection": v.selector,
             }  # type: dict
 
             # collect the secondary values
@@ -404,170 +446,130 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # now select them
 
-        if not hard_cut:
+        if not no_selection:
 
-            if verbose:
+            if not self._flux_selector_set:
 
-                print("Applying soft boundary")
+                DeprecationWarning(
+                    "this interface will change and soon you will be required to set the flux selection manually"
+                )
 
-            # compute the detection probability  for the observed values
+                if not hard_cut:
 
-            detection_probability = self._prob_det(
-                log10_fluxes_obs, np.log10(boundary), strength
-            )  # type: NDArray[(n,), np.float64]
+                    self._flux_selector = SoftFluxSelection(boundary, strength)
 
-            selection = []
-            if verbose:
-                for p in progress_bar(
-                    detection_probability, desc="samping detection probability"
-                ):
+                    if verbose:
 
-                    # make a bernoulli draw given the detection probability
+                        print("Applying soft boundary")
 
-                    if stats.bernoulli.rvs(p) == 1:
+                else:
 
-                        selection.append(True)
+                    if verbose:
 
-                    else:
+                        print("Applying hard boundary")
 
-                        selection.append(False)
+                    self._flux_selector = HardFluxSelection(boundary)
+
+            # the hard and soft flux selectors have built in
+            # properties to let us know what type of selection
+            # was made so we can record it
+
+            if self._flux_selector.hard_cut:
+
+                strength = 1.0
 
             else:
 
-                for p in detection_probability:
+                strength = self._flux_selector.strength
 
-                    # make a bernoulli draw given the detection probability
-                    if stats.bernoulli.rvs(p) == 1:
-
-                        selection.append(True)
-
-                    else:
-
-                        selection.append(False)
-
-            selection = np.array(selection)
+            boundary = self._flux_selector.boundary
+            hard_cut = self._flux_selector.hard_cut
 
         else:
 
-            if verbose:
+            # These are just dummies for the no selection case
 
-                print("Applying hard boundary")
+            strength = 1
+            boundary = 1e-99
+            hard_cut = True
 
-            # simply apply a hard cut selection in the data
+        # pass the values the plux selector and draw the selection
+        self._flux_selector.set_observed_flux(10 ** log10_fluxes_obs)
 
-            selection = (
-                np.power(10, log10_fluxes_obs) >= boundary
-            )  # type: NDArray[(n,), np.bool_]
+        self._flux_selector.draw(n)
+
+ #       selection = self._flux_selector.selection
 
         # now apply the selection from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
 
-            auxiliary_selection = np.logical_and(
-                auxiliary_selection, v["selection"]
-            )  # type: NDArray[(n,), np.bool_]
-
+            auxiliary_selection += v["selection"]
+            
             if verbose:
 
-                if sum(~v["selection"]) > 0:
+                if v["selection"].n_non_selected > 0:
 
                     print(
                         "Applying selection from %s which selected %d of %d objects"
-                        % (k, sum(v["selection"]), len(v["selection"]))
+                        % (k, v["selection"].n_selected, v["selection"].n_objects)
                     )
 
         if verbose:
 
-            if sum(~auxiliary_selection) > 0:
+            if auxiliary_selection.n_non_selected > 0:
                 print(
                     "Before auxiliary selection there were %d objects selected"
-                    % sum(selection)
+                    % self._flux_selector.n_selected
                 )
 
-        selection = np.logical_and(
-            selection, auxiliary_selection
-        )  # type: NDArray[(n,), np.bool_]
 
-        # if we do not want to add a selection effect
-        if no_selection:
-            if self._verbose:
-                print("No Selection! Added back all objects")
+        # now we can add the values onto the global
+        # selection
+        # not in the future we will depreciate the
+        # no selection feature
+        if not no_selection:
 
-            selection = np.ones_like(
-                selection, dtype=bool
-            )  # type: NDArray[(n,), np.bool_]
+            global_selection += auxiliary_selection
+
+            global_selection += self._flux_selector
+
+        # # if we do not want to add a selection effect
+        # if no_selection:
+        #     if self._verbose:
+        #         print("No Selection! Added back all objects")
+
+        #     selection = np.ones_like(
+        #         selection, dtype=bool
+        #     )  # type: NDArray[(n,), np.bool_]
 
         # pbar.update()
-        if sum(selection) == n:
+        if global_selection.n_selected == n:
 
             if verbose:
                 print("NO HIDDEN OBJECTS")
 
-        if (distance_probability is not None) or (distance_probability == 1.0):
-            # pbar.set_description(desc='Selecting sistances')
-            known_distances = []  # type: list[np.float64]
-            known_distance_idx = []  # type: list[int]
-            unknown_distance_idx = []  # type: list[int]
+        if not self._distance_selector_set:
 
-            assert (distance_probability >= 0) and (
-                distance_probability <= 1.0
-            ), "the distance detection must be between 0 and 1"
+            if (distance_probability is not None) or (distance_probability == 1.0):
 
-            if verbose:
-                with progress_bar(
-                    len(distances[selection]), desc="Selecting distances"
-                ) as pbar2:
-                    for i, d in enumerate(distances[selection]):
+                self._distance_selector = BernoulliSelection(distance_probability)
 
-                        # see if we detect the distance
-                        if stats.bernoulli.rvs(distance_probability) == 1:
+        self._distance_selector.draw(size=global_selection.n_selected, verbose=verbose)
 
-                            known_distances.append(d)
-                            known_distance_idx.append(i)
+        known_distances = distances[global_selection.selection][self._distance_selector.selection]
+        known_distance_idx = self._distance_selector.selection_index
+        unknown_distance_idx = self._distance_selector.non_selection_index
 
-                        else:
-
-                            unknown_distance_idx.append(i)
-
-                        pbar2.update()
-
-            else:
-
-                for i, d in enumerate(distances[selection]):
-
-                    # see if we detect the distance
-                    if stats.bernoulli.rvs(distance_probability) == 1:
-
-                        known_distances.append(d)
-                        known_distance_idx.append(i)
-
-                    else:
-
-                        unknown_distance_idx.append(i)
-
-            if verbose:
-                print("Detected %d distances" % len(known_distances))
-
-        else:
-
-            known_distances = distances[selection]
-            known_distance_idx = [i for i in range(sum(selection))]
-            unknown_distance_idx = []
-
-        # convert to numpy arrays
-
-        known_distances = np.array(known_distances)  # type: NDArray[np.float64]
-        known_distance_idx = np.array(known_distance_idx)  # type: NDArray[np.int64]
-        unknown_distance_idx = np.array(
-            unknown_distance_idx
-        )  # type: NDArray[(np.int64]
+        if verbose:
+            print("Detected %d distances" % len(known_distances))
 
         if verbose:
             try:
 
                 print(
                     "Deteced %d objects or to a distance of %.2f"
-                    % (sum(selection), max(known_distances))
+                    % (global_selection.n_selected, max(known_distances))
                 )
 
             except:
@@ -593,7 +595,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             unknown_distance_idx=unknown_distance_idx,
             fluxes=fluxes,
             flux_obs=np.power(10, log10_fluxes_obs),
-            selection=selection,
+            selection=global_selection.selection,
             flux_sigma=flux_sigma,
             r_max=self._spatial_distribution.r_max,
             n_model=self._n_model,

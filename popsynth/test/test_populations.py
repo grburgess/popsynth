@@ -1,9 +1,11 @@
-import popsynth
-import pytest
-import numpy as np
-import os
 import copy
+import os
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pytest
+
+import popsynth
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
@@ -112,6 +114,7 @@ _bpl_params = dict(Lmin=10.0, alpha=-0.5, Lbreak=100, beta=-2.0, Lmax=1000.0)
 _lognormal_params = dict(mu=1.0, tau=1.0)
 
 
+
 class Popbuilder(object):
     def __init__(self, pop_class, **params):
 
@@ -121,39 +124,111 @@ class Popbuilder(object):
         self.d2 = DemoSampler2()
         self.d2.set_secondary_sampler(self.d1)
 
+        b = popsynth.BernoulliSelection(probability=0.5) 
+        
+        self.d2.set_selection_probability(b)
+        
         for k, v in params.items():
 
             assert k in self.pop_gen._params
 
     def draw_hard(self, verbose):
 
-        return self.pop_gen.draw_survey(
+        pop = self.pop_gen.draw_survey(
             boundary=1e-6, flux_sigma=0.4, hard_cut=True, verbose=verbose
         )
 
+        self.reset()
+
+        return pop
+
     def draw_all(self, verbose):
 
-        return self.pop_gen.draw_survey(
-            boundary=1e-999, flux_sigma=0.1, hard_cut=True, verbose=verbose
+        pop = self.pop_gen.draw_survey(
+            boundary=1e-999,
+            flux_sigma=0.1,
+            hard_cut=True,
+            verbose=verbose,
+            no_selection=True,
         )
+
+        self.reset()
+
+        return pop
 
     def draw_none(self, verbose):
 
-        return self.pop_gen.draw_survey(
-            boundary=1e999, flux_sigma=0.1, hard_cut=True, verbose=verbose
+        pop = self.pop_gen.draw_survey(
+            boundary=1e999,
+            flux_sigma=0.1,
+            hard_cut=True,
+            verbose=verbose,
+            no_selection=False,
         )
+
+        self.reset()
+
+        return pop
 
     def draw_soft(self, verbose):
 
-        return self.pop_gen.draw_survey(
+        pop = self.pop_gen.draw_survey(
             boundary=1e-4, flux_sigma=0.1, hard_cut=False, verbose=verbose
         )
 
+        self.reset()
+
+        return pop
+
     def draw_z_select(self, verbose):
 
-        return self.pop_gen.draw_survey(
+        pop = self.pop_gen.draw_survey(
             boundary=1e-6, flux_sigma=0.5, distance_probability=0.5, verbose=verbose
         )
+
+        self.reset()
+
+        return pop
+
+
+    def draw_hard_with_selector(self, verbose):
+
+        selector = popsynth.HardFluxSelection(boundary=1e-4)
+        
+        self.pop_gen.set_flux_selection(selector)
+
+        pop = self.pop_gen.draw_survey(
+            boundary=1e-6, flux_sigma=0.5, verbose=verbose
+        )
+
+        self.reset()
+
+        return pop
+
+    def draw_soft_with_selector(self, verbose):
+
+        selector = popsynth.SoftFluxSelection(boundary=1e-4, strength=10)
+        
+        self.pop_gen.set_flux_selection(selector)
+
+        pop = self.pop_gen.draw_survey(
+            boundary=1e-6, flux_sigma=0.5, verbose=verbose
+        )
+
+        self.reset()
+
+        return pop
+
+        
+    
+
+    
+    def reset(self):
+
+        self.pop_gen._distance_selector_set = False
+        self.pop_gen._flux_selector_set = False
+        self.pop_gen._flux_selector = popsynth.UnitySelection()
+        self.pop_gen._distance_selector = popsynth.UnitySelection()
 
     def test_it(self):
 
@@ -245,8 +320,8 @@ class Popbuilder(object):
 
         assert sum(~population_reloaded.selection) == 0
         assert population_reloaded.n_objects == population_reloaded.n_detections
-        assert population_reloaded.n_non_detections ==0
-        
+        assert population_reloaded.n_non_detections == 0
+
         os.remove("_saved_pop.h5")
 
         # clean up
@@ -277,9 +352,50 @@ class Popbuilder(object):
         assert population_reloaded.n_objects == population_reloaded.n_non_detections
         assert population_reloaded.n_detections == 0
 
+        os.remove("_saved_pop.h5")
+
+
+        #####################
+
+        pop = self.draw_hard_with_selector(verbose=True)
+        pop = self.draw_hard_with_selector(verbose=False)
+
+        pop.display()
+
+        fig = pop.display_fluxes()
+
+        fig = pop.display_flux_sphere()
+
+        pop.writeto("_saved_pop.h5")
+
+        population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
+
+        assert population_reloaded.boundary == 1e-4
 
         os.remove("_saved_pop.h5")
 
+        #####################
+
+        pop = self.draw_soft_with_selector(verbose=True)
+        pop = self.draw_soft_with_selector(verbose=False)
+
+        pop.display()
+
+        fig = pop.display_fluxes()
+
+        fig = pop.display_flux_sphere()
+
+        pop.writeto("_saved_pop.h5")
+        population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
+
+        assert population_reloaded.boundary == 1e-4
+
+        assert population_reloaded.distance_probability == 1.0
+
+        os.remove("_saved_pop.h5")
+
+
+        
         # clean up
         plt.close("all")
 

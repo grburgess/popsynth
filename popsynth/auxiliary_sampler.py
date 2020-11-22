@@ -4,6 +4,7 @@ from typing import Any, Dict, Union
 import numpy as np
 from nptyping import NDArray
 
+from popsynth.selection_probability import SelectionProbabilty, UnitySelection
 from popsynth.utils.meta import Parameter, ParameterMeta
 
 SamplerDict = Dict[str, Dict[str, NDArray[Any]]]
@@ -26,14 +27,14 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._name = name  # type: str
         self._obs_name = "%s_obs" % name  # type: str
 
-        self._obs_values = None # type: NDArray[Any]
-        self._true_values = None # type: NDArray[Any]
+        self._obs_values = None  # type: NDArray[Any]
+        self._true_values = None  # type: NDArray[Any]
         self._is_observed = observed  # type: bool
-        self._secondary_samplers = {} # type: SamplerDict
+        self._secondary_samplers = {}  # type: SamplerDict
         self._is_secondary = False  # type: bool
         self._has_secondary = False  # type: bool
         self._is_sampled = False  # type: bool
-        self._selection = None # type: NDArray[np.bool_]
+        self._selector = UnitySelection()  # type: SelectionProbabilty
         self._uses_distance = uses_distance  # type: bool
         self._uses_luminoity = uses_luminosity  # type: bool
 
@@ -59,14 +60,24 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         self._distance = distance  # type: NDArray[np.float64]
 
+    def set_selection_probability(self, selector: SelectionProbabilty) -> None:
+
+        assert isinstance(
+            selector, SelectionProbabilty
+        ), "The selector is not a valid selection probability"
+
+        self._selector = selector  # type: SelectionProbabilty
+
     def _apply_selection(self) -> None:
         """
         Default selection if none is specfied in child class
         """
 
-        self._selection = np.ones_like(
-            self._obs_values, dtype=bool
-        )  # type: NDArray[np.bool_]
+        self._selector.draw(len(self._obs_values))
+
+        # self._selection = np.ones_like(
+        #     self._obs_values, dtype=bool
+        # )  # type: NDArray[np.bool_]
 
     def set_secondary_sampler(self, sampler) -> None:
         """
@@ -98,6 +109,12 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
                 if verbose:
                     print("%s is sampling its secondary quantities" % self.name)
 
+            if self._uses_distance:
+                self._selector.set_distance(self._distance)
+
+            if self._uses_luminoity:
+                self._selector.set_luminosity(self._luminosity)
+                    
             for k, v in self._secondary_samplers.items():
 
                 assert v.is_secondary, "Tried to sample a non-secondary, this is a bag"
@@ -123,6 +140,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
                     self._true_values
                 )  # type: NDArray[(size,),np.float64]
 
+            self._selector.set_observed_value(self._obs_values)
+            
             # check to make sure we sampled!
             assert (
                 self.true_values is not None and len(self.true_values) == size
@@ -189,7 +208,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         recursive_secondaries[self._name] = {
             "true_values": self._true_values,
             "obs_values": self._obs_values,
-            "selection": self._selection,
+            "selection": self._selector,
         }
 
         return recursive_secondaries
@@ -258,7 +277,11 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         """
 
-        return self._selection
+        return self._selector.selection
+
+    @property
+    def selector(self) -> SelectionProbabilty:
+        return self._selector
 
     @property
     def truth(self) -> Dict[str, float]:
