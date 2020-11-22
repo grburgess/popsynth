@@ -22,6 +22,18 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
         self._distance = None  # type: NDArray[np.float64]
         self._luminosity = None  # type: NDArray[np.float64]
 
+        def __add__(self, other: SelectionProbabilty):
+
+            new_selection = np.logical_and(self._selection, other.selection)
+
+            out = SelectionProbabilty()
+            out._selection = new_selection
+            return out
+
+        def __radd__(self, other):
+
+            pass
+
     def set_luminosity(self, luminosity: NDArray[np.float64]) -> None:
         """FIXME! briefly describe function
 
@@ -84,9 +96,9 @@ class UnitySelection(SelectionProbabilty):
         """
         super(UnitySelection, self).__init__(name="unity")
 
-    def draw(self, size: int, verbose: bool=False) -> None:
+    def draw(self, size: int, verbose: bool = False) -> None:
 
-        self._selection = np.ones(size,dtype=int).astype(bool)
+        self._selection = np.ones(size, dtype=int).astype(bool)
 
 
 class BernoulliSelection(SelectionProbabilty):
@@ -103,7 +115,9 @@ class BernoulliSelection(SelectionProbabilty):
 
         if verbose:
 
-            self._selection = np.zeros(size,dtype=int).astype(bool)  # type: NDArray[(size,), bool]
+            self._selection = np.zeros(size, dtype=int).astype(
+                bool
+            )  # type: NDArray[(size,), bool]
 
             with progress_bar(size, desc=f"Selecting {self._name}") as pbar2:
                 for i in range(size):
@@ -133,6 +147,14 @@ class HardSelection(SelectionProbabilty):
 
         return values >= self._boundary
 
+    @property
+    def boundary(self):
+        return self._boundary
+
+    @property
+    def hard_cut(self):
+        return True
+
 
 class HardFluxSelection(HardSelection):
     def __init__(self, boundary: float) -> None:
@@ -154,20 +176,41 @@ class SoftSelection(SelectionProbabilty):
 
         super(SoftSelection, self).__init__(name="Soft Selection")
 
-    def _draw(self, size: int, values: NDArray[np.float64]) -> NDArray[np.bool_]:
+    def _draw(
+        self, size: int, values: NDArray[np.float64], use_log=False
+    ) -> NDArray[np.bool_]:
 
-        probs = sf.expit(
-            self._strength * (values - self._boundary)
-        )  # type: NDArray[np.float64]
+        if not use_log:
+            probs = sf.expit(
+                self._strength * (values - self._boundary)
+            )  # type: NDArray[np.float64]
+
+        else:
+
+            probs = sf.expit(
+                self._strength * (np.log10(values) - np.log10(self._boundary))
+            )  # type: NDArray[np.float64]
 
         return stats.bernoulli.rvs(probs, size=size).astype(bool)
+
+    @property
+    def boundary(self):
+        return self._boundary
+
+    @property
+    def strength(self):
+        return self._strength
+
+    @property
+    def hard_cut(self):
+        return False
 
 
 class SoftFluxSelection(SoftSelection):
     def __init__(self, boundary: float, strength: float) -> None:
 
-        super(SoftFluxSelection, self).__init__(np.log10(boundary), strength)
+        super(SoftFluxSelection, self).__init__(boundary, strength)
 
     def draw(self, size: int, verbose: bool = False):
 
-        self._selection = self._draw(size, np.log10(self._observed_flux))
+        self._selection = self._draw(size, self._observed_flux, use_log=True)
