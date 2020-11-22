@@ -9,16 +9,16 @@ class NormalAuxSampler(AuxiliarySampler):
     tau = AuxiliaryParameter(default=1, vmin=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
-    def __init__(self, name: str, observed: bool=True):
+    def __init__(self, name: str, observed: bool = True):
         """FIXME! briefly describe function
 
-        :param name: 
-        :param mu: 
-        :param tau: 
-        :param sigma: 
-        :param observed: 
-        :returns: 
-        :rtype: 
+        :param name:
+        :param mu:
+        :param tau:
+        :param sigma:
+        :param observed:
+        :returns:
+        :rtype:
 
         """
 

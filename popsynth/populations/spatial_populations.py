@@ -4,7 +4,7 @@ from popsynth.distributions.spherical_distribution import (
 )
 from popsynth.distributions.cosmological_distribution import (
     SFRDistribtution,
-    #MergerDistribution,
+    # MergerDistribution,
     ZPowerCosmoDistribution,
 )
 

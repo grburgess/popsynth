@@ -14,9 +14,11 @@ from nptyping import NDArray
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
-    clean_graph_dict, fill_graph_dict,
+    clean_graph_dict,
+    fill_graph_dict,
     recursively_load_dict_contents_from_group,
-    recursively_save_dict_contents_to_group)
+    recursively_save_dict_contents_to_group,
+)
 from popsynth.utils.spherical_geometry import xyz
 
 wine = "#8F2727"

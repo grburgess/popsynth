@@ -11,16 +11,16 @@ class BPLHomogeneousSphericalPopulation(SphericalPopulation):
     def __init__(self, Lambda, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
         luminosity_distribution = BPLDistribution(seed=seed)
@@ -44,17 +44,17 @@ class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
     ):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param delta: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param delta:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
         luminosity_distribution = BPLDistribution(seed=seed)
@@ -79,17 +79,17 @@ class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
     ):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param delta: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param delta:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -115,19 +115,19 @@ class BPLSFRPopulation(SFRPopulation):
     ):
         """FIXME! briefly describe function
 
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param r0:
+        :param rise:
+        :param decay:
+        :param peak:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 

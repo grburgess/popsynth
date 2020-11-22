@@ -56,7 +56,7 @@ class MyPopulation(PopulationSynth):
         luminosity_distribution = DummyLDistribution(seed=seed)
         spatial_distribution = DummySDistribution()
         spatial_distribution.r_max = r_max
-        
+
         # pass to the super class
         super(MyPopulation, self).__init__(
             spatial_distribution=spatial_distribution,

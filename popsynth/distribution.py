@@ -113,14 +113,14 @@ class SpatialDistribution(Distribution):
         return self._phi
 
     @property
-    def distances(self) -> NDArray[np.float64]: 
+    def distances(self) -> NDArray[np.float64]:
         return self._distances
 
     def draw_sky_positions(self, size: int) -> None:
 
         self._theta, self._phi = sample_theta_phi(size)
 
-    def draw_distance(self, size: int, verbose: bool)  -> None:
+    def draw_distance(self, size: int, verbose: bool) -> None:
         """
         Draw the distances from the specified dN/dr model
         """
@@ -133,8 +133,10 @@ class SpatialDistribution(Distribution):
         )
 
         # find the maximum point
-        tmp = np.linspace(0.0, self.r_max, 500, dtype=np.float64) # type: NDArray[(500,), np.float64]
-        ymax = np.max(dNdr(tmp) ) # type: float
+        tmp = np.linspace(
+            0.0, self.r_max, 500, dtype=np.float64
+        )  # type: NDArray[(500,), np.float64]
+        ymax = np.max(dNdr(tmp))  # type: float
 
         # rejection sampling the distribution
         r_out = []
@@ -146,11 +148,11 @@ class SpatialDistribution(Distribution):
 
                     # get am rvs from 0 to the max of the function
 
-                    y = np.random.uniform(low=0, high=ymax) # type: float
+                    y = np.random.uniform(low=0, high=ymax)  # type: float
 
                     # get an rvs from 0 to the maximum distance
 
-                    r = np.random.uniform(low=0, high=self.r_max ) # type: float
+                    r = np.random.uniform(low=0, high=self.r_max)  # type: float
 
                     # compare them
 
@@ -159,13 +161,15 @@ class SpatialDistribution(Distribution):
                         flag = False
         else:
 
-            r_out = rejection_sample(size, ymax, self.r_max, dNdr) # type: NDArray[(size,), np.float64]
+            r_out = rejection_sample(
+                size, ymax, self.r_max, dNdr
+            )  # type: NDArray[(size,), np.float64]
 
-        self._distances = np.array(r_out) # type: NDArray[(size,), np.float64]
+        self._distances = np.array(r_out)  # type: NDArray[(size,), np.float64]
 
 
 class LuminosityDistribution(Distribution):
-    def __init__(self, name: str, seed: int, form: Union[str, None]=None):
+    def __init__(self, name: str, seed: int, form: Union[str, None] = None):
         """
         A luminosity distribution such as a
         distribution

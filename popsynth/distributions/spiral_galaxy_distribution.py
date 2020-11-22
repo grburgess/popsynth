@@ -21,7 +21,10 @@ class SpiralGalaxyDistribution(SphericalDistribution):
 
         return (
             self.rho
-            * np.power((r + self.R1) / (self.R0 + self.R1), self.a,)
+            * np.power(
+                (r + self.R1) / (self.R0 + self.R1),
+                self.a,
+            )
             * np.exp(-self.b * (r - self.R0) / (self.R0 + self.R1))
         )
 

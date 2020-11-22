@@ -11,14 +11,14 @@ class LogNormalAuxSampler(AuxiliarySampler):
     tau = AuxiliaryParameter(default=1, vmin=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
-    def __init__(self, name: str, observed: bool=True):
+    def __init__(self, name: str, observed: bool = True):
         """
         A Log normal sampler. None the tru values are in log
 
-        :param name: 
-        :param observed: 
-        :returns: 
-        :rtype: 
+        :param name:
+        :param observed:
+        :returns:
+        :rtype:
 
         """
         super(LogNormalAuxSampler, self).__init__(name=name, observed=observed)
@@ -27,7 +27,7 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
         self._true_values = stats.norm.rvs(
             loc=np.log10(self.mu), scale=self.tau, size=size
-        ) # type: NDArray[np.float64]
+        )  # type: NDArray[np.float64]
 
     def observation_sampler(self, size: int):
 
@@ -35,8 +35,8 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
             self._obs_values = stats.norm.rvs(
                 loc=self._true_values, scale=self.sigma, size=size
-            ) # type: NDArray[np.float64]
+            )  # type: NDArray[np.float64]
 
         else:
 
-            self._obs_values = self._true_values # type: NDArray[np.float64]
+            self._obs_values = self._true_values  # type: NDArray[np.float64]

@@ -9,8 +9,8 @@ class SkySampler(object):
         """
         A sky sampler that samples theta phi positions
 
-        :returns: 
-        :rtype: 
+        :returns:
+        :rtype:
 
         """
 
@@ -44,9 +44,9 @@ class RASampler(NonObservedAuxSampler):
 
         Samples the RA of sky uniformly
 
-        :param true_values: 
-        :returns: 
-        :rtype: 
+        :param true_values:
+        :returns:
+        :rtype:
 
         """
 
@@ -63,9 +63,9 @@ class DecSampler(NonObservedAuxSampler):
         sampler the dec of the sky uniformly
 
 
-        :param true_values: 
-        :returns: 
-        :rtype: 
+        :param true_values:
+        :returns:
+        :rtype:
 
         """
 

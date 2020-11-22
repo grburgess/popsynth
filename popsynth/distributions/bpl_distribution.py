@@ -35,7 +35,7 @@ def integrate_pl(x0, x1, x2, a1, a2):
     x2: upper bound
     a1: lower power law index
     a2: upper power low index
-    
+
     """
 
     # compute the integral of each piece analytically
@@ -64,7 +64,7 @@ def bpl(x, x0, x1, x2, a1, a2):
     x2: upper bound
     a1: lower power law index
     a2: upper power low index
-    
+
     """
 
     # creatre a holder for the values

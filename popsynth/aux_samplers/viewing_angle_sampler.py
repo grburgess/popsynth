@@ -8,7 +8,7 @@ class ViewingAngleSampler(NonObservedAuxSampler):
     max_angle = AuxiliaryParameter(default=90, vmin=0, vmax=180)
 
     def __init__(self):
-        """ 
+        """
         A viewing angle sampler that samples from 0, max_angle.
         It assumes that this is NOT an observed property
 
@@ -18,11 +18,13 @@ class ViewingAngleSampler(NonObservedAuxSampler):
 
         """
 
-        super(ViewingAngleSampler, self).__init__(name="va",)
+        super(ViewingAngleSampler, self).__init__(
+            name="va",
+        )
 
     def true_sampler(self, size: int) -> None:
         """
-        Sample the viewing angle by inverse CDF 
+        Sample the viewing angle by inverse CDF
 
         :param size: number of samples
         :returns: None

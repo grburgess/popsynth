@@ -10,16 +10,20 @@ import scipy.stats as stats
 from IPython.display import Markdown, Math, display
 from nptyping import NDArray
 from numba import float64, jit, njit, prange
+
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
-from popsynth.selection_probability import (BernoulliSelection,
-                                            HardFluxSelection,
-                                            SelectionProbabilty,
-                                            SoftFluxSelection, UnitySelection)
+from popsynth.selection_probability import (
+    BernoulliSelection,
+    HardFluxSelection,
+    SelectionProbabilty,
+    SoftFluxSelection,
+    UnitySelection,
+)
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
@@ -279,18 +283,17 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         #      pbar.update()
 
-
         # setup the global selection
 
-        global_selection = UnitySelection() # type: SelectionProbabilty
-        global_selection.draw(n,verbose=False)
-        
+        global_selection = UnitySelection()  # type: SelectionProbabilty
+        global_selection.draw(n, verbose=False)
+
         # now we set up the selection that _may_ come
         # from the auxilliary samplers
 
-        auxiliary_selection = UnitySelection() # type: SelectionProbabilty
-        auxiliary_selection.draw(n,verbose=False)
-        
+        auxiliary_selection = UnitySelection()  # type: SelectionProbabilty
+        auxiliary_selection.draw(n, verbose=False)
+
         auxiliary_quantities = {}  # type: dict
 
         # this means the luminosity is not
@@ -498,14 +501,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._flux_selector.draw(n)
 
- #       selection = self._flux_selector.selection
+        #       selection = self._flux_selector.selection
 
         # now apply the selection from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
 
             auxiliary_selection += v["selection"]
-            
+
             if verbose:
 
                 if v["selection"].n_non_selected > 0:
@@ -522,7 +525,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                     "Before auxiliary selection there were %d objects selected"
                     % self._flux_selector.n_selected
                 )
-
 
         # now we can add the values onto the global
         # selection
@@ -557,7 +559,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._distance_selector.draw(size=global_selection.n_selected, verbose=verbose)
 
-        known_distances = distances[global_selection.selection][self._distance_selector.selection]
+        known_distances = distances[global_selection.selection][
+            self._distance_selector.selection
+        ]
         known_distance_idx = self._distance_selector.selection_index
         unknown_distance_idx = self._distance_selector.non_selection_index
 

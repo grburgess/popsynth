@@ -61,7 +61,9 @@ class CosmologicalDistribution(SpatialDistribution):
     def __init__(self, seed=1234, name="cosmo", form=None, truth={}, is_rate=True):
 
         super(CosmologicalDistribution, self).__init__(
-            seed=seed, name=name, form=form,
+            seed=seed,
+            name=name,
+            form=form,
         )
         self._is_rate = is_rate
 
@@ -93,11 +95,20 @@ class SFRDistribtution(CosmologicalDistribution):
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
         super(SFRDistribtution, self).__init__(
-            seed=seed, name=name, form=spatial_form, is_rate=is_rate,
+            seed=seed,
+            name=name,
+            form=spatial_form,
+            is_rate=is_rate,
         )
 
     def dNdV(self, z):
-        return _dndv(z, self.r0, self.rise, self.decay, self.peak,)
+        return _dndv(
+            z,
+            self.r0,
+            self.rise,
+            self.decay,
+            self.peak,
+        )
 
 
 @njit(fastmath=True)
@@ -114,13 +125,19 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
     delta = DistributionParameter()
 
     def __init__(
-        self, seed=1234, name="zpow_cosmo", is_rate=True,
+        self,
+        seed=1234,
+        name="zpow_cosmo",
+        is_rate=True,
     ):
 
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
         super(ZPowerCosmoDistribution, self).__init__(
-            seed=seed, name=name, form=spatial_form, is_rate=is_rate,
+            seed=seed,
+            name=name,
+            form=spatial_form,
+            is_rate=is_rate,
         )
 
     def dNdV(self, distance):
@@ -136,7 +153,6 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
 #         super(MergerDistribution, self).__init__(
 #             r_max=r_max, seed=seed, name=name, form=spatial_form
 #         )
-
 
 
 #         self._td = td

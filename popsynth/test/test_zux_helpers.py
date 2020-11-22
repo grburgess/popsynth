@@ -7,9 +7,7 @@ from hypothesis import given, settings
 import hypothesis.strategies as st
 
 
-
 def test_constructor():
-
 
     sampler = TruncatedNormalAuxSampler("test", observed=False)
 
@@ -17,27 +15,27 @@ def test_constructor():
     sampler.tau = 2
     sampler.lower = -5
     sampler.upper = 10
-    sampler.sigma = .4
-
+    sampler.sigma = 0.4
 
     sampler2 = TruncatedNormalAuxSampler("test2", observed=False)
 
-    sampler2.mu = .51
+    sampler2.mu = 0.51
     sampler2.tau = 2.6
     sampler2.lower = -1
     sampler2.upper = 100
-    sampler2.sigma = 5.
-
+    sampler2.sigma = 5.0
 
     assert sampler.mu == 1
     assert sampler.tau == 2
     assert sampler.lower == -5
     assert sampler.upper == 10
-    assert sampler.sigma == .4
+    assert sampler.sigma == 0.4
 
 
 @given(
-    st.floats(min_value=0.01,),
+    st.floats(
+        min_value=0.01,
+    ),
     st.floats(min_value=0.01, max_value=10.0),
     st.integers(min_value=2, max_value=1000),
 )

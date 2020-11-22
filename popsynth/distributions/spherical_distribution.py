@@ -6,9 +6,7 @@ from popsynth.distribution import SpatialDistribution, DistributionParameter
 class SphericalDistribution(SpatialDistribution):
     def __init__(self, seed=1234, name="sphere", form=None):
 
-        super(SphericalDistribution, self).__init__(
-            seed=seed, name=name, form=form
-        )
+        super(SphericalDistribution, self).__init__(seed=seed, name=name, form=form)
 
     def differential_volume(self, r):
 
@@ -24,7 +22,10 @@ class ConstantSphericalDistribution(SphericalDistribution):
     Lambda = DistributionParameter(default=1, vmin=0)
 
     def __init__(
-        self, seed=1234, name="cons_sphere", form=None,
+        self,
+        seed=1234,
+        name="cons_sphere",
+        form=None,
     ):
 
         if form is None:

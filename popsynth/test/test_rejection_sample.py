@@ -58,5 +58,5 @@ def test_linear_functions(alpha, beta, xmax, size):
     out = rejection_sample(size, func_gen.ymax, func_gen.xmax, func_gen.func)
 
     print(out)
-    
+
     assert len(out) == size

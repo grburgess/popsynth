@@ -114,7 +114,6 @@ _bpl_params = dict(Lmin=10.0, alpha=-0.5, Lbreak=100, beta=-2.0, Lmax=1000.0)
 _lognormal_params = dict(mu=1.0, tau=1.0)
 
 
-
 class Popbuilder(object):
     def __init__(self, pop_class, **params):
 
@@ -124,10 +123,10 @@ class Popbuilder(object):
         self.d2 = DemoSampler2()
         self.d2.set_secondary_sampler(self.d1)
 
-        b = popsynth.BernoulliSelection(probability=0.5) 
-        
+        b = popsynth.BernoulliSelection(probability=0.5)
+
         self.d2.set_selection_probability(b)
-        
+
         for k, v in params.items():
 
             assert k in self.pop_gen._params
@@ -190,16 +189,13 @@ class Popbuilder(object):
 
         return pop
 
-
     def draw_hard_with_selector(self, verbose):
 
         selector = popsynth.HardFluxSelection(boundary=1e-4)
-        
+
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(
-            boundary=1e-6, flux_sigma=0.5, verbose=verbose
-        )
+        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5, verbose=verbose)
 
         self.reset()
 
@@ -208,21 +204,15 @@ class Popbuilder(object):
     def draw_soft_with_selector(self, verbose):
 
         selector = popsynth.SoftFluxSelection(boundary=1e-4, strength=10)
-        
+
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(
-            boundary=1e-6, flux_sigma=0.5, verbose=verbose
-        )
+        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5, verbose=verbose)
 
         self.reset()
 
         return pop
 
-        
-    
-
-    
     def reset(self):
 
         self.pop_gen._distance_selector_set = False
@@ -354,7 +344,6 @@ class Popbuilder(object):
 
         os.remove("_saved_pop.h5")
 
-
         #####################
 
         pop = self.draw_hard_with_selector(verbose=True)
@@ -394,8 +383,6 @@ class Popbuilder(object):
 
         os.remove("_saved_pop.h5")
 
-
-        
         # clean up
         plt.close("all")
 

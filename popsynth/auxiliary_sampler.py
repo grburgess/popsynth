@@ -114,7 +114,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             if self._uses_luminoity:
                 self._selector.set_luminosity(self._luminosity)
-                    
+
             for k, v in self._secondary_samplers.items():
 
                 assert v.is_secondary, "Tried to sample a non-secondary, this is a bag"
@@ -141,7 +141,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
                 )  # type: NDArray[(size,),np.float64]
 
             self._selector.set_observed_value(self._obs_values)
-            
+
             # check to make sure we sampled!
             assert (
                 self.true_values is not None and len(self.true_values) == size
