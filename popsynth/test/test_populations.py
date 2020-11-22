@@ -114,6 +114,7 @@ _bpl_params = dict(Lmin=10.0, alpha=-0.5, Lbreak=100, beta=-2.0, Lmax=1000.0)
 _lognormal_params = dict(mu=1.0, tau=1.0)
 
 
+
 class Popbuilder(object):
     def __init__(self, pop_class, **params):
 
@@ -123,6 +124,10 @@ class Popbuilder(object):
         self.d2 = DemoSampler2()
         self.d2.set_secondary_sampler(self.d1)
 
+        b = popsynth.BernoulliSelection(probability=0.5) 
+        
+        self.d2.set_selection_probability(b)
+        
         for k, v in params.items():
 
             assert k in self.pop_gen._params

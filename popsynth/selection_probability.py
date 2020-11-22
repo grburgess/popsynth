@@ -19,20 +19,21 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
         self._name = name  # type: str
 
         self._observed_flux = None  # type: NDArray[np.float64]
+        self._observed_value = None  # type: NDArray[np.float64]
         self._distance = None  # type: NDArray[np.float64]
         self._luminosity = None  # type: NDArray[np.float64]
 
-        def __add__(self, other: SelectionProbabilty):
+    def __add__(self, other):
 
-            new_selection = np.logical_and(self._selection, other.selection)
+        new_selection = np.logical_and(self._selection, other.selection)
 
-            out = SelectionProbabilty()
-            out._selection = new_selection
-            return out
+        out = DummySelection()
+        out._selection = new_selection
+        return out
 
-        def __radd__(self, other):
+    # def __radd__(self, other):
 
-            pass
+    #     return self.__add__(other)
 
     def set_luminosity(self, luminosity: NDArray[np.float64]) -> None:
         """FIXME! briefly describe function
@@ -67,6 +68,9 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
         self._observed_flux = observed_flux  # type: NDArray[np.float64]
 
+    def set_observed_value(self, observed_value: NDArray[np.float64]) -> None:
+        self._observed_value = observed_value  # type: NDArray[np.float64]
+
     @abc.abstractclassmethod
     def draw(self, size: int, verbose: bool = False) -> None:
 
@@ -75,6 +79,18 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
     @property
     def selection(self) -> NDArray[np.bool_]:
         return self._selection
+
+    @property
+    def n_selected(self) -> int:
+        return sum(self._selection)
+
+    @property
+    def n_non_selected(self) -> int:
+        return sum(~self._selection)
+
+    @property
+    def n_objects(self) -> int:
+        return self._selection.shape[0]
 
     @property
     def selection_index(self) -> NDArray[np.int64]:
@@ -87,6 +103,11 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
     @property
     def name(self) -> str:
         return self._name
+
+
+class DummySelection(SelectionProbabilty):
+    def draw(self, size=1, verbose=False):
+        pass
 
 
 class UnitySelection(SelectionProbabilty):
@@ -134,6 +155,10 @@ class BernoulliSelection(SelectionProbabilty):
             self._selection = stats.bernoulli.rvs(self._probability, size=size).astype(
                 bool
             )  # type: NDArray[(size,), bool]
+
+    @property
+    def probability(self) -> float:
+        return self._probability
 
 
 class HardSelection(SelectionProbabilty):

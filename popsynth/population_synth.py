@@ -279,11 +279,18 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         #      pbar.update()
 
+
+        # setup the global selection
+
+        global_selection = UnitySelection() # type: SelectionProbabilty
+        global_selection.draw(n,verbose=False)
+        
         # now we set up the selection that _may_ come
         # from the auxilliary samplers
 
-        auxiliary_selection = np.ones(n, dtype=bool)  # type: NDArray[(n,), np.float64]
-
+        auxiliary_selection = UnitySelection() # type: SelectionProbabilty
+        auxiliary_selection.draw(n,verbose=False)
+        
         auxiliary_quantities = {}  # type: dict
 
         # this means the luminosity is not
@@ -319,7 +326,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {
                 "true_values": self._derived_luminosity_sampler.true_values,
                 "obs_values": self._derived_luminosity_sampler.obs_values,
-                "selection": self._derived_luminosity_sampler.selection,
+                "selection": self._derived_luminosity_sampler.selector,
             }
             if verbose:
                 print("Getting luminosity from derived sampler")
@@ -406,7 +413,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             auxiliary_quantities[k] = {
                 "true_values": v.true_values,
                 "obs_values": v.obs_values,
-                "selection": v.selection,
+                "selection": v.selector,
             }  # type: dict
 
             # collect the secondary values
@@ -486,40 +493,46 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             boundary = 1e-99
             hard_cut = True
 
+        # pass the values the plux selector and draw the selection
         self._flux_selector.set_observed_flux(10 ** log10_fluxes_obs)
 
         self._flux_selector.draw(n)
 
-        selection = self._flux_selector.selection
+ #       selection = self._flux_selector.selection
 
         # now apply the selection from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
 
-            auxiliary_selection = np.logical_and(
-                auxiliary_selection, v["selection"]
-            )  # type: NDArray[(n,), np.bool_]
-
+            auxiliary_selection += v["selection"]
+            
             if verbose:
 
-                if sum(~v["selection"]) > 0:
+                if v["selection"].n_non_selected > 0:
 
                     print(
                         "Applying selection from %s which selected %d of %d objects"
-                        % (k, sum(v["selection"]), len(v["selection"]))
+                        % (k, v["selection"].n_selected, v["selection"].n_objects)
                     )
 
         if verbose:
 
-            if sum(~auxiliary_selection) > 0:
+            if auxiliary_selection.n_non_selected > 0:
                 print(
                     "Before auxiliary selection there were %d objects selected"
-                    % sum(selection)
+                    % self._flux_selector.n_selected
                 )
 
-        selection = np.logical_and(
-            selection, auxiliary_selection
-        )  # type: NDArray[(n,), np.bool_]
+
+        # now we can add the values onto the global
+        # selection
+        # not in the future we will depreciate the
+        # no selection feature
+        if not no_selection:
+
+            global_selection += auxiliary_selection
+
+            global_selection += self._flux_selector
 
         # # if we do not want to add a selection effect
         # if no_selection:
@@ -531,7 +544,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         #     )  # type: NDArray[(n,), np.bool_]
 
         # pbar.update()
-        if sum(selection) == n:
+        if global_selection.n_selected == n:
 
             if verbose:
                 print("NO HIDDEN OBJECTS")
@@ -542,9 +555,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 self._distance_selector = BernoulliSelection(distance_probability)
 
-        self._distance_selector.draw(size=sum(selection), verbose=verbose)
+        self._distance_selector.draw(size=global_selection.n_selected, verbose=verbose)
 
-        known_distances = distances[selection][self._distance_selector.selection]
+        known_distances = distances[global_selection.selection][self._distance_selector.selection]
         known_distance_idx = self._distance_selector.selection_index
         unknown_distance_idx = self._distance_selector.non_selection_index
 
@@ -556,7 +569,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 print(
                     "Deteced %d objects or to a distance of %.2f"
-                    % (sum(selection), max(known_distances))
+                    % (global_selection.n_selected, max(known_distances))
                 )
 
             except:
@@ -582,7 +595,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             unknown_distance_idx=unknown_distance_idx,
             fluxes=fluxes,
             flux_obs=np.power(10, log10_fluxes_obs),
-            selection=selection,
+            selection=global_selection.selection,
             flux_sigma=flux_sigma,
             r_max=self._spatial_distribution.r_max,
             n_model=self._n_model,
