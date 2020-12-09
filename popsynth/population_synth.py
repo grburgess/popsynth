@@ -10,20 +10,16 @@ import scipy.stats as stats
 from IPython.display import Markdown, Math, display
 from nptyping import NDArray
 from numba import float64, jit, njit, prange
-
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
-from popsynth.selection_probability import (
-    BernoulliSelection,
-    HardFluxSelection,
-    SelectionProbabilty,
-    SoftFluxSelection,
-    UnitySelection,
-)
+from popsynth.selection_probability import (BernoulliSelection,
+                                            HardFluxSelection,
+                                            SelectionProbabilty,
+                                            SoftFluxSelection, UnitySelection)
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
@@ -214,6 +210,20 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         return log10_fobs
 
+    def draw_log_fobs(self, f, f_sigma, size=1) -> NDArray[np.float64]:
+        """
+        draw the log10 of the the fluxes
+        """
+
+        log_f = np.log(f)
+
+        # sample from the log distribution to keep positive fluxes
+        log_fobs = log_f + np.random.normal(loc=0, scale=f_sigma, size=size)
+
+        return log_fobs
+
+
+    
     def draw_survey(
         self,
         boundary: float,
@@ -223,6 +233,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         distance_probability: Union[float, None] = None,
         no_selection: bool = False,
         verbose: bool = True,
+        log10_flux_draw: bool=True,
     ) -> Population:
         """
         Draw the total survey and return a Population object
@@ -441,10 +452,26 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # now draw all the observed fluxes
         # this is homoskedastic for now
-        log10_fluxes_obs = self.draw_log10_fobs(
-            fluxes, flux_sigma, size=n
-        )  # type: NDArray[(n,), np.float64]
 
+        if log10_flux_draw:
+
+            log10_fluxes_obs = self.draw_log10_fobs(
+                fluxes, flux_sigma, size=n
+            )  # type: NDArray[(n,), np.float64]
+            flux_obs = np.power(10, log10_fluxes_obs)
+
+        else:
+
+            log10_fluxes_obs = self.draw_log_fobs(
+                fluxes, flux_sigma, size=n
+            )  # type: NDArray[(n,), np.float64]
+
+            flux_obs = np.exp(log10_fluxes_obs)
+
+
+
+
+            
         assert np.alltrue(np.isfinite(log10_fluxes_obs))
 
         # now select them
@@ -497,7 +524,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             hard_cut = True
 
         # pass the values the plux selector and draw the selection
-        self._flux_selector.set_observed_flux(10 ** log10_fluxes_obs)
+        self._flux_selector.set_observed_flux(flux_obs)
 
         self._flux_selector.draw(n)
 
@@ -591,6 +618,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if distance_probability is None:
             distance_probability = 1.0
 
+
+             
         return Population(
             luminosities=luminosities,
             distances=distances,
@@ -598,7 +627,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             known_distance_idx=known_distance_idx,
             unknown_distance_idx=unknown_distance_idx,
             fluxes=fluxes,
-            flux_obs=np.power(10, log10_fluxes_obs),
+            flux_obs=flux_obs,
             selection=global_selection.selection,
             flux_sigma=flux_sigma,
             r_max=self._spatial_distribution.r_max,

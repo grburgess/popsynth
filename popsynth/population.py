@@ -373,6 +373,7 @@ class Population(object):
             z_idx=self._known_distance_idx + 1,  # stan indexing
             z_nidx=self._unknown_distance_idx + 1,  # stan indexing
             log_flux_obs=np.log10(self._flux_selected),
+            flux_obs=self._flux_selected,
             flux_sigma=self._flux_sigma,
             z_max=self._r_max,
             N_model=self._n_model,
@@ -389,6 +390,13 @@ class Population(object):
 
             output["%s_obs" % k] = v["obs_values"][self._selection]
 
+        for k, v in output.items():
+
+            if isinstance(v, np.int64):
+
+                output[k] = int(v)
+
+            
         return output
 
     def writeto(self, file_name: str) -> None:
