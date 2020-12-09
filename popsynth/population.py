@@ -372,10 +372,15 @@ class Population(object):
             known_z_obs=self._known_distances,
             z_idx=self._known_distance_idx + 1,  # stan indexing
             z_nidx=self._unknown_distance_idx + 1,  # stan indexing
+            r_obs=self._distance_selected,
+            known_r_obs=self._known_distances,
+            r_idx=self._known_distance_idx + 1,  # stan indexing
+            r_nidx=self._unknown_distance_idx + 1,  # stan indexing
             log_flux_obs=np.log10(self._flux_selected),
             flux_obs=self._flux_selected,
             flux_sigma=self._flux_sigma,
             z_max=self._r_max,
+            r_max=self._r_max,
             N_model=self._n_model,
             boundary=self._boundary,
             strength=self._strength,
