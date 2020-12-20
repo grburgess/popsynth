@@ -19,8 +19,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        - pip install --upgrade numpy ipython scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
-        - python setup.py install
+        pip install --upgrade numpy ipython scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
+        python setup.py install
     # - name: Lint with flake8
     #   run: |
     #     # stop the build if there are Python syntax errors or undefined names
@@ -29,7 +29,7 @@ jobs:
     #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        - python -m pytest -vv --cov=popsynth/
+        python -m pytest -vv --cov=popsynth/
 
 
     - name: Publish package
