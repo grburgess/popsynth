@@ -14,6 +14,7 @@ jobs:
           python-version: 3.7
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip wheel
           pip install --upgrade numpy ipython jupyter ipyvolume scipy h5py matplotlib
           pip install jupytext jupyterthemes pygraphviz
           python setup.py install
