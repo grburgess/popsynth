@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade numpy ipython jupyter ipyvolume scipy h5py matplotlib
-          pip install jupytext jupyerthemes
+          pip install jupytext jupyterthemes
           python setup.py install
           
           
