@@ -8,9 +8,9 @@ jupyter:
       format_version: '1.2'
       jupytext_version: 1.8.0
   kernelspec:
-    display_name: popsynth
+    display_name: Python3
     language: python
-    name: popsynth
+    name: Python3
 ---
 
 # Custom populations
