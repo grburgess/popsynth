@@ -1,6 +1,10 @@
-name: Python package
+name: CI
 
-on: [push]
+on:
+  push:
+  schedule:
+    #At the end of every day
+    - cron: 0 0 * * *
 
 jobs:
   build:
@@ -32,8 +36,6 @@ jobs:
         python -m pytest -vv --cov=popsynth/ --cov-report=xml
       env:
         NUMBA_DISABLE_JIT: 1
-
-
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
@@ -41,10 +43,35 @@ jobs:
         files: ./coverage1.xml,./coverage2.xml
         directory: ./coverage/reports/
 
+  package:
+    name: Build & verify package
+    runs-on: ubuntu-latest
 
-    - name: Publish package
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@master
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install twine
+        run: python -m pip install twine
+      - name: Build package
+        run: python setup.py sdist
+      - name: List result
+        run: ls -l dist
+      - name: Check long_description
+        run: python -m twine check dist/*
+
+        
+
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Publish package
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    steps:
+    - uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__
         password: ${{ secrets.POPSYNTH_GITHUB_PYPI }}
