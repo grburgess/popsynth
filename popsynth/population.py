@@ -10,7 +10,7 @@ import pandas as pd
 import pythreejs
 from betagen import betagen
 from IPython.display import Markdown, Math, display
-from nptyping import NDArray
+from numpy.typing import ArrayLike
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
@@ -28,14 +28,14 @@ dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
 class Population(object):
     def __init__(
         self,
-        luminosities: NDArray[np.float64],
-        distances: NDArray[np.float64],
-        known_distances: NDArray[np.float64],
-        known_distance_idx: NDArray[np.float64],
-        unknown_distance_idx: NDArray[np.float64],
-        fluxes: NDArray[np.float64],
-        flux_obs: NDArray[np.float64],
-        selection: NDArray[bool],
+        luminosities: ArrayLike,
+        distances: ArrayLike,
+        known_distances: ArrayLike,
+        known_distance_idx: ArrayLike,
+        unknown_distance_idx: ArrayLike,
+        fluxes: ArrayLike,
+        flux_obs: ArrayLike,
+            selection: ArrayLike,
         flux_sigma: float,
         r_max: float,
         boundary: float,
@@ -87,26 +87,26 @@ class Population(object):
         :rtype:
 
         """
-        self._luminosities = luminosities  # type: NDArray[np.float64]
+        self._luminosities = luminosities  # type: ArrayLike
 
-        self._distances = distances  # type: NDArray[np.float64]
-        self._known_distances = known_distances  # type: NDArray[np.float64]
-        self._known_distance_idx = known_distance_idx  # type: NDArray[bool]
-        self._unknown_distance_idx = unknown_distance_idx  # type: NDArray[bool]
+        self._distances = distances  # type: ArrayLike
+        self._known_distances = known_distances  # type: ArrayLike
+        self._known_distance_idx = known_distance_idx  # type: ArrayLike
+        self._unknown_distance_idx = unknown_distance_idx  # type: ArrayLike
 
-        self._theta = theta  # type: NDArray[np.float64]
-        self._phi = phi  # type: NDArray[np.float64]
+        self._theta = theta  # type: ArrayLike
+        self._phi = phi  # type: ArrayLike
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
             selection
         ), "the distances are not the correct size"
 
         # latent fluxes
-        self._fluxes = fluxes  # type: NDArray[np.float64]
+        self._fluxes = fluxes  # type: ArrayLike
 
         # observed fluxes
-        self._flux_obs = flux_obs  # type: NDArray[np.float64]
-        self._selection = selection  # type: NDArrayfloat]
+        self._flux_obs = flux_obs  # type: ArrayLike
+        self._selection = selection  # type: ArrayLike
         self._flux_sigma = flux_sigma  # type: float
 
         self._r_max = r_max  # type: float
@@ -119,13 +119,13 @@ class Population(object):
         self._spatial_form = spatial_form
         self._lf_form = lf_form
 
-        self._flux_selected = flux_obs[selection]  # type: NDArray[np.float64]
-        self._distance_selected = distances[selection]  # type: NDArray[np.float64]
-        self._luminosity_selected = luminosities[selection]  # type: NDArray[np.float64]
+        self._flux_selected = flux_obs[selection]  # type: ArrayLike
+        self._distance_selected = distances[selection]  # type: ArrayLike
+        self._luminosity_selected = luminosities[selection]  # type: ArrayLike
 
-        self._flux_hidden = flux_obs[~selection]  # type: NDArray[np.float64]
-        self._distance_hidden = distances[~selection]  # type: NDArray[np.float64]
-        self._luminosity_hidden = luminosities[~selection]  # type: NDArray[np.float64]
+        self._flux_hidden = flux_obs[~selection]  # type: ArrayLike
+        self._distance_hidden = distances[~selection]  # type: ArrayLike
+        self._luminosity_hidden = luminosities[~selection]  # type: ArrayLike
 
         self._lf_params = lf_params
         self._spatial_params = spatial_params
@@ -210,15 +210,15 @@ class Population(object):
             return self._distance_probability
 
     @property
-    def theta(self) -> NDArray[np.float64]:
+    def theta(self) -> np.ndarray:
         return self._theta
 
     @property
-    def phi(self) -> NDArray[np.float64]:
+    def phi(self) -> np.ndarray:
         return self._phi
 
     @property
-    def luminosities_latent(self) -> NDArray[np.float64]:
+    def luminosities_latent(self) -> np.ndarray:
         """
         The true luminosities of the objects. These are always latent
         as one cannot directly observe them
@@ -226,14 +226,14 @@ class Population(object):
         return self._luminosities
 
     @property
-    def distances(self) -> NDArray[np.float64]:
+    def distances(self) -> np.ndarray:
         """
         The distances to the objects
         """
         return self._distances
 
     @property
-    def known_distances(self) -> NDArray[np.float64]:
+    def known_distances(self) -> np.ndarray:
         """
         The observed distances
         """
@@ -241,21 +241,21 @@ class Population(object):
         return self._known_distances
 
     @property
-    def selection(self) -> NDArray[bool]:
+    def selection(self) -> np.ndarray:
         """
         The selection vector
         """
         return self._selection
 
     @property
-    def fluxes_latent(self) -> NDArray[np.float64]:
+    def fluxes_latent(self) -> np.ndarray:
         """
         The latent fluxes of the objects
         """
         return self._fluxes
 
     @property
-    def fluxes_observed(self) -> NDArray[np.float64]:
+    def fluxes_observed(self) -> np.ndarray:
         """
         All of the observed fluxes, i.e.,
         scattered with error
@@ -264,7 +264,7 @@ class Population(object):
         return self._flux_obs
 
     @property
-    def selected_fluxes_observed(self) -> NDArray[np.float64]:
+    def selected_fluxes_observed(self) -> np.ndarray:
         """
         The selected obs fluxes
         """
@@ -272,7 +272,7 @@ class Population(object):
         return self._flux_selected
 
     @property
-    def selected_fluxes_latent(self) -> NDArray[np.float64]:
+    def selected_fluxes_latent(self) -> np.ndarray:
         """
         The selected latent fluxes
         """
@@ -280,7 +280,7 @@ class Population(object):
         return self._fluxes[self._selection]
 
     @property
-    def selected_distances(self) -> NDArray[np.float64]:
+    def selected_distances(self) -> np.ndarray:
         """
         The selected distances. Note, this is different than
         the KNOWN distances
@@ -288,7 +288,7 @@ class Population(object):
         return self._distance_selected
 
     @property
-    def hidden_fluxes_observed(self) -> NDArray[np.float64]:
+    def hidden_fluxes_observed(self) -> np.ndarray:
         """
         The observed fluxes that are hidden by the selection
         """
@@ -296,7 +296,7 @@ class Population(object):
         return self._flux_hidden
 
     @property
-    def hidden_distances(self) -> NDArray[np.float64]:
+    def hidden_distances(self) -> np.ndarray:
         """
         The distances that are hidden by the selection
         """
@@ -304,7 +304,7 @@ class Population(object):
         return self._distance_hidden
 
     @property
-    def hidden_fluxes_latent(self) -> NDArray[np.float64]:
+    def hidden_fluxes_latent(self) -> np.ndarray:
         """
         The latent fluxes that are hidden by the selection
         """

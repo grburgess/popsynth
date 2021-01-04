@@ -2,12 +2,12 @@ import abc
 from typing import Any, Dict, Union
 
 import numpy as np
-from nptyping import NDArray
+from numpy.typing import ArrayLike
 
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
 from popsynth.utils.meta import Parameter, ParameterMeta
 
-SamplerDict = Dict[str, Dict[str, NDArray[Any]]]
+SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
 
 class AuxiliaryParameter(Parameter):
@@ -27,8 +27,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._name = name  # type: str
         self._obs_name = "%s_obs" % name  # type: str
 
-        self._obs_values = None  # type: NDArray[Any]
-        self._true_values = None  # type: NDArray[Any]
+        self._obs_values = None  # type: ArrayLike
+        self._true_values = None  # type: ArrayLike
         self._is_observed = observed  # type: bool
         self._secondary_samplers = {}  # type: SamplerDict
         self._is_secondary = False  # type: bool
@@ -38,7 +38,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._uses_distance = uses_distance  # type: bool
         self._uses_luminoity = uses_luminosity  # type: bool
 
-    def set_luminosity(self, luminosity: NDArray[np.float64]) -> None:
+    def set_luminosity(self, luminosity: ArrayLike) -> None:
         """FIXME! briefly describe function
 
         :param luminosity:
@@ -47,9 +47,9 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         """
 
-        self._luminosity = luminosity  # type: NDArray[np.float64]
+        self._luminosity = luminosity  # type:ArrayLike
 
-    def set_distance(self, distance: NDArray[np.float64]) -> None:
+    def set_distance(self, distance:ArrayLike) -> None:
         """FIXME! briefly describe function
 
         :param distance:
@@ -58,7 +58,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         """
 
-        self._distance = distance  # type: NDArray[np.float64]
+        self._distance = distance  # type:ArrayLike
 
     def set_selection_probability(self, selector: SelectionProbabilty) -> None:
 
@@ -74,10 +74,6 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         """
 
         self._selector.draw(len(self._obs_values))
-
-        # self._selection = np.ones_like(
-        #     self._obs_values, dtype=bool
-        # )  # type: NDArray[np.bool_]
 
     def set_secondary_sampler(self, sampler) -> None:
         """
@@ -138,7 +134,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
                 self._obs_values = (
                     self._true_values
-                )  # type: NDArray[(size,),np.float64]
+                )  # type: ArrayLike
 
             self._selector.set_observed_value(self._obs_values)
 
@@ -164,7 +160,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
     def get_secondary_properties(
         self,
-        recursive_secondaries: Union[Dict[str, NDArray[Any]], None] = None,
+        recursive_secondaries: Union[Dict[str, ArrayLike], None] = None,
         graph=None,
         primary=None,
         spatial_distribution=None,
@@ -245,7 +241,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._obs_name
 
     @property
-    def true_values(self) -> NDArray[np.float64]:
+    def true_values(self) -> np.ndarray:
         """
         The true values
 
@@ -257,7 +253,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._true_values
 
     @property
-    def obs_values(self) -> NDArray[np.float64]:
+    def obs_values(self) -> np.ndarray:
         """
         The observed values
         :returns:
@@ -268,7 +264,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._obs_values
 
     @property
-    def selection(self) -> NDArray[np.bool_]:
+    def selection(self) -> np.ndarray:
         """
         The selection function
 
@@ -292,7 +288,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._uses_distance
 
     @property
-    def uses_luminosity(self) -> NDArray[np.float64]:
+    def uses_luminosity(self) -> np.ndarray:
         return self._luminosity
 
     @abc.abstractmethod
@@ -300,7 +296,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         pass
 
-    def observation_sampler(self, size: int = 1) -> NDArray[np.float64]:
+    def observation_sampler(self, size: int = 1) -> np.ndarray:
 
         return self._true_values
 

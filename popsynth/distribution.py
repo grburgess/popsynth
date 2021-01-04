@@ -1,6 +1,6 @@
 import abc
 from typing import Union, Dict
-from nptyping import NDArray
+from numpy.typing import ArrayLike
 import numpy as np
 from tqdm.autonotebook import tqdm as progress_bar
 
@@ -105,15 +105,15 @@ class SpatialDistribution(Distribution):
         pass
 
     @property
-    def theta(self) -> NDArray[np.float64]:
+    def theta(self) -> np.ndarray:
         return self._theta
 
     @property
-    def phi(self) -> NDArray[np.float64]:
+    def phi(self) -> np.ndarray:
         return self._phi
 
     @property
-    def distances(self) -> NDArray[np.float64]:
+    def distances(self) -> np.ndarray:
         return self._distances
 
     def draw_sky_positions(self, size: int) -> None:
@@ -135,7 +135,7 @@ class SpatialDistribution(Distribution):
         # find the maximum point
         tmp = np.linspace(
             0.0, self.r_max, 500, dtype=np.float64
-        )  # type: NDArray[(500,), np.float64]
+        )  # type: ArrayLike
         ymax = np.max(dNdr(tmp))  # type: float
 
         # rejection sampling the distribution
@@ -163,9 +163,9 @@ class SpatialDistribution(Distribution):
 
             r_out = rejection_sample(
                 size, ymax, self.r_max, dNdr
-            )  # type: NDArray[(size,), np.float64]
+            )  # type: ArrayLike
 
-        self._distances = np.array(r_out)  # type: NDArray[(size,), np.float64]
+        self._distances = np.array(r_out)  # type: ArrayLike
 
 
 class LuminosityDistribution(Distribution):

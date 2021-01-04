@@ -1,6 +1,6 @@
 import scipy.stats as stats
 import numpy as np
-from nptyping import NDArray
+from numpy.typing import ArrayLike
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
 
@@ -27,7 +27,7 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
         self._true_values = stats.norm.rvs(
             loc=np.log10(self.mu), scale=self.tau, size=size
-        )  # type: NDArray[np.float64]
+        )  # type: ArrayLike
 
     def observation_sampler(self, size: int):
 
@@ -35,8 +35,8 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
             self._obs_values = stats.norm.rvs(
                 loc=self._true_values, scale=self.sigma, size=size
-            )  # type: NDArray[np.float64]
+            )  # type: ArrayLike
 
         else:
 
-            self._obs_values = self._true_values  # type: NDArray[np.float64]
+            self._obs_values = self._true_values  # type: ArrayLike
