@@ -8,7 +8,7 @@ import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
 from IPython.display import Markdown, Math, display
-from numpy.typing import ArrayLike
+#from numpy.typing import ArrayLike
 from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar

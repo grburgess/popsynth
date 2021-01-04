@@ -10,7 +10,7 @@ import pandas as pd
 import pythreejs
 from betagen import betagen
 from IPython.display import Markdown, Math, display
-from numpy.typing import ArrayLike
+#from numpy.typing import ArrayLike
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (

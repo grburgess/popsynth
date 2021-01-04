@@ -4,7 +4,7 @@ from typing import Any
 import numpy as np
 import scipy.special as sf
 import scipy.stats as stats
-from numpy.typing import ArrayLike
+#from numpy.typing import ArrayLike
 from tqdm.autonotebook import tqdm as progress_bar
 
 

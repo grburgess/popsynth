@@ -1,6 +1,6 @@
 import abc
 from typing import Union, Dict
-from numpy.typing import ArrayLike
+#from numpy.typing import ArrayLike
 import numpy as np
 from tqdm.autonotebook import tqdm as progress_bar
 

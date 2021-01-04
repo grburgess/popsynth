@@ -1,6 +1,6 @@
 import scipy.stats as stats
 import numpy as np
-from numpy.typing import ArrayLike
+#from numpy.typing import ArrayLike
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
 
