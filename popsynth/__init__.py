@@ -31,7 +31,6 @@ __all__ = [
     "PopulationSynth",
 ]
 
-
 # chance = stats.bernoulli.rvs(0.3)
 
 # if chance:

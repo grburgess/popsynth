@@ -20,7 +20,9 @@ class ParetoDistribution(LuminosityDistribution):
 
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 
-        super(ParetoDistribution, self).__init__(seed=seed, name=name, form=lf_form)
+        super(ParetoDistribution, self).__init__(seed=seed,
+                                                 name=name,
+                                                 form=lf_form)
 
     def phi(self, L):
         """
@@ -36,7 +38,8 @@ class ParetoDistribution(LuminosityDistribution):
 
         idx = L >= self.Lmin
 
-        out[idx] = self.alpha * self.Lmin ** self.alpha / L[idx] ** (self.alpha + 1)
+        out[idx] = self.alpha * self.Lmin**self.alpha / L[idx]**(self.alpha +
+                                                                 1)
 
         return out
 

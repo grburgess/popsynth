@@ -49,7 +49,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         self._luminosity = luminosity  # type:ArrayLike
 
-    def set_distance(self, distance:ArrayLike) -> None:
+    def set_distance(self, distance: ArrayLike) -> None:
         """FIXME! briefly describe function
 
         :param distance:
@@ -103,7 +103,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             if self._has_secondary:
                 if verbose:
-                    print("%s is sampling its secondary quantities" % self.name)
+                    print("%s is sampling its secondary quantities" %
+                          self.name)
 
             if self._uses_distance:
                 self._selector.set_distance(self._distance)
@@ -132,19 +133,17 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             else:
 
-                self._obs_values = (
-                    self._true_values
-                )  # type: ArrayLike
+                self._obs_values = (self._true_values)  # type: ArrayLike
 
             self._selector.set_observed_value(self._obs_values)
 
             # check to make sure we sampled!
-            assert (
-                self.true_values is not None and len(self.true_values) == size
-            ), f"{self.name} likely has a bad true_sampler function"
-            assert (
-                self.obs_values is not None and len(self.obs_values) == size
-            ), f"{self.name} likely has a observation_sampler function"
+            assert (self.true_values is not None
+                    and len(self.true_values) == size
+                    ), f"{self.name} likely has a bad true_sampler function"
+            assert (self.obs_values is not None
+                    and len(self.obs_values) == size
+                    ), f"{self.name} likely has a observation_sampler function"
 
             # now apply the selection to yourself
             # if there is nothing coded, it will be
@@ -197,8 +196,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
                         self._graph.add_edge(spatial_distribution.name, k)
 
                 recursive_secondaries = v.get_secondary_properties(
-                    recursive_secondaries, graph, k, spatial_distribution
-                )  # type: SamplerDict
+                    recursive_secondaries, graph, k,
+                    spatial_distribution)  # type: SamplerDict
 
         # add our own on
         recursive_secondaries[self._name] = {
@@ -302,9 +301,10 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
 
 class NonObservedAuxSampler(AuxiliarySampler):
-    def __init__(
-        self, name: str, uses_distance: bool = False, uses_luminosity: bool = False
-    ):
+    def __init__(self,
+                 name: str,
+                 uses_distance: bool = False,
+                 uses_luminosity: bool = False):
 
         super(NonObservedAuxSampler, self).__init__(
             name=name,
@@ -326,9 +326,9 @@ class DerivedLumAuxSampler(AuxiliarySampler):
 
         """
 
-        super(DerivedLumAuxSampler, self).__init__(
-            name, observed=False, uses_distance=uses_distance
-        )
+        super(DerivedLumAuxSampler, self).__init__(name,
+                                                   observed=False,
+                                                   uses_distance=uses_distance)
 
     @abc.abstractmethod
     def compute_luminosity(self):

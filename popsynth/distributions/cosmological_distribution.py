@@ -6,7 +6,6 @@ from astropy.cosmology import WMAP9 as cosmo
 
 from popsynth.distribution import SpatialDistribution, DistributionParameter
 
-
 sol = sol.value
 
 h0 = 67.7
@@ -35,9 +34,8 @@ def xx(z):
 def luminosity_distance(z):
     x = xx(z)
     z1 = 1.0 + z
-    val = (
-        (2 * dh * z1 / Om_sqrt) * (Phi(xx(0)) - 1.0 / (np.sqrt(z1)) * Phi(x)) * 3.086e24
-    )  # in cm
+    val = ((2 * dh * z1 / Om_sqrt) *
+           (Phi(xx(0)) - 1.0 / (np.sqrt(z1)) * Phi(x)) * 3.086e24)  # in cm
     return val
 
 
@@ -58,7 +56,12 @@ def differential_comoving_volume(z):
 
 
 class CosmologicalDistribution(SpatialDistribution):
-    def __init__(self, seed=1234, name="cosmo", form=None, truth={}, is_rate=True):
+    def __init__(self,
+                 seed=1234,
+                 name="cosmo",
+                 form=None,
+                 truth={},
+                 is_rate=True):
 
         super(CosmologicalDistribution, self).__init__(
             seed=seed,
@@ -74,7 +77,7 @@ class CosmologicalDistribution(SpatialDistribution):
 
     def transform(self, L, z):
 
-        return L / (4.0 * np.pi * luminosity_distance(z) ** 2)
+        return L / (4.0 * np.pi * luminosity_distance(z)**2)
 
     def time_adjustment(self, z):
         if self._is_rate:
@@ -153,7 +156,6 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
 #         super(MergerDistribution, self).__init__(
 #             r_max=r_max, seed=seed, name=name, form=spatial_form
 #         )
-
 
 #         self._td = td
 #         self._sigma = sigma
