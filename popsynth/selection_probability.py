@@ -137,8 +137,7 @@ class BernoulliSelection(SelectionProbabilty):
         if verbose:
 
             self._selection = np.zeros(size, dtype=int).astype(
-                bool
-            )  # type: ArrayLike
+                bool)  # type: ArrayLike
 
             with progress_bar(size, desc=f"Selecting {self._name}") as pbar2:
                 for i in range(size):
@@ -152,9 +151,8 @@ class BernoulliSelection(SelectionProbabilty):
 
         else:
 
-            self._selection = stats.bernoulli.rvs(self._probability, size=size).astype(
-                bool
-            )  # type: ArrayLike
+            self._selection = stats.bernoulli.rvs(
+                self._probability, size=size).astype(bool)  # type: ArrayLike
 
     @property
     def probability(self) -> float:
@@ -201,20 +199,17 @@ class SoftSelection(SelectionProbabilty):
 
         super(SoftSelection, self).__init__(name="Soft Selection")
 
-    def _draw(
-        self, size: int, values: ArrayLike, use_log=False
-    ) -> np.ndarray:
+    def _draw(self, size: int, values: ArrayLike, use_log=False) -> np.ndarray:
 
         if not use_log:
-            probs = sf.expit(
-                self._strength * (values - self._boundary)
-            )  # type: ArrayLike
+            probs = sf.expit(self._strength *
+                             (values - self._boundary))  # type: ArrayLike
 
         else:
 
-            probs = sf.expit(
-                self._strength * (np.log10(values) - np.log10(self._boundary))
-            )  # type: ArrayLike
+            probs = sf.expit(self._strength *
+                             (np.log10(values) -
+                              np.log10(self._boundary)))  # type: ArrayLike
 
         return stats.bernoulli.rvs(probs, size=size).astype(bool)
 

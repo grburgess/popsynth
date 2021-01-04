@@ -7,9 +7,11 @@ class FlatlandDistribution(SpatialDistribution):
 
     Lambda = DistributionParameter(default=1, vmin=0)
 
-    def __init__(self, seed: int=1234, name: str="flatland", form=None):
+    def __init__(self, seed: int = 1234, name: str = "flatland", form=None):
 
-        super(FlatlandDistribution, self).__init__(seed=seed, name=name, form=form)
+        super(FlatlandDistribution, self).__init__(seed=seed,
+                                                   name=name,
+                                                   form=form)
 
     def differential_volume(self, r):
 
@@ -17,9 +19,8 @@ class FlatlandDistribution(SpatialDistribution):
 
     def transform(self, L, r):
 
-        return L 
+        return L
 
     def dNdV(self, distance):
 
         return self.Lambda
-

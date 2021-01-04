@@ -36,23 +36,20 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
 
         secondary = self._secondary_samplers["demo"]
 
-        self._true_values = (
-            (np.random.normal(self.mu, self.tau, size=size))
-            + secondary.true_values
-            - np.log10(1 + self._distance)
-        )
+        self._true_values = ((np.random.normal(self.mu, self.tau, size=size)) +
+                             secondary.true_values -
+                             np.log10(1 + self._distance))
 
     def observation_sampler(self, size):
 
         self._obs_values = self._true_values + np.random.normal(
-            0, self.sigma, size=size
-        )
+            0, self.sigma, size=size)
 
     def compute_luminosity(self):
 
         secondary = self._secondary_samplers["demo"]
 
-        return (10 ** (self._true_values + 54)) / secondary.true_values
+        return (10**(self._true_values + 54)) / secondary.true_values
 
 
 _spatial_dict = [
@@ -69,7 +66,6 @@ _pareto_dict = [
     popsynth.populations.ParetoSFRPopulation,
 ]
 
-
 _bpl_dict = [
     popsynth.populations.BPLHomogeneousSphericalPopulation,
     popsynth.populations.BPLZPowerCosmoPopulation,
@@ -84,7 +80,6 @@ _schechter_dict = [
     popsynth.populations.SchechterSFRPopulation,
 ]
 
-
 _lognorm_dict = [
     popsynth.populations.LogNormalHomogeneousSphericalPopulation,
     popsynth.populations.LogNormalZPowerSphericalPopulation,
@@ -92,14 +87,12 @@ _lognorm_dict = [
     popsynth.populations.LogNormalSFRPopulation,
 ]
 
-
 _log10norm_dict = [
     popsynth.populations.Log10NormalHomogeneousSphericalPopulation,
     popsynth.populations.Log10NormalZPowerSphericalPopulation,
     popsynth.populations.Log10NormalZPowerCosmoPopulation,
     popsynth.populations.Log10NormalSFRPopulation,
 ]
-
 
 _spatial_params = [
     dict(Lambda=1.0),
@@ -133,9 +126,10 @@ class Popbuilder(object):
 
     def draw_hard(self, verbose):
 
-        pop = self.pop_gen.draw_survey(
-            boundary=1e-6, flux_sigma=0.4, hard_cut=True, verbose=verbose
-        )
+        pop = self.pop_gen.draw_survey(boundary=1e-6,
+                                       flux_sigma=0.4,
+                                       hard_cut=True,
+                                       verbose=verbose)
 
         self.reset()
 
@@ -171,9 +165,10 @@ class Popbuilder(object):
 
     def draw_soft(self, verbose):
 
-        pop = self.pop_gen.draw_survey(
-            boundary=1e-4, flux_sigma=0.1, hard_cut=False, verbose=verbose
-        )
+        pop = self.pop_gen.draw_survey(boundary=1e-4,
+                                       flux_sigma=0.1,
+                                       hard_cut=False,
+                                       verbose=verbose)
 
         self.reset()
 
@@ -181,9 +176,10 @@ class Popbuilder(object):
 
     def draw_z_select(self, verbose):
 
-        pop = self.pop_gen.draw_survey(
-            boundary=1e-6, flux_sigma=0.5, distance_probability=0.5, verbose=verbose
-        )
+        pop = self.pop_gen.draw_survey(boundary=1e-6,
+                                       flux_sigma=0.5,
+                                       distance_probability=0.5,
+                                       verbose=verbose)
 
         self.reset()
 
@@ -195,7 +191,9 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5, verbose=verbose)
+        pop = self.pop_gen.draw_survey(boundary=1e-6,
+                                       flux_sigma=0.5,
+                                       verbose=verbose)
 
         self.reset()
 
@@ -207,7 +205,9 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5, verbose=verbose)
+        pop = self.pop_gen.draw_survey(boundary=1e-6,
+                                       flux_sigma=0.5,
+                                       verbose=verbose)
 
         self.reset()
 

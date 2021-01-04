@@ -93,7 +93,15 @@ class SchechterZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class SchechterSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=10, seed=1234):
+    def __init__(self,
+                 r0,
+                 rise,
+                 decay,
+                 peak,
+                 Lmin,
+                 alpha,
+                 r_max=10,
+                 seed=1234):
         """FIXME! briefly describe function
 
         :param r0:

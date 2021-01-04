@@ -12,15 +12,14 @@ class Log10NormalDistribution(LuminosityDistribution):
 
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 
-        super(Log10NormalDistribution, self).__init__(
-            name=name, seed=seed, form=lf_form
-        )
+        super(Log10NormalDistribution, self).__init__(name=name,
+                                                      seed=seed,
+                                                      form=lf_form)
 
     def phi(self, L):
 
-        return (1.0 / (self.tau * L * np.sqrt(2 * np.pi))) * np.exp(
-            -((np.log10(L) - self.mu) ** 2) / (2 * self.tau ** 2)
-        )
+        return (1.0 / (self.tau * L * np.sqrt(2 * np.pi))) * np.exp(-(
+            (np.log10(L) - self.mu)**2) / (2 * self.tau**2))
 
     def draw_luminosity(self, size=1):
 

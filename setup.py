@@ -20,7 +20,6 @@ def find_data_files(directory):
 
 extra_files = find_data_files("popsynth/data")
 
-
 setup(
     version=versioneer.get_version(),
     include_package_data=True,

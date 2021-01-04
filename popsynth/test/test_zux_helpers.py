@@ -33,9 +33,7 @@ def test_constructor():
 
 
 @given(
-    st.floats(
-        min_value=0.01,
-    ),
+    st.floats(min_value=0.01, ),
     st.floats(min_value=0.01, max_value=10.0),
     st.integers(min_value=2, max_value=1000),
 )

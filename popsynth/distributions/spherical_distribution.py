@@ -6,7 +6,9 @@ from popsynth.distribution import SpatialDistribution, DistributionParameter
 class SphericalDistribution(SpatialDistribution):
     def __init__(self, seed=1234, name="sphere", form=None):
 
-        super(SphericalDistribution, self).__init__(seed=seed, name=name, form=form)
+        super(SphericalDistribution, self).__init__(seed=seed,
+                                                    name=name,
+                                                    form=form)
 
     def differential_volume(self, r):
 
@@ -14,7 +16,7 @@ class SphericalDistribution(SpatialDistribution):
 
     def transform(self, L, r):
 
-        r = r+ 1
+        r = r + 1
 
         return L / (4.0 * np.pi * r * r)
 
@@ -33,9 +35,9 @@ class ConstantSphericalDistribution(SphericalDistribution):
         if form is None:
             form = r"\Lambda"
 
-        super(ConstantSphericalDistribution, self).__init__(
-            seed=seed, name=name, form=form
-        )
+        super(ConstantSphericalDistribution, self).__init__(seed=seed,
+                                                            name=name,
+                                                            form=form)
 
     def dNdV(self, distance):
 
@@ -50,7 +52,9 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
 
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
-        super(ZPowerSphericalDistribution, self).__init__(seed, name, form=spatial_form)
+        super(ZPowerSphericalDistribution, self).__init__(seed,
+                                                          name,
+                                                          form=spatial_form)
 
     def dNdV(self, distance):
 

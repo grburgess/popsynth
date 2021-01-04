@@ -6,7 +6,6 @@
 # from .schechter_distribution import SchechterDistribution
 # from .bpl_distribution import BPLPopulation
 
-
 # __all__ = [
 #     "SphericalDistribution",
 #     "CosmologicalDistribution",
