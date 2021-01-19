@@ -4,7 +4,7 @@ from typing import Any
 import numpy as np
 import scipy.special as sf
 import scipy.stats as stats
-#from numpy.typing import ArrayLike
+#from numpy.typing import np.ndarray
 from tqdm.autonotebook import tqdm as progress_bar
 
 
@@ -18,10 +18,10 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
         self._name = name  # type: str
 
-        self._observed_flux = None  # type: ArrayLike
-        self._observed_value = None  # type: ArrayLike
-        self._distance = None  # type: ArrayLike
-        self._luminosity = None  # type: ArrayLike
+        self._observed_flux = None  # type: np.ndarray
+        self._observed_value = None  # type: np.ndarray
+        self._distance = None  # type: np.ndarray
+        self._luminosity = None  # type: np.ndarray
 
     def __add__(self, other):
 
@@ -35,7 +35,7 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
     #     return self.__add__(other)
 
-    def set_luminosity(self, luminosity: ArrayLike) -> None:
+    def set_luminosity(self, luminosity: np.ndarray) -> None:
         """FIXME! briefly describe function
 
         :param luminosity:
@@ -44,9 +44,9 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
         """
 
-        self._luminosity = luminosity  # type: ArrayLike
+        self._luminosity = luminosity  # type: np.ndarray
 
-    def set_distance(self, distance: ArrayLike) -> None:
+    def set_distance(self, distance: np.ndarray) -> None:
         """FIXME! briefly describe function
 
         :param distance:
@@ -55,9 +55,9 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
         """
 
-        self._distance = distance  # type: ArrayLike
+        self._distance = distance  # type: np.ndarray
 
-    def set_observed_flux(self, observed_flux: ArrayLike) -> None:
+    def set_observed_flux(self, observed_flux: np.ndarray) -> None:
         """FIXME! briefly describe function
 
         :param luminosity:
@@ -66,10 +66,10 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
         """
 
-        self._observed_flux = observed_flux  # type: ArrayLike
+        self._observed_flux = observed_flux  # type: np.ndarray
 
-    def set_observed_value(self, observed_value: ArrayLike) -> None:
-        self._observed_value = observed_value  # type: ArrayLike
+    def set_observed_value(self, observed_value: np.ndarray) -> None:
+        self._observed_value = observed_value  # type: np.ndarray
 
     @abc.abstractclassmethod
     def draw(self, size: int, verbose: bool = False) -> None:
@@ -137,7 +137,7 @@ class BernoulliSelection(SelectionProbabilty):
         if verbose:
 
             self._selection = np.zeros(size, dtype=int).astype(
-                bool)  # type: ArrayLike
+                bool)  # type: np.ndarray
 
             with progress_bar(size, desc=f"Selecting {self._name}") as pbar2:
                 for i in range(size):
@@ -152,7 +152,7 @@ class BernoulliSelection(SelectionProbabilty):
         else:
 
             self._selection = stats.bernoulli.rvs(
-                self._probability, size=size).astype(bool)  # type: ArrayLike
+                self._probability, size=size).astype(bool)  # type: np.ndarray
 
     @property
     def probability(self) -> float:
@@ -188,7 +188,7 @@ class HardFluxSelection(HardSelection):
 
     def draw(self, size: int, verbose: bool = False):
 
-        self._selection = self._draw(self._observed_flux)  # type: ArrayLike
+        self._selection = self._draw(self._observed_flux)  # type: np.ndarray
 
 
 class SoftSelection(SelectionProbabilty):
@@ -199,17 +199,17 @@ class SoftSelection(SelectionProbabilty):
 
         super(SoftSelection, self).__init__(name="Soft Selection")
 
-    def _draw(self, size: int, values: ArrayLike, use_log=False) -> np.ndarray:
+    def _draw(self, size: int, values: np.ndarray, use_log=False) -> np.ndarray:
 
         if not use_log:
             probs = sf.expit(self._strength *
-                             (values - self._boundary))  # type: ArrayLike
+                             (values - self._boundary))  # type: np.ndarray
 
         else:
 
             probs = sf.expit(self._strength *
                              (np.log10(values) -
-                              np.log10(self._boundary)))  # type: ArrayLike
+                              np.log10(self._boundary)))  # type: np.ndarray
 
         return stats.bernoulli.rvs(probs, size=size).astype(bool)
 

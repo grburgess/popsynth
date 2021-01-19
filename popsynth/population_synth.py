@@ -1,5 +1,5 @@
 import abc
-from typing import Union
+from typing import Union, Optional
 
 import networkx as nx
 import numpy as np
@@ -8,7 +8,7 @@ import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
 from IPython.display import Markdown, Math, display
-#from numpy.typing import ArrayLike
+#from numpy.typing import np.ndarray
 from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
@@ -181,7 +181,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._flux_selector_set = True
 
-    def _prob_det(self, x: ArrayLike, boundary: float,
+    def _prob_det(self, x: np.ndarray, boundary: float,
                   strength: float) -> np.ndarray:
         """
         Soft detection threshold
@@ -228,7 +228,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         flux_sigma: float = 1.0,
         strength: float = 10.0,
         hard_cut: bool = False,
-        distance_probability: Union[float, None] = None,
+        distance_probability: Optional[float]= None,
         no_selection: bool = False,
         verbose: bool = True,
         log10_flux_draw: bool = True,
@@ -278,7 +278,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._spatial_distribution.draw_sky_positions(size=n)
 
-        distances = (self._spatial_distribution.distances)  # type: ArrayLike
+        distances = (self._spatial_distribution.distances)  # type: np.ndarray
 
         if verbose:
             print("Expecting %d total objects" % n)
@@ -336,7 +336,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 print("Getting luminosity from derived sampler")
             luminosities = (
                 self._derived_luminosity_sampler.compute_luminosity()
-            )  # type: ArrayLike
+            )  # type: np.ndarray
 
             # collect anything that was sampled here
 
@@ -370,7 +370,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # pbar.update()
             # draw all the values
             luminosities = self.luminosity_distribution.draw_luminosity(
-                size=n)  # type: ArrayLike
+                size=n)  # type: np.ndarray
 
             # store the truths from the luminosity distribution
             truth[self.luminosity_distribution.
@@ -378,7 +378,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # transform the fluxes
         fluxes = self._spatial_distribution.transform(
-            luminosities, distances)  # type: ArrayLike
+            luminosities, distances)  # type: np.ndarray
 
         # now sample any auxilary quantities
         # if needed
@@ -443,13 +443,13 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if log10_flux_draw:
 
             log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma,
-                                                    size=n)  # type: ArrayLike
+                                                    size=n)  # type: np.ndarray
             flux_obs = np.power(10, log10_fluxes_obs)
 
         else:
 
             log10_fluxes_obs = self.draw_log_fobs(fluxes, flux_sigma,
-                                                  size=n)  # type: ArrayLike
+                                                  size=n)  # type: np.ndarray
 
             flux_obs = np.exp(log10_fluxes_obs)
 
@@ -550,7 +550,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         #     selection = np.ones_like(
         #         selection, dtype=bool
-        #     )  # type: ArrayLike
+        #     )  # type: np.ndarray
 
         # pbar.update()
         if global_selection.n_selected == n:
