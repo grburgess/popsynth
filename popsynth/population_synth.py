@@ -1,5 +1,5 @@
 import abc
-from typing import Union, Optional
+from typing import Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -8,7 +8,7 @@ import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
 from IPython.display import Markdown, Math, display
-#from numpy.typing import np.ndarray
+# from numpy.typing import np.ndarray
 from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
@@ -76,12 +76,13 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             None)  # type: Union[DerivedLumAuxSampler, None]
 
         # set the selections be fully seen unless it is set by the user
-        self._distance_selector = UnitySelection()  # type: SelectionProbabilty
-        self._flux_selector = UnitySelection()  # type: SelectionProbabilty
+        self._distance_selector: SelectionProbabilty = UnitySelection()
+        self._flux_selector: SelectionProbabilty = UnitySelection()
 
         # check to see if the selectors are set
-        self._distance_selector_set = False  # type: bool
-        self._flux_selector_set = False  # type: bool
+        self._distance_selector_set: bool = False
+        self._flux_selector_set: bool = False
+        self._spatial_selector: Union[SelectionProbabilty, None] = None
 
         self._params = {}  # type: dict
 
@@ -181,6 +182,16 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._flux_selector_set = True
 
+    def add_spatial_selector(self,
+                             spatial_selector: SelectionProbabilty) -> None:
+        """
+        Add a spatial selector into the mix
+        """
+
+        assert isinstance(spatial_selector, SelectionProbabilty)
+
+        self._spatial_selector: SelectionProbabilty = spatial_selector
+
     def _prob_det(self, x: np.ndarray, boundary: float,
                   strength: float) -> np.ndarray:
         """
@@ -228,7 +239,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         flux_sigma: float = 1.0,
         strength: float = 10.0,
         hard_cut: bool = False,
-        distance_probability: Optional[float]= None,
+        distance_probability: Optional[float] = None,
         no_selection: bool = False,
         verbose: bool = True,
         log10_flux_draw: bool = True,
@@ -364,11 +375,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 truth[v2.name] = v2.truth
 
-            # pbar.update()
-
         else:
-            # pbar.update()
-            # draw all the values
+
             luminosities = self.luminosity_distribution.draw_luminosity(
                 size=n)  # type: np.ndarray
 
@@ -485,16 +493,28 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # properties to let us know what type of selection
             # was made so we can record it
 
-            if self._flux_selector.hard_cut:
+            if isinstance(self._flux_selector,
+                          HardFluxSelection) or isinstance(
+                              self._flux_selector, SoftFluxSelection):
 
-                strength = 1.0
+                if self._flux_selector.hard_cut:
+
+                    strength = 1.0
+
+                else:
+
+                    strength = self._flux_selector.strength
+
+                boundary = self._flux_selector.boundary
+                hard_cut = self._flux_selector.hard_cut
 
             else:
 
-                strength = self._flux_selector.strength
+                # These are just dummies for other types of flux selection
 
-            boundary = self._flux_selector.boundary
-            hard_cut = self._flux_selector.hard_cut
+                strength = 1
+                boundary = 1e-99
+                hard_cut = True
 
         else:
 
@@ -543,16 +563,17 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             global_selection += self._flux_selector
 
-        # # if we do not want to add a selection effect
-        # if no_selection:
-        #     if self._verbose:
-        #         print("No Selection! Added back all objects")
+            # now scan the spatial selector
 
-        #     selection = np.ones_like(
-        #         selection, dtype=bool
-        #     )  # type: np.ndarray
+            if (self._spatial_selector is not None) and (not no_selection):
 
-        # pbar.update()
+                self._spatial_selector.set_spatial_distribution(
+                    self._spatial_distribution)
+
+                self._spatial_selector.draw(n)
+
+                global_selection += self._spatial_selector
+
         if global_selection.n_selected == n:
 
             if verbose:
@@ -577,6 +598,15 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if verbose:
             print("Detected %d distances" % len(known_distances))
 
+        if (self._spatial_selector is not None) and (not no_selection):
+
+            self._spatial_selector.set_spatail_distribution(
+                self._spatial_distribution)
+
+            self._spatial_selector.draw(n)
+
+            global_selection += self._spatial_selector
+
         if verbose:
             try:
 
@@ -585,9 +615,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             except:
                 print("No Objects detected")
-        # return a Population object
 
-        ## just to make sure we do not do anything nutty
+        # just to make sure we do not do anything nutty
         lf_params = None
         lf_form = None
         if self._luminosity_distribution is not None:

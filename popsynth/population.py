@@ -1,4 +1,5 @@
 import importlib
+from typing import List, Type
 
 import h5py
 import ipyvolume as ipv
@@ -10,16 +11,18 @@ import pandas as pd
 import pythreejs
 from betagen import betagen
 from IPython.display import Markdown, Math, display
-#from numpy.typing import ArrayLike
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
-    clean_graph_dict,
-    fill_graph_dict,
+    clean_graph_dict, fill_graph_dict,
     recursively_load_dict_contents_from_group,
-    recursively_save_dict_contents_to_group,
-)
+    recursively_save_dict_contents_to_group)
 from popsynth.utils.spherical_geometry import xyz
+
+#from numpy.typing import ArrayLike
+
+# dummy
+ArrayLike = List[float]
 
 wine = "#8F2727"
 dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
@@ -161,7 +164,7 @@ class Population(object):
                 setattr(self, "%s_obs" % k, v["obs_values"])
                 setattr(self, "%s_selected" % k, v["obs_values"][selection])
 
-        self._auxiliary_quantites = auxiliary_quantities
+        self._auxiliary_quantities = auxiliary_quantities
 
         if model_spaces is not None:
 
@@ -391,7 +394,7 @@ class Population(object):
 
             output[k] = v
 
-        for k, v in self._auxiliary_quantites.items():
+        for k, v in self._auxiliary_quantities.items():
 
             output["%s_obs" % k] = v["obs_values"][self._selection]
 
@@ -480,7 +483,7 @@ class Population(object):
 
             aux_grp = f.create_group("auxiliary_quantities")
 
-            for k, v in self._auxiliary_quantites.items():
+            for k, v in self._auxiliary_quantities.items():
 
                 q_grp = aux_grp.create_group(k)
                 q_grp.create_dataset("true_values",
@@ -624,6 +627,87 @@ class Population(object):
             graph=graph,
             theta=theta,
             phi=phi,
+        )
+
+    def to_sub_population(self, observed: bool = True) -> "Population":
+        """
+        Create a population that is down selected from either the 
+        observed or unobserved population
+
+        :param observed: extract the observed or unobserved object
+
+        """
+
+        if observed:
+            selection = self._selection
+
+        else:
+
+            selection = ~self._selection
+
+        if self._auxiliary_quantities is not None:
+
+            new_aux = {}
+
+            for k, v in self._auxiliary_quantities.items():
+
+                new_aux[k] = {
+                    "true_values": v["true_values"][selection],
+                    "obs_values": v["obs_values"][selection]
+                }
+
+        else:
+
+            new_aux = None
+
+        itr = 0
+        known_distances = []
+        known_distance_idx = []
+        unknown_distance_idx = []
+
+        for i, s in enumerate(selection):
+
+            if s:
+
+                if i in self._known_distances:
+
+                    known_distances.append(self._distances[i])
+                    known_distance_idx.append(itr)
+
+                else:
+
+                    unknown_distance_idx.append(itr)
+
+                itr += 1
+
+        return Population(
+            luminosities=self._luminosities[selection],
+            distances=self._distances[selection],
+            known_distances=np.array(known_distances),
+            known_distance_idx=np.array(known_distance_idx),
+            unknown_distance_idx=np.array(unknown_distance_idx),
+            fluxes=self._fluxes[selection],
+            flux_obs=self._flux_obs[selection],
+            selection=np.ones(sum(selection), dtype=bool),
+            flux_sigma=self._flux_sigma,
+            n_model=self._n_model,
+            r_max=self._r_max,
+            boundary=self._boundary,
+            strength=self._strength,
+            lf_params=self._lf_params,
+            spatial_params=self._spatial_params,
+            model_spaces=self._model_spaces,
+            seed=self._seed,
+            name=self._name,
+            spatial_form=self._spatial_form,
+            lf_form=self._lf_form,
+            auxiliary_quantities=new_aux,
+            truth=self._truth,
+            distance_probability=self._distance_probability,
+            hard_cut=self._hard_cut,
+            graph=self._graph,
+            theta=self._theta[selection],
+            phi=self._phi[selection],
         )
 
     def display(self):

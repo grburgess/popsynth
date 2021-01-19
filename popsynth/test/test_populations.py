@@ -259,6 +259,18 @@ class Popbuilder(object):
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
+        sub_pop = pop.to_sub_population(observed=True)
+
+        assert sub_pop.n_objects == sub_pop.n_detections
+
+        assert sub_pop.n_objects == sum(pop.selection)
+
+        sub_pop = pop.to_sub_population(observed=False)
+
+        assert sub_pop.n_objects == sub_pop.n_detections
+
+        assert sub_pop.n_objects == sum(~pop.selection)
+
         assert not population_reloaded.hard_cut
 
         assert population_reloaded.distance_probability == 1.0

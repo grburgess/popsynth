@@ -1,8 +1,12 @@
-import scipy.stats as stats
-import numpy as np
 #from numpy.typing import ArrayLike
+from typing import List
 
-from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
+import numpy as np
+import scipy.stats as stats
+
+from popsynth.auxiliary_sampler import AuxiliaryParameter, AuxiliarySampler
+
+ArrayLike = List[float]
 
 
 class LogNormalAuxSampler(AuxiliarySampler):

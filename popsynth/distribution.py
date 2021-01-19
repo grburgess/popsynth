@@ -1,12 +1,16 @@
 import abc
-from typing import Union, Dict
-#from numpy.typing import ArrayLike
+from typing import Dict, List, Union
+
 import numpy as np
 from tqdm.autonotebook import tqdm as progress_bar
 
 from popsynth.utils.meta import Parameter, ParameterMeta
 from popsynth.utils.rejection_sample import rejection_sample
 from popsynth.utils.spherical_geometry import sample_theta_phi
+
+#from numpy.typing import ArrayLike
+
+ArrayLike = List[float]
 
 
 class DistributionParameter(Parameter):
@@ -113,6 +117,14 @@ class SpatialDistribution(Distribution):
     @property
     def phi(self) -> np.ndarray:
         return self._phi
+
+    @property
+    def dec(self) -> np.ndarray:
+        return 90 - np.rad2deg(self._theta)
+
+    @property
+    def ra(self) -> np.ndarray:
+        return np.rad2deg(self._phi)
 
     @property
     def distances(self) -> np.ndarray:
