@@ -21,10 +21,8 @@ from popsynth.utils.spherical_geometry import xyz
 
 #from numpy.typing import ArrayLike
 
-
 # dummy
 ArrayLike = List[float]
-
 
 wine = "#8F2727"
 dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
@@ -631,7 +629,7 @@ class Population(object):
             phi=phi,
         )
 
-    def to_sub_population(self, observed:bool=True) -> "Population":
+    def to_sub_population(self, observed: bool = True) -> "Population":
         """
         Create a population that is down selected from either the 
         observed or unobserved population
@@ -639,15 +637,13 @@ class Population(object):
         :param observed: extract the observed or unobserved object
 
         """
-        
-
 
         if observed:
             selection = self._selection
 
         else:
 
-            selection = ~ self._selection
+            selection = ~self._selection
 
         if self._auxiliary_quantities is not None:
 
@@ -655,9 +651,10 @@ class Population(object):
 
             for k, v in self._auxiliary_quantities.items():
 
-                new_aux[k] = {"true_values": v["true_values"][selection],
-                              "obs_values": v["obs_values"][selection]
-                              }
+                new_aux[k] = {
+                    "true_values": v["true_values"][selection],
+                    "obs_values": v["obs_values"][selection]
+                }
 
         else:
 

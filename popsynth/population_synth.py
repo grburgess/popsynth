@@ -80,10 +80,10 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         self._flux_selector: SelectionProbabilty = UnitySelection()
 
         # check to see if the selectors are set
-        self._distance_selector_set: bool = False  
+        self._distance_selector_set: bool = False
         self._flux_selector_set: bool = False
-        self._spatial_selector: Union[SelectionProbabilty, None]  = None
-        
+        self._spatial_selector: Union[SelectionProbabilty, None] = None
+
         self._params = {}  # type: dict
 
         # keep a list of parameters here for checking
@@ -182,17 +182,16 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._flux_selector_set = True
 
-
-    def add_spatial_selector(self, spatial_selector: SelectionProbabilty) -> None:
+    def add_spatial_selector(self,
+                             spatial_selector: SelectionProbabilty) -> None:
         """
         Add a spatial selector into the mix
         """
-        
+
         assert isinstance(spatial_selector, SelectionProbabilty)
 
-
         self._spatial_selector: SelectionProbabilty = spatial_selector
-        
+
     def _prob_det(self, x: np.ndarray, boundary: float,
                   strength: float) -> np.ndarray:
         """
@@ -271,7 +270,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # create a callback of the integrand
         dNdr = (lambda r: self._spatial_distribution.dNdV(
             r) * self._spatial_distribution.differential_volume(r) / self.
-            _spatial_distribution.time_adjustment(r))
+                _spatial_distribution.time_adjustment(r))
 
         # integrate the population to determine the true number of
         # objects
@@ -586,17 +585,15 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if verbose:
             print("Detected %d distances" % len(known_distances))
 
-
         if (self._spatial_selector is not None) and (not no_selection):
 
-            self._spatial_selector.set_spatail_distribution(self._spatial_distribution)
+            self._spatial_selector.set_spatail_distribution(
+                self._spatial_distribution)
 
             self._spatial_selector.draw(n)
 
             global_selection += self._spatial_selector
 
-
-            
         if verbose:
             try:
 
@@ -605,7 +602,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             except:
                 print("No Objects detected")
- 
 
         # just to make sure we do not do anything nutty
         lf_params = None
