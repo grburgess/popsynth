@@ -1,12 +1,14 @@
 import abc
-from typing import Any, Dict, Union
+from typing import Any, Dict, Union, List
 
 import numpy as np
 #from numpy.typing import ArrayLike
 
+
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
 from popsynth.utils.meta import Parameter, ParameterMeta
 
+ArrayLike = List[float]
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
 

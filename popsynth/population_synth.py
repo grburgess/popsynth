@@ -1,5 +1,5 @@
 import abc
-from typing import Union, Optional
+from typing import Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -8,7 +8,7 @@ import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
 from IPython.display import Markdown, Math, display
-#from numpy.typing import np.ndarray
+# from numpy.typing import np.ndarray
 from numba import float64, jit, njit, prange
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
@@ -76,13 +76,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             None)  # type: Union[DerivedLumAuxSampler, None]
 
         # set the selections be fully seen unless it is set by the user
-        self._distance_selector = UnitySelection()  # type: SelectionProbabilty
-        self._flux_selector = UnitySelection()  # type: SelectionProbabilty
+        self._distance_selector: SelectionProbabilty = UnitySelection()
+        self._flux_selector: SelectionProbabilty = UnitySelection()
 
         # check to see if the selectors are set
-        self._distance_selector_set = False  # type: bool
-        self._flux_selector_set = False  # type: bool
-
+        self._distance_selector_set: bool = False  
+        self._flux_selector_set: bool = False
+        self._spatial_selector: Union[SelectionProbabilty, None]  = None
+        
         self._params = {}  # type: dict
 
         # keep a list of parameters here for checking
@@ -181,6 +182,17 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._flux_selector_set = True
 
+
+    def add_spatial_selector(self, spatial_selector: SelectionProbabilty) -> None:
+        """
+        Add a spatial selector into the mix
+        """
+        
+        assert isinstance(spatial_selector, SelectionProbabilty)
+
+
+        self._spatial_selector: SelectionProbabilty = spatial_selector
+        
     def _prob_det(self, x: np.ndarray, boundary: float,
                   strength: float) -> np.ndarray:
         """
@@ -228,7 +240,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         flux_sigma: float = 1.0,
         strength: float = 10.0,
         hard_cut: bool = False,
-        distance_probability: Optional[float]= None,
+        distance_probability: Optional[float] = None,
         no_selection: bool = False,
         verbose: bool = True,
         log10_flux_draw: bool = True,
@@ -259,7 +271,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # create a callback of the integrand
         dNdr = (lambda r: self._spatial_distribution.dNdV(
             r) * self._spatial_distribution.differential_volume(r) / self.
-                _spatial_distribution.time_adjustment(r))
+            _spatial_distribution.time_adjustment(r))
 
         # integrate the population to determine the true number of
         # objects
@@ -364,11 +376,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 truth[v2.name] = v2.truth
 
-            # pbar.update()
-
         else:
-            # pbar.update()
-            # draw all the values
+
             luminosities = self.luminosity_distribution.draw_luminosity(
                 size=n)  # type: np.ndarray
 
@@ -577,6 +586,17 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if verbose:
             print("Detected %d distances" % len(known_distances))
 
+
+        if (self._spatial_selector is not None) and (not no_selection):
+
+            self._spatial_selector.set_spatail_distribution(self._spatial_distribution)
+
+            self._spatial_selector.draw(n)
+
+            global_selection += self._spatial_selector
+
+
+            
         if verbose:
             try:
 
@@ -585,9 +605,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             except:
                 print("No Objects detected")
-        # return a Population object
+ 
 
-        ## just to make sure we do not do anything nutty
+        # just to make sure we do not do anything nutty
         lf_params = None
         lf_form = None
         if self._luminosity_distribution is not None:
