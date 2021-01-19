@@ -493,7 +493,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # properties to let us know what type of selection
             # was made so we can record it
 
-            if isinstance(self._flux_selector, HardFluxSelection) or isinstance(self._flux_selector, SoftFluxSelection):
+            if isinstance(self._flux_selector,
+                          HardFluxSelection) or isinstance(
+                              self._flux_selector, SoftFluxSelection):
 
                 if self._flux_selector.hard_cut:
 
@@ -560,9 +562,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             global_selection += auxiliary_selection
 
             global_selection += self._flux_selector
-
-
-
 
             # now scan the spatial selector
 
