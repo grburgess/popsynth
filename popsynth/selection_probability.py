@@ -199,7 +199,10 @@ class SoftSelection(SelectionProbabilty):
 
         super(SoftSelection, self).__init__(name="Soft Selection")
 
-    def _draw(self, size: int, values: np.ndarray, use_log=False) -> np.ndarray:
+    def _draw(self,
+              size: int,
+              values: np.ndarray,
+              use_log=False) -> np.ndarray:
 
         if not use_log:
             probs = sf.expit(self._strength *
