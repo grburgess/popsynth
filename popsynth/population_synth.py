@@ -80,10 +80,10 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         self._flux_selector: SelectionProbabilty = UnitySelection()
 
         # check to see if the selectors are set
-        self._distance_selector_set: bool = False  
+        self._distance_selector_set: bool = False
         self._flux_selector_set: bool = False
-        self._spatial_selector: Union[SelectionProbabilty, None]  = None
-        
+        self._spatial_selector: Union[SelectionProbabilty, None] = None
+
         self._params = {}  # type: dict
 
         # keep a list of parameters here for checking
@@ -182,17 +182,15 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._flux_selector_set = True
 
-
     def add_spatial_selector(self, spatial_selector: SelectionProbabilty) -> None:
         """
         Add a spatial selector into the mix
         """
-        
+
         assert isinstance(spatial_selector, SelectionProbabilty)
 
-
         self._spatial_selector: SelectionProbabilty = spatial_selector
-        
+
     def _prob_det(self, x: np.ndarray, boundary: float,
                   strength: float) -> np.ndarray:
         """
@@ -494,16 +492,26 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # properties to let us know what type of selection
             # was made so we can record it
 
-            if self._flux_selector.hard_cut:
+            if isinstance(self._flux_selector, HardFluxSelection) or isinstance(self._flux_selector, SoftFluxSelection):
 
-                strength = 1.0
+                if self._flux_selector.hard_cut:
+
+                    strength = 1.0
+
+                else:
+
+                    strength = self._flux_selector.strength
+
+                boundary = self._flux_selector.boundary
+                hard_cut = self._flux_selector.hard_cut
 
             else:
 
-                strength = self._flux_selector.strength
+                # These are just dummies for other types of flux selection
 
-            boundary = self._flux_selector.boundary
-            hard_cut = self._flux_selector.hard_cut
+                strength = 1
+                boundary = 1e-99
+                hard_cut = True
 
         else:
 
@@ -552,16 +560,20 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             global_selection += self._flux_selector
 
-        # # if we do not want to add a selection effect
-        # if no_selection:
-        #     if self._verbose:
-        #         print("No Selection! Added back all objects")
 
-        #     selection = np.ones_like(
-        #         selection, dtype=bool
-        #     )  # type: np.ndarray
 
-        # pbar.update()
+
+            # now scan the spatial selector
+
+            if (self._spatial_selector is not None) and (not no_selection):
+
+                self._spatial_selector.set_spatial_distribution(
+                    self._spatial_distribution)
+
+                self._spatial_selector.draw(n)
+
+                global_selection += self._spatial_selector
+
         if global_selection.n_selected == n:
 
             if verbose:
@@ -586,17 +598,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if verbose:
             print("Detected %d distances" % len(known_distances))
 
-
-        if (self._spatial_selector is not None) and (not no_selection):
-
-            self._spatial_selector.set_spatail_distribution(self._spatial_distribution)
-
-            self._spatial_selector.draw(n)
-
-            global_selection += self._spatial_selector
-
-
-            
         if verbose:
             try:
 
@@ -605,7 +606,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             except:
                 print("No Objects detected")
- 
 
         # just to make sure we do not do anything nutty
         lf_params = None

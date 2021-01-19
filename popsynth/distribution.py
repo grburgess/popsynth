@@ -120,11 +120,11 @@ class SpatialDistribution(Distribution):
 
     @property
     def dec(self) -> np.ndarray:
-        return self._theta
+        return 90 - np.rad2deg(self._theta)
 
     @property
     def ra(self) -> np.ndarray:
-        return self._phi
+        return np.rad2deg(self._phi)
 
     @property
     def distances(self) -> np.ndarray:
