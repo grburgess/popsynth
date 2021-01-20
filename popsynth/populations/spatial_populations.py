@@ -4,7 +4,7 @@ from popsynth.distributions.spherical_distribution import (
 )
 from popsynth.distributions.cosmological_distribution import (
     SFRDistribtution,
-    #MergerDistribution,
+    # MergerDistribution,
     ZPowerCosmoDistribution,
 )
 
@@ -16,7 +16,11 @@ from popsynth.population_synth import PopulationSynth
 
 
 class SphericalPopulation(PopulationSynth):
-    def __init__(self, Lambda, r_max=5.0, seed=1234, luminosity_distribution=None):
+    def __init__(self,
+                 Lambda,
+                 r_max=5.0,
+                 seed=1234,
+                 luminosity_distribution=None):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -40,9 +44,12 @@ class SphericalPopulation(PopulationSynth):
 
 
 class ZPowerSphericalPopulation(PopulationSynth):
-    def __init__(
-        self, Lambda, delta, r_max=5.0, seed=1234, luminosity_distribution=None
-    ):
+    def __init__(self,
+                 Lambda,
+                 delta,
+                 r_max=5.0,
+                 seed=1234,
+                 luminosity_distribution=None):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -69,9 +76,12 @@ class ZPowerSphericalPopulation(PopulationSynth):
 
 
 class ZPowerCosmoPopulation(PopulationSynth):
-    def __init__(
-        self, Lambda, delta, r_max=5.0, seed=1234, luminosity_distribution=None
-    ):
+    def __init__(self,
+                 Lambda,
+                 delta,
+                 r_max=5.0,
+                 seed=1234,
+                 luminosity_distribution=None):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -98,9 +108,14 @@ class ZPowerCosmoPopulation(PopulationSynth):
 
 
 class SFRPopulation(PopulationSynth):
-    def __init__(
-        self, r0, rise, decay, peak, r_max=5, seed=1234, luminosity_distribution=None
-    ):
+    def __init__(self,
+                 r0,
+                 rise,
+                 decay,
+                 peak,
+                 r_max=5,
+                 seed=1234,
+                 luminosity_distribution=None):
         """FIXME! briefly describe function
 
         :param r0:

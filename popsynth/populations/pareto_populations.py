@@ -11,13 +11,13 @@ class ParetoHomogeneousSphericalPopulation(SphericalPopulation):
     def __init__(self, Lambda, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param Lmin:
+        :param alpha:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -37,14 +37,14 @@ class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
     def __init__(self, Lambda, delta, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
+        :param Lambda:
         :param delta:
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lmin:
+        :param alpha:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -65,14 +65,14 @@ class ParetoZPowerCosmoPopulation(ZPowerCosmoPopulation):
     def __init__(self, Lambda, delta, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
+        :param Lambda:
         :param delta:
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lmin:
+        :param alpha:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -93,16 +93,16 @@ class ParetoSFRPopulation(SFRPopulation):
     def __init__(self, r0, rise, decay, peak, Lmin, alpha, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-        :param Lmin: 
-        :param alpha: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param r0:
+        :param rise:
+        :param decay:
+        :param peak:
+        :param Lmin:
+        :param alpha:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 

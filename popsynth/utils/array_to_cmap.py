@@ -7,7 +7,7 @@ def array_to_cmap(values, cmap, use_log=False):
     Generates a color map and color list that is normalized
     to the values in an array. Allows for adding a 3rd dimension
     onto a plot
-    
+
     :param values: a list a values to map into a cmap
     :param cmap: the mpl colormap to use
     :param use_log: if the mapping should be done in log space

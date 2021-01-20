@@ -21,7 +21,9 @@ class SchechterDistribution(LuminosityDistribution):
 
         form = r"\frac{1}{L_{\rm min}^{1+\alpha} \Gamma\left(1+\alpha\right)} L^{\alpha} \exp\left[ - \frac{L}{L_{\rm min}}\right]"
 
-        super(SchechterDistribution, self).__init__(name=name, seed=seed, form=form)
+        super(SchechterDistribution, self).__init__(name=name,
+                                                    seed=seed,
+                                                    form=form)
 
     def phi(self, L):
         """FIXME! briefly describe function
@@ -32,11 +34,8 @@ class SchechterDistribution(LuminosityDistribution):
 
         """
 
-        return (
-            L ** self.alpha
-            * np.exp(-L / self.Lmin)
-            / (self.Lmin ** (1 + self.alpha) * sf.gamma(1 + self.alpha))
-        )
+        return (L**self.alpha * np.exp(-L / self.Lmin) /
+                (self.Lmin**(1 + self.alpha) * sf.gamma(1 + self.alpha)))
 
     def draw_luminosity(self, size=1):
         """FIXME! briefly describe function

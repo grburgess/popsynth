@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+  schedule:
+    #At the end of every day
+    - cron: 0 0 * * *
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: [3.7, 3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        pip install --upgrade flake8 numpy ipython scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
+        python setup.py install
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        python -m pytest -vv --cov=popsynth/ --cov-report=xml
+      env:
+        NUMBA_DISABLE_JIT: 1
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        files: ./coverage1.xml,./coverage2.xml
+        directory: ./coverage/reports/
+
+  package:
+    name: Build & verify package
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install twine
+        run: python -m pip install twine
+      - name: Build package
+        run: python setup.py sdist
+      - name: List result
+        run: ls -l dist
+      - name: Check long_description
+        run: python -m twine check dist/*
+
+        
+
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Publish package
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.POPSYNTH_GITHUB_PYPI }}

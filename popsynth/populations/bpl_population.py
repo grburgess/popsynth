@@ -8,19 +8,27 @@ from popsynth.distributions.bpl_distribution import BPLDistribution
 
 
 class BPLHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234):
+    def __init__(self,
+                 Lambda,
+                 Lmin,
+                 alpha,
+                 Lbreak,
+                 beta,
+                 Lmax,
+                 r_max=5,
+                 seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
         luminosity_distribution = BPLDistribution(seed=seed)
@@ -39,22 +47,29 @@ class BPLHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(
-        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
-    ):
+    def __init__(self,
+                 Lambda,
+                 delta,
+                 Lmin,
+                 alpha,
+                 Lbreak,
+                 beta,
+                 Lmax,
+                 r_max=5,
+                 seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param delta: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param delta:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
         luminosity_distribution = BPLDistribution(seed=seed)
@@ -74,22 +89,29 @@ class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
-    def __init__(
-        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
-    ):
+    def __init__(self,
+                 Lambda,
+                 delta,
+                 Lmin,
+                 alpha,
+                 Lbreak,
+                 beta,
+                 Lmax,
+                 r_max=5,
+                 seed=1234):
         """FIXME! briefly describe function
 
-        :param Lambda: 
-        :param delta: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param Lambda:
+        :param delta:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 
@@ -110,24 +132,33 @@ class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class BPLSFRPopulation(SFRPopulation):
-    def __init__(
-        self, r0, rise, decay, peak, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
-    ):
+    def __init__(self,
+                 r0,
+                 rise,
+                 decay,
+                 peak,
+                 Lmin,
+                 alpha,
+                 Lbreak,
+                 beta,
+                 Lmax,
+                 r_max=5,
+                 seed=1234):
         """FIXME! briefly describe function
 
-        :param r0: 
-        :param rise: 
-        :param decay: 
-        :param peak: 
-        :param Lmin: 
-        :param alpha: 
-        :param Lbreak: 
-        :param beta: 
-        :param Lmax: 
-        :param r_max: 
-        :param seed: 
-        :returns: 
-        :rtype: 
+        :param r0:
+        :param rise:
+        :param decay:
+        :param peak:
+        :param Lmin:
+        :param alpha:
+        :param Lbreak:
+        :param beta:
+        :param Lmax:
+        :param r_max:
+        :param seed:
+        :returns:
+        :rtype:
 
         """
 

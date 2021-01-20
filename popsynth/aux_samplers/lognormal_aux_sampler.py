@@ -1,7 +1,12 @@
-import scipy.stats as stats
-import numpy as np
+#from numpy.typing import ArrayLike
+from typing import List
 
-from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
+import numpy as np
+import scipy.stats as stats
+
+from popsynth.auxiliary_sampler import AuxiliaryParameter, AuxiliarySampler
+
+ArrayLike = List[float]
 
 
 class LogNormalAuxSampler(AuxiliarySampler):
@@ -10,35 +15,79 @@ class LogNormalAuxSampler(AuxiliarySampler):
     tau = AuxiliaryParameter(default=1, vmin=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
-    def __init__(self, name, observed=True):
+    def __init__(self, name: str, observed: bool = True):
         """
-        A Log normal sampler. None the tru values are in log
+        A Log normal sampler
 
-        :param name: 
-        :param mu: 
-        :param tau: 
-        :param sigma: 
-        :param observed: 
-        :returns: 
-        :rtype: 
+        where x ~ 10^N(mu, sigma)
+
+
+        :param name:
+        :param observed:
+        :returns:
+        :rtype:
 
         """
         super(LogNormalAuxSampler, self).__init__(name=name, observed=observed)
 
-    def true_sampler(self, size):
+    def true_sampler(self, size: int):
 
-        self._true_values = stats.norm.rvs(
-            loc=np.log10(self.mu), scale=self.tau, size=size
-        )
+        self._true_values = np.exp(
+            stats.norm.rvs(loc=self.mu, scale=self.tau,
+                           size=size))  # type: ArrayLike
 
-    def observation_sampler(self, size):
+    def observation_sampler(self, size: int):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)  # type: ArrayLike
 
         else:
 
-            self._obs_values = self._true_values
+            self._obs_values = self._true_values  # type: ArrayLike
+
+
+class Log10NormalAuxSampler(AuxiliarySampler):
+
+    mu = AuxiliaryParameter(default=0)
+    tau = AuxiliaryParameter(default=1, vmin=0)
+    sigma = AuxiliaryParameter(default=1, vmin=0)
+
+    def __init__(self, name: str, observed: bool = True):
+        """
+        A Log10 normal sampler.
+
+        where x ~ 10^N(mu, sigma)
+
+
+
+        :param name:
+        :param observed:
+        :returns:
+        :rtype:
+
+        """
+        super(Log10NormalAuxSampler, self).__init__(name=name,
+                                                    observed=observed)
+
+    def true_sampler(self, size: int):
+
+        self._true_values = np.power(10,
+                                     stats.norm.rvs(
+                                         loc=self.mu,
+                                         scale=self.tau,
+                                         size=size))  # type: ArrayLike
+
+    def observation_sampler(self, size: int):
+
+        if self._is_observed:
+
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)  # type: ArrayLike
+
+        else:
+
+            self._obs_values = self._true_values  # type: ArrayLike

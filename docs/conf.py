@@ -14,40 +14,43 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'popsynth'
 copyright = '2019, J. Michael Burgess'
 author = 'J. Michael Burgess'
 
-
 import sys
 import os
 
 sys.path.insert(0, os.path.abspath('../'))
-
-
 
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['nbsphinx',
-              'sphinx.ext.autodoc',
-              'sphinx.ext.mathjax',
-              'sphinx.ext.viewcode',
-              'sphinx.ext.autodoc',
-              'sphinx.ext.githubpages',
-              'sphinx.ext.napoleon'
+extensions = [
+    'nbsphinx', 'sphinx.ext.autodoc', 'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon', 'rtds_action'
 ]
 
 napoleon_google_docstring = True
 napoleon_use_param = False
 
+# The name of your GitHub repository
+rtds_action_github_repo = "grburgess/popsynth"
 
+# The path where the artifact should be extracted
+# Note: this is relative to the conf.py file!
+rtds_action_path = "notebooks"
 
+# The "prefix" used in the `upload-artifact` step of the action
+rtds_action_artifact_prefix = "notebooks-for-"
+
+# A GitHub personal access token is required, more info below
+rtds_action_github_token = os.environ["GITHUB_TOKEN"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -56,7 +59,6 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -70,26 +72,20 @@ html_theme = 'sphinx_rtd_theme'
 
 html_static_path = ['_static']
 
-
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
 html_css_files = [
     'css/custom.css',
 ]
 
-
 html_js_files = [
     'css/custom.js',
 ]
-
-
-
 
 html_show_sourcelink = False
 html_favicon = "media/favicon.ico"
 
 html_show_sphinx = False
-
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
@@ -108,29 +104,23 @@ nbsphinx_execute_arguments = [
 
 # autoclass_content = 'both'
 
-
 # edit_on_github_project = 'JohannesBuchner/UltraNest'
 # edit_on_github_branch = 'master'
 # #edit_on_github_url
 # edit_on_github_src = 'docs/'  # optional. default: ''
 
-
-
 html_theme_options = {
- #   'canonical_url': 'https://johannesbuchner.github.io/UltraNest/',
+    #   'canonical_url': 'https://johannesbuchner.github.io/UltraNest/',
     'style_external_links': True,
     # 'vcs_pageview_mode': 'edit',
     'style_nav_header_background': '#470E80',
     #'only_logo': True,
 }
 
-
-
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'popsynthdoc'
 
-html_logo ='media/logo.png'
-
+html_logo = 'media/logo.png'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -152,7 +142,6 @@ latex_elements = {
     # 'figure_align': 'htbp',
 }
 
-
 master_doc = 'index'
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -163,16 +152,11 @@ latex_documents = [
      u'J. Michael Burgess', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'popsynth', u'popsynth Documentation',
-     [author], 1)
-]
-
+man_pages = [(master_doc, 'popsynth', u'popsynth Documentation', [author], 1)]
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -180,10 +164,6 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'popsynth', u'popsynth Documentation',
-     author, 'popsynth', 'One line description of project.',
-     'Miscellaneous'),
+    (master_doc, 'popsynth', u'popsynth Documentation', author, 'popsynth',
+     'One line description of project.', 'Miscellaneous'),
 ]
-
-
-

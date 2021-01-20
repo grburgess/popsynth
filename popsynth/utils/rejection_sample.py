@@ -1,17 +1,17 @@
-#from numba import jit, njit, prange, float64
+# from numba import jit, njit, prange, float64
 import numpy as np
 
 
-#@jit(parallel=False, forceobj=True)
+# @jit(parallel=False, forceobj=True)
 def rejection_sample(size, ymax, xmax, func):
     """FIXME! briefly describe function
 
-    :param size: 
-    :param ymax: 
-    :param xmax: 
-    :param func: 
-    :returns: 
-    :rtype: 
+    :param size:
+    :param ymax:
+    :param xmax:
+    :param func:
+    :returns:
+    :rtype:
 
     """
 
@@ -36,6 +36,3 @@ def rejection_sample(size, ymax, xmax, func):
                 break
 
     return r_out
-
-
-

@@ -11,7 +11,6 @@ from .pareto_populations import (
     ParetoZPowerSphericalPopulation,
 )
 
-
 from .bpl_population import (
     BPLHomogeneousSphericalPopulation,
     BPLSFRPopulation,

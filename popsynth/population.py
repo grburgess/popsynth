@@ -1,63 +1,65 @@
-import h5py
 import importlib
-import numpy as np
-import matplotlib.pyplot as plt
+from typing import List, Type
+
+import h5py
 import ipyvolume as ipv
-import pythreejs
 import ipywidgets as widgets
-
+import matplotlib.pyplot as plt
 import networkx as nx
-
-
+import numpy as np
 import pandas as pd
-from IPython.display import display, Math, Markdown
+import pythreejs
+from betagen import betagen
+from IPython.display import Markdown, Math, display
 
-from popsynth.utils.spherical_geometry import xyz
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
-    recursively_save_dict_contents_to_group,
+    clean_graph_dict, fill_graph_dict,
     recursively_load_dict_contents_from_group,
-    fill_graph_dict,
-    clean_graph_dict,
-)
+    recursively_save_dict_contents_to_group)
+from popsynth.utils.spherical_geometry import xyz
 
-from betagen import betagen
+#from numpy.typing import ArrayLike
+
+# dummy
+ArrayLike = List[float]
 
 wine = "#8F2727"
-dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
+dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
+    wine)
 
 
 class Population(object):
     def __init__(
         self,
-        luminosities,
-        distances,
-        known_distances,
-        known_distance_idx,
-        unknown_distance_idx,
-        fluxes,
-        flux_obs,
-        selection,
-        flux_sigma,
-        r_max,
-        boundary,
-        strength,
-        n_model,
-        lf_params,
-        spatial_params=None,
+        luminosities: ArrayLike,
+        distances: ArrayLike,
+        known_distances: ArrayLike,
+        known_distance_idx: ArrayLike,
+        unknown_distance_idx: ArrayLike,
+        fluxes: ArrayLike,
+        flux_obs: ArrayLike,
+        selection: ArrayLike,
+        flux_sigma: float,
+        r_max: float,
+        boundary: float,
+        strength: float,
+        n_model: int,
+        lf_params: dict,
+        spatial_params: dict = None,
         model_spaces=None,
-        seed=1234,
-        name=None,
-        spatial_form=None,
-        lf_form=None,
-        auxiliary_quantities=None,
-        truth={},
-        hard_cut=False,
-        distance_probability=1.0,
+        seed: int = 1234,
+        name: str = None,
+        spatial_form: dict = None,
+        lf_form: dict = None,
+        auxiliary_quantities: dict = None,
+        truth: dict = {},
+        hard_cut: bool = False,
+        distance_probability: float = 1.0,
         graph=None,
         theta=None,
         phi=None,
-    ):
+    ) -> None:
         """
         A population containing all the simulated variables
 
@@ -73,61 +75,60 @@ class Population(object):
         :param r_max: the maximum distance of the survey
         :param boundary: the flux boundary
         :param strength: the strength of the sofft boundary
-        :param n_model: 
-        :param lf_params: 
-        :param spatial_params: 
-        :param model_spaces: 
+        :param n_model:
+        :param lf_params:
+        :param spatial_params:
+        :param model_spaces:
         :param seed: the random seed
-        :param name: 
-        :param spatial_form: 
-        :param lf_form: 
-        :param auxiliary_quantities: 
-        :param truth: 
-        :param hard_cut: 
-        :param distance_probability: 
-        :returns: 
-        :rtype: 
+        :param name:
+        :param spatial_form:
+        :param lf_form:
+        :param auxiliary_quantities:
+        :param truth:
+        :param hard_cut:
+        :param distance_probability:
+        :returns:
+        :rtype:
 
         """
-        self._luminosities = luminosities
+        self._luminosities = luminosities  # type: ArrayLike
 
-        self._distances = distances
-        self._known_distances = known_distances
-        self._known_distance_idx = known_distance_idx
-        self._unknown_distance_idx = unknown_distance_idx
+        self._distances = distances  # type: ArrayLike
+        self._known_distances = known_distances  # type: ArrayLike
+        self._known_distance_idx = known_distance_idx  # type: ArrayLike
+        self._unknown_distance_idx = unknown_distance_idx  # type: ArrayLike
 
-        self._theta = theta
-        self._phi = phi
+        self._theta = theta  # type: ArrayLike
+        self._phi = phi  # type: ArrayLike
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
-            selection
-        ), "the distances are not the correct size"
+            selection), "the distances are not the correct size"
 
         # latent fluxes
-        self._fluxes = fluxes
+        self._fluxes = fluxes  # type: ArrayLike
 
         # observed fluxes
-        self._flux_obs = flux_obs
-        self._selection = selection
-        self._flux_sigma = flux_sigma
+        self._flux_obs = flux_obs  # type: ArrayLike
+        self._selection = selection  # type: ArrayLike
+        self._flux_sigma = flux_sigma  # type: float
 
-        self._r_max = r_max
+        self._r_max = r_max  # type: float
 
-        self._boundary = boundary
-        self._strength = strength
-        self._seed = seed
-        self._n_model = n_model
-        self._name = name
+        self._boundary = boundary  # type: float
+        self._strength = strength  # type: float
+        self._seed = seed  # type: int
+        self._n_model = n_model  # type: int
+        self._name = name  # type: str
         self._spatial_form = spatial_form
         self._lf_form = lf_form
 
-        self._flux_selected = flux_obs[selection]
-        self._distance_selected = distances[selection]
-        self._luminosity_selected = luminosities[selection]
+        self._flux_selected = flux_obs[selection]  # type: ArrayLike
+        self._distance_selected = distances[selection]  # type: ArrayLike
+        self._luminosity_selected = luminosities[selection]  # type: ArrayLike
 
-        self._flux_hidden = flux_obs[~selection]
-        self._distance_hidden = distances[~selection]
-        self._luminosity_hidden = luminosities[~selection]
+        self._flux_hidden = flux_obs[~selection]  # type: ArrayLike
+        self._distance_hidden = distances[~selection]  # type: ArrayLike
+        self._luminosity_hidden = luminosities[~selection]  # type: ArrayLike
 
         self._lf_params = lf_params
         self._spatial_params = spatial_params
@@ -136,12 +137,16 @@ class Population(object):
 
         self._truth = truth
 
-        self._hard_cut = hard_cut
-        self._distance_probability = distance_probability
+        self._hard_cut = hard_cut  # type: bool
+        self._distance_probability = distance_probability  # type: float
 
         self._graph = graph
 
-        if sum(self._selection) == 0:
+        self._n_objects = len(selection)  # type: int
+        self._n_detections = sum(self._selection)  # type: int
+        self._n_non_detections = self._n_objects - self._n_detections  # type: int
+
+        if self._n_detections == 0:
 
             self._no_detection = True
 
@@ -159,7 +164,7 @@ class Population(object):
                 setattr(self, "%s_obs" % k, v["obs_values"])
                 setattr(self, "%s_selected" % k, v["obs_values"][selection])
 
-        self._auxiliary_quantites = auxiliary_quantities
+        self._auxiliary_quantities = auxiliary_quantities
 
         if model_spaces is not None:
 
@@ -176,45 +181,62 @@ class Population(object):
         """
         the simulated truth parameters
 
-        :returns: 
-        :rtype: 
+        :returns:
+        :rtype:
 
         """
 
         return self._truth
 
+    @property
+    def boundary(self) -> float:
+        return self._boundary
 
     @property
-    def theta(self):
+    def flux_sigma(self) -> float:
+
+        return self._flux_sigma
+
+    @property
+    def strength(self) -> float:
+
+        return self._strength
+
+    @property
+    def distance_probabilty(self) -> float:
+        if self._distance_probabilty is None:
+
+            return 1.0
+
+        else:
+
+            return self._distance_probability
+
+    @property
+    def theta(self) -> np.ndarray:
         return self._theta
 
     @property
-    def phi(self):
+    def phi(self) -> np.ndarray:
         return self._phi
-    
+
     @property
-    def luminosities(self):
+    def luminosities_latent(self) -> np.ndarray:
         """
-        The true luminosities of the objects
+        The true luminosities of the objects. These are always latent
+        as one cannot directly observe them
         """
         return self._luminosities
 
     @property
-    def latent_fluxes(self):
-        """
-        The latent fluxes of the objects
-        """
-        return self._fluxes
-
-    @property
-    def distances(self):
+    def distances(self) -> np.ndarray:
         """
         The distances to the objects
         """
         return self._distances
 
     @property
-    def known_distances(self):
+    def known_distances(self) -> np.ndarray:
         """
         The observed distances
         """
@@ -222,14 +244,21 @@ class Population(object):
         return self._known_distances
 
     @property
-    def selection(self):
+    def selection(self) -> np.ndarray:
         """
         The selection vector
         """
         return self._selection
 
     @property
-    def flux_observed_all(self):
+    def fluxes_latent(self) -> np.ndarray:
+        """
+        The latent fluxes of the objects
+        """
+        return self._fluxes
+
+    @property
+    def fluxes_observed(self) -> np.ndarray:
         """
         All of the observed fluxes, i.e.,
         scattered with error
@@ -238,17 +267,7 @@ class Population(object):
         return self._flux_obs
 
     @property
-    def selected_fluxes(self):
-        """
-        The selected obs fluxes
-        """
-
-        DeprecationWarning("Use selected_observed_fluxes")
-
-        return self._flux_selected
-
-    @property
-    def selected_observed_fluxes(self):
+    def selected_fluxes_observed(self) -> np.ndarray:
         """
         The selected obs fluxes
         """
@@ -256,7 +275,7 @@ class Population(object):
         return self._flux_selected
 
     @property
-    def selected_latent_fluxes(self):
+    def selected_fluxes_latent(self) -> np.ndarray:
         """
         The selected latent fluxes
         """
@@ -264,7 +283,7 @@ class Population(object):
         return self._fluxes[self._selection]
 
     @property
-    def selected_distances(self):
+    def selected_distances(self) -> np.ndarray:
         """
         The selected distances. Note, this is different than
         the KNOWN distances
@@ -272,7 +291,7 @@ class Population(object):
         return self._distance_selected
 
     @property
-    def hidden_observed_fluxes(self):
+    def hidden_fluxes_observed(self) -> np.ndarray:
         """
         The observed fluxes that are hidden by the selection
         """
@@ -280,7 +299,7 @@ class Population(object):
         return self._flux_hidden
 
     @property
-    def hidden_distances(self):
+    def hidden_distances(self) -> np.ndarray:
         """
         The distances that are hidden by the selection
         """
@@ -288,7 +307,7 @@ class Population(object):
         return self._distance_hidden
 
     @property
-    def hidden_latent_fluxes(self):
+    def hidden_fluxes_latent(self) -> np.ndarray:
         """
         The latent fluxes that are hidden by the selection
         """
@@ -296,11 +315,11 @@ class Population(object):
         return self._fluxes[~self._selection]
 
     @property
-    def hard_cut(self):
+    def hard_cut(self) -> bool:
         return self._hard_cut
 
     @property
-    def distance_probability(self):
+    def distance_probability(self) -> float:
         return self._distance_probability
 
     @property
@@ -308,37 +327,63 @@ class Population(object):
         return self._lf_params
 
     @property
+    def n_objects(self) -> int:
+        """
+        The number of objects in the population
+        """
+        return self._n_objects
+
+    @property
+    def n_detections(self) -> int:
+        """
+        The number of DETECTED objects in the population
+        """
+
+        return self._n_detections
+
+    @property
+    def n_non_detections(self) -> int:
+        """
+        The number of NON-DETECTED objects in the population
+        """
+
+        return self._n_non_detections
+
+    @property
+    def has_detections(self) -> bool:
+        """
+        If the population has detections
+        """
+
+        return not self._no_detection
+
+    @property
     def spatial_parameters(self):
         return self._spatial_params
 
-    def _prob_det(self, x, boundary, strength):
-        """
-        Soft detection threshold
-
-        :param x: values to test
-        :param boundary: mean value of the boundary
-        :param strength: the strength of the threshold
-        """
-
-        return sf.expit(strength * (x - boundary))
-
-    def to_stan_data(self):
+    def to_stan_data(self) -> dict:
         """
         Create Stan input
         """
 
         # create a dict for Stan
         output = dict(
-            N=self._selection.sum(),
+            N=self._n_detections,
             Nz=len(self._known_distances),
             Nnz=len(self._unknown_distance_idx),
             z_obs=self._distance_selected,
             known_z_obs=self._known_distances,
             z_idx=self._known_distance_idx + 1,  # stan indexing
             z_nidx=self._unknown_distance_idx + 1,  # stan indexing
+            r_obs=self._distance_selected,
+            known_r_obs=self._known_distances,
+            r_idx=self._known_distance_idx + 1,  # stan indexing
+            r_nidx=self._unknown_distance_idx + 1,  # stan indexing
             log_flux_obs=np.log10(self._flux_selected),
+            flux_obs=self._flux_selected,
             flux_sigma=self._flux_sigma,
             z_max=self._r_max,
+            r_max=self._r_max,
             N_model=self._n_model,
             boundary=self._boundary,
             strength=self._strength,
@@ -349,14 +394,19 @@ class Population(object):
 
             output[k] = v
 
-        for k, v in self._auxiliary_quantites.items():
+        for k, v in self._auxiliary_quantities.items():
 
             output["%s_obs" % k] = v["obs_values"][self._selection]
-            
+
+        for k, v in output.items():
+
+            if isinstance(v, np.int64):
+
+                output[k] = int(v)
 
         return output
 
-    def writeto(self, file_name):
+    def writeto(self, file_name: str) -> None:
         """
         write population to an HDF5 file
 
@@ -372,7 +422,9 @@ class Population(object):
 
             for k, v in self._spatial_params.items():
 
-                spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                spatial_grp.create_dataset(k,
+                                           data=np.array([v]),
+                                           compression="lzf")
 
             if self._lf_params is not None:
 
@@ -380,7 +432,9 @@ class Population(object):
 
                 for k, v in self._lf_params.items():
 
-                    lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                    lum_grp.create_dataset(k,
+                                           data=np.array([v]),
+                                           compression="lzf")
 
                 f.attrs["lf_form"] = np.string_(self._lf_form)
 
@@ -400,38 +454,44 @@ class Population(object):
             f.attrs["distance_probability"] = self._distance_probability
             f.attrs["hard_cut"] = self._hard_cut
 
-            f.create_dataset("luminosities", data=self._luminosities, compression="lzf")
-            f.create_dataset("distances", data=self._distances, compression="lzf")
-            f.create_dataset(
-                "known_distances", data=self._known_distances, compression="lzf"
-            )
-            f.create_dataset(
-                "known_distance_idx", data=self._known_distance_idx, compression="lzf"
-            )
+            f.create_dataset("luminosities",
+                             data=self._luminosities,
+                             compression="lzf")
+            f.create_dataset("distances",
+                             data=self._distances,
+                             compression="lzf")
+            f.create_dataset("known_distances",
+                             data=self._known_distances,
+                             compression="lzf")
+            f.create_dataset("known_distance_idx",
+                             data=self._known_distance_idx,
+                             compression="lzf")
             f.create_dataset(
                 "unknown_distance_idx",
                 data=self._unknown_distance_idx,
                 compression="lzf",
             )
             f.create_dataset("fluxes", data=self._fluxes, compression="lzf")
-            f.create_dataset("flux_obs", data=self._flux_obs, compression="lzf")
-            f.create_dataset("selection", data=self._selection, compression="lzf")
+            f.create_dataset("flux_obs",
+                             data=self._flux_obs,
+                             compression="lzf")
+            f.create_dataset("selection",
+                             data=self._selection,
+                             compression="lzf")
             f.create_dataset("theta", data=self._theta, compression="lzf")
             f.create_dataset("phi", data=self._phi, compression="lzf")
 
             aux_grp = f.create_group("auxiliary_quantities")
 
-            for k, v in self._auxiliary_quantites.items():
+            for k, v in self._auxiliary_quantities.items():
 
                 q_grp = aux_grp.create_group(k)
-                q_grp.create_dataset(
-                    "true_values", data=v["true_values"], compression="lzf"
-                )
-                q_grp.create_dataset(
-                    "obs_values", data=v["obs_values"], compression="lzf"
-                )
-
-
+                q_grp.create_dataset("true_values",
+                                     data=v["true_values"],
+                                     compression="lzf")
+                q_grp.create_dataset("obs_values",
+                                     data=v["obs_values"],
+                                     compression="lzf")
 
             model_grp = f.create_group("model_spaces")
 
@@ -443,8 +503,7 @@ class Population(object):
             recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
             recursively_save_dict_contents_to_group(
-                f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph))
-            )
+                f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph)))
 
     @classmethod
     def from_file(cls, file_name):
@@ -504,7 +563,8 @@ class Population(object):
             try:
                 known_distances = f["known_distances"][()]
                 known_distance_idx = (f["known_distance_idx"][()]).astype(int)
-                unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
+                unknown_distance_idx = (
+                    f["unknown_distance_idx"][()]).astype(int)
 
             except:
 
@@ -527,15 +587,17 @@ class Population(object):
             for k in f["auxiliary_quantities"].keys():
 
                 auxiliary_quantities[str(k)] = {
-                    "true_values": f["auxiliary_quantities"][k]["true_values"][()],
-                    "obs_values": f["auxiliary_quantities"][k]["obs_values"][()],
+                    "true_values":
+                    f["auxiliary_quantities"][k]["true_values"][()],
+                    "obs_values":
+                    f["auxiliary_quantities"][k]["obs_values"][()],
                 }
 
             truth = recursively_load_dict_contents_from_group(f, "truth")
 
             graph = nx.from_dict_of_dicts(
-                clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
-            )
+                clean_graph_dict(
+                    recursively_load_dict_contents_from_group(f, "graph")))
 
         return cls(
             luminosities=luminosities,
@@ -565,6 +627,87 @@ class Population(object):
             graph=graph,
             theta=theta,
             phi=phi,
+        )
+
+    def to_sub_population(self, observed: bool = True) -> "Population":
+        """
+        Create a population that is down selected from either the 
+        observed or unobserved population
+
+        :param observed: extract the observed or unobserved object
+
+        """
+
+        if observed:
+            selection = self._selection
+
+        else:
+
+            selection = ~self._selection
+
+        if self._auxiliary_quantities is not None:
+
+            new_aux = {}
+
+            for k, v in self._auxiliary_quantities.items():
+
+                new_aux[k] = {
+                    "true_values": v["true_values"][selection],
+                    "obs_values": v["obs_values"][selection]
+                }
+
+        else:
+
+            new_aux = None
+
+        itr = 0
+        known_distances = []
+        known_distance_idx = []
+        unknown_distance_idx = []
+
+        for i, s in enumerate(selection):
+
+            if s:
+
+                if i in self._known_distances:
+
+                    known_distances.append(self._distances[i])
+                    known_distance_idx.append(itr)
+
+                else:
+
+                    unknown_distance_idx.append(itr)
+
+                itr += 1
+
+        return Population(
+            luminosities=self._luminosities[selection],
+            distances=self._distances[selection],
+            known_distances=np.array(known_distances),
+            known_distance_idx=np.array(known_distance_idx),
+            unknown_distance_idx=np.array(unknown_distance_idx),
+            fluxes=self._fluxes[selection],
+            flux_obs=self._flux_obs[selection],
+            selection=np.ones(sum(selection), dtype=bool),
+            flux_sigma=self._flux_sigma,
+            n_model=self._n_model,
+            r_max=self._r_max,
+            boundary=self._boundary,
+            strength=self._strength,
+            lf_params=self._lf_params,
+            spatial_params=self._spatial_params,
+            model_spaces=self._model_spaces,
+            seed=self._seed,
+            name=self._name,
+            spatial_form=self._spatial_form,
+            lf_form=self._lf_form,
+            auxiliary_quantities=new_aux,
+            truth=self._truth,
+            distance_probability=self._distance_probability,
+            hard_cut=self._hard_cut,
+            graph=self._graph,
+            theta=self._theta[selection],
+            phi=self._phi[selection],
         )
 
     def display(self):
@@ -639,7 +782,9 @@ class Population(object):
 
         try:
 
-            ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+            ax.set_ylim(
+                bottom=min([self._fluxes.min(),
+                            self._flux_selected.min()]))
 
         except:
 
@@ -693,7 +838,8 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+        ax.set_ylim(bottom=min([self._fluxes.min(),
+                                self._flux_selected.min()]))
         ax.set_xlim(right=self._r_max)
 
         ax.set_xlabel("distance")
@@ -735,9 +881,9 @@ class Population(object):
 
         if (with_arrows) and (not self._no_detection):
             for start, stop, z in zip(
-                self._fluxes[self._selection],
-                self._flux_selected,
-                self._distance_selected,
+                    self._fluxes[self._selection],
+                    self._flux_selected,
+                    self._distance_selected,
             ):
 
                 x = z
@@ -755,6 +901,42 @@ class Population(object):
                     head_length=0.2 * np.abs(dy),
                     length_includes_head=True,
                 )
+
+        return fig
+
+    def display_luminosities(
+        self,
+        ax=None,
+        true_color=light,
+        obs_color=dark,
+        **kwargs,
+    ):
+        """FIXME! briefly describe function
+
+        :param ax:
+        :param true_color:
+        :param obs_color:
+
+        :returns:
+        :rtype:
+
+        """
+
+        if ax is None:
+            fig, ax = plt.subplots()
+
+        else:
+
+            fig = ax.get_figure()
+
+        ax.scatter(self._distance_selected,
+                   self._luminosity_selected,
+                   s=5,
+                   color=obs_color)
+        ax.scatter(self._distance_hidden,
+                   self._luminosity_hidden,
+                   s=5,
+                   color=true_color)
 
         return fig
 

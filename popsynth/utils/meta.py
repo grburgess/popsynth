@@ -1,14 +1,21 @@
-class Parameter(object):
-    def __init__(self, default=None, vmin=None, vmax=None):
+from typing import Union, Dict
 
-        self.name = None
-        self._vmin = vmin
-        self._vmax = vmax
-        self._default = default
-        
+
+class Parameter(object):
+    def __init__(
+        self,
+        default: Union[None, float] = None,
+        vmin: Union[None, float] = None,
+        vmax: Union[None, float] = None,
+    ):
+
+        self.name = None  # type: Union[None, str]
+        self._vmin = vmin  # type: Union[None, float]
+        self._vmax = vmax  # type: Union[None, float]
+        self._default = default  # type: Union[None, float]
 
     @property
-    def default(self):
+    def default(self) -> Union[None, float]:
         return self._default
 
     def __get__(self, obj, type=None) -> object:
@@ -19,18 +26,14 @@ class Parameter(object):
 
         except:
             obj._parameter_storage[self.name] = self._default
-            
 
         return obj._parameter_storage[self.name]
-        
-            
-
 
         return obj._parameter_storage[self.name]
 
     def __set__(self, obj, value) -> None:
         self._is_set = True
-        
+
         if self._vmin is not None:
             assert (
                 value >= self._vmin
@@ -63,7 +66,6 @@ class ParameterMeta(type):
         cls.__abstractmethods__ = frozenset(abstracts)
 
         ### parameters
-        
 
         for k, v in attrs.items():
 
@@ -104,4 +106,3 @@ class ParameterMeta(type):
         # No dice; update negative cache
         cls._abc_negative_cache.add(subclass)
         return False
-

@@ -15,14 +15,15 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
     def __init__(self, name, observed=True):
         """FIXME! briefly describe function
 
-        :param name: 
-        :param observed: 
-        :returns: 
-        :rtype: 
+        :param name:
+        :param observed:
+        :returns:
+        :rtype:
 
         """
 
-        super(TruncatedNormalAuxSampler, self).__init__(name=name, observed=observed)
+        super(TruncatedNormalAuxSampler, self).__init__(name=name,
+                                                        observed=observed)
 
     def true_sampler(self, size):
 
@@ -30,7 +31,11 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
         u = (self.upper - self.mu) / self.tau
 
         self._true_values = stats.truncnorm.rvs(
-            l, u, loc=self.mu, scale=self.tau, size=size,
+            l,
+            u,
+            loc=self.mu,
+            scale=self.tau,
+            size=size,
         )
 
         assert np.alltrue(self._true_values >= self.lower)
@@ -40,9 +45,9 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)
 
         else:
 
