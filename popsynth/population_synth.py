@@ -598,15 +598,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if verbose:
             print("Detected %d distances" % len(known_distances))
 
-        if (self._spatial_selector is not None) and (not no_selection):
-
-            self._spatial_selector.set_spatail_distribution(
-                self._spatial_distribution)
-
-            self._spatial_selector.draw(n)
-
-            global_selection += self._spatial_selector
-
+ 
         if verbose:
             try:
 
