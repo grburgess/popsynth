@@ -8,18 +8,23 @@ import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
 from IPython.display import Markdown, Math, display
+
 # from numpy.typing import np.ndarray
 from numba import float64, jit, njit, prange
+
 # from popsynth.utils.progress_bar import progress_bar
 from tqdm.autonotebook import tqdm as progress_bar
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
-from popsynth.selection_probability import (BernoulliSelection,
-                                            HardFluxSelection,
-                                            SelectionProbabilty,
-                                            SoftFluxSelection, UnitySelection)
+from popsynth.selection_probability import (
+    BernoulliSelection,
+    HardFluxSelection,
+    SelectionProbabilty,
+    SoftFluxSelection,
+    UnitySelection,
+)
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
@@ -289,7 +294,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         self._spatial_distribution.draw_sky_positions(size=n)
 
-        distances = (self._spatial_distribution.distances)  # type: np.ndarray
+        distances = self._spatial_distribution.distances  # type: np.ndarray
 
         if verbose:
             print("Expecting %d total objects" % n)
