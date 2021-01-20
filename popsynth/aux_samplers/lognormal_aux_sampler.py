@@ -32,9 +32,9 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size: int):
 
-        self._true_values = np.exp(stats.norm.rvs(loc=self.mu,
-                                                  scale=self.tau,
-                                                  size=size))  # type: ArrayLike
+        self._true_values = np.exp(
+            stats.norm.rvs(loc=self.mu, scale=self.tau,
+                           size=size))  # type: ArrayLike
 
     def observation_sampler(self, size: int):
 
@@ -69,14 +69,16 @@ class Log10NormalAuxSampler(AuxiliarySampler):
         :rtype:
 
         """
-        super(Log10NormalAuxSampler, self).__init__(
-            name=name, observed=observed)
+        super(Log10NormalAuxSampler, self).__init__(name=name,
+                                                    observed=observed)
 
     def true_sampler(self, size: int):
 
-        self._true_values = np.power(10, stats.norm.rvs(loc=self.mu,
-                                                        scale=self.tau,
-                                                        size=size))  # type: ArrayLike
+        self._true_values = np.power(10,
+                                     stats.norm.rvs(
+                                         loc=self.mu,
+                                         scale=self.tau,
+                                         size=size))  # type: ArrayLike
 
     def observation_sampler(self, size: int):
 
