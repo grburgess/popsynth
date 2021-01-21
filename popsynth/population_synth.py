@@ -10,8 +10,6 @@ import scipy.stats as stats
 from IPython.display import Markdown, Math, display
 # from numpy.typing import np.ndarray
 from numba import float64, jit, njit, prange
-# from popsynth.utils.progress_bar import progress_bar
-from popsynth.utils.progress_bar import progress_bar
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
@@ -21,6 +19,8 @@ from popsynth.selection_probability import (BernoulliSelection,
                                             SelectionProbabilty,
                                             SoftFluxSelection, UnitySelection)
 from popsynth.utils.logging import setup_logger
+# from popsynth.utils.progress_bar import progress_bar
+from popsynth.utils.progress_bar import progress_bar
 
 log = setup_logger(__name__)
 
@@ -558,6 +558,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 self._spatial_selector.draw(n)
 
+                log.info(
+                    f"Appling selection from {self._spatial_selector.name} which selected {self._spatial_selector.n_selected} of {self._spatial_selector.n_objects}")
+
                 global_selection += self._spatial_selector
 
         if global_selection.n_selected == n:
@@ -583,7 +586,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         try:
 
-            log.info("Deteced %d objects or to a distance of %.2f" %
+            log.info("Deteced %d objects our to a distance of %.2f" %
                      (global_selection.n_selected, max(known_distances)))
 
         except:

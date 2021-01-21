@@ -76,7 +76,7 @@ popsynth_usr_log_handler.setFormatter(_usr_formatter)
 # now set up the console logger
 
 _console_formatter = ColoredFormatter(
-    "{asctime} |{color} {levelname:8} {reset}| {color} {message} {reset}",
+    "{color} {levelname:8} {reset}| {color} {message} {reset}",
     style="{",
     datefmt="%Y-%m-%d %H:%M:%S",
     colors={
