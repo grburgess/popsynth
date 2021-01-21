@@ -269,7 +269,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # set the random seed
 
-
         np.random.seed(self._seed)
 
         # create a callback of the integrand
@@ -603,7 +602,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if verbose:
             print("Detected %d distances" % len(known_distances))
 
- 
         if verbose:
             try:
 
