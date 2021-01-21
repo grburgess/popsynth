@@ -227,6 +227,16 @@ class Population(object):
         return self._phi
 
     @property
+    def dec(self) -> np.ndarray:
+        return 90 - np.rad2deg(self._theta)
+
+    @property
+    def ra(self) -> np.ndarray:
+        return np.rad2deg(self._phi)
+
+
+    
+    @property
     def luminosities_latent(self) -> np.ndarray:
         """
         The true luminosities of the objects. These are always latent
