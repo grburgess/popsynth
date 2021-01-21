@@ -8,7 +8,6 @@ from numba.experimental import jitclass
 
 _sol = c.value  # speed of light
 
-
 spec = [
     #    ("_is_setup", bool_),
     ('Om', float32),
@@ -25,10 +24,9 @@ Ogamma0 = cosmo.Ogamma0
 
 @jitclass(spec)
 class Cosmology(object):
-
     def __init__(self, Om=0.307, h0=67.7):
 
-      #      self._is_setup = False
+        #      self._is_setup = False
 
         self.Om = Om
         self.h0 = h0
@@ -82,7 +80,8 @@ class Cosmology(object):
         x = self.xx(z)
         z1 = 1.0 + z
         val = ((2 * self.dh * z1 / self.Om_sqrt) *
-               (self.Phi(self.xx(0)) - 1.0 / (np.sqrt(z1)) * self.Phi(x)) * 3.086e24)  # in cm
+               (self.Phi(self.xx(0)) - 1.0 /
+                (np.sqrt(z1)) * self.Phi(x)) * 3.086e24)  # in cm
         return val
 
     def a(self, z):
