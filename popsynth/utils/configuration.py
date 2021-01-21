@@ -4,8 +4,9 @@ from configya import YAMLConfig
 
 structure = {}
 
-structure["logging"] = dict(debug=False, console=dict(
-    on=True, level="WARNING"), file=dict(on=True, level="INFO"))
+structure["logging"] = dict(debug=False,
+                            console=dict(on=True, level="WARNING"),
+                            file=dict(on=True, level="INFO"))
 structure["cosmology"] = dict(Om=0.307, h0=67.7)
 
 

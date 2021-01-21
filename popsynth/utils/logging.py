@@ -9,7 +9,6 @@ from colorama import Back, Fore, Style
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.package_data import get_path_of_log_dir, get_path_of_log_file
 
-
 colorama.deinit()
 colorama.init(strip=False)
 ## set up the console logging
@@ -19,10 +18,10 @@ class ColoredFormatter(logging.Formatter):
     """
     Colored log formatter.
     """
-
-    def __init__(
-        self, *args, colors: Optional[Dict[str, str]] = None, **kwargs
-    ) -> None:
+    def __init__(self,
+                 *args,
+                 colors: Optional[Dict[str, str]] = None,
+                 **kwargs) -> None:
         """Initialize the formatter with specified format strings."""
 
         super().__init__(*args, **kwargs)
@@ -49,9 +48,7 @@ class MyFilter(object):
 # now create the developer handler that rotates every day and keeps
 # 10 days worth of backup
 popsynth_dev_log_handler = handlers.TimedRotatingFileHandler(
-    get_path_of_log_file("dev.log"), when="D", interval=1, backupCount=10
-)
-
+    get_path_of_log_file("dev.log"), when="D", interval=1, backupCount=10)
 
 # lots of info written out
 
@@ -63,19 +60,16 @@ _dev_formatter = logging.Formatter(
 popsynth_dev_log_handler.setFormatter(_dev_formatter)
 popsynth_dev_log_handler.setLevel(logging.DEBUG)
 
-
 # now set up the usr log which will save the info
 
 popsynth_usr_log_handler = handlers.TimedRotatingFileHandler(
-    get_path_of_log_file("usr.log"), when="D", interval=1, backupCount=10
-)
+    get_path_of_log_file("usr.log"), when="D", interval=1, backupCount=10)
 
 popsynth_usr_log_handler.setLevel(popsynth_config["logging"]["file"]["level"])
 
 # lots of info written out
-_usr_formatter = logging.Formatter(
-    "%(asctime)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-)
+_usr_formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s",
+                                   datefmt="%Y-%m-%d %H:%M:%S")
 
 popsynth_usr_log_handler.setFormatter(_usr_formatter)
 
@@ -94,12 +88,10 @@ _console_formatter = ColoredFormatter(
     },
 )
 
-
 popsynth_console_log_handler = logging.StreamHandler(sys.stdout)
 popsynth_console_log_handler.setFormatter(_console_formatter)
-popsynth_console_log_handler.setLevel(popsynth_config["logging"]["console"]["level"])
-
-
+popsynth_console_log_handler.setLevel(
+    popsynth_config["logging"]["console"]["level"])
 
 warning_filter = MyFilter(logging.WARNING)
 
@@ -111,8 +103,7 @@ def silence_warnings():
 
     popsynth_usr_log_handler.addFilter(warning_filter)
     popsynth_console_log_handler.addFilter(warning_filter)
-    
-    
+
 
 def activate_warnings():
     """
@@ -146,9 +137,6 @@ def silence_console_log():
         popsynth_usr_log_handler.setLevel(current_usr_logging_level)
 
 
-        
-
-        
 def setup_logger(name):
 
     # A logger with name name will be created
