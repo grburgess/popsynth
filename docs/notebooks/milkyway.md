@@ -19,6 +19,7 @@ While not entirely useful at the moment. There is support for generating simplis
 
 ```python
 import popsynth
+popsynth.update_logging_level("INFO")
 from popsynth.populations.spatial_populations import MWRadialPopulation
 ```
 
