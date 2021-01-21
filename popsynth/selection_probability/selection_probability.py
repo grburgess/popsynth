@@ -3,6 +3,10 @@ from typing import Any
 
 import numpy as np
 
+from popsynth.utils.logging import setup_logger
+
+log = setup_logger(__name__)
+
 
 class SelectionVariableContaier(object):
     def __init__(self):
@@ -20,6 +24,8 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
         self._luminosity = None  # type: np.ndarray
 
     def __add__(self, other):
+
+        log.debug(f"adding selection from {other.name} to {self.name}")
 
         new_selection = np.logical_and(self._selection, other.selection)
 
@@ -68,7 +74,7 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
         self._observed_value = observed_value  # type: np.ndarray
 
     @abc.abstractclassmethod
-    def draw(self, size: int, verbose: bool = False) -> None:
+    def draw(self, size: int) -> None:
 
         pass
 
@@ -102,5 +108,5 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
 
 class DummySelection(SelectionProbabilty):
-    def draw(self, size=1, verbose=False):
+    def draw(self, size=1):
         pass

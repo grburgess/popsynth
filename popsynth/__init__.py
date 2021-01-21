@@ -1,29 +1,23 @@
 import scipy.stats as stats
 
-from popsynth.utils.cosmology import cosmology
-
 import popsynth.populations as populations
 from popsynth.aux_samplers import *
-from popsynth.auxiliary_sampler import (
-    AuxiliaryParameter,
-    AuxiliarySampler,
-    DerivedLumAuxSampler,
-    NonObservedAuxSampler,
-)
-from popsynth.distribution import (
-    DistributionParameter,
-    LuminosityDistribution,
-    SpatialDistribution,
-)
+from popsynth.auxiliary_sampler import (AuxiliaryParameter, AuxiliarySampler,
+                                        DerivedLumAuxSampler,
+                                        NonObservedAuxSampler)
+from popsynth.distribution import (DistributionParameter,
+                                   LuminosityDistribution, SpatialDistribution)
 from popsynth.population import Population
 from popsynth.population_synth import PopulationSynth
 from popsynth.populations import *
-from popsynth.selection_probability import (
-    BernoulliSelection,
-    HardFluxSelection,
-    SoftFluxSelection,
-    UnitySelection,
-)
+from popsynth.selection_probability import (BernoulliSelection,
+                                            HardFluxSelection,
+                                            SoftFluxSelection, UnitySelection)
+from popsynth.utils.configuration import popsynth_config
+from popsynth.utils.cosmology import cosmology
+from popsynth.utils.logging import (activate_warnings, show_progress,
+                                    silence_progress, silence_warnings,
+                                    update_logging_level)
 
 __all__ = [
     "AuxiliarySampler",

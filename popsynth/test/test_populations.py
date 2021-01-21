@@ -7,6 +7,10 @@ import pytest
 
 import popsynth
 
+from popsynth import update_logging_level
+
+update_logging_level("INFO")
+
 
 class DemoSampler(popsynth.AuxiliarySampler):
 
@@ -124,24 +128,23 @@ class Popbuilder(object):
 
             assert k in self.pop_gen._params
 
-    def draw_hard(self, verbose):
+    def draw_hard(self):
 
         pop = self.pop_gen.draw_survey(boundary=1e-6,
                                        flux_sigma=0.4,
                                        hard_cut=True,
-                                       verbose=verbose)
+                                       )
 
         self.reset()
 
         return pop
 
-    def draw_all(self, verbose):
+    def draw_all(self):
 
         pop = self.pop_gen.draw_survey(
             boundary=1e-999,
             flux_sigma=0.1,
             hard_cut=True,
-            verbose=verbose,
             no_selection=True,
         )
 
@@ -149,13 +152,13 @@ class Popbuilder(object):
 
         return pop
 
-    def draw_none(self, verbose):
+    def draw_none(self):
 
         pop = self.pop_gen.draw_survey(
             boundary=1e999,
             flux_sigma=0.1,
             hard_cut=True,
-            verbose=verbose,
+            
             no_selection=False,
         )
 
@@ -163,51 +166,51 @@ class Popbuilder(object):
 
         return pop
 
-    def draw_soft(self, verbose):
+    def draw_soft(self):
 
         pop = self.pop_gen.draw_survey(boundary=1e-4,
                                        flux_sigma=0.1,
-                                       hard_cut=False,
-                                       verbose=verbose)
+                                       hard_cut=False)
+                                       
 
         self.reset()
 
         return pop
 
-    def draw_z_select(self, verbose):
+    def draw_z_select(self):
 
         pop = self.pop_gen.draw_survey(boundary=1e-6,
                                        flux_sigma=0.5,
-                                       distance_probability=0.5,
-                                       verbose=verbose)
+                                       distance_probability=0.5
+                                       )
 
         self.reset()
 
         return pop
 
-    def draw_hard_with_selector(self, verbose):
+    def draw_hard_with_selector(self):
 
         selector = popsynth.HardFluxSelection(boundary=1e-4)
 
         self.pop_gen.set_flux_selection(selector)
 
         pop = self.pop_gen.draw_survey(boundary=1e-6,
-                                       flux_sigma=0.5,
-                                       verbose=verbose)
+                                       flux_sigma=0.5
+                                       )
 
         self.reset()
 
         return pop
 
-    def draw_soft_with_selector(self, verbose):
+    def draw_soft_with_selector(self):
 
         selector = popsynth.SoftFluxSelection(boundary=1e-4, strength=10)
 
         self.pop_gen.set_flux_selection(selector)
 
         pop = self.pop_gen.draw_survey(boundary=1e-6,
-                                       flux_sigma=0.5,
-                                       verbose=verbose)
+                                       flux_sigma=0.5
+                                       )
 
         self.reset()
 
@@ -228,8 +231,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_hard(verbose=True)
-        pop = self.draw_hard(verbose=False)
+        pop = self.draw_hard()
+        pop = self.draw_hard()
 
         pop.display()
 
@@ -247,8 +250,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_soft(verbose=True)
-        pop = self.draw_soft(verbose=False)
+        pop = self.draw_soft()
+        pop = self.draw_soft()
 
         pop.display()
 
@@ -279,8 +282,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_z_select(verbose=True)
-        pop = self.draw_z_select(verbose=False)
+        pop = self.draw_z_select()
+        pop = self.draw_z_select()
 
         pop.display()
 
@@ -297,8 +300,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_all(verbose=True)
-        pop = self.draw_all(verbose=False)
+        pop = self.draw_all()
+        pop = self.draw_all()
 
         pop.to_stan_data()
         pop.display_obs_fluxes()
@@ -330,8 +333,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_none(verbose=True)
-        pop = self.draw_none(verbose=False)
+        pop = self.draw_none()
+        pop = self.draw_none()
 
         pop.display()
 
@@ -358,8 +361,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_hard_with_selector(verbose=True)
-        pop = self.draw_hard_with_selector(verbose=False)
+        pop = self.draw_hard_with_selector()
+        pop = self.draw_hard_with_selector()
 
         pop.display()
 
@@ -377,8 +380,8 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_soft_with_selector(verbose=True)
-        pop = self.draw_soft_with_selector(verbose=False)
+        pop = self.draw_soft_with_selector()
+        pop = self.draw_soft_with_selector()
 
         pop.display()
 
@@ -410,11 +413,11 @@ def test_spatial_population_with_derived():
         # first make sure they all fail
 
         with pytest.raises(AssertionError):
-            pb.draw_hard(verbose=True)
+            pb.draw_hard()
         with pytest.raises(AssertionError):
-            pb.draw_soft(verbose=True)
+            pb.draw_soft()
         with pytest.raises(AssertionError):
-            pb.draw_z_select(verbose=True)
+            pb.draw_z_select()
 
         pb.pop_gen.add_observed_quantity(pb.d2)
 

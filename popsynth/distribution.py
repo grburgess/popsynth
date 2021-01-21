@@ -2,15 +2,20 @@ import abc
 from typing import Dict, List, Union
 
 import numpy as np
-from tqdm.autonotebook import tqdm as progress_bar
 
+from popsynth.utils.configuration import popsynth_config
+from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
+from popsynth.utils.progress_bar import progress_bar
 from popsynth.utils.rejection_sample import rejection_sample
 from popsynth.utils.spherical_geometry import sample_theta_phi
 
 #from numpy.typing import ArrayLike
 
 ArrayLike = List[float]
+
+
+log = setup_logger(__name__)
 
 
 class DistributionParameter(Parameter):
@@ -134,7 +139,7 @@ class SpatialDistribution(Distribution):
 
         self._theta, self._phi = sample_theta_phi(size)
 
-    def draw_distance(self, size: int, verbose: bool) -> None:
+    def draw_distance(self, size: int) -> None:
         """
         Draw the distances from the specified dN/dr model
         """
@@ -151,7 +156,9 @@ class SpatialDistribution(Distribution):
         # rejection sampling the distribution
         r_out = []
 
-        if verbose:
+        # slow
+
+        if popsynth_config["show_progress"]:
             for i in progress_bar(range(size), desc="Drawing distances"):
                 flag = True
                 while flag:
