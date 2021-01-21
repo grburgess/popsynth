@@ -33,7 +33,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         spatial_distribution: SpatialDistribution,
         luminosity_distribution: Union[LuminosityDistribution, None] = None,
         seed: int = 1234,
-        verbose: bool = True,
+        verbose: bool = False,
     ):
         """
         Basic and generic population synth. One specifies the spatial and luminosity distribution OR
@@ -246,7 +246,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         hard_cut: bool = False,
         distance_probability: Optional[float] = None,
         no_selection: bool = False,
-        verbose: bool = True,
+        verbose: bool = False,
         log10_flux_draw: bool = True,
     ) -> Population:
         """
@@ -269,7 +269,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         # set the random seed
 
-        #        pbar = progress_bar(total=5, desc='Integrating volume')
         np.random.seed(self._seed)
 
         # create a callback of the integrand
@@ -603,7 +602,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         if verbose:
             print("Detected %d distances" % len(known_distances))
 
- 
         if verbose:
             try:
 

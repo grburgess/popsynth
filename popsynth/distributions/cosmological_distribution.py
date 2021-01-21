@@ -1,58 +1,9 @@
 import numpy as np
+import numba as nb
 import math
-from astropy.constants import c as sol
-from numba import jit, njit
-from astropy.cosmology import WMAP9 as cosmo
 
 from popsynth.distribution import SpatialDistribution, DistributionParameter
-
-sol = sol.value
-
-h0 = 67.7
-dh = sol * 1.0e-3 / h0
-Om = 0.307
-Om_reduced = (1 - Om) / Om
-Om_sqrt = np.sqrt(Om)
-Ode = 1 - Om - (cosmo.Onu0 + cosmo.Ogamma0)
-
-
-@njit(fastmath=True)
-def Phi(x):
-    x2 = x * x
-    x3 = x * x * x
-    top = 1.0 + 1.320 * x + 0.441 * x2 + 0.02656 * x3
-    bottom = 1.0 + 1.392 * x + 0.5121 * x2 + 0.03944 * x3
-    return top / bottom
-
-
-@njit(fastmath=True)
-def xx(z):
-    return Om_reduced / np.power(1.0 + z, 3)
-
-
-@njit(fastmath=True)
-def luminosity_distance(z):
-    x = xx(z)
-    z1 = 1.0 + z
-    val = ((2 * dh * z1 / Om_sqrt) *
-           (Phi(xx(0)) - 1.0 / (np.sqrt(z1)) * Phi(x)) * 3.086e24)  # in cm
-    return val
-
-
-@njit(fastmath=True)
-def a(z):
-    return np.sqrt(np.power(1 + z, 3.0) * Om + Ode)
-
-
-@njit(fastmath=True)
-def comoving_transverse_distance(z):
-    return luminosity_distance(z) / (1.0 + z)
-
-
-@njit(fastmath=True)
-def differential_comoving_volume(z):
-    td = comoving_transverse_distance(z) / 3.086e24
-    return (dh * td * td / a(z)) * 1e-9  # Gpc^3
+from popsynth.utils.cosmology import cosmology
 
 
 class CosmologicalDistribution(SpatialDistribution):
@@ -72,12 +23,11 @@ class CosmologicalDistribution(SpatialDistribution):
 
     def differential_volume(self, z):
 
-        td = comoving_transverse_distance(z) / 3.086e24
-        return (dh * td * td / a(z)) * 1e-9  # Gpc^3
+        return cosmology.differential_comoving_volume(z)
 
     def transform(self, L, z):
 
-        return L / (4.0 * np.pi * luminosity_distance(z)**2)
+        return L / (4.0 * np.pi * cosmology.luminosity_distance(z)**2)
 
     def time_adjustment(self, z):
         if self._is_rate:
@@ -114,7 +64,7 @@ class SFRDistribtution(CosmologicalDistribution):
         )
 
 
-@njit(fastmath=True)
+@nb.njit(fastmath=True)
 def _dndv(z, r0, rise, decay, peak):
     top = 1.0 + rise * z
     bottom = 1.0 + np.power(z / peak, decay)
