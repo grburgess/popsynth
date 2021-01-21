@@ -1,11 +1,19 @@
 import abc
-from typing import Any, Dict, Union, List
+from typing import Any, Dict, List, Union
 
 import numpy as np
-#from numpy.typing import ArrayLike
 
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
+from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
+
+#from numpy.typing import ArrayLike
+
+
+
+
+log = setup_logger(__name__)
+
 
 ArrayLike = List[float]
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
@@ -91,7 +99,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._secondary_samplers[sampler.name] = sampler
         self._has_secondary = True  # type: bool
 
-    def draw(self, size: int = 1, verbose: bool = True):
+    def draw(self, size: int = 1):
         """
         Draw the primary and secondary samplers. This is the main call.
 
@@ -99,13 +107,13 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         """
         # do not resample!
         if not self._is_sampled:
-            if verbose:
-                print("Sampling: %s" % self.name)
+
+            log.info("Sampling: %s" % self.name)
 
             if self._has_secondary:
-                if verbose:
-                    print("%s is sampling its secondary quantities" %
-                          self.name)
+
+                log.info("%s is sampling its secondary quantities" %
+                         self.name)
 
             if self._uses_distance:
                 self._selector.set_distance(self._distance)
@@ -121,7 +129,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
                 # quantities to derive a luminosity
                 # as it should be the last thing dervied
 
-                v.draw(size=size, verbose=verbose)
+                v.draw(size=size)
 
             # Now, it is assumed that if this sampler depends on the previous samplers,
             # then those properties have been drawn

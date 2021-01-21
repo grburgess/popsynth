@@ -1,10 +1,14 @@
 import numpy as np
 import scipy.stats as stats
 import scipy.special as sf
-from tqdm.auto import tqdm, trange
+from popsynth.utils.progress_bar import progress_bar
 
 from .selection_probability import SelectionProbabilty
 
+from popsynth.utils.logging import setup_logger
+from popsynth.utils.configuration import popsynth_config
+
+log = setup_logger(__name__)
 
 class UnitySelection(SelectionProbabilty):
     def __init__(self):
@@ -13,7 +17,7 @@ class UnitySelection(SelectionProbabilty):
         """
         super(UnitySelection, self).__init__(name="unity")
 
-    def draw(self, size: int, verbose: bool = False) -> None:
+    def draw(self, size: int) -> None:
 
         self._selection = np.ones(size, dtype=int).astype(bool)
 
@@ -28,14 +32,14 @@ class BernoulliSelection(SelectionProbabilty):
 
         self._probability = probability  # type: float
 
-    def draw(self, size: int, verbose: bool = False) -> None:
+    def draw(self, size: int) -> None:
 
-        if verbose:
+        if popsynth_config["show_progress"]:
 
             self._selection = np.zeros(size, dtype=int).astype(
                 bool)  # type: np.ndarray
 
-            for i in trange(size, desc=f"Selecting {self.name}"):
+            for i in progress_bar(range(size), desc=f"Selecting {self.name}"):
 
                 # see if we detect the distance
                 if stats.bernoulli.rvs(self._probability) == 1:

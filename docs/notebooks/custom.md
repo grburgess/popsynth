@@ -38,7 +38,7 @@ yellow = "#F6EF5B"
 
 
 import popsynth
-
+popsynth.update_logging_level("INFO")
 import warnings
 warnings.simplefilter('ignore')
 ```

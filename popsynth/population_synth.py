@@ -8,23 +8,21 @@ import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
 from IPython.display import Markdown, Math, display
-
 # from numpy.typing import np.ndarray
 from numba import float64, jit, njit, prange
-
-# from popsynth.utils.progress_bar import progress_bar
-from tqdm.autonotebook import tqdm as progress_bar
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
-from popsynth.selection_probability import (
-    BernoulliSelection,
-    HardFluxSelection,
-    SelectionProbabilty,
-    SoftFluxSelection,
-    UnitySelection,
-)
+from popsynth.selection_probability import (BernoulliSelection,
+                                            HardFluxSelection,
+                                            SelectionProbabilty,
+                                            SoftFluxSelection, UnitySelection)
+from popsynth.utils.logging import setup_logger
+# from popsynth.utils.progress_bar import progress_bar
+from popsynth.utils.progress_bar import progress_bar
+
+log = setup_logger(__name__)
 
 
 class PopulationSynth(object, metaclass=abc.ABCMeta):
@@ -33,7 +31,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         spatial_distribution: SpatialDistribution,
         luminosity_distribution: Union[LuminosityDistribution, None] = None,
         seed: int = 1234,
-        verbose: bool = False,
+
     ):
         """
         Basic and generic population synth. One specifies the spatial and luminosity distribution OR
@@ -57,8 +55,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         self._auxiliary_observations = {}  # type: dict
 
         self._graph = nx.DiGraph()  # type: nx.Digraph
-
-        self._verbose = verbose  # type: bool
 
         self._name = "%s" % spatial_distribution.name  # type: str
         if luminosity_distribution is not None:
@@ -145,9 +141,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         """
 
         if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
-            if self._verbose:
-                print("registering derived luminosity sampler: %s" %
-                      auxiliary_sampler.name)
+
+            log.info("registering derived luminosity sampler: %s" %
+                     auxiliary_sampler.name)
 
             self._has_derived_luminosity = True
             self._derived_luminosity_sampler = auxiliary_sampler
@@ -159,9 +155,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             ), f"{auxiliary_sampler.name} is already set as a secondary sampler!"
             assert (auxiliary_sampler.name not in self._auxiliary_observations
                     ), f"{auxiliary_sampler.name} is already registered!"
-            if self._verbose:
-                print("registering auxilary sampler: %s" %
-                      auxiliary_sampler.name)
+
+            log.info("registering auxilary sampler: %s" %
+                     auxiliary_sampler.name)
 
             self._auxiliary_observations[
                 auxiliary_sampler.name] = auxiliary_sampler
@@ -245,8 +241,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         strength: float = 10.0,
         hard_cut: bool = False,
         distance_probability: Optional[float] = None,
-        no_selection: bool = False,
-        verbose: bool = False,
+            no_selection: bool = False,
         log10_flux_draw: bool = True,
     ) -> Population:
         """
@@ -274,20 +269,19 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # create a callback of the integrand
         dNdr = (lambda r: self._spatial_distribution.dNdV(
             r) * self._spatial_distribution.differential_volume(r) / self.
-                _spatial_distribution.time_adjustment(r))
+            _spatial_distribution.time_adjustment(r))
 
         # integrate the population to determine the true number of
         # objects
         N = integrate.quad(dNdr, 0.0,
                            self._spatial_distribution.r_max)[0]  # type: float
 
-        if verbose:
-            print("The volume integral is %f" % N)
+        log.info("The volume integral is %f" % N)
 
         # this should be poisson distributed
         n = np.random.poisson(N)  # type: np.int64
 
-        self._spatial_distribution.draw_distance(size=n, verbose=verbose)
+        self._spatial_distribution.draw_distance(size=n)
 
         # now draw the sky positions
 
@@ -295,8 +289,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         distances = self._spatial_distribution.distances  # type: np.ndarray
 
-        if verbose:
-            print("Expecting %d total objects" % n)
+        log.info("Expecting %d total objects" % n)
 
         # first check if the auxilliary samplers
         # compute the luminosities
@@ -306,13 +299,13 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # setup the global selection
 
         global_selection = UnitySelection()  # type: SelectionProbabilty
-        global_selection.draw(n, verbose=False)
+        global_selection.draw(n)
 
         # now we set up the selection that _may_ come
         # from the auxilliary samplers
 
         auxiliary_selection = UnitySelection()  # type: SelectionProbabilty
-        auxiliary_selection.draw(n, verbose=False)
+        auxiliary_selection.draw(n)
 
         auxiliary_quantities = {}  # type: dict
 
@@ -332,7 +325,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # sample the true and obs
             # values which are held internally
 
-            self._derived_luminosity_sampler.draw(size=n, verbose=verbose)
+            self._derived_luminosity_sampler.draw(size=n)
 
             # check to make sure we sampled!
             assert (self._derived_luminosity_sampler.true_values is not None
@@ -347,8 +340,9 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 "obs_values": self._derived_luminosity_sampler.obs_values,
                 "selection": self._derived_luminosity_sampler.selector,
             }
-            if verbose:
-                print("Getting luminosity from derived sampler")
+
+            log.info("Getting luminosity from derived sampler")
+
             luminosities = (
                 self._derived_luminosity_sampler.compute_luminosity()
             )  # type: np.ndarray
@@ -413,7 +407,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # values which are held internally
             # this will also invoke secondary samplers
 
-            v.draw(size=n, verbose=verbose)
+            v.draw(size=n)
 
             # store the auxilliary truths
             truth[v.name] = v.truth
@@ -481,15 +475,11 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                     self._flux_selector = SoftFluxSelection(boundary, strength)
 
-                    if verbose:
-
-                        print("Applying soft boundary")
+                    log.info("Applying soft boundary")
 
                 else:
 
-                    if verbose:
-
-                        print("Applying hard boundary")
+                    log.info("Applying hard boundary")
 
                     self._flux_selector = HardFluxSelection(boundary)
 
@@ -541,21 +531,13 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             auxiliary_selection += v["selection"]
 
-            if verbose:
+            log.info("Applying selection from %s which selected %d of %d objects"
+                     % (k, v["selection"].n_selected,
+                         v["selection"].n_objects))
 
-                if v["selection"].n_non_selected > 0:
-
-                    print(
-                        "Applying selection from %s which selected %d of %d objects"
-                        % (k, v["selection"].n_selected,
-                           v["selection"].n_objects))
-
-        if verbose:
-
-            if auxiliary_selection.n_non_selected > 0:
-                print(
-                    "Before auxiliary selection there were %d objects selected"
-                    % self._flux_selector.n_selected)
+            log.info(
+                "Before auxiliary selection there were %d objects selected"
+                % self._flux_selector.n_selected)
 
         # now we can add the values onto the global
         # selection
@@ -576,12 +558,14 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
                 self._spatial_selector.draw(n)
 
+                log.info(
+                    f"Appling selection from {self._spatial_selector.name} which selected {self._spatial_selector.n_selected} of {self._spatial_selector.n_objects}")
+
                 global_selection += self._spatial_selector
 
         if global_selection.n_selected == n:
 
-            if verbose:
-                print("NO HIDDEN OBJECTS")
+            log.warning("NO HIDDEN OBJECTS")
 
         if not self._distance_selector_set:
 
@@ -591,25 +575,23 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 self._distance_selector = BernoulliSelection(
                     distance_probability)
 
-        self._distance_selector.draw(size=global_selection.n_selected,
-                                     verbose=verbose)
+        self._distance_selector.draw(size=global_selection.n_selected)
 
         known_distances = distances[global_selection.selection][
             self._distance_selector.selection]
         known_distance_idx = self._distance_selector.selection_index
         unknown_distance_idx = self._distance_selector.non_selection_index
 
-        if verbose:
-            print("Detected %d distances" % len(known_distances))
+        log.info("Detected %d distances" % len(known_distances))
 
-        if verbose:
-            try:
+        try:
 
-                print("Deteced %d objects or to a distance of %.2f" %
-                      (global_selection.n_selected, max(known_distances)))
+            log.info("Deteced %d objects our to a distance of %.2f" %
+                     (global_selection.n_selected, max(known_distances)))
 
-            except:
-                print("No Objects detected")
+        except:
+
+            log.warning("No Objects detected")
 
         # just to make sure we do not do anything nutty
         lf_params = None

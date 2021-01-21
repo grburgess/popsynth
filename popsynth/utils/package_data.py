@@ -1,27 +1,25 @@
-# import pkg_resources
-# import os
-# from shutil import copyfile
+from pathlib import Path
+import pkg_resources
 
-# def get_path_of_data_file(data_file):
+from popsynth.utils.configuration import popsynth_config
+
+# def get_path_of_data_file(data_file) -> Path:
 #     file_path = pkg_resources.resource_filename("popsynth", "data/%s" % data_file)
 
-#     return file_path
+#     return Path(file_path)
 
-# def get_path_of_data_dir():
-#     file_path = pkg_resources.resource_filename("popsynth", "data")
 
-#     return file_path
+def get_path_of_log_dir() -> Path:
 
-# def copy_package_data(data_file):
+    p: Path = Path("~/.log/popsynth").expanduser()
 
-#     data_file_path = get_path_of_data_file(data_file)
-#     copyfile(data_file_path, "./%s" % data_file)
+    if not p.exists():
 
-# def get_path_of_user_dir():
-#     """
-#     Returns the path of the directory containing the user data (~/.popsynth)
+        p.mkdir(parents=True)
 
-#     :return: an absolute path
-#     """
+    return p
 
-#     return os.path.abspath(os.path.expanduser('~/.popsynth'))
+
+def get_path_of_log_file(file_name: str) -> Path:
+
+    return get_path_of_log_dir() / file_name

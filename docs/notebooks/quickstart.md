@@ -30,6 +30,8 @@ yellow = "#F6EF5B"
 
 
 import popsynth
+popsynth.update_logging_level("INFO")
+
 import networkx as nx
 
 import warnings
@@ -75,7 +77,7 @@ nx.draw(homo_pareto_synth.graph, with_labels=True,pos=pos, **options)
 We can now sample from this population with the **draw_survey** function.
 
 ```python
-population = homo_pareto_synth.draw_survey(boundary=1E-2, hard_cut=True, flux_sigma= 0.1,verbose=True)
+population = homo_pareto_synth.draw_survey(boundary=1E-2, hard_cut=True, flux_sigma= 0.1)
 ```
 
 We now have created a population. How did we get here?
@@ -95,7 +97,7 @@ We now have created a population. How did we get here?
 We could have specified a soft cutoff (an inverse logit) with logarithmic with as well:
 
 ```python
-population = homo_pareto_synth.draw_survey(boundary=1E-2, strength=10, flux_sigma= 0.1,verbose=True)
+population = homo_pareto_synth.draw_survey(boundary=1E-2, strength=10, flux_sigma= 0.1)
 ```
 
 ## The Population Object

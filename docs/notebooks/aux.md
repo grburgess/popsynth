@@ -35,6 +35,8 @@ warnings.simplefilter('ignore')
 
 
 import popsynth
+popsynth.update_logging_level("INFO")
+
 ```
 
 ## Creating an auxiliary sampler
@@ -86,7 +88,7 @@ demo1 = DemoSampler()
 
 pop_gen.add_observed_quantity(demo1)
 
-population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1,verbose=True)
+population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1)
 
 options = {
 'node_color':green,
@@ -205,7 +207,7 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos,ax=ax, **options)
 ```
 
 ```python
-population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1,verbose=True)
+population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1)
 ```
 
 ```python
@@ -284,7 +286,7 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos, **options, ax=ax)
 ```
 
 ```python
-population = pop_gen.draw_survey(boundary=1E-5, hard_cut=True, flux_sigma= 0.1,verbose=True)
+population = pop_gen.draw_survey(boundary=1E-5, hard_cut=True, flux_sigma= 0.1)
 ```
 
 ```python
