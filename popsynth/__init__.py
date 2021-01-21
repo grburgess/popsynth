@@ -1,5 +1,7 @@
 import scipy.stats as stats
 
+from popsynth.utils.cosmology import cosmology
+
 import popsynth.populations as populations
 from popsynth.aux_samplers import *
 from popsynth.auxiliary_sampler import (
