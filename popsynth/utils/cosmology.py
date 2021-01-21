@@ -104,14 +104,5 @@ class Cosmology(object):
 
         return (self.dh * td * td / self.a(z)) * 1e-9  # Gpc^3
 
-    # def __setattr__(self, name, value):
-
-    #     super().__setattr__(name, value)
-
-    #     print("oh shit")
-    #     if (name in ["Om", "h0"]) and self._is_setup:
-
-    #         self._setup()
-
 
 cosmology = Cosmology()

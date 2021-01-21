@@ -19,6 +19,12 @@ from popsynth.utils.hdf5_utils import (
     recursively_save_dict_contents_to_group)
 from popsynth.utils.spherical_geometry import xyz
 
+
+from popsynth.utils.logging import setup_logger
+
+
+log = setup_logger(__name__)
+
 #from numpy.typing import ArrayLike
 
 # dummy
@@ -150,7 +156,7 @@ class Population(object):
 
             self._no_detection = True
 
-            print("THERE ARE NO DETECTED OBJECTS IN THE POPULATION")
+            log.warning("THERE ARE NO DETECTED OBJECTS IN THE POPULATION")
 
         else:
 
@@ -807,7 +813,7 @@ class Population(object):
         # to plot
 
         if self._no_detection:
-            print("There are no detections to display")
+            log.warning("There are no detections to display")
             if ax is not None:
 
                 fig = ax.get_figure()
@@ -956,7 +962,7 @@ class Population(object):
     ):
 
         if len(fluxes) == 0:
-            print("There are no detections to display")
+            log.warning("There are no detections to display")
 
             return
 
