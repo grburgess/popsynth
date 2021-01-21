@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+  pull_request:
   schedule:
     #At the end of every day
     - cron: 0 0 * * *
