@@ -9,11 +9,7 @@ from popsynth.utils.meta import Parameter, ParameterMeta
 
 #from numpy.typing import ArrayLike
 
-
-
-
 log = setup_logger(__name__)
-
 
 ArrayLike = List[float]
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
@@ -112,8 +108,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             if self._has_secondary:
 
-                log.info("%s is sampling its secondary quantities" %
-                         self.name)
+                log.info("%s is sampling its secondary quantities" % self.name)
 
             if self._uses_distance:
                 self._selector.set_distance(self._distance)

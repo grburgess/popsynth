@@ -10,6 +10,7 @@ structure["logging"] = dict(debug=False,
 structure["cosmology"] = dict(Om=0.307, h0=67.7)
 structure["show_progress"] = True
 
+
 class PopSynthConfig(YAMLConfig):
     def __init__(self) -> None:
 

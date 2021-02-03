@@ -36,7 +36,7 @@ class CosmologicalDistribution(SpatialDistribution):
             return 1.0
 
 
-class SFRDistribtution(CosmologicalDistribution):
+class SFRDistribution(CosmologicalDistribution):
 
     r0 = DistributionParameter(vmin=0)
     rise = DistributionParameter()
@@ -47,7 +47,7 @@ class SFRDistribtution(CosmologicalDistribution):
 
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
-        super(SFRDistribtution, self).__init__(
+        super(SFRDistribution, self).__init__(
             seed=seed,
             name=name,
             form=spatial_form,

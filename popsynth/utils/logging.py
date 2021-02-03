@@ -137,17 +137,16 @@ def silence_console_log():
         popsynth_usr_log_handler.setLevel(current_usr_logging_level)
 
 
-
 def show_progress():
 
     popsynth_config["show_progress"] = True
+
 
 def silence_progress():
 
     popsynth_config["show_progress"] = False
 
 
-        
 def setup_logger(name):
 
     # A logger with name name will be created

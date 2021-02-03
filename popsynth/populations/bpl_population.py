@@ -8,15 +8,7 @@ from popsynth.distributions.bpl_distribution import BPLDistribution
 
 
 class BPLHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self,
-                 Lambda,
-                 Lmin,
-                 alpha,
-                 Lbreak,
-                 beta,
-                 Lmax,
-                 r_max=5,
-                 seed=1234):
+    def __init__(self, Lambda, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -47,16 +39,9 @@ class BPLHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self,
-                 Lambda,
-                 delta,
-                 Lmin,
-                 alpha,
-                 Lbreak,
-                 beta,
-                 Lmax,
-                 r_max=5,
-                 seed=1234):
+    def __init__(
+        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
+    ):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -89,16 +74,19 @@ class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
-    def __init__(self,
-                 Lambda,
-                 delta,
-                 Lmin,
-                 alpha,
-                 Lbreak,
-                 beta,
-                 Lmax,
-                 r_max=5,
-                 seed=1234):
+    def __init__(
+        self,
+        Lambda,
+        delta,
+        Lmin,
+        alpha,
+        Lbreak,
+        beta,
+        Lmax,
+        r_max=5,
+        seed=1234,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -128,22 +116,26 @@ class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )
 
 
 class BPLSFRPopulation(SFRPopulation):
-    def __init__(self,
-                 r0,
-                 rise,
-                 decay,
-                 peak,
-                 Lmin,
-                 alpha,
-                 Lbreak,
-                 beta,
-                 Lmax,
-                 r_max=5,
-                 seed=1234):
+    def __init__(
+        self,
+        r0,
+        rise,
+        decay,
+        peak,
+        Lmin,
+        alpha,
+        Lbreak,
+        beta,
+        Lmax,
+        r_max=5,
+        seed=1234,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param r0:
@@ -177,4 +169,5 @@ class BPLSFRPopulation(SFRPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )

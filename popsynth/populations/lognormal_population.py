@@ -64,7 +64,16 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
-    def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
+    def __init__(
+        self,
+        Lambda,
+        delta,
+        mu,
+        tau,
+        r_max=5,
+        seed=1234,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -88,11 +97,14 @@ class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )
 
 
 class LogNormalSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
+    def __init__(
+        self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234, is_rate=True
+    ):
         """FIXME! briefly describe function
 
         :param r0:
@@ -120,6 +132,7 @@ class LogNormalSFRPopulation(SFRPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )
 
 
@@ -178,7 +191,16 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
-    def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
+    def __init__(
+        self,
+        Lambda,
+        delta,
+        mu,
+        tau,
+        r_max=5,
+        seed=1234,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -202,11 +224,23 @@ class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )
 
 
 class Log10NormalSFRPopulation(SFRPopulation):
-    def __init__(self, r0, rise, decay, peak, mu, tau, r_max=5, seed=1234):
+    def __init__(
+        self,
+        r0,
+        rise,
+        decay,
+        peak,
+        mu,
+        tau,
+        r_max=5,
+        seed=1234,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param r0:
@@ -234,4 +268,5 @@ class Log10NormalSFRPopulation(SFRPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )

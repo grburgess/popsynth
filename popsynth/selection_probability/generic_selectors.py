@@ -10,6 +10,7 @@ from popsynth.utils.configuration import popsynth_config
 
 log = setup_logger(__name__)
 
+
 class UnitySelection(SelectionProbabilty):
     def __init__(self):
         """

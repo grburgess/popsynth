@@ -19,9 +19,7 @@ from popsynth.utils.hdf5_utils import (
     recursively_save_dict_contents_to_group)
 from popsynth.utils.spherical_geometry import xyz
 
-
 from popsynth.utils.logging import setup_logger
-
 
 log = setup_logger(__name__)
 
@@ -234,8 +232,6 @@ class Population(object):
     def ra(self) -> np.ndarray:
         return np.rad2deg(self._phi)
 
-
-    
     @property
     def luminosities_latent(self) -> np.ndarray:
         """

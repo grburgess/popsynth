@@ -14,7 +14,6 @@ from popsynth.utils.spherical_geometry import sample_theta_phi
 
 ArrayLike = List[float]
 
-
 log = setup_logger(__name__)
 
 

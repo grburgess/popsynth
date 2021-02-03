@@ -6,7 +6,6 @@ from astropy.cosmology import WMAP9 as cosmo
 from numba import bool_, float32, float64
 from numba.experimental import jitclass
 
-
 from popsynth.utils.configuration import popsynth_config
 
 _sol = c.value  # speed of light
@@ -27,7 +26,9 @@ Ogamma0 = cosmo.Ogamma0
 
 @jitclass(spec)
 class Cosmology(object):
-    def __init__(self, Om=popsynth_config["cosmology"]["Om"], h0=popsynth_config["cosmology"]["h0"]):
+    def __init__(self,
+                 Om=popsynth_config["cosmology"]["Om"],
+                 h0=popsynth_config["cosmology"]["h0"]):
 
         #      self._is_setup = False
 
