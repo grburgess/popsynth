@@ -23,7 +23,34 @@ author = 'J. Michael Burgess'
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath('../'))
+from pathlib import Path
+
+import sphinx_rtd_theme
+
+sys.path.insert(0, os.path.abspath("../"))
+
+DOCS = Path(__file__).parent
+
+# -- Generate API documentation ------------------------------------------------
+def run_apidoc(app):
+    """Generage API documentation"""
+    import better_apidoc
+
+    better_apidoc.APP = app
+    better_apidoc.main(
+        [
+            "better-apidoc",
+            # "-t",
+            # str(docs / "_templates"),
+            "--force",
+            "--no-toc",
+            "--separate",
+            "-o",
+            str(DOCS / "API"),
+            str(DOCS / ".." / "popsynth"),
+        ]
+    )
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -72,15 +99,20 @@ html_theme = 'sphinx_rtd_theme'
 
 html_static_path = ['_static']
 
+
+
+
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
-html_css_files = [
-    'css/custom.css',
-]
+# html_css_files = [
+#     'css/custom.css',
+# ]
 
-html_js_files = [
-    'css/custom.js',
-]
+# html_js_files = [
+#     'css/custom.js',
+# ]
+
+html_static_path = ["_static"]
 
 html_show_sourcelink = False
 html_favicon = "media/favicon.ico"
@@ -109,12 +141,25 @@ nbsphinx_execute_arguments = [
 # #edit_on_github_url
 # edit_on_github_src = 'docs/'  # optional. default: ''
 
+from pygments.formatters import HtmlFormatter  # noqa: E402
+from pygments.styles import get_all_styles  # noqa: E402
+path = os.path.join('_static', 'pygments')
+if not os.path.isdir(path):
+    os.mkdir(path)
+for style in get_all_styles():
+    path = os.path.join('_static', 'pygments', style + '.css')
+    if os.path.isfile(path):
+        continue
+    with open(path, 'w') as f:
+        f.write(HtmlFormatter(style=style).get_style_defs('.highlight'))
+
+
 html_theme_options = {
-    #   'canonical_url': 'https://johannesbuchner.github.io/UltraNest/',
-    'style_external_links': True,
-    # 'vcs_pageview_mode': 'edit',
-    'style_nav_header_background': '#470E80',
-    #'only_logo': True,
+    'logo_only':False,
+    'display_version': False,
+    'collapse_navigation': True,
+    'navigation_depth': 4,
+    'prev_next_buttons_location': 'bottom',  # top and bottom
 }
 
 # Output file base name for HTML help builder.
