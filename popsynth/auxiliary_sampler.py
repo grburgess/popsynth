@@ -219,7 +219,7 @@ class AuxiliarySampler(Node, metaclass=ParameterMeta):
 
         # add our own on
         recursive_secondaries[self.name] = RecursiveSecondary(
-            self._true_values, self._obs_values, self._selection)
+            self._true_values, self._obs_values, self._selector)
 
         return recursive_secondaries
 
