@@ -2,8 +2,8 @@ import itertools
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from asciitree import LeftAligned
-from asciitree.drawing import BOX_BLANK, BOX_DOUBLE, BoxStyle
+# from asciitree import LeftAligned
+# from asciitree.drawing import BOX_BLANK, BOX_DOUBLE, BoxStyle
 
 
 def red(x) -> str:
@@ -29,7 +29,7 @@ class Node(object):
     """
     name: str
     parent: Optional["Node"] = None
-    value: Optional[Any] = None
+
     _children: dict = field(init=False)
 
     def __post_init__(self) -> None:
@@ -62,24 +62,30 @@ class Node(object):
     def __getitem__(self, key):
 
         if key in self._children:
-            if self._children[key].is_leaf:
-                return self._children[key].value
+            # if self._children[key].is_leaf:
+            #     return self._children[key].value
 
-            else:
-                return self._children[key]
+            # else:
+            return self._children[key]
 
         else:
             raise RuntimeError("not one of my children")
 
     def __setitem__(self, key, value) -> None:
 
-        if key in self.leaves:
+        # this will allow you to
+        # to add nodes  as if they were dictionaries
 
-            self._children[key].value = value
+        if key in self._children:
+
+            if isinstance(value, Node):
+
+                self._children[key].add_child(value)
 
         else:
 
-            raise RuntimeError("Woah, you are going to overwrite the structure")
+            raise RuntimeError(
+                "Woah, you are going to overwrite the structure")
 
     @property
     def is_leaf(self) -> bool:
@@ -142,12 +148,13 @@ class Node(object):
         if "_children" in self.__dict__:
             if name in self._children:
 
-                if self._children[name].is_leaf:
-                    self._children[name].value = value
+                if isinstance(value, Node):
+                    self._children[name].add_child(value)
 
                 else:
 
-                    raise RuntimeError(" Woah, you are going to overwrite the structure")
+                    raise RuntimeError(
+                        " Woah, you are going to overwrite the structure")
 
             else:
                 return super().__setattr__(name, value)
@@ -155,45 +162,45 @@ class Node(object):
 
             return super().__setattr__(name, value)
 
-    def to_dict(self) -> Dict[str, Dict[str, Any]]:
-        """
-        return this node and its children as 
-        a dictionary
-        """
+    # def to_dict(self) -> Dict[str, Dict[str, Any]]:
+    #     """
+    #     return this node and its children as
+    #     a dictionary
+    #     """
 
-        if self.is_leaf:
+    #     if self.is_leaf:
 
-            dummy: Dict[str, Dict[str, Any]] = {}
-            dummy[red(self.value)] = {}
+    #         dummy: Dict[str, Dict[str, Any]]={}
+    #         dummy[red(self.value)]={}
 
-            return dummy
+    #         return dummy
 
-        else:
+    #     else:
 
-            out: Dict[str, Dict[str, Any]] = {}
+    #         out: Dict[str, Dict[str, Any]]={}
 
-            for k, v in self._children.items():
+    #         for k, v in self._children.items():
 
-                if v.is_leaf:
+    #             if v.is_leaf:
 
-                    text = blue(k)
+    #                 text=blue(k)
 
-                else:
+    #             else:
 
-                    text = green(k)
+    #                 text=green(k)
 
-                out[text] = v.to_dict()
+    #             out[text]=v.to_dict()
 
-            return out
+    #         return out
 
-    def __repr__(self):
+    # def __repr__(self):
 
-        if self.is_leaf:
-            return f"{self.value}"
+    #     if self.is_leaf:
+    #         return f"{self.value}"
 
-        else:
-            tr = LeftAligned(draw=BoxStyle(gfx=BOX_DOUBLE, horiz_len=1))
+    #     else:
+    #         tr = LeftAligned(draw=BoxStyle(gfx=BOX_DOUBLE, horiz_len=1))
 
-            out_final = {}
-            out_final[self.name] = self.to_dict()
-            return tr(out_final)
+    #         out_final = {}
+    #         out_final[self.name] = self.to_dict()
+    #         return tr(out_final)

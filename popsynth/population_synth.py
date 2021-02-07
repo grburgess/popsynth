@@ -18,6 +18,7 @@ from popsynth.selection_probability import (BernoulliSelection,
                                             HardFluxSelection,
                                             SelectionProbabilty,
                                             SoftFluxSelection, UnitySelection)
+from popsynth.types import RecursiveSecondary
 from popsynth.utils.logging import setup_logger
 # from popsynth.utils.progress_bar import progress_bar
 from popsynth.utils.progress_bar import progress_bar
@@ -29,7 +30,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
     def __init__(
         self,
         spatial_distribution: SpatialDistribution,
-        luminosity_distribution: Union[LuminosityDistribution, None] = None,
+        luminosity_distribution: Optional[LuminosityDistribution] = None,
         seed: int = 1234,
 
     ):
@@ -335,11 +336,11 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                     and len(self._derived_luminosity_sampler.obs_values) == n)
 
             # append these values to a dict
-            auxiliary_quantities[self._derived_luminosity_sampler.name] = {
-                "true_values": self._derived_luminosity_sampler.true_values,
-                "obs_values": self._derived_luminosity_sampler.obs_values,
-                "selection": self._derived_luminosity_sampler.selector,
-            }
+            auxiliary_quantities[self._derived_luminosity_sampler.name] = RecursiveSecondary(
+                self._derived_luminosity_sampler.true_values,
+                self._derived_luminosity_sampler.obs_values,
+                self._derived_luminosity_sampler.selector,
+            )
 
             log.info("Getting luminosity from derived sampler")
 
@@ -417,11 +418,11 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             assert v.obs_values is not None and len(v.obs_values) == n
 
             # append these values to a dict
-            auxiliary_quantities[k] = {
-                "true_values": v.true_values,
-                "obs_values": v.obs_values,
-                "selection": v.selector,
-            }  # type: dict
+            auxiliary_quantities[k] = RecursiveSecondary(
+                v.true_values,
+                v.obs_values,
+                v.selector,
+            )
 
             # collect the secondary values
 
@@ -529,11 +530,11 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         for k, v in auxiliary_quantities.items():
 
-            auxiliary_selection += v["selection"]
+            auxiliary_selection += v.selection
 
             log.info("Applying selection from %s which selected %d of %d objects"
-                     % (k, v["selection"].n_selected,
-                         v["selection"].n_objects))
+                     % (k, v.selection.n_selected,
+                         v.selection.n_objects))
 
             log.info(
                 "Before auxiliary selection there were %d objects selected"

@@ -1,12 +1,12 @@
-from typing import Union, Dict
+from typing import Union, Dict, Optional
 
 
 class Parameter(object):
     def __init__(
         self,
-        default: Union[None, float] = None,
-        vmin: Union[None, float] = None,
-        vmax: Union[None, float] = None,
+        default: Optional[ float] = None,
+        vmin: Optional[ float] = None,
+        vmax: Optional[ float] = None,
     ):
 
         self.name = None  # type: Union[None, str]

@@ -1,29 +1,32 @@
 import abc
-from typing import Any, Dict, List, Union
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
+from popsynth.tree import Node
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
-
+from popsynth.types import RecursiveSecondary
 #from numpy.typing import ArrayLike
-
-
 
 
 log = setup_logger(__name__)
 
 
 ArrayLike = List[float]
-SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
 
+
+SamplerDict = Dict[str, RecursiveSecondary]
+
+    
 class AuxiliaryParameter(Parameter):
     pass
 
 
-class AuxiliarySampler(object, metaclass=ParameterMeta):
+class AuxiliarySampler(Node, metaclass=ParameterMeta):
     def __init__(
         self,
         name: str,
@@ -33,13 +36,16 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
     ) -> None:
 
         self._parameter_storage = {}  # type: Dict[str, float]
-        self._name = name  # type: str
+        # self._name = name  # type: str
+
+        super(AuxiliarySampler, self).__init__(name=name)
+
         self._obs_name = "%s_obs" % name  # type: str
 
         self._obs_values = None  # type: ArrayLike
         self._true_values = None  # type: ArrayLike
         self._is_observed = observed  # type: bool
-        self._secondary_samplers = {}  # type: SamplerDict
+        # self._secondary_samplers = {}  # type: SamplerDict
         self._is_secondary = False  # type: bool
         self._has_secondary = False  # type: bool
         self._is_sampled = False  # type: bool
@@ -93,11 +99,11 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         # this causes it to throw a flag in the main
         # loop if we try to add it again
 
-        sampler.make_secondary()
+        # sampler.make_secondary()
         # attach the sampler to this class
-
-        self._secondary_samplers[sampler.name] = sampler
-        self._has_secondary = True  # type: bool
+        self.add_child(sampler)
+        # self._secondary_samplers[sampler.name] = sampler
+        # self._has_secondary = True  # type: bool
 
     def draw(self, size: int = 1):
         """
@@ -121,9 +127,12 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
             if self._uses_luminoity:
                 self._selector.set_luminosity(self._luminosity)
 
-            for k, v in self._secondary_samplers.items():
+            for v in self._get_children():
 
-                assert v.is_secondary, "Tried to sample a non-secondary, this is a bag"
+                if not v.is_secondary:
+                    log.error("Tried to sample a non-secondary, this is a bug")
+
+                    raise RuntimeError()
 
                 # we do not allow for the secondary
                 # quantities to derive a luminosity
@@ -162,9 +171,9 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             self._is_sampled = True
 
-    def make_secondary(self) -> None:
+    # def make_secondary(self) -> None:
 
-        self._is_secondary = True  # type: bool
+    #     self._is_secondary = True  # type: bool
 
     def get_secondary_properties(
         self,
@@ -187,9 +196,9 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
             recursive_secondaries = {}  # type: SamplerDict
 
         # now collect each property. This should keep recursing
-        if self._has_secondary:
+        if self.is_branch:
 
-            for k, v in self._secondary_samplers.items():
+            for k, v in self._children.items():
 
                 if graph is not None:
 
@@ -209,11 +218,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
                     spatial_distribution)  # type: SamplerDict
 
         # add our own on
-        recursive_secondaries[self._name] = {
-            "true_values": self._true_values,
-            "obs_values": self._obs_values,
-            "selection": self._selector,
-        }
+        recursive_secondaries[self.name] = RecursiveSecondary(
+            self._true_values, self._obs_values, self._selection)
 
         return recursive_secondaries
 
@@ -223,26 +229,29 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         Secondary samplers
         """
 
-        return self._secondary_samplers
+        return self._children
 
     @property
     def is_secondary(self) -> bool:
 
-        return self._is_secondary
+        return not self.is_root
 
     @property
     def has_secondary(self) -> bool:
 
-        return self._has_secondary
+        # if this is a leaf then
+        # it will not have a secondary
+        # i.e. no children (mountain goats)
+        return not self.is_leaf
 
     @property
     def observed(self) -> bool:
         """"""
         return self._is_observed
 
-    @property
-    def name(self) -> str:
-        return self._name
+    # @property
+    # def name(self) -> str:
+    #     return self._name
 
     @property
     def obs_name(self) -> str:

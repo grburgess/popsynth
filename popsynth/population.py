@@ -166,9 +166,9 @@ class Population(object):
 
             for k, v in auxiliary_quantities.items():
 
-                setattr(self, k, v["true_values"])
-                setattr(self, "%s_obs" % k, v["obs_values"])
-                setattr(self, "%s_selected" % k, v["obs_values"][selection])
+                setattr(self, k, v.true_values)
+                setattr(self, "%s_obs" % k, v.obs_values)
+                setattr(self, "%s_selected" % k, v.obs_values[selection])
 
         self._auxiliary_quantities = auxiliary_quantities
 
@@ -503,10 +503,10 @@ class Population(object):
 
                 q_grp = aux_grp.create_group(k)
                 q_grp.create_dataset("true_values",
-                                     data=v["true_values"],
+                                     data=v.true_values,
                                      compression="lzf")
                 q_grp.create_dataset("obs_values",
-                                     data=v["obs_values"],
+                                     data=v.obs_values,
                                      compression="lzf")
 
             model_grp = f.create_group("model_spaces")
