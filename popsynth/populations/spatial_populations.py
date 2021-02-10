@@ -16,7 +16,11 @@ from popsynth.population_synth import PopulationSynth
 
 
 class SphericalPopulation(PopulationSynth):
-    def __init__(self, Lambda, r_max=5.0, seed=1234, luminosity_distribution=None):
+    def __init__(self,
+                 Lambda,
+                 r_max=5.0,
+                 seed=1234,
+                 luminosity_distribution=None):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -40,9 +44,12 @@ class SphericalPopulation(PopulationSynth):
 
 
 class ZPowerSphericalPopulation(PopulationSynth):
-    def __init__(
-        self, Lambda, delta, r_max=5.0, seed=1234, luminosity_distribution=None
-    ):
+    def __init__(self,
+                 Lambda,
+                 delta,
+                 r_max=5.0,
+                 seed=1234,
+                 luminosity_distribution=None):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -90,7 +97,8 @@ class ZPowerCosmoPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = ZPowerCosmoDistribution(seed=seed, is_rate=is_rate)
+        spatial_distribution = ZPowerCosmoDistribution(seed=seed,
+                                                       is_rate=is_rate)
 
         spatial_distribution.Lambda = Lambda
         spatial_distribution.r_max = r_max

@@ -8,7 +8,15 @@ from popsynth.distributions.bpl_distribution import BPLDistribution
 
 
 class BPLHomogeneousSphericalPopulation(SphericalPopulation):
-    def __init__(self, Lambda, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234):
+    def __init__(self,
+                 Lambda,
+                 Lmin,
+                 alpha,
+                 Lbreak,
+                 beta,
+                 Lmax,
+                 r_max=5,
+                 seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -39,9 +47,16 @@ class BPLHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(
-        self, Lambda, delta, Lmin, alpha, Lbreak, beta, Lmax, r_max=5, seed=1234
-    ):
+    def __init__(self,
+                 Lambda,
+                 delta,
+                 Lmin,
+                 alpha,
+                 Lbreak,
+                 beta,
+                 Lmax,
+                 r_max=5,
+                 seed=1234):
         """FIXME! briefly describe function
 
         :param Lambda:
