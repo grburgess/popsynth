@@ -31,7 +31,8 @@ log = setup_logger(__name__)
 ArrayLike = List[float]
 
 wine = "#8F2727"
-dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
+dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
+    wine)
 
 
 class Population(object):
@@ -107,8 +108,7 @@ class Population(object):
         self._phi = phi  # type: ArrayLike
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
-            selection
-        ), "the distances are not the correct size"
+            selection), "the distances are not the correct size"
 
         # latent fluxes
         self._fluxes = fluxes  # type: ArrayLike
@@ -457,7 +457,9 @@ class Population(object):
 
         for k, v in self._spatial_params.items():
 
-            spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+            spatial_grp.create_dataset(k,
+                                       data=np.array([v]),
+                                       compression="lzf")
 
         if self._lf_params is not None:
 
@@ -465,7 +467,9 @@ class Population(object):
 
             for k, v in self._lf_params.items():
 
-                lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                lum_grp.create_dataset(k,
+                                       data=np.array([v]),
+                                       compression="lzf")
 
             f.attrs["lf_form"] = np.string_(self._lf_form)
 
@@ -485,14 +489,16 @@ class Population(object):
         f.attrs["distance_probability"] = self._distance_probability
         f.attrs["hard_cut"] = self._hard_cut
 
-        f.create_dataset("luminosities", data=self._luminosities, compression="lzf")
+        f.create_dataset("luminosities",
+                         data=self._luminosities,
+                         compression="lzf")
         f.create_dataset("distances", data=self._distances, compression="lzf")
-        f.create_dataset(
-            "known_distances", data=self._known_distances, compression="lzf"
-        )
-        f.create_dataset(
-            "known_distance_idx", data=self._known_distance_idx, compression="lzf"
-        )
+        f.create_dataset("known_distances",
+                         data=self._known_distances,
+                         compression="lzf")
+        f.create_dataset("known_distance_idx",
+                         data=self._known_distance_idx,
+                         compression="lzf")
         f.create_dataset(
             "unknown_distance_idx",
             data=self._unknown_distance_idx,
@@ -509,10 +515,12 @@ class Population(object):
         for k, v in self._auxiliary_quantities.items():
 
             q_grp = aux_grp.create_group(k)
-            q_grp.create_dataset(
-                "true_values", data=v["true_values"], compression="lzf"
-            )
-            q_grp.create_dataset("obs_values", data=v["obs_values"], compression="lzf")
+            q_grp.create_dataset("true_values",
+                                 data=v["true_values"],
+                                 compression="lzf")
+            q_grp.create_dataset("obs_values",
+                                 data=v["obs_values"],
+                                 compression="lzf")
 
         model_grp = f.create_group("model_spaces")
 
@@ -524,8 +532,7 @@ class Population(object):
         recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
         recursively_save_dict_contents_to_group(
-            f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph))
-        )
+            f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph)))
 
     @classmethod
     def from_file(cls, file_name):
@@ -638,8 +645,8 @@ class Population(object):
         truth = recursively_load_dict_contents_from_group(f, "truth")
 
         graph = nx.from_dict_of_dicts(
-            clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
-        )
+            clean_graph_dict(
+                recursively_load_dict_contents_from_group(f, "graph")))
 
         return cls(
             luminosities=luminosities,
@@ -824,7 +831,9 @@ class Population(object):
 
         try:
 
-            ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+            ax.set_ylim(
+                bottom=min([self._fluxes.min(),
+                            self._flux_selected.min()]))
 
         except:
 
@@ -878,7 +887,8 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+        ax.set_ylim(bottom=min([self._fluxes.min(),
+                                self._flux_selected.min()]))
         ax.set_xlim(right=self._r_max)
 
         ax.set_xlabel("distance")
@@ -920,9 +930,9 @@ class Population(object):
 
         if (with_arrows) and (not self._no_detection):
             for start, stop, z in zip(
-                self._fluxes[self._selection],
-                self._flux_selected,
-                self._distance_selected,
+                    self._fluxes[self._selection],
+                    self._flux_selected,
+                    self._distance_selected,
             ):
 
                 x = z
@@ -968,12 +978,14 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(
-            self._distance_selected, self._luminosity_selected, s=5, color=obs_color
-        )
-        ax.scatter(
-            self._distance_hidden, self._luminosity_hidden, s=5, color=true_color
-        )
+        ax.scatter(self._distance_selected,
+                   self._luminosity_selected,
+                   s=5,
+                   color=obs_color)
+        ax.scatter(self._distance_hidden,
+                   self._luminosity_hidden,
+                   s=5,
+                   color=true_color)
 
         return fig
 
