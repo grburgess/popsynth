@@ -31,25 +31,24 @@ sys.path.insert(0, os.path.abspath("../"))
 
 DOCS = Path(__file__).parent
 
+
 # -- Generate API documentation ------------------------------------------------
 def run_apidoc(app):
     """Generage API documentation"""
     import better_apidoc
 
     better_apidoc.APP = app
-    better_apidoc.main(
-        [
-            "better-apidoc",
-            # "-t",
-            # str(docs / "_templates"),
-            "--force",
-            "--no-toc",
-            "--separate",
-            "-o",
-            str(DOCS / "API"),
-            str(DOCS / ".." / "popsynth"),
-        ]
-    )
+    better_apidoc.main([
+        "better-apidoc",
+        # "-t",
+        # str(docs / "_templates"),
+        "--force",
+        "--no-toc",
+        "--separate",
+        "-o",
+        str(DOCS / "API"),
+        str(DOCS / ".." / "popsynth"),
+    ])
 
 
 # -- General configuration ---------------------------------------------------
@@ -99,9 +98,6 @@ html_theme = 'sphinx_rtd_theme'
 
 html_static_path = ['_static']
 
-
-
-
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
 # html_css_files = [
@@ -143,6 +139,7 @@ nbsphinx_execute_arguments = [
 
 from pygments.formatters import HtmlFormatter  # noqa: E402
 from pygments.styles import get_all_styles  # noqa: E402
+
 path = os.path.join('_static', 'pygments')
 if not os.path.isdir(path):
     os.mkdir(path)
@@ -153,9 +150,8 @@ for style in get_all_styles():
     with open(path, 'w') as f:
         f.write(HtmlFormatter(style=style).get_style_defs('.highlight'))
 
-
 html_theme_options = {
-    'logo_only':False,
+    'logo_only': False,
     'display_version': False,
     'collapse_navigation': True,
     'navigation_depth': 4,
