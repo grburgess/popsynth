@@ -435,6 +435,10 @@ class Population(object):
             self._writeto(f)
 
     def addto(self, file_name: str, group_name: str) -> None:
+        """
+        write population to a group in an existing
+        HDF5 file.
+        """
 
         with h5py.File(file_name, "r+") as f:
 
@@ -443,6 +447,11 @@ class Population(object):
             self._writeto(g)
 
     def _writeto(self, f):
+        """
+        write to file or group
+
+        :param f: h5py file or group handle
+        """
 
         spatial_grp = f.create_group("spatial_params")
 
@@ -530,84 +539,107 @@ class Population(object):
 
         with h5py.File(file_name, "r") as f:
 
-            spatial_params = {}
+            return cls._loadfrom(f)
 
-            for key in f["spatial_params"].keys():
+    @classmethod
+    def from_group(cls, file_name, group_name):
+        """
+        load a population from a group
+        in a file.
+        """
 
-                spatial_params[key] = f["spatial_params"][key][()][0]
+        with h5py.File(file_name, "r") as f:
 
-            # we must double check that there are LF params
+            g = f[group_name]
 
-            try:
+            return cls._loadfrom(g)
 
-                if f.attrs["has_lf"]:
-                    lf_params = {}
-                    for key in f["lf_params"].keys():
+    @classmethod
+    def _loadfrom(cls, f):
+        """
+        load from file or group
 
-                        lf_params[key] = f["lf_params"][key][()][0]
-                    lf_form = str(f.attrs["lf_form"])
+        :param f: h5py file or group handle
+        """
 
-                else:
+        spatial_params = {}
 
-                    lf_params = None
-                    lf_form = None
-            except:
+        for key in f["spatial_params"].keys():
+
+            spatial_params[key] = f["spatial_params"][key][()][0]
+
+        # we must double check that there are LF params
+
+        try:
+
+            if f.attrs["has_lf"]:
+                lf_params = {}
+                for key in f["lf_params"].keys():
+
+                    lf_params[key] = f["lf_params"][key][()][0]
+                lf_form = str(f.attrs["lf_form"])
+
+            else:
 
                 lf_params = None
                 lf_form = None
+        except:
 
-            flux_sigma = f.attrs["flux_sigma"]
-            boundary = f.attrs["boundary"]
-            strength = f.attrs["strength"]
-            n_model = f.attrs["n_model"]
-            r_max = f.attrs["r_max"]
-            seed = int(f.attrs["seed"])
-            name = f.attrs["name"]
-            distance_probability = f.attrs["distance_probability"]
-            spatial_form = str(f.attrs["spatial_form"])
-            hard_cut = f.attrs["hard_cut"]
+            lf_params = None
+            lf_form = None
 
-            luminosities = f["luminosities"][()]
-            distances = f["distances"][()]
-            theta = f["theta"][()]
-            phi = f["phi"][()]
+        flux_sigma = f.attrs["flux_sigma"]
+        boundary = f.attrs["boundary"]
+        strength = f.attrs["strength"]
+        n_model = f.attrs["n_model"]
+        r_max = f.attrs["r_max"]
+        seed = int(f.attrs["seed"])
+        name = f.attrs["name"]
+        distance_probability = f.attrs["distance_probability"]
+        spatial_form = str(f.attrs["spatial_form"])
+        hard_cut = f.attrs["hard_cut"]
 
-            # right now this is just for older pops
-            try:
-                known_distances = f["known_distances"][()]
-                known_distance_idx = (f["known_distance_idx"][()]).astype(int)
-                unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
+        luminosities = f["luminosities"][()]
+        distances = f["distances"][()]
+        theta = f["theta"][()]
+        phi = f["phi"][()]
 
-            except:
+        # right now this is just for older pops
+        try:
+            known_distances = f["known_distances"][()]
+            known_distance_idx = (f["known_distance_idx"][()]).astype(int)
+            unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
 
-                known_distances = None
-                known_distance_idx = None
-                unknown_distance_idx = None
+        except:
 
-            fluxes = f["fluxes"][()]
-            flux_obs = f["flux_obs"][()]
-            selection = f["selection"][()]
+            known_distances = None
+            known_distance_idx = None
+            unknown_distance_idx = None
 
-            model_spaces = {}
+        fluxes = f["fluxes"][()]
+        flux_obs = f["flux_obs"][()]
+        selection = f["selection"][()]
 
-            for k in f["model_spaces"].keys():
+        model_spaces = {}
 
-                model_spaces[str(k)] = f["model_spaces"][k][()]
+        for k in f["model_spaces"].keys():
 
-            auxiliary_quantities = {}
+            model_spaces[str(k)] = f["model_spaces"][k][()]
 
-            for k in f["auxiliary_quantities"].keys():
+        auxiliary_quantities = {}
 
-                auxiliary_quantities[str(k)] = {
-                    "true_values": f["auxiliary_quantities"][k]["true_values"][()],
-                    "obs_values": f["auxiliary_quantities"][k]["obs_values"][()],
-                }
+        for k in f["auxiliary_quantities"].keys():
 
-            truth = recursively_load_dict_contents_from_group(f, "truth")
+            auxiliary_quantities[str(k)] = {
+                "true_values": f["auxiliary_quantities"][k]["true_values"][()],
+                "obs_values": f["auxiliary_quantities"][k]["obs_values"][()],
+            }
 
-            graph = nx.from_dict_of_dicts(
-                clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
-            )
+        truth = recursively_load_dict_contents_from_group(f, "truth")
+
+        graph = nx.from_dict_of_dicts(
+            clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
+        )
 
         return cls(
             luminosities=luminosities,
