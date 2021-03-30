@@ -10,8 +10,6 @@ from popsynth.utils.meta import Parameter, ParameterMeta
 #from numpy.typing import ArrayLike
 
 
-
-
 log = setup_logger(__name__)
 
 
@@ -30,6 +28,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         observed: bool = True,
         uses_distance: bool = False,
         uses_luminosity: bool = False,
+        uses_sky_position: bool = False
     ) -> None:
 
         self._parameter_storage = {}  # type: Dict[str, float]
@@ -45,7 +44,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._is_sampled = False  # type: bool
         self._selector = UnitySelection()  # type: SelectionProbabilty
         self._uses_distance = uses_distance  # type: bool
-        self._uses_luminoity = uses_luminosity  # type: bool
+        self._uses_luminosity = uses_luminosity  # type: bool
+        self._uses_sky_position = uses_sky_position  # type: bool
 
     def set_luminosity(self, luminosity: ArrayLike) -> None:
         """FIXME! briefly describe function
@@ -118,8 +118,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
             if self._uses_distance:
                 self._selector.set_distance(self._distance)
 
-            if self._uses_luminoity:
-                self._selector.set_luminosity(self._luminosity)
+            if self._uses_sky_position:
+            sky_positionself._selector.set_luminosity(self._luminosity)
 
             for k, v in self._secondary_samplers.items():
 
