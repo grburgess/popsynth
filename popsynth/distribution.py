@@ -1,4 +1,5 @@
 import abc
+from dataclasses import dataclass
 from typing import Dict, List, Union
 
 import numpy as np
@@ -59,6 +60,24 @@ class Distribution(object, metaclass=ParameterMeta):
         return self._parameter_storage
 
 
+@dataclass
+class SpatialContainer:
+
+    distance: ArrayLike
+    theta: ArrayLike
+    phi: ArrayLike
+
+    @property
+    def dec(self) -> np.ndarray:
+        return 90 - np.rad2deg(self.theta)
+
+    @property
+    def ra(self) -> np.ndarray:
+        return np.rad2deg(self.phi)
+
+        
+
+    
 class SpatialDistribution(Distribution):
 
     r_max = DistributionParameter(vmin=0, default=10)
@@ -135,6 +154,11 @@ class SpatialDistribution(Distribution):
     def distances(self) -> np.ndarray:
         return self._distances
 
+    @property
+    def spatial_values(self):
+
+        return SpatialContainer(self._distances, self._theta, self._phi)
+    
     def draw_sky_positions(self, size: int) -> None:
 
         self._theta, self._phi = sample_theta_phi(size)

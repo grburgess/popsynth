@@ -6,6 +6,7 @@ import numpy as np
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
+from popsynth.distribution import SpatialContainer
 
 #from numpy.typing import ArrayLike
 
@@ -58,7 +59,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         self._luminosity = luminosity  # type:ArrayLike
 
-    def set_distance(self, distance: ArrayLike) -> None:
+    def set_spatial_values(self, value: SpatialContainer) -> None:
         """FIXME! briefly describe function
 
         :param distance:
@@ -67,8 +68,13 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         """
 
-        self._distance = distance  # type:ArrayLike
-
+        self._distance = value.distance  # type:ArrayLike
+        self._theta = value.theta
+        self._phi = value.phi
+        self._ra = value.ra
+        self._dec = value.dec
+        
+        
     def set_selection_probability(self, selector: SelectionProbabilty) -> None:
 
         assert isinstance(
@@ -118,8 +124,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
             if self._uses_distance:
                 self._selector.set_distance(self._distance)
 
-            if self._uses_sky_position:
-            sky_positionself._selector.set_luminosity(self._luminosity)
+            if self._uses_luminosity:
+                self._selector.set_luminosity(self._luminosity)
 
             for k, v in self._secondary_samplers.items():
 
