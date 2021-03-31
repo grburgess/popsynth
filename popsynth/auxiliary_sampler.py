@@ -3,13 +3,13 @@ from typing import Any, Dict, List, Union
 
 import numpy as np
 
+from popsynth.distribution import SpatialContainer
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
+from popsynth.utils.cosmology import cosmology
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
 
 #from numpy.typing import ArrayLike
-
-
 
 
 log = setup_logger(__name__)
@@ -30,6 +30,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         observed: bool = True,
         uses_distance: bool = False,
         uses_luminosity: bool = False,
+        uses_sky_position: bool = False
     ) -> None:
 
         self._parameter_storage = {}  # type: Dict[str, float]
@@ -45,7 +46,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._is_sampled = False  # type: bool
         self._selector = UnitySelection()  # type: SelectionProbabilty
         self._uses_distance = uses_distance  # type: bool
-        self._uses_luminoity = uses_luminosity  # type: bool
+        self._uses_luminosity = uses_luminosity  # type: bool
+        self._uses_sky_position = uses_sky_position  # type: bool
 
     def set_luminosity(self, luminosity: ArrayLike) -> None:
         """FIXME! briefly describe function
@@ -58,7 +60,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         self._luminosity = luminosity  # type:ArrayLike
 
-    def set_distance(self, distance: ArrayLike) -> None:
+    def set_spatial_values(self, value: SpatialContainer) -> None:
         """FIXME! briefly describe function
 
         :param distance:
@@ -67,7 +69,12 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         """
 
-        self._distance = distance  # type:ArrayLike
+        self._distance = value.distance  # type:ArrayLike
+        self._theta = value.theta
+        self._phi = value.phi
+        self._ra = value.ra
+        self._dec = value.dec
+        self._spatial_values = value
 
     def set_selection_probability(self, selector: SelectionProbabilty) -> None:
 
@@ -118,16 +125,21 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
             if self._uses_distance:
                 self._selector.set_distance(self._distance)
 
-            if self._uses_luminoity:
+            if self._uses_luminosity:
                 self._selector.set_luminosity(self._luminosity)
 
             for k, v in self._secondary_samplers.items():
 
-                assert v.is_secondary, "Tried to sample a non-secondary, this is a bag"
+                assert v.is_secondary, "Tried to sample a non-secondary, this is a bug"
 
                 # we do not allow for the secondary
                 # quantities to derive a luminosity
                 # as it should be the last thing dervied
+
+                if v.uses_distance or v.uses_sky_position:
+
+                    v.set_spatial_values(self._spatial_values)
+                
 
                 v.draw(size=size)
 
@@ -296,9 +308,23 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._uses_distance
 
     @property
+    def uses_sky_position(self) -> bool:
+        return self._uses_sky_position
+
+    
+    @property
     def uses_luminosity(self) -> np.ndarray:
         return self._luminosity
 
+    @property
+    def luminosity_distance(self):
+        """
+        luminosity distance if needed
+        """
+
+        return cosmology.luminosity_distance(self._distance)
+
+    
     @abc.abstractmethod
     def true_sampler(self, size: int = 1):
 
@@ -338,6 +364,7 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         super(DerivedLumAuxSampler, self).__init__(name,
                                                    observed=False,
                                                    uses_distance=uses_distance)
+
 
     @abc.abstractmethod
     def compute_luminosity(self):
