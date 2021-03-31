@@ -5,11 +5,11 @@ from dataclasses import dataclass
 
 from omegaconf import OmegaConf
 
-_config_path = "~/.config/popsynth/"
+_config_path = Path("~/.config/popsynth/").expanduser()
 
-_config_name = "popsynth_config.yml"
+_config_name = Path("popsynth_config.yml")
 
-_config_file = Path(os.path.join(_config_path, _config_name))
+_config_file = _config_path / _config_name
 
 
 # Define structure with dataclasses
@@ -60,3 +60,13 @@ if _config_file.is_file():
 
     popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config,
                                                       _local_config)
+
+# Write defaults
+else:
+
+    # Make directory if needed
+    _config_path.mkdir(parents=True, exist_ok=True)
+
+    with _config_file.open("w") as f:
+
+        OmegaConf.save(config=popsynth_config, f=f.name)
