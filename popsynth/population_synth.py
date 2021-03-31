@@ -319,7 +319,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             # pbar.set_description(desc='Getting derived luminosities')
             # set the distance to the auxilary sampler
-            self._derived_luminosity_sampler.set_distance(distances)
+            self._derived_luminosity_sampler.set_spatial_values(self._spatial_distribution.spatial_values)
 
             # sample the true and obs
             # values which are held internally
@@ -400,7 +400,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
             # they are needed
 
             v.set_luminosity(luminosities)
-            v.set_distance(distances)
+            v.set_spatial_values(self._spatial_distribution.spatial_values)
 
             # sample the true and obs
             # values which are held internally
