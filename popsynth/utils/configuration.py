@@ -1,72 +1,62 @@
 import os
 import warnings
 from pathlib import Path
+from dataclasses import dataclass
 
 from omegaconf import OmegaConf
 
-# from configya import YAMLConfig
+_config_path = "~/.config/popsynth/"
 
-structure = {}
+_config_name = "popsynth_config.yml"
 
-structure["logging"] = dict(
-    debug=False,
-    console=dict(on=True, level="WARNING"),
-    file=dict(on=True, level="INFO"),
-)
-structure["cosmology"] = dict(Om=0.307, h0=67.7)
-structure["show_progress"] = True
+_config_file = Path(os.path.join(_config_path, _config_name))
 
 
-class NoConfigurationWarning(RuntimeWarning):
-    pass
+# Define structure with dataclasses
+@dataclass
+class LogConsole:
+
+    on: bool = True
+    level: str = "WARNING"
 
 
+@dataclass
+class LogFile:
+
+    on: bool = True
+    level: str = "WARNING"
+
+
+@dataclass
+class Logging:
+
+    debug: bool = False
+    console: LogConsole = LogConsole()
+    file: LogFile = LogFile()
+
+
+@dataclass
+class Cosmology:
+
+    Om: float = 0.307
+    h0: float = 67.7
+
+
+@dataclass
 class PopSynthConfig:
-    def __init__(
-        self,
-        structure=structure,
-        config_path="~/.config/popsynth/",
-        config_name="popsynth_config.yml",
-    ) -> None:
 
-        self._default_structure = structure
-
-        self._config_path = Path(config_path).expanduser()
-
-        self._make_config_dir_if_needed()
-
-        self._config_name = config_name
-
-        self._full_path = self._config_path / self._config_name
-
-        if not self._config_file_exists():
-
-            warnings.warn(
-                f"No configuration file found! Making one in {self._full_path}",
-                NoConfigurationWarning,
-            )
-
-            # Write
-            self._config = OmegaConf.create(self._default_structure)
-            OmegaConf.save(self._config, f=self._full_path)
-
-        # Read
-        self._config = OmegaConf.load(self._full_path)
-
-    def _make_config_dir_if_needed(self):
-
-        if not os.path.exists(self._config_path):
-
-            os.makedirs(self._config_path)
-
-    def _config_file_exists(self):
-
-        return os.path.exists(self._full_path)
-
-    @property
-    def config(self):
-
-        return self._config
+    logging: Logging = Logging()
+    cosmology: Cosmology = Cosmology()
+    show_progress: bool = True
 
 
-popsynth_config = PopSynthConfig().config
+# Read the default config
+popsynth_config: PopSynthConfig = OmegaConf.structured(PopSynthConfig)
+
+# Merge with local config
+if _config_file.is_file():
+
+    _local_config = OmegaConf.load(_config_file)
+
+    popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config,
+                                                      _local_config)
