@@ -3,7 +3,7 @@ from popsynth.distributions.spherical_distribution import (
     ZPowerSphericalDistribution,
 )
 from popsynth.distributions.cosmological_distribution import (
-    SFRDistribtution,
+    SFRDistribution,
     # MergerDistribution,
     ZPowerCosmoDistribution,
 )
@@ -76,12 +76,15 @@ class ZPowerSphericalPopulation(PopulationSynth):
 
 
 class ZPowerCosmoPopulation(PopulationSynth):
-    def __init__(self,
-                 Lambda,
-                 delta,
-                 r_max=5.0,
-                 seed=1234,
-                 luminosity_distribution=None):
+    def __init__(
+        self,
+        Lambda,
+        delta,
+        r_max=5.0,
+        seed=1234,
+        luminosity_distribution=None,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -94,7 +97,8 @@ class ZPowerCosmoPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = ZPowerCosmoDistribution(seed=seed)
+        spatial_distribution = ZPowerCosmoDistribution(seed=seed,
+                                                       is_rate=is_rate)
 
         spatial_distribution.Lambda = Lambda
         spatial_distribution.r_max = r_max
@@ -108,14 +112,17 @@ class ZPowerCosmoPopulation(PopulationSynth):
 
 
 class SFRPopulation(PopulationSynth):
-    def __init__(self,
-                 r0,
-                 rise,
-                 decay,
-                 peak,
-                 r_max=5,
-                 seed=1234,
-                 luminosity_distribution=None):
+    def __init__(
+        self,
+        r0,
+        rise,
+        decay,
+        peak,
+        r_max=5,
+        seed=1234,
+        luminosity_distribution=None,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param r0:
@@ -130,7 +137,7 @@ class SFRPopulation(PopulationSynth):
 
         """
 
-        spatial_distribution = SFRDistribtution(seed=seed)
+        spatial_distribution = SFRDistribution(seed=seed, is_rate=is_rate)
 
         spatial_distribution.r0 = r0
         spatial_distribution.rise = rise

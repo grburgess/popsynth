@@ -15,7 +15,6 @@ from popsynth.utils.spherical_geometry import sample_theta_phi
 
 ArrayLike = List[float]
 
-
 log = setup_logger(__name__)
 
 
@@ -75,9 +74,7 @@ class SpatialContainer:
     def ra(self) -> np.ndarray:
         return np.rad2deg(self.phi)
 
-        
 
-    
 class SpatialDistribution(Distribution):
 
     r_max = DistributionParameter(vmin=0, default=10)
@@ -158,7 +155,7 @@ class SpatialDistribution(Distribution):
     def spatial_values(self):
 
         return SpatialContainer(self._distances, self._theta, self._phi)
-    
+
     def draw_sky_positions(self, size: int) -> None:
 
         self._theta, self._phi = sample_theta_phi(size)

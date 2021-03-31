@@ -1,5 +1,5 @@
 # from .spherical_distribution import SphericalDistribution
-# from .cosmological_distribution import CosmologicalDistribution, SFRDistribtution
+# from .cosmological_distribution import CosmologicalDistribution, SFRDistribution
 # from .pareto_distribution import ParetoDistribution
 # from .log10_normal_distribution import Log10NormalDistribution
 # from .log_normal_distribution import LogNormalDistribution
@@ -9,7 +9,7 @@
 # __all__ = [
 #     "SphericalDistribution",
 #     "CosmologicalDistribution",
-#     "SFRDistribtution",
+#     "SFRDistribution",
 #     "ParetoDistribution",
 #     "Log10NormalDistribution",
 #     "LogNormalDistribution",

@@ -11,9 +11,7 @@ from popsynth.utils.meta import Parameter, ParameterMeta
 
 #from numpy.typing import ArrayLike
 
-
 log = setup_logger(__name__)
-
 
 ArrayLike = List[float]
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
@@ -24,14 +22,12 @@ class AuxiliaryParameter(Parameter):
 
 
 class AuxiliarySampler(object, metaclass=ParameterMeta):
-    def __init__(
-        self,
-        name: str,
-        observed: bool = True,
-        uses_distance: bool = False,
-        uses_luminosity: bool = False,
-        uses_sky_position: bool = False
-    ) -> None:
+    def __init__(self,
+                 name: str,
+                 observed: bool = True,
+                 uses_distance: bool = False,
+                 uses_luminosity: bool = False,
+                 uses_sky_position: bool = False) -> None:
 
         self._parameter_storage = {}  # type: Dict[str, float]
         self._name = name  # type: str
@@ -119,8 +115,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
             if self._has_secondary:
 
-                log.info("%s is sampling its secondary quantities" %
-                         self.name)
+                log.info("%s is sampling its secondary quantities" % self.name)
 
             if self._uses_distance:
                 self._selector.set_distance(self._distance)
@@ -139,7 +134,6 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
                 if v.uses_distance or v.uses_sky_position:
 
                     v.set_spatial_values(self._spatial_values)
-                
 
                 v.draw(size=size)
 
@@ -311,7 +305,6 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
     def uses_sky_position(self) -> bool:
         return self._uses_sky_position
 
-    
     @property
     def uses_luminosity(self) -> np.ndarray:
         return self._luminosity
@@ -324,7 +317,6 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
         return cosmology.luminosity_distance(self._distance)
 
-    
     @abc.abstractmethod
     def true_sampler(self, size: int = 1):
 
@@ -364,7 +356,6 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         super(DerivedLumAuxSampler, self).__init__(name,
                                                    observed=False,
                                                    uses_distance=uses_distance)
-
 
     @abc.abstractmethod
     def compute_luminosity(self):

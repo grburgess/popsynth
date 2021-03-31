@@ -130,10 +130,11 @@ class Popbuilder(object):
 
     def draw_hard(self):
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6,
-                                       flux_sigma=0.4,
-                                       hard_cut=True,
-                                       )
+        pop = self.pop_gen.draw_survey(
+            boundary=1e-6,
+            flux_sigma=0.4,
+            hard_cut=True,
+        )
 
         self.reset()
 
@@ -158,7 +159,6 @@ class Popbuilder(object):
             boundary=1e999,
             flux_sigma=0.1,
             hard_cut=True,
-            
             no_selection=False,
         )
 
@@ -171,7 +171,6 @@ class Popbuilder(object):
         pop = self.pop_gen.draw_survey(boundary=1e-4,
                                        flux_sigma=0.1,
                                        hard_cut=False)
-                                       
 
         self.reset()
 
@@ -181,8 +180,7 @@ class Popbuilder(object):
 
         pop = self.pop_gen.draw_survey(boundary=1e-6,
                                        flux_sigma=0.5,
-                                       distance_probability=0.5
-                                       )
+                                       distance_probability=0.5)
 
         self.reset()
 
@@ -194,9 +192,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6,
-                                       flux_sigma=0.5
-                                       )
+        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5)
 
         self.reset()
 
@@ -208,9 +204,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6,
-                                       flux_sigma=0.5
-                                       )
+        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5)
 
         self.reset()
 

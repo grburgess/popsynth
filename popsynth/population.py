@@ -14,18 +14,18 @@ from IPython.display import Markdown, Math, display
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
-    clean_graph_dict, fill_graph_dict,
+    clean_graph_dict,
+    fill_graph_dict,
     recursively_load_dict_contents_from_group,
-    recursively_save_dict_contents_to_group)
+    recursively_save_dict_contents_to_group,
+)
 from popsynth.utils.spherical_geometry import xyz
-
 
 from popsynth.utils.logging import setup_logger
 
-
 log = setup_logger(__name__)
 
-#from numpy.typing import ArrayLike
+# from numpy.typing import ArrayLike
 
 # dummy
 ArrayLike = List[float]
@@ -234,8 +234,6 @@ class Population(object):
     def ra(self) -> np.ndarray:
         return np.rad2deg(self._phi)
 
-
-    
     @property
     def luminosities_latent(self) -> np.ndarray:
         """
@@ -434,92 +432,107 @@ class Population(object):
 
         with h5py.File(file_name, "w") as f:
 
-            spatial_grp = f.create_group("spatial_params")
+            self._writeto(f)
 
-            for k, v in self._spatial_params.items():
+    def addto(self, file_name: str, group_name: str) -> None:
+        """
+        write population to a group in an existing
+        HDF5 file.
+        """
 
-                spatial_grp.create_dataset(k,
-                                           data=np.array([v]),
-                                           compression="lzf")
+        with h5py.File(file_name, "r+") as f:
 
-            if self._lf_params is not None:
+            g = f.create_group(group_name)
 
-                lum_grp = f.create_group("lf_params")
+            self._writeto(g)
 
-                for k, v in self._lf_params.items():
+    def _writeto(self, f):
+        """
+        write to file or group
 
-                    lum_grp.create_dataset(k,
-                                           data=np.array([v]),
-                                           compression="lzf")
+        :param f: h5py file or group handle
+        """
 
-                f.attrs["lf_form"] = np.string_(self._lf_form)
+        spatial_grp = f.create_group("spatial_params")
 
-                f.attrs["has_lf"] = True
+        for k, v in self._spatial_params.items():
 
-            else:
-                f.attrs["has_lf"] = False
+            spatial_grp.create_dataset(k,
+                                       data=np.array([v]),
+                                       compression="lzf")
 
-            f.attrs["name"] = np.string_(self._name)
-            f.attrs["spatial_form"] = np.string_(self._spatial_form)
-            f.attrs["flux_sigma"] = self._flux_sigma
-            f.attrs["n_model"] = self._n_model
-            f.attrs["r_max"] = self._r_max
-            f.attrs["boundary"] = self._boundary
-            f.attrs["strength"] = self._strength
-            f.attrs["seed"] = int(self._seed)
-            f.attrs["distance_probability"] = self._distance_probability
-            f.attrs["hard_cut"] = self._hard_cut
+        if self._lf_params is not None:
 
-            f.create_dataset("luminosities",
-                             data=self._luminosities,
-                             compression="lzf")
-            f.create_dataset("distances",
-                             data=self._distances,
-                             compression="lzf")
-            f.create_dataset("known_distances",
-                             data=self._known_distances,
-                             compression="lzf")
-            f.create_dataset("known_distance_idx",
-                             data=self._known_distance_idx,
-                             compression="lzf")
-            f.create_dataset(
-                "unknown_distance_idx",
-                data=self._unknown_distance_idx,
-                compression="lzf",
-            )
-            f.create_dataset("fluxes", data=self._fluxes, compression="lzf")
-            f.create_dataset("flux_obs",
-                             data=self._flux_obs,
-                             compression="lzf")
-            f.create_dataset("selection",
-                             data=self._selection,
-                             compression="lzf")
-            f.create_dataset("theta", data=self._theta, compression="lzf")
-            f.create_dataset("phi", data=self._phi, compression="lzf")
+            lum_grp = f.create_group("lf_params")
 
-            aux_grp = f.create_group("auxiliary_quantities")
+            for k, v in self._lf_params.items():
 
-            for k, v in self._auxiliary_quantities.items():
+                lum_grp.create_dataset(k,
+                                       data=np.array([v]),
+                                       compression="lzf")
 
-                q_grp = aux_grp.create_group(k)
-                q_grp.create_dataset("true_values",
-                                     data=v["true_values"],
-                                     compression="lzf")
-                q_grp.create_dataset("obs_values",
-                                     data=v["obs_values"],
-                                     compression="lzf")
+            f.attrs["lf_form"] = np.string_(self._lf_form)
 
-            model_grp = f.create_group("model_spaces")
+            f.attrs["has_lf"] = True
 
-            for k, v in self._model_spaces.items():
+        else:
+            f.attrs["has_lf"] = False
 
-                model_grp.create_dataset(k, data=v, compression="lzf")
+        f.attrs["name"] = np.string_(self._name)
+        f.attrs["spatial_form"] = np.string_(self._spatial_form)
+        f.attrs["flux_sigma"] = self._flux_sigma
+        f.attrs["n_model"] = self._n_model
+        f.attrs["r_max"] = self._r_max
+        f.attrs["boundary"] = self._boundary
+        f.attrs["strength"] = self._strength
+        f.attrs["seed"] = int(self._seed)
+        f.attrs["distance_probability"] = self._distance_probability
+        f.attrs["hard_cut"] = self._hard_cut
 
-            # now store the truths
-            recursively_save_dict_contents_to_group(f, "truth", self._truth)
+        f.create_dataset("luminosities",
+                         data=self._luminosities,
+                         compression="lzf")
+        f.create_dataset("distances", data=self._distances, compression="lzf")
+        f.create_dataset("known_distances",
+                         data=self._known_distances,
+                         compression="lzf")
+        f.create_dataset("known_distance_idx",
+                         data=self._known_distance_idx,
+                         compression="lzf")
+        f.create_dataset(
+            "unknown_distance_idx",
+            data=self._unknown_distance_idx,
+            compression="lzf",
+        )
+        f.create_dataset("fluxes", data=self._fluxes, compression="lzf")
+        f.create_dataset("flux_obs", data=self._flux_obs, compression="lzf")
+        f.create_dataset("selection", data=self._selection, compression="lzf")
+        f.create_dataset("theta", data=self._theta, compression="lzf")
+        f.create_dataset("phi", data=self._phi, compression="lzf")
 
-            recursively_save_dict_contents_to_group(
-                f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph)))
+        aux_grp = f.create_group("auxiliary_quantities")
+
+        for k, v in self._auxiliary_quantities.items():
+
+            q_grp = aux_grp.create_group(k)
+            q_grp.create_dataset("true_values",
+                                 data=v["true_values"],
+                                 compression="lzf")
+            q_grp.create_dataset("obs_values",
+                                 data=v["obs_values"],
+                                 compression="lzf")
+
+        model_grp = f.create_group("model_spaces")
+
+        for k, v in self._model_spaces.items():
+
+            model_grp.create_dataset(k, data=v, compression="lzf")
+
+        # now store the truths
+        recursively_save_dict_contents_to_group(f, "truth", self._truth)
+
+        recursively_save_dict_contents_to_group(
+            f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph)))
 
     @classmethod
     def from_file(cls, file_name):
@@ -533,87 +546,107 @@ class Population(object):
 
         with h5py.File(file_name, "r") as f:
 
-            spatial_params = {}
+            return cls._loadfrom(f)
 
-            for key in f["spatial_params"].keys():
+    @classmethod
+    def from_group(cls, file_name, group_name):
+        """
+        load a population from a group
+        in a file.
+        """
 
-                spatial_params[key] = f["spatial_params"][key][()][0]
+        with h5py.File(file_name, "r") as f:
 
-            # we must double check that there are LF params
+            g = f[group_name]
 
-            try:
+            return cls._loadfrom(g)
 
-                if f.attrs["has_lf"]:
-                    lf_params = {}
-                    for key in f["lf_params"].keys():
+    @classmethod
+    def _loadfrom(cls, f):
+        """
+        load from file or group
 
-                        lf_params[key] = f["lf_params"][key][()][0]
-                    lf_form = str(f.attrs["lf_form"])
+        :param f: h5py file or group handle
+        """
 
-                else:
+        spatial_params = {}
 
-                    lf_params = None
-                    lf_form = None
-            except:
+        for key in f["spatial_params"].keys():
+
+            spatial_params[key] = f["spatial_params"][key][()][0]
+
+        # we must double check that there are LF params
+
+        try:
+
+            if f.attrs["has_lf"]:
+                lf_params = {}
+                for key in f["lf_params"].keys():
+
+                    lf_params[key] = f["lf_params"][key][()][0]
+                lf_form = str(f.attrs["lf_form"])
+
+            else:
 
                 lf_params = None
                 lf_form = None
+        except:
 
-            flux_sigma = f.attrs["flux_sigma"]
-            boundary = f.attrs["boundary"]
-            strength = f.attrs["strength"]
-            n_model = f.attrs["n_model"]
-            r_max = f.attrs["r_max"]
-            seed = int(f.attrs["seed"])
-            name = f.attrs["name"]
-            distance_probability = f.attrs["distance_probability"]
-            spatial_form = str(f.attrs["spatial_form"])
-            hard_cut = f.attrs["hard_cut"]
+            lf_params = None
+            lf_form = None
 
-            luminosities = f["luminosities"][()]
-            distances = f["distances"][()]
-            theta = f["theta"][()]
-            phi = f["phi"][()]
+        flux_sigma = f.attrs["flux_sigma"]
+        boundary = f.attrs["boundary"]
+        strength = f.attrs["strength"]
+        n_model = f.attrs["n_model"]
+        r_max = f.attrs["r_max"]
+        seed = int(f.attrs["seed"])
+        name = f.attrs["name"]
+        distance_probability = f.attrs["distance_probability"]
+        spatial_form = str(f.attrs["spatial_form"])
+        hard_cut = f.attrs["hard_cut"]
 
-            # right now this is just for older pops
-            try:
-                known_distances = f["known_distances"][()]
-                known_distance_idx = (f["known_distance_idx"][()]).astype(int)
-                unknown_distance_idx = (
-                    f["unknown_distance_idx"][()]).astype(int)
+        luminosities = f["luminosities"][()]
+        distances = f["distances"][()]
+        theta = f["theta"][()]
+        phi = f["phi"][()]
 
-            except:
+        # right now this is just for older pops
+        try:
+            known_distances = f["known_distances"][()]
+            known_distance_idx = (f["known_distance_idx"][()]).astype(int)
+            unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
 
-                known_distances = None
-                known_distance_idx = None
-                unknown_distance_idx = None
+        except:
 
-            fluxes = f["fluxes"][()]
-            flux_obs = f["flux_obs"][()]
-            selection = f["selection"][()]
+            known_distances = None
+            known_distance_idx = None
+            unknown_distance_idx = None
 
-            model_spaces = {}
+        fluxes = f["fluxes"][()]
+        flux_obs = f["flux_obs"][()]
+        selection = f["selection"][()]
 
-            for k in f["model_spaces"].keys():
+        model_spaces = {}
 
-                model_spaces[str(k)] = f["model_spaces"][k][()]
+        for k in f["model_spaces"].keys():
 
-            auxiliary_quantities = {}
+            model_spaces[str(k)] = f["model_spaces"][k][()]
 
-            for k in f["auxiliary_quantities"].keys():
+        auxiliary_quantities = {}
 
-                auxiliary_quantities[str(k)] = {
-                    "true_values":
-                    f["auxiliary_quantities"][k]["true_values"][()],
-                    "obs_values":
-                    f["auxiliary_quantities"][k]["obs_values"][()],
-                }
+        for k in f["auxiliary_quantities"].keys():
 
-            truth = recursively_load_dict_contents_from_group(f, "truth")
+            auxiliary_quantities[str(k)] = {
+                "true_values": f["auxiliary_quantities"][k]["true_values"][()],
+                "obs_values": f["auxiliary_quantities"][k]["obs_values"][()],
+            }
 
-            graph = nx.from_dict_of_dicts(
-                clean_graph_dict(
-                    recursively_load_dict_contents_from_group(f, "graph")))
+        truth = recursively_load_dict_contents_from_group(f, "truth")
+
+        graph = nx.from_dict_of_dicts(
+            clean_graph_dict(
+                recursively_load_dict_contents_from_group(f, "graph")))
 
         return cls(
             luminosities=luminosities,
@@ -647,7 +680,7 @@ class Population(object):
 
     def to_sub_population(self, observed: bool = True) -> "Population":
         """
-        Create a population that is down selected from either the 
+        Create a population that is down selected from either the
         observed or unobserved population
 
         :param observed: extract the observed or unobserved object
@@ -669,7 +702,7 @@ class Population(object):
 
                 new_aux[k] = {
                     "true_values": v["true_values"][selection],
-                    "obs_values": v["obs_values"][selection]
+                    "obs_values": v["obs_values"][selection],
                 }
 
         else:

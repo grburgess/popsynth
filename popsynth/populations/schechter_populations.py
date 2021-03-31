@@ -64,7 +64,16 @@ class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class SchechterZPowerCosmoPopulation(ZPowerCosmoPopulation):
-    def __init__(self, Lambda, delta, Lmin, alpha, r_max=10, seed=1234):
+    def __init__(
+        self,
+        Lambda,
+        delta,
+        Lmin,
+        alpha,
+        r_max=10,
+        seed=1234,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param Lambda:
@@ -89,19 +98,23 @@ class SchechterZPowerCosmoPopulation(ZPowerCosmoPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )
 
 
 class SchechterSFRPopulation(SFRPopulation):
-    def __init__(self,
-                 r0,
-                 rise,
-                 decay,
-                 peak,
-                 Lmin,
-                 alpha,
-                 r_max=10,
-                 seed=1234):
+    def __init__(
+        self,
+        r0,
+        rise,
+        decay,
+        peak,
+        Lmin,
+        alpha,
+        r_max=10,
+        seed=1234,
+        is_rate=True,
+    ):
         """FIXME! briefly describe function
 
         :param r0:
@@ -130,4 +143,5 @@ class SchechterSFRPopulation(SFRPopulation):
             r_max=r_max,
             seed=seed,
             luminosity_distribution=luminosity_distribution,
+            is_rate=is_rate,
         )

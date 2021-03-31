@@ -1,23 +1,62 @@
+import os
+import warnings
 from pathlib import Path
+from dataclasses import dataclass
 
-from configya import YAMLConfig
+from omegaconf import OmegaConf
 
-structure = {}
+_config_path = "~/.config/popsynth/"
 
-structure["logging"] = dict(debug=False,
-                            console=dict(on=True, level="WARNING"),
-                            file=dict(on=True, level="INFO"))
-structure["cosmology"] = dict(Om=0.307, h0=67.7)
-structure["show_progress"] = True
+_config_name = "popsynth_config.yml"
 
-class PopSynthConfig(YAMLConfig):
-    def __init__(self) -> None:
-
-        super(PopSynthConfig, self).__init__(
-            structure=structure,
-            config_path="~/.config/popsynth/",
-            config_name="popsynth_config.yml",
-        )
+_config_file = Path(os.path.join(_config_path, _config_name))
 
 
-popsynth_config = PopSynthConfig()
+# Define structure with dataclasses
+@dataclass
+class LogConsole:
+
+    on: bool = True
+    level: str = "WARNING"
+
+
+@dataclass
+class LogFile:
+
+    on: bool = True
+    level: str = "WARNING"
+
+
+@dataclass
+class Logging:
+
+    debug: bool = False
+    console: LogConsole = LogConsole()
+    file: LogFile = LogFile()
+
+
+@dataclass
+class Cosmology:
+
+    Om: float = 0.307
+    h0: float = 67.7
+
+
+@dataclass
+class PopSynthConfig:
+
+    logging: Logging = Logging()
+    cosmology: Cosmology = Cosmology()
+    show_progress: bool = True
+
+
+# Read the default config
+popsynth_config: PopSynthConfig = OmegaConf.structured(PopSynthConfig)
+
+# Merge with local config
+if _config_file.is_file():
+
+    _local_config = OmegaConf.load(_config_file)
+
+    popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config,
+                                                      _local_config)

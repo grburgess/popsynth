@@ -31,7 +31,6 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         spatial_distribution: SpatialDistribution,
         luminosity_distribution: Union[LuminosityDistribution, None] = None,
         seed: int = 1234,
-
     ):
         """
         Basic and generic population synth. One specifies the spatial and luminosity distribution OR
@@ -241,7 +240,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         strength: float = 10.0,
         hard_cut: bool = False,
         distance_probability: Optional[float] = None,
-            no_selection: bool = False,
+        no_selection: bool = False,
         log10_flux_draw: bool = True,
     ) -> Population:
         """
@@ -269,7 +268,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # create a callback of the integrand
         dNdr = (lambda r: self._spatial_distribution.dNdV(
             r) * self._spatial_distribution.differential_volume(r) / self.
-            _spatial_distribution.time_adjustment(r))
+                _spatial_distribution.time_adjustment(r))
 
         # integrate the population to determine the true number of
         # objects
@@ -320,7 +319,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             # pbar.set_description(desc='Getting derived luminosities')
             # set the distance to the auxilary sampler
-            self._derived_luminosity_sampler.set_spatial_values(self._spatial_distribution.spatial_values)
+            self._derived_luminosity_sampler.set_spatial_values(
+                self._spatial_distribution.spatial_values)
 
             # sample the true and obs
             # values which are held internally
@@ -531,13 +531,13 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
             auxiliary_selection += v["selection"]
 
-            log.info("Applying selection from %s which selected %d of %d objects"
-                     % (k, v["selection"].n_selected,
-                         v["selection"].n_objects))
+            log.info(
+                "Applying selection from %s which selected %d of %d objects" %
+                (k, v["selection"].n_selected, v["selection"].n_objects))
 
             log.info(
-                "Before auxiliary selection there were %d objects selected"
-                % self._flux_selector.n_selected)
+                "Before auxiliary selection there were %d objects selected" %
+                self._flux_selector.n_selected)
 
         # now we can add the values onto the global
         # selection
@@ -559,7 +559,8 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
                 self._spatial_selector.draw(n)
 
                 log.info(
-                    f"Appling selection from {self._spatial_selector.name} which selected {self._spatial_selector.n_selected} of {self._spatial_selector.n_objects}")
+                    f"Appling selection from {self._spatial_selector.name} which selected {self._spatial_selector.n_selected} of {self._spatial_selector.n_objects}"
+                )
 
                 global_selection += self._spatial_selector
 

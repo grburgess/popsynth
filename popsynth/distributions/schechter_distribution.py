@@ -9,7 +9,7 @@ class SchechterDistribution(LuminosityDistribution):
     Lmin = DistributionParameter(default=1, vmin=0)
     alpha = DistributionParameter(default=1)
 
-    def __init__(self, seed=1234, name="shechter"):
+    def __init__(self, seed=1234, name="schechter"):
         """
         A Schechter luminosity function
         :param seed: the random number seed

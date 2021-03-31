@@ -25,10 +25,14 @@ class SoftFluxSelection(SoftSelection):
     def __init__(self, boundary: float, strength: float) -> None:
 
         log.debug(
-            f"created a hard flux selection with boundary {boundary} and strenhth {strength}")
+            f"created a hard flux selection with boundary {boundary} and strenhth {strength}"
+        )
 
         super(SoftFluxSelection, self).__init__(boundary, strength)
 
-    def draw(self, size: int,):
+    def draw(
+        self,
+        size: int,
+    ):
 
         self._selection = self._draw(size, self._observed_flux, use_log=True)
