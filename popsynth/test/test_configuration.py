@@ -5,6 +5,7 @@ from omegaconf import OmegaConf
 
 from popsynth.utils.configuration import PopSynthConfig
 
+
 def test_default_configuration():
     """
     Just load the default config.
@@ -19,15 +20,15 @@ def test_configuration_write():
     """
 
     popsynth_config = PopSynthConfig()
-    
+
     with tempfile.NamedTemporaryFile() as f:
-        
+
         OmegaConf.save(config=popsynth_config, f=f.name)
 
         loaded_config = OmegaConf.load(f.name)
 
     assert popsynth_config == loaded_config
-    
+
 
 def test_user_config_merge():
     """
@@ -36,7 +37,16 @@ def test_user_config_merge():
 
     popsynth_config = PopSynthConfig()
 
-    user_configs = [{"show_progress": False}, {"logging" : {"console": {"on": False, "level": "INFO"}}}]
+    user_configs = [{
+        "show_progress": False
+    }, {
+        "logging": {
+            "console": {
+                "on": False,
+                "level": "INFO"
+            }
+        }
+    }]
 
     for i, config in enumerate(user_configs):
 
@@ -51,7 +61,7 @@ def test_user_config_merge():
         popsynth_config = OmegaConf.merge(popsynth_config, loaded_config)
 
         path.unlink()
-            
+
     assert popsynth_config["show_progress"] == False
 
     assert popsynth_config["logging"]["console"]["on"] == False
