@@ -139,12 +139,12 @@ def silence_console_log():
 
 def show_progress():
 
-    popsynth_config["show_progress"] = True
+    popsynth_config.show_progress = True
 
 
 def silence_progress():
 
-    popsynth_config["show_progress"] = False
+    popsynth_config.show_progress = False
 
 
 def setup_logger(name):

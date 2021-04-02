@@ -62,7 +62,7 @@ def test_user_config_merge():
 
         path.unlink()
 
-    assert popsynth_config["show_progress"] == False
+    assert popsynth_config.show_progress == False
 
     assert popsynth_config["logging"]["console"]["on"] == False
 

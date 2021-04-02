@@ -35,7 +35,7 @@ class BernoulliSelection(SelectionProbabilty):
 
     def draw(self, size: int) -> None:
 
-        if popsynth_config["show_progress"]:
+        if popsynth_config.show_progress:
 
             self._selection = np.zeros(size, dtype=int).astype(
                 bool)  # type: np.ndarray

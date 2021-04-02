@@ -179,7 +179,7 @@ class SpatialDistribution(Distribution):
 
         # slow
 
-        if popsynth_config["show_progress"]:
+        if popsynth_config.show_progress:
             for i in progress_bar(range(size), desc="Drawing distances"):
                 flag = True
                 while flag:
