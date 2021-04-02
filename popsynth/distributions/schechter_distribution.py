@@ -5,6 +5,7 @@ from popsynth.distribution import LuminosityDistribution, DistributionParameter
 
 
 class SchechterDistribution(LuminosityDistribution):
+    _distribution_name = "SchechterDistribution"
 
     Lmin = DistributionParameter(default=1, vmin=0)
     alpha = DistributionParameter(default=1)

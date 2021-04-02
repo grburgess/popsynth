@@ -5,6 +5,7 @@ from popsynth.utils.spherical_geometry import sample_theta_phi
 
 
 class SkySampler(object):
+    _auxiliary_param_name = "SkySampler"
     def __init__(self, ra_sampler=None, dec_sampler=None):
         """
         A sky sampler that samples theta phi positions

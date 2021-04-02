@@ -1,17 +1,19 @@
 import numpy as np
-import scipy.stats as stats
 import scipy.special as sf
+import scipy.stats as stats
+
+from popsynth.utils.configuration import popsynth_config
+from popsynth.utils.logging import setup_logger
 from popsynth.utils.progress_bar import progress_bar
 
 from .selection_probability import SelectionProbabilty
-
-from popsynth.utils.logging import setup_logger
-from popsynth.utils.configuration import popsynth_config
 
 log = setup_logger(__name__)
 
 
 class UnitySelection(SelectionProbabilty):
+    _selection_name = " UnitySelection"
+
     def __init__(self):
         """
         A selection that returns all unity
@@ -24,6 +26,8 @@ class UnitySelection(SelectionProbabilty):
 
 
 class BernoulliSelection(SelectionProbabilty):
+    _selection_name = "BernoulliSelection"
+
     def __init__(self, probability: float = 0.5) -> None:
 
         assert probability <= 1.0
@@ -57,27 +61,52 @@ class BernoulliSelection(SelectionProbabilty):
         return self._probability
 
 
-class HardSelection(SelectionProbabilty):
-    def __init__(self, boundary: float):
+class BoxSelection(SelectionProbabilty):
+    _selection_name = "BoxSelection"
 
-        super(HardSelection, self).__init__(name="Hard selection")
+    def __init__(self, vmin: float, vmax: float, name: str):
 
-        self._boundary = boundary  # type: float
+        super(BoxSelection, self).__init__(name="box selection")
+
+        self._vmin = vmin  # type: float
+        self._vmax = vmax  # type: float
 
     def _draw(self, values) -> np.ndarray:
 
-        return values >= self._boundary
+        return (values >= self._vmin) & (values <= self._vmax)
 
     @property
-    def boundary(self):
-        return self._boundary
+    def vmin(self):
+        return self._vmin
+
+    @property
+    def vmax(self):
+        return self._vmax
 
     @property
     def hard_cut(self):
         return True
 
 
+class HardSelection(BoxSelection):
+    _selection_name = "HardSelection"
+
+    def __init__(self, boundary: float):
+        """
+        hard selection above the boundary
+        """
+        super(HardSelection, self).__init__(
+            vmin=boundary, vmax=np.inf, name="Hard selection")
+
+    @property
+    def boundary(self):
+        return self._vmin
+
+
 class SoftSelection(SelectionProbabilty):
+
+    _selection_name = "SoftSelection"
+
     def __init__(self, boundary: float, strength: float) -> None:
 
         self._strength = strength  # type: float
@@ -113,3 +142,6 @@ class SoftSelection(SelectionProbabilty):
     @property
     def hard_cut(self):
         return False
+
+    __all__ = ["UnitySelection", "BernoulliSelection",
+               "BoxSelection", "HardSelection", "SoftSelection"]

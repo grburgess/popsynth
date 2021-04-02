@@ -4,6 +4,7 @@ from popsynth.distribution import LuminosityDistribution, DistributionParameter
 
 
 class ParetoDistribution(LuminosityDistribution):
+    _distribution_name = "ParetoDistribution"
 
     Lmin = DistributionParameter(default=1, vmin=0)
     alpha = DistributionParameter(default=1)

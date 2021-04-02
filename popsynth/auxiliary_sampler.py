@@ -2,12 +2,14 @@ import abc
 from typing import Any, Dict, List, Union
 
 import numpy as np
+from class_registry import AutoRegister
 
 from popsynth.distribution import SpatialContainer
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
 from popsynth.utils.cosmology import cosmology
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
+from popsynth.utils.registry import auxiliary_parameter_registry
 
 #from numpy.typing import ArrayLike
 
@@ -21,7 +23,7 @@ class AuxiliaryParameter(Parameter):
     pass
 
 
-class AuxiliarySampler(object, metaclass=ParameterMeta):
+class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_registry, base_type=ParameterMeta)):
     def __init__(self,
                  name: str,
                  observed: bool = True,

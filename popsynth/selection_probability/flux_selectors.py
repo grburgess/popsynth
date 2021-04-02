@@ -8,6 +8,8 @@ log = setup_logger(__name__)
 
 
 class HardFluxSelection(HardSelection):
+    _selection_name = " HardFluxSelection"
+
     def __init__(self, boundary: float) -> None:
 
         assert boundary >= 0
@@ -22,6 +24,8 @@ class HardFluxSelection(HardSelection):
 
 
 class SoftFluxSelection(SoftSelection):
+    _selection_name = " SoftFluxSelection"
+
     def __init__(self, boundary: float, strength: float) -> None:
 
         log.debug(
@@ -36,3 +40,6 @@ class SoftFluxSelection(SoftSelection):
     ):
 
         self._selection = self._draw(size, self._observed_flux, use_log=True)
+
+
+__all__ = ["HardFluxSelection", "SoftFluxSelection"]

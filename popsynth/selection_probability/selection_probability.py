@@ -3,7 +3,12 @@ from typing import Any
 
 import numpy as np
 
+from class_registry import AutoRegister
+
+from popsynth.utils.registry import selection_registry
 from popsynth.utils.logging import setup_logger
+
+
 
 log = setup_logger(__name__)
 
@@ -13,7 +18,7 @@ class SelectionVariableContaier(object):
         pass
 
 
-class SelectionProbabilty(object, metaclass=abc.ABCMeta):
+class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
     def __init__(self, name: str = "name") -> None:
 
         self._name = name  # type: str
@@ -108,5 +113,7 @@ class SelectionProbabilty(object, metaclass=abc.ABCMeta):
 
 
 class DummySelection(SelectionProbabilty):
+    _selection_name = "DummySelection"
+    
     def draw(self, size=1):
         pass

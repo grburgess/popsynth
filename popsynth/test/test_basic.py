@@ -1,11 +1,13 @@
-import popsynth
-import pytest
 import os
+
 import numpy as np
+import pytest
+
+import popsynth
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
-
+    _auxiliary_param_name = "DemoSampler"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
 
@@ -19,7 +21,7 @@ class DemoSampler(popsynth.AuxiliarySampler):
 
 
 class DemoSampler2(popsynth.DerivedLumAuxSampler):
-
+    _auxiliary_param_name = "DemoSampler2"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
     sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)

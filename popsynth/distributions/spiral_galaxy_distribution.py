@@ -1,11 +1,12 @@
 import numpy as np
 from scipy import random as rd
 
-from popsynth.distributions.spherical_distribution import SphericalDistribution
 from popsynth.distribution import DistributionParameter
+from popsynth.distributions.spherical_distribution import SphericalDistribution
 
 
 class SpiralGalaxyDistribution(SphericalDistribution):
+    _distribution_name = "SpiralGalaxyDistribution"
 
     rho = DistributionParameter(vmin=0)
     a = DistributionParameter()

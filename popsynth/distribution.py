@@ -3,11 +3,13 @@ from dataclasses import dataclass
 from typing import Dict, List, Union
 
 import numpy as np
+from class_registry import AutoRegister
 
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
 from popsynth.utils.progress_bar import progress_bar
+from popsynth.utils.registry import distribution_registry
 from popsynth.utils.rejection_sample import rejection_sample
 from popsynth.utils.spherical_geometry import sample_theta_phi
 
@@ -22,7 +24,8 @@ class DistributionParameter(Parameter):
     pass
 
 
-class Distribution(object, metaclass=ParameterMeta):
+class Distribution(object, metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta)):
+    _distribution_name="Distribution"
     def __init__(self, name: str, seed: int, form: str) -> None:
         """
         A distribution base class
@@ -76,7 +79,8 @@ class SpatialContainer:
 
 
 class SpatialDistribution(Distribution):
-
+    _distribution_name = "SpatialDistribution"
+    
     r_max = DistributionParameter(vmin=0, default=10)
 
     def __init__(self, name: str, seed: int, form: Union[str, None] = None):
@@ -207,6 +211,7 @@ class SpatialDistribution(Distribution):
 
 
 class LuminosityDistribution(Distribution):
+    _distribution_name = "LuminosityDistribtuion"
     def __init__(self, name: str, seed: int, form: Union[str, None] = None):
         """
         A luminosity distribution such as a

@@ -5,6 +5,7 @@ from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
 
 
 class TruncatedNormalAuxSampler(AuxiliarySampler):
+    _auxiliary_param_name = "TruncatedNormalAuxSampler"
 
     mu = AuxiliaryParameter(default=0)
     tau = AuxiliaryParameter(default=1, vmin=0)

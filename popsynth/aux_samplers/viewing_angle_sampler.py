@@ -1,9 +1,11 @@
 import numpy as np
 
-from popsynth.auxiliary_sampler import NonObservedAuxSampler, AuxiliaryParameter
+from popsynth.auxiliary_sampler import (AuxiliaryParameter,
+                                        NonObservedAuxSampler)
 
 
 class ViewingAngleSampler(NonObservedAuxSampler):
+    _auxiliary_param_name = "ViewingAngleSampler"
 
     max_angle = AuxiliaryParameter(default=90, vmin=0, vmax=180)
 

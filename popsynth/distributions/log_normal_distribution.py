@@ -5,6 +5,7 @@ from popsynth.distribution import LuminosityDistribution, DistributionParameter
 
 
 class LogNormalDistribution(LuminosityDistribution):
+    _distribution_name = "LogNormalDistribution"
 
     mu = DistributionParameter()
     tau = DistributionParameter(vmin=0)

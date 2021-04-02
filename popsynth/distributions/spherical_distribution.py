@@ -4,6 +4,7 @@ from popsynth.distribution import SpatialDistribution, DistributionParameter
 
 
 class SphericalDistribution(SpatialDistribution):
+    _distribution_name = "SphericalDistribution"
     def __init__(self, seed=1234, name="sphere", form=None):
 
         super(SphericalDistribution, self).__init__(seed=seed,
@@ -22,6 +23,7 @@ class SphericalDistribution(SpatialDistribution):
 
 
 class ConstantSphericalDistribution(SphericalDistribution):
+    _distribution_name = "ConstantSphericalDistribution"
 
     Lambda = DistributionParameter(default=1, vmin=0)
 
@@ -45,6 +47,7 @@ class ConstantSphericalDistribution(SphericalDistribution):
 
 
 class ZPowerSphericalDistribution(ConstantSphericalDistribution):
+    _distribution_name = "ZPowerSphericalDistribution"
 
     delta = DistributionParameter(default=1)
 
