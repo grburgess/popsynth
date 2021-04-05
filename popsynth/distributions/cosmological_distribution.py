@@ -98,9 +98,14 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
 
     def dNdV(self, distance):
 
-        return self.Lambda * np.power(distance + 1.0, self.delta)
+        return _zp_dndv(distance, self.Lambda, self.delta)
 
+@nb.njit(fastmath=True)
+def _zp_dndv(z, Lambda, delta):
+    return Lambda * np.power(z + 1, delta)
+    
 
+    
 # class MergerDistribution(CosmologicalDistribution):
 #_distribution_name = "MergerDistribution"
 #     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
