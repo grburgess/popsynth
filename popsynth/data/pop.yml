@@ -1,0 +1,24 @@
+seed: 1234
+
+luminosity distribution:
+  ParetoDistribution:
+    Lmin: 1e51
+    alpha: 2
+
+spatial distribution:
+
+  ZPowerCosmoDistribution:
+    Lambda: .5
+    delta: -2
+    r_max: 5
+
+
+auxiliary samplers:
+
+  NormalAuxSampler:
+    name: test
+    observed: False
+    mu: 0
+    sigma: 1
+
+
