@@ -39,7 +39,7 @@ class Distribution(object, metaclass=AutoRegister(distribution_registry, base_ty
 
         """
 
-        self._parameter_storage = {}  # type: dict
+#        self._parameter_storage = {}  # type: dict
 
         self._seed = seed  # type: int
         self._name = name  # type: str

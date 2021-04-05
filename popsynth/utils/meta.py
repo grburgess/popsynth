@@ -1,4 +1,4 @@
-from typing import Union, Dict
+from typing import Union, Dict, Optional
 
 
 
@@ -7,24 +7,28 @@ from typing import Union, Dict
 class Parameter(object):
     def __init__(
         self,
-        default: Union[None, float] = None,
-        vmin: Union[None, float] = None,
-        vmax: Union[None, float] = None,
+        default: Optional[float] = None,
+        vmin: Optional[float] = None,
+        vmax: Optional[float] = None,
     ):
 
         self.name = None  # type: Union[None, str]
-        self._vmin = vmin  # type: Union[None, float]
-        self._vmax = vmax  # type: Union[None, float]
-        self._default = default  # type: Union[None, float]
+        self._vmin = vmin  # type: Optional[float]
+        self._vmax = vmax  # type: Optional[float]
+        self._default = default  # type: Optional[float]
 
     @property
-    def default(self) -> Union[None, float]:
+    def default(self) -> Optional[float]:
         return self._default
 
     def __get__(self, obj, type=None) -> object:
 
         try:
 
+            if obj._parameter_storage[self.name] is None:
+
+                obj._parameter_storage[self.name] = self._default
+            
             return obj._parameter_storage[self.name]
 
         except:
@@ -32,7 +36,7 @@ class Parameter(object):
 
         return obj._parameter_storage[self.name]
 
-        return obj._parameter_storage[self.name]
+
 
     def __set__(self, obj, value) -> None:
         self._is_set = True
@@ -70,10 +74,14 @@ class ParameterMeta(type):
 
         ### parameters
 
+        cls._parameter_storage = {}
+
         for k, v in attrs.items():
 
             if isinstance(v, Parameter):
                 v.name = k
+
+                cls._parameter_storage[v.name] = None
 
         return cls
 

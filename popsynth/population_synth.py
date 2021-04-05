@@ -7,6 +7,7 @@ import pandas as pd
 import scipy.integrate as integrate
 import scipy.special as sf
 import scipy.stats as stats
+import yaml
 from IPython.display import Markdown, Math, display
 # from numpy.typing import np.ndarray
 from numba import float64, jit, njit, prange
@@ -19,8 +20,9 @@ from popsynth.selection_probability import (BernoulliSelection,
                                             SelectionProbabilty,
                                             SoftFluxSelection, UnitySelection)
 from popsynth.utils.logging import setup_logger
-# from popsynth.utils.progress_bar import progress_bar
 from popsynth.utils.progress_bar import progress_bar
+from popsynth.utils.registry import (auxiliary_parameter_registry,
+                                     distribution_registry, selection_registry)
 
 log = setup_logger(__name__)
 
@@ -29,7 +31,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
     def __init__(
         self,
         spatial_distribution: SpatialDistribution,
-        luminosity_distribution: Union[LuminosityDistribution, None] = None,
+        luminosity_distribution: Optional[LuminosityDistribution] = None,
         seed: int = 1234,
     ):
         """
@@ -100,6 +102,68 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         self._graph.add_node(self._spatial_distribution.name)
 
         # add the sky sampler
+
+    @classmethod
+    def from_file(self, file_name: str) -> "PopulationSynth":
+
+        with open(file_name) as f:
+
+            input: Dict = yaml.load(f, Loader=yaml.SafeLoader)
+
+        if "luminosity distribution" in input:
+
+            # try:
+
+            # load the name and parameters
+
+            tmp = input["luminosity distribution"]
+
+            ld_name = list(tmp.keys())[0]
+
+            # create the instance
+
+            luminosity_distribtuion: LuminosityDistribution = distribution_registry[ld_name]
+
+            # now set the values of the parameters
+
+            log.debug(f"setting parameters for {ld_name}")
+
+            for k, v in tmp[ld_name].items():
+
+                log.debug(f"trying to set {k} to {v}")
+
+                if k in luminosity_distribtuion.params:
+
+                    setattr(luminosity_distribtuion, k, float(v))
+
+                log.debug(f"{luminosity_distribtuion.params}")
+
+        else:
+
+            luminosity_distribtuion = None
+
+        # try
+
+        tmp = input["spatial distribution"]
+
+        sd_name = list(tmp.keys())[0]
+
+        spatial_distribtuion: SpatialDistribution = distribution_registry[sd_name]
+
+        for k, v in tmp[sd_name].items():
+
+            log.debug(f"trying to set {k} to {v}")
+
+            if k in spatial_distribtuion.params:
+
+                setattr(spatial_distribtuion, k, float(v))
+
+        seed: int = input["seed"]
+
+        pop_synth: PopulationSynth = PopulationSynth(
+            spatial_distribtuion, luminosity_distribution=luminosity_distribtuion, seed=seed)
+
+        return pop_synth
 
     @property
     def spatial_distribution(self) -> SpatialDistribution:
@@ -268,7 +332,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
         # create a callback of the integrand
         dNdr = (lambda r: self._spatial_distribution.dNdV(
             r) * self._spatial_distribution.differential_volume(r) / self.
-                _spatial_distribution.time_adjustment(r))
+            _spatial_distribution.time_adjustment(r))
 
         # integrate the population to determine the true number of
         # objects

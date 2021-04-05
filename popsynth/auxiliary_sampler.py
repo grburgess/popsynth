@@ -31,7 +31,7 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
                  uses_luminosity: bool = False,
                  uses_sky_position: bool = False) -> None:
 
-        self._parameter_storage = {}  # type: Dict[str, float]
+#        self._parameter_storage = {}  # type: Dict[str, float]
         self._name = name  # type: str
         self._obs_name = "%s_obs" % name  # type: str
 

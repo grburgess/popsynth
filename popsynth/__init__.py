@@ -15,9 +15,14 @@ from popsynth.selection_probability import (BernoulliSelection,
                                             SoftFluxSelection, UnitySelection)
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.cosmology import cosmology
-from popsynth.utils.logging import (activate_warnings, show_progress,
-                                    silence_progress, silence_warnings,
-                                    update_logging_level)
+from popsynth.utils.logging import (activate_warnings, show_progress_bars,
+                                    silence_progress_bars, silence_warnings,
+                                    update_logging_level,
+                                    silence_logs, debug_mode, quiet_mode, loud_mode, activate_logs
+
+
+
+                                    )
 
 __all__ = [
     "AuxiliarySampler",

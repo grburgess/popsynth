@@ -1,9 +1,14 @@
+from pathlib import Path
 import os
 
 import numpy as np
 import pytest
 
 import popsynth
+from popsynth.utils.package_data import get_path_of_data_file
+
+popsynth.debug_mode()
+
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
@@ -128,3 +133,16 @@ def test_auxiliary_sampler():
     d2 = DemoSampler2()
 
     d2.set_secondary_sampler(d)
+
+
+
+def test_loading_from_file():
+
+    p = get_path_of_data_file("pop.yml")
+    
+    ps = popsynth.PopulationSynth.from_file(p)
+
+    assert ps.luminosity_distribution.Lmin == 1e51
+    assert ps.luminosity_distribution.alpha == 2
+
+    assert ps.spatial_distribution.Lambda == 0.5
