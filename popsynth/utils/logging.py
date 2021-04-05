@@ -235,7 +235,7 @@ def loud_mode():
     turn on all progress bars and logging
     """
 
-    activate_progress_bars()
+    show_progress_bars()
 
     # save state and make loud
     _log_state.loud_logs()
