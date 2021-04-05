@@ -5,6 +5,10 @@ luminosity distribution:
     Lmin: 1e51
     alpha: 2
 
+flux selection:
+  HardFluxSelection:
+    boundary: 1e-6
+    
 spatial distribution:
 
   ZPowerCosmoDistribution:
@@ -13,6 +17,16 @@ spatial distribution:
     r_max: 5
 
 
+distance selection:
+  BernoulliSelection:
+    probability: 0.5
+
+
+spatial selection:
+ # None
+
+
+    
 auxiliary samplers:
 
   NormalAuxSampler:
@@ -20,5 +34,23 @@ auxiliary samplers:
     observed: False
     mu: 0
     sigma: 1
+    selection: 
+    secondary:
+    init variables:
+
+  DemoSampler:
+    name: demo
+    observed: False
+    selection:
+      UnitySelection:
+
+
+  DemoSampler2:
+    name: demo2
+    observed: False
+    selection:
+    secondary: demo
+
+        
 
 

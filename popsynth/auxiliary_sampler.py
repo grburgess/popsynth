@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 
 import numpy as np
 from class_registry import AutoRegister
@@ -176,7 +176,7 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
 
     def get_secondary_properties(
         self,
-        recursive_secondaries: Union[Dict[str, ArrayLike], None] = None,
+        recursive_secondaries: Optional[Dict[str, ArrayLike]] = None,
         graph=None,
         primary=None,
         spatial_distribution=None,

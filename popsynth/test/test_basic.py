@@ -41,7 +41,7 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
 
         self._true_values = ((np.random.normal(self.mu, self.tau, size=size)) +
                              secondary.true_values -
-                             np.log10(1 + self.distance))
+                             np.log10(1 + self._distance))
 
     def observation_sampler(self, size):
 
@@ -135,6 +135,9 @@ def test_auxiliary_sampler():
     d2.set_secondary_sampler(d)
 
 
+    sfr_synth.draw_survey(1E-99, .1)
+
+
 
 def test_loading_from_file():
 
@@ -146,3 +149,6 @@ def test_loading_from_file():
     assert ps.luminosity_distribution.alpha == 2
 
     assert ps.spatial_distribution.Lambda == 0.5
+
+
+    ps.draw_survey(1E-7, .1)

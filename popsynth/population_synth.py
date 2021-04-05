@@ -1,5 +1,6 @@
-import abc
-from typing import Optional, Union
+from abc import ABCMeta, abstractmethod
+from collections import OrderedDict
+from typing import Any, Dict, Optional, Union
 
 import networkx as nx
 import numpy as np
@@ -27,7 +28,7 @@ from popsynth.utils.registry import (auxiliary_parameter_registry,
 log = setup_logger(__name__)
 
 
-class PopulationSynth(object, metaclass=abc.ABCMeta):
+class PopulationSynth(object, metaclass=ABCMeta):
     def __init__(
         self,
         spatial_distribution: SpatialDistribution,
@@ -108,7 +109,7 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         with open(file_name) as f:
 
-            input: Dict = yaml.load(f, Loader=yaml.SafeLoader)
+            input: Dict[str, Any] = yaml.load(f, Loader=yaml.SafeLoader)
 
         if "luminosity distribution" in input:
 
@@ -160,8 +161,273 @@ class PopulationSynth(object, metaclass=abc.ABCMeta):
 
         seed: int = input["seed"]
 
+        # create the poopulation synth
+
         pop_synth: PopulationSynth = PopulationSynth(
             spatial_distribtuion, luminosity_distribution=luminosity_distribtuion, seed=seed)
+
+        # if there is a flux selection
+        # then add it on
+
+        if "flux selection" in input:
+
+            tmp = input["flux selection"]
+
+            if tmp is not None:
+
+                fs_name = list(tmp.keys())[0]
+
+                # extract the parameters
+
+                params = tmp[fs_name]
+
+                if params is None:
+
+                    params = {}
+
+                log.debug(f"flux selection parameters {params}")
+
+                # make sure they are all floats
+
+                for k, v in params.items():
+
+                    params[k] = float(v)
+
+                fs = selection_registry.get(fs_name, **params)
+
+                pop_synth.set_flux_selection(fs)
+
+        if "distance selection" in input:
+
+            tmp = input["distance selection"]
+
+            if tmp is not None:
+
+                ds_name = list(tmp.keys())[0]
+
+                log.debug(f"adding distance selection {ds_name}")
+
+                # extract the parameters
+
+                params = tmp[ds_name]
+
+                if params is None:
+
+                    params = {}
+
+                log.debug(f"distance selection parameters {params}")
+
+                # make sure they are all floats
+
+                for k, v in params.items():
+
+                    params[k] = float(v)
+
+                ds = selection_registry.get(ds_name, **params)
+
+                pop_synth.set_distance_selection(ds)
+
+        if "spatial selection" in input:
+
+            tmp = input["spatial selection"]
+
+            if tmp is not None:
+
+                ss_name = list(tmp.keys())[0]
+
+                log.debug(f"adding distance selection {ss_name}")
+
+                # extract the parameters
+
+                params = tmp[ss_name]
+
+                if params is None:
+
+                    params = {}
+
+                log.debug(f"spatial selection parameters {params}")
+
+                # make sure they are all floats
+
+                for k, v in params.items():
+
+                    params[k] = float(v)
+
+                ss = selection_registry.get(ss_name, **params)
+
+                pop_synth.add_spatial_selector(ss)
+
+        # Now collect the auxiliary samplers
+
+        # we will gather them so that we can sort out dependencies
+        aux_samplers: Dict[str, AuxiliarySampler] = OrderedDict()
+        secondary_samplers: [str, str] = OrderedDict()
+
+        if "auxiliary samplers" in input:
+
+            for k, v in input["auxiliary samplers"].items():
+
+                # first we extract the required info
+
+                sampler_name = k
+                obj_name = v.pop("name")
+                is_observed = v.pop("observed")
+
+                # now we extract the selection
+                # and secondary if they are there
+
+                if "selection" in v:
+                    selection = v.pop("selection")
+
+                else:
+
+                    selection = None
+
+                if "secondary" in v:
+                    secondary = v.pop("secondary")
+
+                else:
+
+                    secondary = None
+
+                if "init variables" in v:
+                    init_variables = v.pop("init variables")
+
+                    if init_variables is None:
+
+                        init_variables = {}
+
+                else:
+
+                    init_variables = {}
+
+                # since we have popped everything
+                # all that is left should be parameters
+
+                params = v
+
+                # now build the object
+
+                try:
+
+                    tmp: AuxiliarySampler = auxiliary_parameter_registry.get(
+                        sampler_name,
+                        name=obj_name,
+                        observed=is_observed,
+
+                        **init_variables)
+
+                except(TypeError):
+
+                    # try without name
+
+                    try:
+
+                        tmp: AuxiliarySampler = auxiliary_parameter_registry.get(
+                            sampler_name,
+                            # name=obj_name,
+                            observed=is_observed,
+
+                            **init_variables)
+
+                    except(TypeError):
+
+                        try:
+
+                            tmp: AuxiliarySampler = auxiliary_parameter_registry.get(
+                                sampler_name,
+                                name=obj_name,
+                                # observed=is_observed,
+
+                                **init_variables)
+
+                        except(TypeError):
+
+                            tmp: AuxiliarySampler = auxiliary_parameter_registry.get(
+                                sampler_name, **init_variables)
+
+                            # we will do a dirty trick
+                            tmp._name = obj_name
+                            tmp._is_observed = is_observed
+
+                log.debug(f"setting parameters for {sampler_name}: {obj_name}")
+
+                # now set the parameters
+
+                for k, v in params.items():
+
+                    log.debug(f"trying to set {k} to {v}")
+
+                    if k in tmp.truth:
+
+                        setattr(tmp, k, float(v))
+
+                    log.debug(f"{tmp.truth}")
+
+                if selection is not None:
+
+                    sel_name = list(selection.keys())[0]
+
+                    log.debug(f"adding selection {sel_name}")
+
+                    # extract the parameters
+
+                    params = selection[sel_name]
+
+                    if params is None:
+
+                        params = {}
+
+                    log.debug(f"selection parameters {params}")
+
+                    # make sure they are all floats
+
+                    for k, v in params.items():
+
+                        params[k] = float(v)
+
+                    selector = selection_registry.get(sel_name, **params)
+
+                    tmp.set_selection_probability(selector)
+
+                # now we store this sampler
+
+                log.debug(f"{obj_name} built")
+
+                aux_samplers[obj_name] = tmp
+
+                # if there is a secondary sampler,
+                # we need to make a mapping
+
+                if secondary is not None:
+
+                    secondary_samplers[obj_name] = secondary
+
+        # Now we have collected all of the auxiliary samplers
+        # we need to assign those which are secondary
+
+        log.debug(f"have {list(aux_samplers.keys())} as aux samplers")
+        
+        for primary, secondary in secondary_samplers.items():
+
+            # assign it
+            aux_samplers[primary].set_secondary_sampler(
+                aux_samplers[secondary])
+
+        # now we need to pop all the secondaries from the main
+        # list so that we do not double add
+
+        for secondary in list(secondary_samplers.values()):
+
+            if secondary in aux_samplers:
+
+                aux_samplers.pop(secondary)
+
+        # now we add the observed quantites on
+
+        for k, v in aux_samplers.items():
+
+            pop_synth.add_observed_quantity(v)
 
         return pop_synth
 

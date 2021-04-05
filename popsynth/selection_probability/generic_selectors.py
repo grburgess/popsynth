@@ -12,7 +12,7 @@ log = setup_logger(__name__)
 
 
 class UnitySelection(SelectionProbabilty):
-    _selection_name = " UnitySelection"
+    _selection_name = "UnitySelection"
 
     def __init__(self):
         """

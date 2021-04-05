@@ -8,7 +8,7 @@ log = setup_logger(__name__)
 
 
 class HardFluxSelection(HardSelection):
-    _selection_name = " HardFluxSelection"
+    _selection_name = "HardFluxSelection"
 
     def __init__(self, boundary: float) -> None:
 
@@ -24,7 +24,7 @@ class HardFluxSelection(HardSelection):
 
 
 class SoftFluxSelection(SoftSelection):
-    _selection_name = " SoftFluxSelection"
+    _selection_name = "SoftFluxSelection"
 
     def __init__(self, boundary: float, strength: float) -> None:
 
