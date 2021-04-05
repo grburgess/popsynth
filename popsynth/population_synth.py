@@ -133,7 +133,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 log.debug(f"trying to set {k} to {v}")
 
-                if k in luminosity_distribtuion.params:
+                if k in luminosity_distribtuion.__class__.__dict__:
 
                     setattr(luminosity_distribtuion, k, float(v))
 
@@ -155,7 +155,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             log.debug(f"trying to set {k} to {v}")
 
-            if k in spatial_distribtuion.params:
+            if k in spatial_distribtuion.__class__.__dict__:
 
                 setattr(spatial_distribtuion, k, float(v))
 
@@ -358,7 +358,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                     log.debug(f"trying to set {k} to {v}")
 
-                    if k in tmp.truth:
+                    if k in tmp.__class__.__dict__:
 
                         setattr(tmp, k, float(v))
 

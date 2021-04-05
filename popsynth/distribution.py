@@ -25,7 +25,8 @@ class DistributionParameter(Parameter):
 
 
 class Distribution(object, metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta)):
-    _distribution_name="Distribution"
+    _distribution_name = "Distribution"
+
     def __init__(self, name: str, seed: int, form: str) -> None:
         """
         A distribution base class
@@ -39,7 +40,7 @@ class Distribution(object, metaclass=AutoRegister(distribution_registry, base_ty
 
         """
 
-#        self._parameter_storage = {}  # type: dict
+        self._parameter_storage: Dict[str, float] = {}
 
         self._seed = seed  # type: int
         self._name = name  # type: str
@@ -59,7 +60,16 @@ class Distribution(object, metaclass=AutoRegister(distribution_registry, base_ty
 
     @property
     def truth(self) -> Dict[str, float]:
-        return self._parameter_storage
+
+        out = {}
+
+        for k, v in self._parameter_storage.items():
+
+            if v is not None:
+
+                out[k] = v
+
+        return out
 
 
 @dataclass
@@ -80,7 +90,7 @@ class SpatialContainer:
 
 class SpatialDistribution(Distribution):
     _distribution_name = "SpatialDistribution"
-    
+
     r_max = DistributionParameter(vmin=0, default=10)
 
     def __init__(self, name: str, seed: int, form: Union[str, None] = None):
@@ -212,6 +222,7 @@ class SpatialDistribution(Distribution):
 
 class LuminosityDistribution(Distribution):
     _distribution_name = "LuminosityDistribtuion"
+
     def __init__(self, name: str, seed: int, form: Union[str, None] = None):
         """
         A luminosity distribution such as a

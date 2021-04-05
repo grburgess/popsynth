@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 from class_registry import AutoRegister
@@ -31,7 +31,7 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
                  uses_luminosity: bool = False,
                  uses_sky_position: bool = False) -> None:
 
-#        self._parameter_storage = {}  # type: Dict[str, float]
+        self._parameter_storage = {}  # type: Dict[str, float]
         self._name = name  # type: str
         self._obs_name = "%s_obs" % name  # type: str
 
@@ -297,7 +297,16 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
 
     @property
     def truth(self) -> Dict[str, float]:
-        return self._parameter_storage
+
+        out = {}
+
+        for k, v in self._parameter_storage.items():
+
+            if v is not None:
+
+                out[k] = v
+
+        return out
 
     @property
     def uses_distance(self) -> bool:

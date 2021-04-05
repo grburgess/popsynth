@@ -25,6 +25,9 @@ def test_constructor():
     sampler2.upper = 100
     sampler2.sigma = 5.0
 
+
+    print(sampler.truth)
+
     assert sampler.mu == 1
     assert sampler.tau == 2
     assert sampler.lower == -5

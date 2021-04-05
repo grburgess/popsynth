@@ -28,12 +28,19 @@ class Parameter(object):
             if obj._parameter_storage[self.name] is None:
 
                 obj._parameter_storage[self.name] = self._default
-            
+
+
+            assert obj._parameter_storage[self.name] is not None, "parameters must have values!"
+                
             return obj._parameter_storage[self.name]
 
-        except:
+        except(KeyError):
+
             obj._parameter_storage[self.name] = self._default
 
+
+        assert obj._parameter_storage[self.name] is not None, "parameters must have values!"
+            
         return obj._parameter_storage[self.name]
 
 
@@ -81,7 +88,7 @@ class ParameterMeta(type):
             if isinstance(v, Parameter):
                 v.name = k
 
-                cls._parameter_storage[v.name] = None
+                
 
         return cls
 
