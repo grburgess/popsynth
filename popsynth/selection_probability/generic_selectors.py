@@ -14,11 +14,11 @@ log = setup_logger(__name__)
 class UnitySelection(SelectionProbabilty):
     _selection_name = "UnitySelection"
 
-    def __init__(self):
+    def __init__(self, name="unity"):
         """
         A selection that returns all unity
         """
-        super(UnitySelection, self).__init__(name="unity")
+        super(UnitySelection, self).__init__(name=name)
 
     def draw(self, size: int) -> None:
 

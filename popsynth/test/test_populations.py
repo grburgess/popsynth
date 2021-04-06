@@ -6,10 +6,9 @@ import numpy as np
 import pytest
 
 import popsynth
-
 from popsynth import update_logging_level
 
-update_logging_level("INFO")
+update_logging_level("DEBUG")
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
@@ -130,10 +129,14 @@ class Popbuilder(object):
 
     def draw_hard(self):
 
+        s = popsynth.HardFluxSelection(boundary=1e-6)
+
+        self.pop_gen.set_flux_selection(s)
+
         pop = self.pop_gen.draw_survey(
-            boundary=1e-6,
+
             flux_sigma=0.4,
-            hard_cut=True,
+
         )
 
         self.reset()
@@ -142,12 +145,15 @@ class Popbuilder(object):
 
     def draw_all(self):
 
+        s = popsynth.UnitySelection()
+
+        self.d2.set_selection_probability(s)
+
         pop = self.pop_gen.draw_survey(
-            boundary=1e-999,
-            flux_sigma=0.1,
-            hard_cut=True,
-            no_selection=True,
+
         )
+
+        assert isinstance(self.pop_gen._flux_selector, popsynth.UnitySelection)
 
         self.reset()
 
@@ -155,11 +161,12 @@ class Popbuilder(object):
 
     def draw_none(self):
 
+        s = popsynth.HardFluxSelection(boundary=1e999)
+
+        self.pop_gen.set_flux_selection(s)
+
         pop = self.pop_gen.draw_survey(
-            boundary=1e999,
             flux_sigma=0.1,
-            hard_cut=True,
-            no_selection=False,
         )
 
         self.reset()
@@ -168,9 +175,13 @@ class Popbuilder(object):
 
     def draw_soft(self):
 
-        pop = self.pop_gen.draw_survey(boundary=1e-4,
-                                       flux_sigma=0.1,
-                                       hard_cut=False)
+        s = popsynth.SoftFluxSelection(1e-4, 10)
+
+        self.pop_gen.set_flux_selection(s)
+
+        pop = self.pop_gen.draw_survey(
+            flux_sigma=0.1,
+        )
 
         self.reset()
 
@@ -178,9 +189,14 @@ class Popbuilder(object):
 
     def draw_z_select(self):
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6,
-                                       flux_sigma=0.5,
-                                       distance_probability=0.5)
+        s1 = popsynth.BernoulliSelection(probability=0.5)
+        s2 = popsynth.SoftFluxSelection(1e-6, 10)
+
+        self.pop_gen.set_distance_selection(s1)
+        self.pop_gen.set_flux_selection(s2)
+
+        pop = self.pop_gen.draw_survey(
+            flux_sigma=0.5)
 
         self.reset()
 
@@ -192,7 +208,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5)
+        pop = self.pop_gen.draw_survey(flux_sigma=0.5)
 
         self.reset()
 
@@ -204,7 +220,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(selector)
 
-        pop = self.pop_gen.draw_survey(boundary=1e-6, flux_sigma=0.5)
+        pop = self.pop_gen.draw_survey(flux_sigma=0.5)
 
         self.reset()
 
@@ -212,10 +228,34 @@ class Popbuilder(object):
 
     def reset(self):
 
-        self.pop_gen._distance_selector_set = False
-        self.pop_gen._flux_selector_set = False
-        self.pop_gen._flux_selector = popsynth.UnitySelection()
-        self.pop_gen._distance_selector = popsynth.UnitySelection()
+        add_back = False
+
+    
+        
+        if self.pop_gen._has_derived_luminosity:
+
+            add_back = True
+
+        self.pop_gen.clean()
+
+        if add_back:
+
+            print("ADDING BACK")
+
+            self.d1 = DemoSampler()
+            self.d2 = DemoSampler2()
+            self.d2.set_secondary_sampler(self.d1)
+
+            b = popsynth.BernoulliSelection(probability=0.5)
+
+            self.d2.set_selection_probability(b)
+            
+            self.pop_gen.add_observed_quantity(self.d2)
+
+        # self.pop_gen._distance_selector_set = False
+        # self.pop_gen._flux_selector_set = False
+        # self.pop_gen._flux_selector = popsynth.UnitySelection()
+        # self.pop_gen._distance_selector = popsynth.UnitySelection()
 
     def test_it(self):
 
@@ -288,7 +328,7 @@ class Popbuilder(object):
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
-        assert population_reloaded.distance_probability < 1.0
+        #assert population_reloaded.distance_probability < 1.0
 
         os.remove("_saved_pop.h5")
 
@@ -374,23 +414,23 @@ class Popbuilder(object):
 
         #####################
 
-        pop = self.draw_soft_with_selector()
-        pop = self.draw_soft_with_selector()
+        # pop = self.draw_soft_with_selector()
+        # pop = self.draw_soft_with_selector()
 
-        pop.display()
+        # pop.display()
 
-        fig = pop.display_fluxes()
+        # fig = pop.display_fluxes()
 
-        fig = pop.display_flux_sphere()
+        # fig = pop.display_flux_sphere()
 
-        pop.writeto("_saved_pop.h5")
-        population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
+        # pop.writeto("_saved_pop.h5")
+        # population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
-        assert population_reloaded.boundary == 1e-4
+        # assert population_reloaded.boundary == 1e-4
 
-        assert population_reloaded.distance_probability == 1.0
+        # assert population_reloaded.distance_probability == 1.0
 
-        os.remove("_saved_pop.h5")
+        # os.remove("_saved_pop.h5")
 
         # clean up
         plt.close("all")
@@ -406,15 +446,17 @@ def test_spatial_population_with_derived():
 
         # first make sure they all fail
 
-        with pytest.raises(AssertionError):
+        with pytest.raises(RuntimeError):
             pb.draw_hard()
-        with pytest.raises(AssertionError):
+        with pytest.raises(RuntimeError):
             pb.draw_soft()
-        with pytest.raises(AssertionError):
+        with pytest.raises(RuntimeError):
             pb.draw_z_select()
 
-        pb.pop_gen.add_observed_quantity(pb.d2)
+        pb.pop_gen.add_auxiliary_sampler(pb.d2)
 
+        print(len(pb.pop_gen._auxiliary_observations))
+        
         pb.test_it()
 
 

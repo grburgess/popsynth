@@ -2,13 +2,10 @@ import abc
 from typing import Any
 
 import numpy as np
-
 from class_registry import AutoRegister
 
-from popsynth.utils.registry import selection_registry
 from popsynth.utils.logging import setup_logger
-
-
+from popsynth.utils.registry import selection_registry
 
 log = setup_logger(__name__)
 
@@ -27,7 +24,9 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
         self._observed_value = None  # type: np.ndarray
         self._distance = None  # type: np.ndarray
         self._luminosity = None  # type: np.ndarray
-
+        self._selection = None # type: np.ndarray
+        self._is_sampled: bool = False
+        
     def __add__(self, other):
 
         log.debug(f"adding selection from {other.name} to {self.name}")
@@ -83,10 +82,31 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
 
         pass
 
+
+    def select(self, size: int):
+
+        if not self._is_sampled:
+        
+            self.draw(size)
+
+        else:
+
+            log.warning(f"selecting with {self.name} more than once!")
+
+            
+        self._is_sampled = True
+    
     @property
     def selection(self) -> np.ndarray:
-        return self._selection
+        if self._selection is not None:
+        
+            return self._selection
 
+        else:
+
+            log.error(f"selector: {self.name} as not be sampled yet!")
+            raise RuntimeError()
+            
     @property
     def n_selected(self) -> int:
         return sum(self._selection)
@@ -114,6 +134,10 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
 
 class DummySelection(SelectionProbabilty):
     _selection_name = "DummySelection"
+
+    def __init__(self):
+
+        super(DummySelection, self).__init__(name="dummy")
     
     def draw(self, size=1):
         pass

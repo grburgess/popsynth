@@ -60,9 +60,7 @@ def test_basic_population():
     homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
         Lambda=0.25, Lmin=1, alpha=2.0)
 
-    population = homo_pareto_synth.draw_survey(boundary=1e-2,
-                                               strength=20,
-                                               flux_sigma=0.1)
+    population = homo_pareto_synth.draw_survey()
 
     homo_pareto_synth.display()
 
@@ -73,36 +71,52 @@ def test_basic_population():
 
     # Test the dist prob extremes
 
-    population = homo_pareto_synth.draw_survey(boundary=1e-2,
-                                               strength=20,
-                                               flux_sigma=0.1,
-                                               distance_probability=0.5)
+    flux_selector = popsynth.SoftFluxSelection(1e-2, 50)
 
-    population = homo_pareto_synth.draw_survey(boundary=1e-2,
-                                               strength=20,
-                                               flux_sigma=0.1,
-                                               distance_probability=1.0)
+    homo_pareto_synth.set_flux_selection(flux_selector)
 
-    population = homo_pareto_synth.draw_survey(boundary=1e-2,
-                                               strength=20,
-                                               flux_sigma=0.1,
-                                               distance_probability=0.0)
+    population = homo_pareto_synth.draw_survey(flux_sigma=1)
+
+    ###
+
+
+    b_selector = popsynth.BernoulliSelection(probability=.5)
+    
+    flux_selector = popsynth.SoftFluxSelection(1e-2, 20)
+
+    homo_pareto_synth.set_flux_selection(flux_selector)
+
+    homo_pareto_synth.set_distance_selection(b_selector)
+    
+    
+    population = homo_pareto_synth.draw_survey(flux_sigma=.1)
+
+    u_select = popsynth.UnitySelection()
+
+    homo_pareto_synth.set_distance_selection(u_select)
+    
+    population = homo_pareto_synth.draw_survey( flux_sigma=0.1,
+                                               )
 
     homo_sch_synth = popsynth.populations.SchechterHomogeneousSphericalPopulation(
         Lambda=0.1, Lmin=1, alpha=2.0)
     homo_sch_synth.display()
-    population = homo_sch_synth.draw_survey(boundary=1e-2,
-                                            strength=50,
-                                            flux_sigma=0.1)
+
+
+    homo_sch_synth.set_flux_selection(flux_selector)
+    
+    
+    population = homo_sch_synth.draw_survey( flux_sigma=0.1)
     population.display_fluxes()
     population.display_flux_sphere()
 
     print(population.truth)
 
-    homo_sch_synth.draw_survey(boundary=1e-2,
-                               strength=50,
+    homo_sch_synth.set_flux_selection(u_select)
+    
+    homo_sch_synth.draw_survey(
                                flux_sigma=0.1,
-                               no_selection=True)
+                               )
 
     population.writeto("_saved_pop.h5")
     population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
@@ -135,7 +149,7 @@ def test_auxiliary_sampler():
     d2.set_secondary_sampler(d)
 
 
-    sfr_synth.draw_survey(1E-99, .1)
+    sfr_synth.draw_survey(.1)
 
 
 
@@ -151,4 +165,4 @@ def test_loading_from_file():
     assert ps.spatial_distribution.Lambda == 0.5
 
 
-    ps.draw_survey(1E-7, .1)
+    ps.draw_survey()

@@ -169,10 +169,12 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
             # if there is nothing coded, it will be
             # list of all true
 
-            self._apply_selection()
+ 
 
             self._is_sampled = True
 
+            self._apply_selection()
+            
     def make_secondary(self, parent_name: str) -> None:
 
         self._is_secondary = True  # type: bool
