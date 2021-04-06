@@ -10,7 +10,7 @@ ArrayLike = List[float]
 
 
 class LogNormalAuxSampler(AuxiliarySampler):
-    _auxiliary_param_name = "LogNormalAuxSampler"
+    _auxiliary_sampler_name = "LogNormalAuxSampler"
 
     mu = AuxiliaryParameter(default=0)
     tau = AuxiliaryParameter(default=1, vmin=0)
@@ -51,7 +51,7 @@ class LogNormalAuxSampler(AuxiliarySampler):
 
 
 class Log10NormalAuxSampler(AuxiliarySampler):
-    _auxiliary_param_name = "Log10NormalAuxSampler"
+    _auxiliary_sampler_name = "Log10NormalAuxSampler"
 
     mu = AuxiliaryParameter(default=0)
     tau = AuxiliaryParameter(default=1, vmin=0)

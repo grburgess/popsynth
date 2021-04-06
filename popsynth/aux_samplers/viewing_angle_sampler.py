@@ -5,7 +5,7 @@ from popsynth.auxiliary_sampler import (AuxiliaryParameter,
 
 
 class ViewingAngleSampler(NonObservedAuxSampler):
-    _auxiliary_param_name = "ViewingAngleSampler"
+    _auxiliary_sampler_name = "ViewingAngleSampler"
 
     max_angle = AuxiliaryParameter(default=90, vmin=0, vmax=180)
 
