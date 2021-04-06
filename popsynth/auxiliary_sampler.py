@@ -174,7 +174,32 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
             self._is_sampled = True
 
             self._apply_selection()
+
+    def reset(self):
+        """
+        reset all the selections
+        """
+
+        if self._is_sampled:
+
+            log.info(f"Auxiliary sampler: {self.name} is being reset")
+
+            self._is_sampled = False
+            self._obs_values = None  # type: ArrayLike
+            self._true_values = None  # type: ArrayLike           
             
+            self._selector.reset()
+
+
+        else:
+
+            log.debug(f"{self.name} is not reseting as it has not been sampled")
+            
+        for k, v in self._secondary_samplers.items():
+
+            v.reset()
+
+        
     def make_secondary(self, parent_name: str) -> None:
 
         self._is_secondary = True  # type: bool

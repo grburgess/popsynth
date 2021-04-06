@@ -115,32 +115,62 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         # add the sky sampler
 
-    def clean(self):
+    def clean(self, reset: bool = False):
         """
         clean the auxiliary samplers, selections, etc 
         from the population synth
+        :param reset: reset any attached distributions and samplers
+
         """
+
+        if reset:
+
+            for k, v in self._auxiliary_observations.items():
+
+                v.reset()
 
         log.warning("removing all registered Auxiliary Samplers")
 
         self._auxiliary_observations = {}
 
+        if reset:
+
+            if self._derived_luminosity_sampler is not None:
+
+                self._derived_luminosity_sampler.reset()
+
+        self._derived_luminosity_sampler = None
+
         self._has_derived_luminosity = False
 
         self._distance_selector_set = False
-        
+
         self._flux_selector_set = False
 
         log.warning("removing flux selector")
+
+        if reset:
+
+            self._flux_selector.reset()
 
         self._flux_selector = UnitySelection(name="unity flux selector")
 
         log.warning("removing distance selector")
 
+        if reset:
+
+            self._distance_selector.reset()
+
         self._distance_selector = UnitySelection(
             name="unity distance selector")
 
         log.warning("removing spatial selector")
+
+        if reset:
+
+            if self._spatial_selector is not None:
+
+                self._spatial_selector.reset()
 
         self._spatial_selector = None
 

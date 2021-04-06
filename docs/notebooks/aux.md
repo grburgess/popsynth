@@ -89,7 +89,7 @@ demo1 = DemoSampler()
 
 pop_gen.add_observed_quantity(demo1)
 
-population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1)
+population = pop_gen.draw_survey()
 
 options = {
 'node_color':green,
@@ -127,7 +127,7 @@ We will create a second demo sampler and tell it what the observational error is
 
 ```python
 class DemoSampler2(popsynth.AuxiliarySampler):
-    
+    _auxiliary_sampler_name = "DemoSampler2"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
     sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
@@ -208,7 +208,10 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos,ax=ax, **options)
 ```
 
 ```python
-population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1)
+
+flux_selector = popsynth.HardFluxSelection(boundary=1e-8)
+pop_gen.set_flux_selection(flux_selector)
+population = pop_gen.draw_survey(flux_sigma= 0.1)
 ```
 
 ```python
@@ -228,7 +231,7 @@ This allows you to sample auxiliary parameters and compute a luminosity from tho
 ```python
 
 class DemoSampler3(popsynth.DerivedLumAuxSampler):
-    
+    _auxiliary_sampler_name = "DemoSampler3"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
     
@@ -287,7 +290,9 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos, **options, ax=ax)
 ```
 
 ```python
-population = pop_gen.draw_survey(boundary=1E-5, hard_cut=True, flux_sigma= 0.1)
+flux_selector = popsynth.HardFluxSelection(boundary=1e-5)
+pop_gen.set_flux_selection(flux_selector)
+population = pop_gen.draw_survey( flux_sigma= 0.1)
 ```
 
 ```python

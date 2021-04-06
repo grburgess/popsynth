@@ -83,6 +83,17 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
         pass
 
 
+    def reset(self):
+        """
+        resest the selector
+        """
+        if self._is_sampled:
+
+            log.info(f"Selection: {self.name} is being reset")
+            
+            self._is_sampled = False
+            self._selection = None
+    
     def select(self, size: int):
 
         if not self._is_sampled:

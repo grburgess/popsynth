@@ -20,7 +20,7 @@ class HardFluxSelection(HardSelection):
 
     def draw(self, size: int):
 
-        self._selection = self._draw(self._observed_flux)  # type: np.ndarray
+        super(HardFluxSelection, self).draw(self._observed_flux)
 
 
 class SoftFluxSelection(SoftSelection):
@@ -39,7 +39,7 @@ class SoftFluxSelection(SoftSelection):
         size: int,
     ):
 
-        self._selection = self._draw(size, self._observed_flux, use_log=True)
+        super(SoftFluxSelection, self).draw(self._observed_flux, use_log=True)
 
 
 __all__ = ["HardFluxSelection", "SoftFluxSelection"]

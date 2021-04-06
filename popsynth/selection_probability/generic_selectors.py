@@ -64,16 +64,16 @@ class BernoulliSelection(SelectionProbabilty):
 class BoxSelection(SelectionProbabilty):
     _selection_name = "BoxSelection"
 
-    def __init__(self, vmin: float, vmax: float, name: str):
+    def __init__(self, vmin: float, vmax: float, name: str = "box selection"):
 
-        super(BoxSelection, self).__init__(name="box selection")
+        super(BoxSelection, self).__init__(name=name)
 
         self._vmin = vmin  # type: float
         self._vmax = vmax  # type: float
 
-    def _draw(self, values) -> np.ndarray:
+    def draw(self, values) -> np.ndarray:
 
-        return (values >= self._vmin) & (values <= self._vmax)
+        self._selection = (values >= self._vmin) & (values <= self._vmax)
 
     @property
     def vmin(self):
@@ -102,22 +102,31 @@ class HardSelection(BoxSelection):
     def boundary(self):
         return self._vmin
 
+    def draw(self, values) -> np.ndarray:
+
+        super(HardSelection, self).draw(values)
+
 
 class SoftSelection(SelectionProbabilty):
-
     _selection_name = "SoftSelection"
 
     def __init__(self, boundary: float, strength: float) -> None:
+        """
+        selection using an inverse logit function either on the 
+        log are linear value of the parameter
 
+        :param boundary: center of the logit
+        :param strength: width of the logit
+        """
         self._strength = strength  # type: float
         self._boundary = boundary  # type: float
 
         super(SoftSelection, self).__init__(name="Soft Selection")
 
-    def _draw(self,
-              size: int,
-              values: np.ndarray,
-              use_log=False) -> np.ndarray:
+    def draw(self,
+             
+             values: np.ndarray,
+             use_log=False) -> np.ndarray:
 
         if not use_log:
             probs = sf.expit(self._strength *
@@ -129,7 +138,7 @@ class SoftSelection(SelectionProbabilty):
                              (np.log10(values) -
                               np.log10(self._boundary)))  # type: np.ndarray
 
-        return stats.bernoulli.rvs(probs, size=size).astype(bool)
+        self._selection = stats.bernoulli.rvs(probs, size=len(values)).astype(bool)
 
     @property
     def boundary(self):

@@ -230,26 +230,24 @@ class Popbuilder(object):
 
         add_back = False
 
-    
-        
         if self.pop_gen._has_derived_luminosity:
 
             add_back = True
 
-        self.pop_gen.clean()
+        self.pop_gen.clean(reset=True)
 
         if add_back:
 
             print("ADDING BACK")
 
-            self.d1 = DemoSampler()
-            self.d2 = DemoSampler2()
-            self.d2.set_secondary_sampler(self.d1)
+            # self.d1 = DemoSampler()
+            # self.d2 = DemoSampler2()
+            # self.d2.set_secondary_sampler(self.d1)
 
-            b = popsynth.BernoulliSelection(probability=0.5)
+            # b = popsynth.BernoulliSelection(probability=0.5)
 
-            self.d2.set_selection_probability(b)
-            
+#            self.d2.set_selection_probability(b)
+
             self.pop_gen.add_observed_quantity(self.d2)
 
         # self.pop_gen._distance_selector_set = False
@@ -456,7 +454,7 @@ def test_spatial_population_with_derived():
         pb.pop_gen.add_auxiliary_sampler(pb.d2)
 
         print(len(pb.pop_gen._auxiliary_observations))
-        
+
         pb.test_it()
 
 
