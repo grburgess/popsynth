@@ -8,9 +8,9 @@ jupyter:
       format_version: '1.2'
       jupytext_version: 1.8.0
   kernelspec:
-    display_name: Python3
+    display_name: Python 3
     language: python
-    name: Python3
+    name: python3
 ---
 
 # Auxiliary Samplers
@@ -63,6 +63,7 @@ We create an AuxiliarySampler child class, and define the *true_sampler* for the
 
 ```python
 class DemoSampler(popsynth.AuxiliarySampler):
+    _auxiliary_sampler_name = "DemoSampler"
     
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)

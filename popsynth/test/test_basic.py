@@ -12,7 +12,7 @@ popsynth.debug_mode()
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
-    _auxiliary_param_name = "DemoSampler"
+    _auxiliary_sampler_name = "DemoSampler"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
 
@@ -26,7 +26,7 @@ class DemoSampler(popsynth.AuxiliarySampler):
 
 
 class DemoSampler2(popsynth.DerivedLumAuxSampler):
-    _auxiliary_param_name = "DemoSampler2"
+    _auxiliary_sampler_name = "DemoSampler2"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
     sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
@@ -73,6 +73,8 @@ def test_basic_population():
 
     flux_selector = popsynth.SoftFluxSelection(1e-2, 50)
 
+    homo_pareto_synth.clean()
+    
     homo_pareto_synth.set_flux_selection(flux_selector)
 
     population = homo_pareto_synth.draw_survey(flux_sigma=1)
@@ -80,6 +82,7 @@ def test_basic_population():
     ###
 
 
+    homo_pareto_synth.clean()
     b_selector = popsynth.BernoulliSelection(probability=.5)
     
     flux_selector = popsynth.SoftFluxSelection(1e-2, 20)
@@ -91,6 +94,8 @@ def test_basic_population():
     
     population = homo_pareto_synth.draw_survey(flux_sigma=.1)
 
+    homo_pareto_synth.clean()
+    
     u_select = popsynth.UnitySelection()
 
     homo_pareto_synth.set_distance_selection(u_select)
@@ -102,16 +107,21 @@ def test_basic_population():
         Lambda=0.1, Lmin=1, alpha=2.0)
     homo_sch_synth.display()
 
+    flux_selector = popsynth.HardFluxSelection(boundary=1e-5)
 
     homo_sch_synth.set_flux_selection(flux_selector)
     
+
     
     population = homo_sch_synth.draw_survey( flux_sigma=0.1)
+
     population.display_fluxes()
     population.display_flux_sphere()
 
     print(population.truth)
 
+    homo_sch_synth.clean()
+    u_select = popsynth.UnitySelection()
     homo_sch_synth.set_flux_selection(u_select)
     
     homo_sch_synth.draw_survey(

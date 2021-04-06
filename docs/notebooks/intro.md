@@ -8,9 +8,9 @@ jupyter:
       format_version: '1.2'
       jupytext_version: 1.8.0
   kernelspec:
-    display_name: Python3
+    display_name: Python 3
     language: python
-    name: Python3
+    name: python3
 ---
 
 <!-- #region -->

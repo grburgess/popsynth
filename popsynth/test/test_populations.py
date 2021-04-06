@@ -12,7 +12,7 @@ update_logging_level("DEBUG")
 
 
 class DemoSampler(popsynth.AuxiliarySampler):
-    _auxiliary_param_name = "DemoSampler"
+    _auxiliary_sampler_name = "DemoSampler"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=100)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=20, vmin=0)
 
@@ -26,7 +26,7 @@ class DemoSampler(popsynth.AuxiliarySampler):
 
 
 class DemoSampler2(popsynth.DerivedLumAuxSampler):
-    _auxiliary_param_name = "DemoSampler2"
+    _auxiliary_sampler_name = "DemoSampler2"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=0)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
     sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=0.1, vmin=0)

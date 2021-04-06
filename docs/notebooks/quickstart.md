@@ -8,9 +8,9 @@ jupyter:
       format_version: '1.2'
       jupytext_version: 1.8.0
   kernelspec:
-    display_name: Python3
+    display_name: Python 3
     language: python
-    name: Python3
+    name: python3
 ---
 
 # Quick start
@@ -48,7 +48,9 @@ homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(La
                                                                               alpha=2.) # index of the LF
 homo_pareto_synth.display()
 
+```
 
+```python
 # we can also display a graph of the object
 
 
@@ -57,11 +59,6 @@ options = {
 'node_size': 2000,
 'width': .5}
 
-#pos = nx.spring_layout(g,k=5, iterations=300)
-
-```
-
-```python
 pos=nx.drawing.nx_agraph.graphviz_layout(
         homo_pareto_synth.graph, prog='dot'
     )
@@ -74,10 +71,18 @@ nx.draw(homo_pareto_synth.graph, with_labels=True,pos=pos, **options)
 ## Creating a survey
 
 
-We can now sample from this population with the **draw_survey** function.
+We can now sample from this population with the **draw_survey** function, but fits we need specfiy how the flux is selected
 
 ```python
-population = homo_pareto_synth.draw_survey(boundary=1E-2, hard_cut=True, flux_sigma= 0.1)
+flux_selector = popsynth.HardFluxSelection(boundary=1E-2)
+
+homo_pareto_synth.set_flux_selection(flux_selector)
+
+```
+
+```python
+population = homo_pareto_synth.draw_survey(
+    flux_sigma= 0.1)
 ```
 
 We now have created a population. How did we get here?
@@ -97,7 +102,12 @@ We now have created a population. How did we get here?
 We could have specified a soft cutoff (an inverse logit) with logarithmic with as well:
 
 ```python
-population = homo_pareto_synth.draw_survey(boundary=1E-2, strength=10, flux_sigma= 0.1)
+homo_pareto_synth.clean()
+flux_selector = popsynth.SoftFluxSelection(boundary=1E-2, strength=10)
+
+homo_pareto_synth.set_flux_selection(flux_selector)
+
+population = homo_pareto_synth.draw_survey( flux_sigma= 0.1)
 ```
 
 ## The Population Object

@@ -93,6 +93,8 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
 
             log.warning(f"selecting with {self.name} more than once!")
 
+
+        log.debug(f"{self.name} sampled {sum(self._selection)} objects")
             
         self._is_sampled = True
     

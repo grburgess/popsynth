@@ -128,6 +128,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
         self._has_derived_luminosity = False
 
         self._distance_selector_set = False
+        
         self._flux_selector_set = False
 
         log.warning("removing flux selector")
@@ -979,7 +980,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
         try:
 
             log.info(
-                f"Detected {global_selection.n_selected} objects our to a distance of {max(known_distances):.2f}")
+                f"Detected {global_selection.n_selected} objects out to a distance of {max(known_distances):.2f}")
 
         except:
 
