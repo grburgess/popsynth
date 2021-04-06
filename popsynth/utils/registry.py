@@ -1,6 +1,6 @@
 from class_registry import AutoRegister, ClassRegistry
 
-auxiliary_parameter_registry = ClassRegistry("_auxiliary_param_name")
+auxiliary_parameter_registry = ClassRegistry("_auxiliary_sampler_name")
 
 distribution_registry = ClassRegistry("_distribution_name")
 
