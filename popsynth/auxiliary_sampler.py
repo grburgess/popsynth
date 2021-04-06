@@ -40,6 +40,7 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
         self._is_observed = observed  # type: bool
         self._secondary_samplers = {}  # type: SamplerDict
         self._is_secondary = False  # type: bool
+        self._parent_names = []
         self._has_secondary = False  # type: bool
         self._is_sampled = False  # type: bool
         self._selector = UnitySelection()  # type: SelectionProbabilty
@@ -98,7 +99,7 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
         # this causes it to throw a flag in the main
         # loop if we try to add it again
 
-        sampler.make_secondary()
+        sampler.make_secondary(self.name)
         # attach the sampler to this class
 
         self._secondary_samplers[sampler.name] = sampler
@@ -113,11 +114,11 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
         # do not resample!
         if not self._is_sampled:
 
-            log.info("Sampling: %s" % self.name)
+            log.info(f"Sampling: {self.name}")
 
             if self._has_secondary:
 
-                log.info("%s is sampling its secondary quantities" % self.name)
+                log.info(f"{self.name} is sampling its secondary quantities")
 
             if self._uses_distance:
                 self._selector.set_distance(self._distance)
@@ -146,6 +147,8 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
 
             if self._is_observed:
 
+                log.debug(f"{self.name} is sampling the observed values")
+
                 self.observation_sampler(size)
 
             else:
@@ -170,9 +173,10 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
 
             self._is_sampled = True
 
-    def make_secondary(self) -> None:
+    def make_secondary(self, parent_name: str) -> None:
 
         self._is_secondary = True  # type: bool
+        self._parent_names.append(parent_name)
 
     def get_secondary_properties(
         self,
@@ -237,6 +241,10 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
     def is_secondary(self) -> bool:
 
         return self._is_secondary
+
+    @property
+    def parents(self) -> List[str]:
+        return self._parent_names
 
     @property
     def has_secondary(self) -> bool:
