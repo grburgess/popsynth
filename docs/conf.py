@@ -16,16 +16,16 @@
 
 # -- Project information -----------------------------------------------------
 
+import os
+import sys
+from pathlib import Path
+
+import sphinx_rtd_theme
+
 project = 'popsynth'
 copyright = '2019, J. Michael Burgess'
 author = 'J. Michael Burgess'
 
-import sys
-import os
-
-from pathlib import Path
-
-import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath("../"))
 
@@ -160,6 +160,8 @@ html_theme_options = {
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'popsynthdoc'
+
+source_suffix = ['.rst', '.ipynb']
 
 html_logo = 'media/logo.png'
 
