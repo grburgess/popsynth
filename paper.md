@@ -5,7 +5,7 @@ tags:
   - astronomy
   - population synthesis
   - cosmology
-authors:
+authors:0000-0003-3345-9515
   - name: J. Michael Burgess
     orcid: 0000-0003-0872-7098
     affiliation: "1, 2" # 
@@ -51,13 +51,14 @@ property when generating a population is vital to the calibration of
 any survey analysis method which operates on an incomplete sample.
 
 Similar frameworks exist for simulating data from specific catalogs
-such as SkyPy and firesong, however, these have a much more focused
-application and do not include the ability to impose selection functions. 
+such as `SkyPy` [@skypy] and `firesong` [@firesong], however, these
+have a much more focused application and do not include the ability to
+impose selection functions.
 
 
 # Procedure
 
-Once a rate function and all assocaited distributions are specified in
+Once a rate function and all associated distributions are specified in
 `popsynth`, a numeric integral over the rate function produces the
 total rate of objects in the populations.
 
@@ -84,6 +85,7 @@ object that can be serialized to disk for later examination.
 
 # Documentation
 
+Documentation for `popsynth` can be found [here](https://popsynth.readthedocs.io/)
 
 
 # Citations
@@ -104,7 +106,7 @@ citation) then you can do it with the example BibTeX entry below for @fidgit.
 This project was inspired by conversations with Daniel J. Mortlock
 wherein we tried to calibrate an analysis method we will eventually
 get around to finishing. Inspiration also came from wanting to
-generalize the examples from Will Farr's lecture note (link). I am
+generalize the examples from Will Farr's lecture note [@selection]. I am
 thankful to contributions and critique from Francesca Capel.
 
 # References

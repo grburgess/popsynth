@@ -21,7 +21,7 @@ We are familiar now with how to add selections onto fluxes and distances, now we
 
 
 
-# built in selection functions
+## built in selection functions
 
 There are several available selection functions:
 
