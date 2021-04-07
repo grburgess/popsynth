@@ -168,7 +168,7 @@ population = my_pop_gen.draw_survey()
 ```
 
 ```python
-population.display_obs_fluxes_sphere(cmap='viridis',s=50);
+fig = population.display_obs_fluxes_sphere(cmap='viridis',s=50);
 ```
 
 ```python

@@ -9,7 +9,7 @@ Welcome to popsynth's documentation!
 
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 10
 
    notebooks/intro.ipynb
    notebooks/quickstart.ipynb

@@ -128,7 +128,7 @@ population.display_fluxes(obs_color=green, true_color=red);
 For fun, we can display the fluxes on in a simulated universe in 3D
 
 ```python
-population.display_obs_fluxes_sphere();
+fig = population.display_obs_fluxes_sphere();
 ```
 
 The population object stores a lot of information. For example, an array of selection booleans:

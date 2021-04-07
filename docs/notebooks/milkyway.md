@@ -38,7 +38,7 @@ population = synth.draw_survey()
 ```
 
 ```python
-population.display_obs_fluxes_sphere(cmap='magma', background_color='black', size=.1);
+fig = population.display_obs_fluxes_sphere(cmap='magma', background_color='black', size=.1);
 ```
 
 ```python
