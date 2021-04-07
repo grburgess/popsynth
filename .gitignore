@@ -112,3 +112,4 @@ venv.bak/
 /.DS_Store
 /deploy/
 /docs/.DS_Store
+/docs/notebooks/*.ipynb
