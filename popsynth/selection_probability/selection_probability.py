@@ -16,7 +16,7 @@ class SelectionParameter(Parameter):
 
 
 class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry, base_type=ParameterMeta)):
-    def __init__(self, name: str = "name") -> None:
+    def __init__(self, name: str = "name", use_obs_value: bool = False, use_distance: bool = False, use_luminosity: bool = False, use_flux: bool = False) -> None:
 
         self._name = name  # type: str
 
@@ -28,6 +28,11 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry, bas
         self._luminosity = None  # type: np.ndarray
         self._selection = None  # type: np.ndarray
         self._is_sampled: bool = False
+
+        self._use_obs_value: bool = use_obs_value
+        self._use_distance: bool = use_distance
+        self._use_luminosity: bool = use_luminosity
+        self._use_flux: bool = use_flux
 
     def __add__(self, other):
 

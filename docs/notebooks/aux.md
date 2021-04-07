@@ -209,7 +209,9 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos,ax=ax, **options)
 
 ```python
 
-flux_selector = popsynth.HardFluxSelection(boundary=1e-8)
+flux_selector = popsynth.HardFluxSelection()
+flux_selector.boundary=1e-8
+
 pop_gen.set_flux_selection(flux_selector)
 population = pop_gen.draw_survey(flux_sigma= 0.1)
 ```
@@ -290,7 +292,8 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos, **options, ax=ax)
 ```
 
 ```python
-flux_selector = popsynth.HardFluxSelection(boundary=1e-5)
+flux_selector = popsynth.HardFluxSelection()
+flux_selector.boundary=1e-5
 pop_gen.set_flux_selection(flux_selector)
 population = pop_gen.draw_survey( flux_sigma= 0.1)
 ```

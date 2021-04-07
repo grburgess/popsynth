@@ -371,6 +371,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                             break
 
+                # oh yes we are doing that
+                fs._use_flux = True
+                
                 pop_synth.set_flux_selection(fs)
 
         if "distance selection" in input:
@@ -409,6 +412,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                             break
 
+                ds._use_distance = True
+                        
                 pop_synth.set_distance_selection(ds)
 
         if "spatial selection" in input:
@@ -586,6 +591,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                             setattr(selector, k, float(v))
 
+                    selector._use_obs_value = True
+                    
                     tmp.set_selection_probability(selector)
 
                 # now we store this sampler

@@ -7,6 +7,7 @@ from popsynth.auxiliary_sampler import (AuxiliaryParameter, AuxiliarySampler,
                                         NonObservedAuxSampler)
 from popsynth.distribution import (DistributionParameter,
                                    LuminosityDistribution, SpatialDistribution)
+from popsynth.distributions import *
 from popsynth.population import Population
 from popsynth.population_synth import PopulationSynth
 from popsynth.populations import *

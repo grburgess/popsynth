@@ -159,8 +159,8 @@ class MyPopulation(PopulationSynth):
 ```python
 my_pop_gen = MyPopulation(Lmin=1,alpha=1,r_max=10)
 
-flux_selector= popsynth.HardFluxSelection(boundary=1e-2)
-
+flux_selector= popsynth.HardFluxSelection()
+flux_selector.boundary=1e-2
 
 my_pop_gen.set_flux_selection(flux_selector)
 

@@ -13,8 +13,9 @@ Welcome to popsynth's documentation!
 
    notebooks/intro.ipynb
    notebooks/quickstart.ipynb
-   notebooks/custom.ipynb
    notebooks/aux.ipynb
+   notebooks/selections.ipynb
+   notebooks/custom.ipynb
    notebooks/milkyway.ipynb
 
    

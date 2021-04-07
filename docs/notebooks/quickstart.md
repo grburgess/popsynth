@@ -74,7 +74,8 @@ nx.draw(homo_pareto_synth.graph, with_labels=True,pos=pos, **options)
 We can now sample from this population with the **draw_survey** function, but fits we need specfiy how the flux is selected
 
 ```python
-flux_selector = popsynth.HardFluxSelection(boundary=1E-2)
+flux_selector = popsynth.HardFluxSelection()
+flux_selector.boundary=1E-2
 
 homo_pareto_synth.set_flux_selection(flux_selector)
 
@@ -103,7 +104,10 @@ We could have specified a soft cutoff (an inverse logit) with logarithmic with a
 
 ```python
 homo_pareto_synth.clean()
-flux_selector = popsynth.SoftFluxSelection(boundary=1E-2, strength=10)
+flux_selector = popsynth.SoftFluxSelection()
+flux_selector.boundary=1E-2
+flux_selector.strength=10
+
 
 homo_pareto_synth.set_flux_selection(flux_selector)
 

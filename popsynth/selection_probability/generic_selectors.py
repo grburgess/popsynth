@@ -60,17 +60,29 @@ class BoxSelection(SelectionProbabilty):
     vmin = SelectionParameter()
     vmax = SelectionParameter()
 
-    def __init__(self, name: str = "box selection"):
+    def __init__(self, name: str = "box selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
 
-        super(BoxSelection, self).__init__(name=name)
+        super(BoxSelection, self).__init__(name=name, use_distance=use_distance,
+                                           use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux)
 
-    def draw(self, values) -> np.ndarray:
+    def draw(self, size: int) -> np.ndarray:
+
+        if self._use_distance:
+            values = self._distance
+
+        if self._use_obs_value:
+
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
 
         self._selection = (values >= self.vmin) & (values <= self.vmax)
-
-    @property
-    def hard_cut(self):
-        return True
 
 
 class LowerBound(SelectionProbabilty):
@@ -78,14 +90,30 @@ class LowerBound(SelectionProbabilty):
 
     boundary = SelectionParameter()
 
-    def __init__(self, name="Hard selection"):
+    def __init__(self, name="Hard selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
         """
         hard selection above the boundary
         """
-        super(LowerBound, self).__init__(name=name
+        super(LowerBound, self).__init__(name=name, use_distance=use_distance,
+                                         use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux
                                          )
 
-    def draw(self, values) -> np.ndarray:
+    def draw(self, size: int) -> None:
+
+        if self._use_distance:
+            values = self._distance
+
+        if self._use_obs_value:
+
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
 
         self._selection = values >= self.boundary
 
@@ -95,14 +123,30 @@ class UpperBound(SelectionProbabilty):
 
     boundary = SelectionParameter()
 
-    def __init__(self, name="Hard selection"):
+    def __init__(self, name="Hard selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
         """
-        hard selection above the boundary
+        hard selection below the boundary
         """
-        super(UpperBound, self).__init__(name=name
+        super(UpperBound, self).__init__(name=name, use_distance=use_distance,
+                                         use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux
                                          )
 
-    def draw(self, values) -> np.ndarray:
+    def draw(self, size: int) -> None:
+
+        if self._use_distance:
+            values = self._distance
+
+        if self._use_obs_value:
+
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
 
         self._selection = values <= self.boundary
 
@@ -113,7 +157,7 @@ class SoftSelection(SelectionProbabilty):
     boundary = SelectionParameter()
     strength = SelectionParameter(vmin=0)
 
-    def __init__(self) -> None:
+    def __init__(self, name="Soft Selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False) -> None:
         """
         selection using an inverse logit function either on the 
         log are linear value of the parameter
@@ -122,12 +166,27 @@ class SoftSelection(SelectionProbabilty):
         :param strength: width of the logit
         """
 
-        super(SoftSelection, self).__init__(name="Soft Selection")
+        super(SoftSelection, self).__init__(name=name, use_distance=use_distance,
+                                            use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux)
 
     def draw(self,
+             size: int,
+             use_log=True) -> None:
 
-             values: np.ndarray,
-             use_log=False) -> np.ndarray:
+        if self._use_distance:
+            values = self._distance
+
+        if self._use_obs_value:
+
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
 
         if not use_log:
             probs = sf.expit(self.strength *
@@ -142,9 +201,5 @@ class SoftSelection(SelectionProbabilty):
         self._selection = stats.bernoulli.rvs(
             probs, size=len(values)).astype(bool)
 
-    @property
-    def hard_cut(self):
-        return False
-
     __all__ = ["UnitySelection", "BernoulliSelection",
-               "BoxSelection", "UpperBound", "LowerBound", "SoftSelection"]
+               "BoxSelection", "UpperBound", "UpperBound", "SoftSelection"]

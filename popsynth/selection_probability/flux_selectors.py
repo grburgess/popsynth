@@ -12,11 +12,11 @@ class HardFluxSelection(LowerBound):
 
     def __init__(self) -> None:
 
-        super(HardFluxSelection, self).__init__()
+        super(HardFluxSelection, self).__init__(use_flux=True)
 
     def draw(self, size: int):
 
-        super(HardFluxSelection, self).draw(self._observed_flux)
+        super(HardFluxSelection, self).draw(size)
 
 
 class SoftFluxSelection(SoftSelection):
@@ -24,14 +24,14 @@ class SoftFluxSelection(SoftSelection):
 
     def __init__(self) -> None:
 
-        super(SoftFluxSelection, self).__init__()
+        super(SoftFluxSelection, self).__init__(use_flux=True)
 
     def draw(
         self,
         size: int,
     ):
 
-        super(SoftFluxSelection, self).draw(self._observed_flux, use_log=True)
+        super(SoftFluxSelection, self).draw(size, use_log=True)
 
 
 __all__ = ["HardFluxSelection", "SoftFluxSelection"]
