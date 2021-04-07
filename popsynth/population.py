@@ -169,6 +169,13 @@ class Population(object):
         return self._graph
 
     @property
+    def pop_synth(self) -> Dict[str, Any]:
+        """
+        Dictionary population synth used to create this population
+        """
+        return self._pop_synth
+
+    @property
     def truth(self):
         """
         the simulated truth parameters
