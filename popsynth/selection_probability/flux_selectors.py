@@ -2,21 +2,17 @@ import numpy as np
 
 from popsynth.utils.logging import setup_logger
 
-from .generic_selectors import HardSelection, SoftSelection
+from .generic_selectors import LowerBound, SoftSelection
 
 log = setup_logger(__name__)
 
 
-class HardFluxSelection(HardSelection):
+class HardFluxSelection(LowerBound):
     _selection_name = "HardFluxSelection"
 
-    def __init__(self, boundary: float) -> None:
+    def __init__(self) -> None:
 
-        assert boundary >= 0
-
-        log.debug(f"created a hard flux selection with boundary {boundary}")
-
-        super(HardFluxSelection, self).__init__(boundary)
+        super(HardFluxSelection, self).__init__()
 
     def draw(self, size: int):
 
@@ -26,13 +22,9 @@ class HardFluxSelection(HardSelection):
 class SoftFluxSelection(SoftSelection):
     _selection_name = "SoftFluxSelection"
 
-    def __init__(self, boundary: float, strength: float) -> None:
+    def __init__(self) -> None:
 
-        log.debug(
-            f"created a hard flux selection with boundary {boundary} and strenhth {strength}"
-        )
-
-        super(SoftFluxSelection, self).__init__(boundary, strength)
+        super(SoftFluxSelection, self).__init__()
 
     def draw(
         self,

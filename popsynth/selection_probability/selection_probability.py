@@ -1,32 +1,34 @@
 import abc
-from typing import Any
+from typing import Any, Dict, Optional
 
 import numpy as np
 from class_registry import AutoRegister
 
 from popsynth.utils.logging import setup_logger
+from popsynth.utils.meta import Parameter, ParameterMeta
 from popsynth.utils.registry import selection_registry
 
 log = setup_logger(__name__)
 
 
-class SelectionVariableContaier(object):
-    def __init__(self):
-        pass
+class SelectionParameter(Parameter):
+    pass
 
 
-class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
+class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry, base_type=ParameterMeta)):
     def __init__(self, name: str = "name") -> None:
 
         self._name = name  # type: str
+
+        self._parameter_storage = {}
 
         self._observed_flux = None  # type: np.ndarray
         self._observed_value = None  # type: np.ndarray
         self._distance = None  # type: np.ndarray
         self._luminosity = None  # type: np.ndarray
-        self._selection = None # type: np.ndarray
+        self._selection = None  # type: np.ndarray
         self._is_sampled: bool = False
-        
+
     def __add__(self, other):
 
         log.debug(f"adding selection from {other.name} to {self.name}")
@@ -82,7 +84,6 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
 
         pass
 
-
     def reset(self):
         """
         resest the selector
@@ -90,36 +91,48 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry)):
         if self._is_sampled:
 
             log.info(f"Selection: {self.name} is being reset")
-            
+
             self._is_sampled = False
             self._selection = None
-    
+
     def select(self, size: int):
 
         if not self._is_sampled:
-        
+
             self.draw(size)
 
         else:
 
             log.warning(f"selecting with {self.name} more than once!")
 
-
         log.debug(f"{self.name} sampled {sum(self._selection)} objects")
-            
+
         self._is_sampled = True
-    
+
+    @property
+    def parameters(self) -> Dict[str, float]:
+
+        out = {}
+
+        for k, v in self._parameter_storage.items():
+
+            if v is not None:
+
+                out[k] = v
+
+        return out
+
     @property
     def selection(self) -> np.ndarray:
         if self._selection is not None:
-        
+
             return self._selection
 
         else:
 
             log.error(f"selector: {self.name} as not be sampled yet!")
             raise RuntimeError()
-            
+
     @property
     def n_selected(self) -> int:
         return sum(self._selection)
@@ -151,6 +164,6 @@ class DummySelection(SelectionProbabilty):
     def __init__(self):
 
         super(DummySelection, self).__init__(name="dummy")
-    
+
     def draw(self, size=1):
         pass

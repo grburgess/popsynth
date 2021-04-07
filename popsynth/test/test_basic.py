@@ -70,8 +70,11 @@ def test_basic_population():
 
     # Test the dist prob extremes
 
-    flux_selector = popsynth.SoftFluxSelection(1e-2, 50)
-
+    flux_selector = popsynth.SoftFluxSelection()
+    flux_selector.boundary = 1e-2
+    flux_selector.strength = 50
+    
+    
     homo_pareto_synth.clean(reset=True)
 
     homo_pareto_synth.set_flux_selection(flux_selector)
@@ -81,7 +84,8 @@ def test_basic_population():
     ###
 
     homo_pareto_synth.clean(reset=True)
-    b_selector = popsynth.BernoulliSelection(probability=.5)
+    b_selector = popsynth.BernoulliSelection()
+    b_selector.probability = .5
 
     homo_pareto_synth.set_flux_selection(flux_selector)
 
@@ -95,18 +99,16 @@ def test_basic_population():
 
     homo_pareto_synth.set_distance_selection(u_select)
 
-
-    
     population = homo_pareto_synth.draw_survey(flux_sigma=0.1,
                                                )
     homo_pareto_synth.clean(reset=True)
 
-    
     homo_sch_synth = popsynth.populations.SchechterHomogeneousSphericalPopulation(
         Lambda=0.1, Lmin=1, alpha=2.0)
     homo_sch_synth.display()
 
-    flux_selector = popsynth.HardFluxSelection(boundary=1e-5)
+    flux_selector = popsynth.HardFluxSelection()
+    flux_selector.boundary = 1e-5
 
     homo_sch_synth.set_flux_selection(flux_selector)
 
