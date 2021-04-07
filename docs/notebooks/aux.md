@@ -15,7 +15,7 @@ jupyter:
 
 # Auxiliary Samplers
 
-Along with sampling the spatial and luminosity distributions, auxiliary properties and be sampled that both depend on and/or influence the luminosity. 
+Along with sampling the spatial and luminosity distributions, auxiliary properties and be sampled that both depend on and/or influence the luminosity as well each other. This allows you to build up arbitrailiy complex dependencies between parameters which can lead to diverse populations.
 
 
 ```python
@@ -39,7 +39,33 @@ popsynth.update_logging_level("INFO")
 
 ```
 
-## Creating an auxiliary sampler
+## Built in auxiliary samplers
+
+There are several built in auxiliary samplers that allow you to quickly add on auxiliary parameters.
+
+
+```python
+popsynth.list_available_auxiliary_samplers()
+```
+
+We can add these on to the populations, but let's have a look at how to use them. 
+
+```python
+x = popsynth.NormalAuxSampler(name="aux_param", observed=True)
+
+x.mu = 0
+x.sigma = 1
+
+# draws the observed values from normal distribution with std equal to tau
+x.tau = 1
+
+
+```
+
+If value of x is observed (generates data), then we can set the width of the normal distribtuion from which the observed values are sampled from the latent values. Otherwise, only the latent values are stored. This applies to any of the built in auxiliary samplers. However, this can all be customized by adding our own:
+
+
+## Creating a custom auxiliary sampler
 Let's create two auxiliary samplers that sample values from normal distributions with some dependency on each other.
 
 First, we specify the main population. This time, we will chose a SFR-like redshift distribution and a Schecter luminosity function

@@ -170,3 +170,9 @@ reloaded_population.truth
 ```python
 
 ```
+
+## Creating populations from YAML files
+
+```python
+
+```

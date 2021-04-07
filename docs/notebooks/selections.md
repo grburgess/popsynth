@@ -27,6 +27,7 @@ There are several available selection functions:
 
 ```python
 import matplotlib.pyplot as plt
+import numpy as np
 %matplotlib notebook
 
 import popsynth
