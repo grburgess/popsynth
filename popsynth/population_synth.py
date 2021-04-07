@@ -174,6 +174,67 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._spatial_selector = None
 
+    def write_to(self, file_name: str) -> None:
+        """
+        write the population synth to a file
+        """
+
+        output: Dict[str, Any] = {}
+
+        output["seed"] = self._seed
+
+        # store the spatial distribution
+
+        spatial_distribution = {}
+
+        spatial_distribution[self._spatial_distribution._distribution_name] = self._spatial_distribution.truth
+
+        output["spatial distribution"] = spatial_distribution
+
+        # if there is a luminosity distribution
+        # then get it and store it
+
+        if self._luminosity_distribution is not None:
+
+            luminosity_distribution = {}
+
+            luminosity_distribution[self._luminosity_distribution._distribution_name] = self._luminosity_distribution.truth
+
+            output["luminosity distribution"] = luminosity_distribution
+
+        if self._flux_selector_set:
+
+            flux_selection = {}
+
+            flux_selection[self._flux_selector._selection_name] = {}
+
+            output["flux selection"] = flux_selection
+
+        if self._distance_selector_set:
+
+            distance_selection = {}
+
+            distance_selection[self._distance_selector._selection_name] = {}
+
+            output["distance selection"] = distance_selection
+
+        aux_samplers = {}
+
+        for k, v in self._auxiliary_observations.items():
+
+            tmp = {}
+
+            tmp["name"] = v.name
+            tmp["observed"] = v.is_observed
+
+            for k2, v2 in tmp.truth.items():
+
+                tmp[k2] = v2
+
+            tmp["secondary"] = list(v.secondary_samplers.keys())
+
+            aux_samplers[v._auxiliary_sampler_name] = tmp
+
     @classmethod
     def from_file(self, file_name: str) -> "PopulationSynth":
 
@@ -203,9 +264,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 log.debug(f"trying to set {k} to {v}")
 
-                if k in luminosity_distribtuion.__class__.__dict__:
+                for x in luminosity_distribtuion.__class__.mro():
 
-                    setattr(luminosity_distribtuion, k, float(v))
+                    if k in x.__dict__:
+
+                        setattr(luminosity_distribtuion, k, float(v))
+
+                        break
 
                 log.debug(f"{luminosity_distribtuion.params}")
 
@@ -225,9 +290,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             log.debug(f"trying to set {k} to {v}")
 
-            if k in spatial_distribtuion.__class__.__dict__:
+            for x in spatial_distribtuion.__class__.mro():
 
-                setattr(spatial_distribtuion, k, float(v))
+                if k in x.__dict__:
+
+                    setattr(spatial_distribtuion, k, float(v))
+
+                    break
 
         seed: int = input["seed"]
 
@@ -259,11 +328,19 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 # make sure they are all floats
 
+                fs = selection_registry.get(fs_name)
+
                 for k, v in params.items():
 
-                    params[k] = float(v)
+                    log.debug(f"trying to set {k} to {v}")
 
-                fs = selection_registry.get(fs_name, **params)
+                    for x in fs.__class__.mro():
+
+                        if k in x.__dict__:
+
+                            setattr(fs, k, float(v))
+
+                            break
 
                 pop_synth.set_flux_selection(fs)
 
@@ -289,11 +366,19 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 # make sure they are all floats
 
+                ds = selection_registry.get(ds_name)
+
                 for k, v in params.items():
 
-                    params[k] = float(v)
+                    log.debug(f"trying to set {k} to {v}")
 
-                ds = selection_registry.get(ds_name, **params)
+                    for x in ds.__class__.mro():
+
+                        if k in x.__dict__:
+
+                            setattr(ds, k, float(v))
+
+                            break
 
                 pop_synth.set_distance_selection(ds)
 
@@ -317,14 +402,22 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 log.debug(f"spatial selection parameters {params}")
 
+                ss = selection_registry.get(ss_name)
+
                 # make sure they are all floats
 
                 for k, v in params.items():
 
-                    params[k] = float(v)
+                    log.debug(f"trying to set {k} to {v}")
 
-                ss = selection_registry.get(ss_name, **params)
+                    for x in ss.__class__.mro():
+                    
+                        if k in x.__dict__:
 
+                            setattr(ss, k, float(v))
+
+                            break
+                            
                 pop_synth.add_spatial_selector(ss)
 
         # Now collect the auxiliary samplers
@@ -428,10 +521,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                     log.debug(f"trying to set {k} to {v}")
 
-                    if k in tmp.__class__.__dict__:
+                    for x in tmp.__class__.mro():
+                    
+                        if k in x.__dict__:
 
-                        setattr(tmp, k, float(v))
+                            setattr(tmp, k, float(v))
 
+                            break
+                            
                     log.debug(f"{tmp.truth}")
 
                 if selection is not None:
@@ -452,11 +549,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                     # make sure they are all floats
 
+                    selector = selection_registry.get(sel_name)
+
                     for k, v in params.items():
 
-                        params[k] = float(v)
+                        if k in selector.__class__.__dict__:
 
-                    selector = selection_registry.get(sel_name, **params)
+                            setattr(selector, k, float(v))
 
                     tmp.set_selection_probability(selector)
 
@@ -628,18 +727,6 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._spatial_selector = spatial_selector
 
-    def _prob_det(self, x: np.ndarray, boundary: float,
-                  strength: float) -> np.ndarray:
-        """
-        Soft detection threshold
-
-        :param x: values to test
-        :param boundary: mean value of the boundary
-        :param strength: the strength of the threshold
-        """
-
-        return sf.expit(strength * (x - boundary))
-
     @property
     def name(self) -> str:
         return self._name
@@ -748,7 +835,6 @@ class PopulationSynth(object, metaclass=ABCMeta):
         if self._has_derived_luminosity:
 
             log.debug("using a derived luminosity sampler")
-
             # pbar.set_description(desc='Getting derived luminosities')
             # set the distance to the auxilary sampler
             self._derived_luminosity_sampler.set_spatial_values(
@@ -924,31 +1010,6 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         log.info("applying selection to fluxes")
 
-        if isinstance(self._flux_selector,
-                      HardFluxSelection) or isinstance(
-                          self._flux_selector, SoftFluxSelection):
-
-            if self._flux_selector.hard_cut:
-
-                strength = 1.0
-                boundary = self._flux_selector.boundary
-                hard_cut = self._flux_selector.hard_cut
-
-            else:
-
-                strength = self._flux_selector.strength
-
-                boundary = self._flux_selector.boundary
-                hard_cut = self._flux_selector.hard_cut
-
-        else:
-
-            # These are just dummies for other types of flux selection
-
-            strength = 1
-            boundary = 1e-99
-            hard_cut = True
-
         # pass the values the plux selector and draw the selection
         self._flux_selector.set_observed_flux(flux_obs)
 
@@ -1044,16 +1105,12 @@ class PopulationSynth(object, metaclass=ABCMeta):
             lf_params=lf_params,
             spatial_params=self._spatial_distribution.params,
             model_spaces=self._model_spaces,
-            boundary=boundary,
-            strength=strength,
             seed=self._seed,
             name=self._name,
             spatial_form=self._spatial_distribution.form,
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
             truth=truth,
-            hard_cut=hard_cut,
-            distance_probability=distance_probability,
             graph=self.graph,
             theta=self._spatial_distribution.theta,
             phi=self._spatial_distribution.phi,

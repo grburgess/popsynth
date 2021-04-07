@@ -14,14 +14,11 @@ from IPython.display import Markdown, Math, display
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
-    clean_graph_dict,
-    fill_graph_dict,
+    clean_graph_dict, fill_graph_dict,
     recursively_load_dict_contents_from_group,
-    recursively_save_dict_contents_to_group,
-)
-from popsynth.utils.spherical_geometry import xyz
-
+    recursively_save_dict_contents_to_group)
 from popsynth.utils.logging import setup_logger
+from popsynth.utils.spherical_geometry import xyz
 
 log = setup_logger(__name__)
 
@@ -48,8 +45,6 @@ class Population(object):
         selection: ArrayLike,
         flux_sigma: float,
         r_max: float,
-        boundary: float,
-        strength: float,
         n_model: int,
         lf_params: dict,
         spatial_params: dict = None,
@@ -60,8 +55,7 @@ class Population(object):
         lf_form: dict = None,
         auxiliary_quantities: dict = None,
         truth: dict = {},
-        hard_cut: bool = False,
-        distance_probability: float = 1.0,
+
         graph=None,
         theta=None,
         phi=None,
@@ -79,8 +73,6 @@ class Population(object):
         :param selection: the selection vector
         :param flux_sigma: the uncertainty on the observed flux
         :param r_max: the maximum distance of the survey
-        :param boundary: the flux boundary
-        :param strength: the strength of the sofft boundary
         :param n_model:
         :param lf_params:
         :param spatial_params:
@@ -91,8 +83,6 @@ class Population(object):
         :param lf_form:
         :param auxiliary_quantities:
         :param truth:
-        :param hard_cut:
-        :param distance_probability:
         :returns:
         :rtype:
 
@@ -119,9 +109,6 @@ class Population(object):
         self._flux_sigma = flux_sigma  # type: float
 
         self._r_max = r_max  # type: float
-
-        self._boundary = boundary  # type: float
-        self._strength = strength  # type: float
         self._seed = seed  # type: int
         self._n_model = n_model  # type: int
         self._name = name  # type: str
@@ -142,9 +129,6 @@ class Population(object):
         self._model_spaces = model_spaces
 
         self._truth = truth
-
-        self._hard_cut = hard_cut  # type: bool
-        self._distance_probability = distance_probability  # type: float
 
         self._graph = graph
 
@@ -195,28 +179,9 @@ class Population(object):
         return self._truth
 
     @property
-    def boundary(self) -> float:
-        return self._boundary
-
-    @property
     def flux_sigma(self) -> float:
 
         return self._flux_sigma
-
-    @property
-    def strength(self) -> float:
-
-        return self._strength
-
-    @property
-    def distance_probabilty(self) -> float:
-        if self._distance_probabilty is None:
-
-            return 1.0
-
-        else:
-
-            return self._distance_probability
 
     @property
     def theta(self) -> np.ndarray:
@@ -399,8 +364,6 @@ class Population(object):
             z_max=self._r_max,
             r_max=self._r_max,
             N_model=self._n_model,
-            boundary=self._boundary,
-            strength=self._strength,
         )
 
         # now append the model spaces
@@ -483,11 +446,7 @@ class Population(object):
         f.attrs["flux_sigma"] = self._flux_sigma
         f.attrs["n_model"] = self._n_model
         f.attrs["r_max"] = self._r_max
-        f.attrs["boundary"] = self._boundary
-        f.attrs["strength"] = self._strength
         f.attrs["seed"] = int(self._seed)
-        f.attrs["distance_probability"] = self._distance_probability
-        f.attrs["hard_cut"] = self._hard_cut
 
         f.create_dataset("luminosities",
                          data=self._luminosities,
@@ -596,15 +555,12 @@ class Population(object):
             lf_form = None
 
         flux_sigma = f.attrs["flux_sigma"]
-        boundary = f.attrs["boundary"]
-        strength = f.attrs["strength"]
         n_model = f.attrs["n_model"]
         r_max = f.attrs["r_max"]
         seed = int(f.attrs["seed"])
         name = f.attrs["name"]
-        distance_probability = f.attrs["distance_probability"]
+
         spatial_form = str(f.attrs["spatial_form"])
-        hard_cut = f.attrs["hard_cut"]
 
         luminosities = f["luminosities"][()]
         distances = f["distances"][()]
@@ -660,8 +616,6 @@ class Population(object):
             flux_sigma=flux_sigma,
             n_model=n_model,
             r_max=r_max,
-            boundary=boundary,
-            strength=strength,
             lf_params=lf_params,
             spatial_params=spatial_params,
             model_spaces=model_spaces,
@@ -671,8 +625,6 @@ class Population(object):
             lf_form=lf_form,
             auxiliary_quantities=auxiliary_quantities,
             truth=truth,
-            distance_probability=distance_probability,
-            hard_cut=hard_cut,
             graph=graph,
             theta=theta,
             phi=phi,
@@ -741,8 +693,6 @@ class Population(object):
             flux_sigma=self._flux_sigma,
             n_model=self._n_model,
             r_max=self._r_max,
-            boundary=self._boundary,
-            strength=self._strength,
             lf_params=self._lf_params,
             spatial_params=self._spatial_params,
             model_spaces=self._model_spaces,
@@ -752,8 +702,6 @@ class Population(object):
             lf_form=self._lf_form,
             auxiliary_quantities=new_aux,
             truth=self._truth,
-            distance_probability=self._distance_probability,
-            hard_cut=self._hard_cut,
             graph=self._graph,
             theta=self._theta[selection],
             phi=self._phi[selection],
@@ -824,7 +772,7 @@ class Population(object):
             **kwargs,
         )
 
-        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
+#        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
 
         # ax.set_xscale('log')
         ax.set_yscale("log")
@@ -883,7 +831,7 @@ class Population(object):
             **kwargs,
         )
 
-        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
+#        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
