@@ -1,22 +1,24 @@
 import numpy as np
-import scipy.stats as stats
 import scipy.special as sf
+import scipy.stats as stats
+
+from popsynth.utils.configuration import popsynth_config
+from popsynth.utils.logging import setup_logger
 from popsynth.utils.progress_bar import progress_bar
 
-from .selection_probability import SelectionProbabilty
-
-from popsynth.utils.logging import setup_logger
-from popsynth.utils.configuration import popsynth_config
+from .selection_probability import SelectionParameter, SelectionProbabilty
 
 log = setup_logger(__name__)
 
 
 class UnitySelection(SelectionProbabilty):
-    def __init__(self):
+    _selection_name = "UnitySelection"
+
+    def __init__(self, name="unity"):
         """
         A selection that returns all unity
         """
-        super(UnitySelection, self).__init__(name="unity")
+        super(UnitySelection, self).__init__(name=name)
 
     def draw(self, size: int) -> None:
 
@@ -24,18 +26,17 @@ class UnitySelection(SelectionProbabilty):
 
 
 class BernoulliSelection(SelectionProbabilty):
-    def __init__(self, probability: float = 0.5) -> None:
+    _selection_name = "BernoulliSelection"
 
-        assert probability <= 1.0
-        assert probability >= 0.0
+    probability = SelectionParameter(vmin=0, vmax=1, default=0.5)
+
+    def __init__(self) -> None:
 
         super(BernoulliSelection, self).__init__(name="Bernoulli")
 
-        self._probability = probability  # type: float
-
     def draw(self, size: int) -> None:
 
-        if popsynth_config["show_progress"]:
+        if popsynth_config.show_progress:
 
             self._selection = np.zeros(size, dtype=int).astype(
                 bool)  # type: np.ndarray
@@ -43,7 +44,7 @@ class BernoulliSelection(SelectionProbabilty):
             for i in progress_bar(range(size), desc=f"Selecting {self.name}"):
 
                 # see if we detect the distance
-                if stats.bernoulli.rvs(self._probability) == 1:
+                if stats.bernoulli.rvs(self.probability) == 1:
 
                     self._selection[i] = 1
 
@@ -52,64 +53,153 @@ class BernoulliSelection(SelectionProbabilty):
             self._selection = stats.bernoulli.rvs(
                 self._probability, size=size).astype(bool)  # type: np.ndarray
 
-    @property
-    def probability(self) -> float:
-        return self._probability
+
+class BoxSelection(SelectionProbabilty):
+    _selection_name = "BoxSelection"
+
+    vmin = SelectionParameter()
+    vmax = SelectionParameter()
+
+    def __init__(self, name: str = "box selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
+
+        super(BoxSelection, self).__init__(name=name, use_distance=use_distance,
+                                           use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux)
+
+    def draw(self, size: int) -> np.ndarray:
+
+        if self._use_distance:
+            values = self._distance
+
+        if self._use_obs_value:
+
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
+
+        self._selection = (values >= self.vmin) & (values <= self.vmax)
 
 
-class HardSelection(SelectionProbabilty):
-    def __init__(self, boundary: float):
+class LowerBound(SelectionProbabilty):
+    _selection_name = "LowerBound"
 
-        super(HardSelection, self).__init__(name="Hard selection")
+    boundary = SelectionParameter()
 
-        self._boundary = boundary  # type: float
+    def __init__(self, name="Hard selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
+        """
+        hard selection above the boundary
+        """
+        super(LowerBound, self).__init__(name=name, use_distance=use_distance,
+                                         use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux
+                                         )
 
-    def _draw(self, values) -> np.ndarray:
+    def draw(self, size: int) -> None:
 
-        return values >= self._boundary
+        if self._use_distance:
+            values = self._distance
 
-    @property
-    def boundary(self):
-        return self._boundary
+        if self._use_obs_value:
 
-    @property
-    def hard_cut(self):
-        return True
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
+
+        self._selection = values >= self.boundary
+
+
+class UpperBound(SelectionProbabilty):
+    _selection_name = "UpperBound"
+
+    boundary = SelectionParameter()
+
+    def __init__(self, name="Hard selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
+        """
+        hard selection below the boundary
+        """
+        super(UpperBound, self).__init__(name=name, use_distance=use_distance,
+                                         use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux
+                                         )
+
+    def draw(self, size: int) -> None:
+
+        if self._use_distance:
+            values = self._distance
+
+        if self._use_obs_value:
+
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
+
+        self._selection = values <= self.boundary
 
 
 class SoftSelection(SelectionProbabilty):
-    def __init__(self, boundary: float, strength: float) -> None:
+    _selection_name = "SoftSelection"
 
-        self._strength = strength  # type: float
-        self._boundary = boundary  # type: float
+    boundary = SelectionParameter()
+    strength = SelectionParameter(vmin=0)
 
-        super(SoftSelection, self).__init__(name="Soft Selection")
+    def __init__(self, name="Soft Selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False) -> None:
+        """
+        selection using an inverse logit function either on the 
+        log are linear value of the parameter
 
-    def _draw(self,
-              size: int,
-              values: np.ndarray,
-              use_log=False) -> np.ndarray:
+        :param boundary: center of the logit
+        :param strength: width of the logit
+        """
+
+        super(SoftSelection, self).__init__(name=name, use_distance=use_distance,
+                                            use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux)
+
+    def draw(self,
+             size: int,
+             use_log=True) -> None:
+
+        if self._use_distance:
+            values = self._distance
+
+        if self._use_obs_value:
+
+            values = self._observed_value
+
+        if self._use_luminosity:
+
+            values = self._luminosity
+
+        if self._use_flux:
+
+            values = self._observed_flux
 
         if not use_log:
-            probs = sf.expit(self._strength *
-                             (values - self._boundary))  # type: np.ndarray
+            probs = sf.expit(self.strength *
+                             (values - self.boundary))  # type: np.ndarray
 
         else:
 
-            probs = sf.expit(self._strength *
+            probs = sf.expit(self.strength *
                              (np.log10(values) -
-                              np.log10(self._boundary)))  # type: np.ndarray
+                              np.log10(self.boundary)))  # type: np.ndarray
 
-        return stats.bernoulli.rvs(probs, size=size).astype(bool)
+        self._selection = stats.bernoulli.rvs(
+            probs, size=len(values)).astype(bool)
 
-    @property
-    def boundary(self):
-        return self._boundary
-
-    @property
-    def strength(self):
-        return self._strength
-
-    @property
-    def hard_cut(self):
-        return False
+    __all__ = ["UnitySelection", "BernoulliSelection",
+               "BoxSelection", "UpperBound", "UpperBound", "SoftSelection"]

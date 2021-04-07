@@ -4,6 +4,7 @@ from popsynth.distribution import LuminosityDistribution, DistributionParameter
 
 
 class BPLDistribution(LuminosityDistribution):
+    _distribution_name = "BPLDistribution"
 
     Lmin = DistributionParameter(vmin=0)
     alpha = DistributionParameter()

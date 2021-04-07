@@ -8,9 +8,9 @@ jupyter:
       format_version: '1.2'
       jupytext_version: 1.8.0
   kernelspec:
-    display_name: Python3
+    display_name: Python 3
     language: python
-    name: Python3
+    name: python3
 ---
 
 # Fun with the Milky Way
@@ -34,7 +34,7 @@ synth = MWRadialPopulation(rho=1, luminosity_distribution=ld)
 ```
 
 ```python
-population = synth.draw_survey(boundary=1E-2,  no_selection=True)
+population = synth.draw_survey()
 ```
 
 ```python

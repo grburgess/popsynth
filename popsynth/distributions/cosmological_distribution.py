@@ -7,6 +7,7 @@ from popsynth.utils.cosmology import cosmology
 
 
 class CosmologicalDistribution(SpatialDistribution):
+    _distribution_name = "CosmologicalDistribution"
     def __init__(self,
                  seed=1234,
                  name="cosmo",
@@ -37,6 +38,7 @@ class CosmologicalDistribution(SpatialDistribution):
 
 
 class SFRDistribution(CosmologicalDistribution):
+    _distribution_name = "SFRDistribution"
 
     r0 = DistributionParameter(vmin=0)
     rise = DistributionParameter()
@@ -73,6 +75,7 @@ def _dndv(z, r0, rise, decay, peak):
 
 
 class ZPowerCosmoDistribution(CosmologicalDistribution):
+    _distribution_name = "ZPowerCosmoDistribution"
 
     Lambda = DistributionParameter(default=1, vmin=0)
     delta = DistributionParameter()
@@ -95,10 +98,16 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
 
     def dNdV(self, distance):
 
-        return self.Lambda * np.power(distance + 1.0, self.delta)
+        return _zp_dndv(distance, self.Lambda, self.delta)
 
+@nb.njit(fastmath=True)
+def _zp_dndv(z, Lambda, delta):
+    return Lambda * np.power(z + 1, delta)
+    
 
+    
 # class MergerDistribution(CosmologicalDistribution):
+#_distribution_name = "MergerDistribution"
 #     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 
 #         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"

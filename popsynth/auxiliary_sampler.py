@@ -1,13 +1,15 @@
 import abc
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
+from class_registry import AutoRegister
 
 from popsynth.distribution import SpatialContainer
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
 from popsynth.utils.cosmology import cosmology
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
+from popsynth.utils.registry import auxiliary_parameter_registry
 
 #from numpy.typing import ArrayLike
 
@@ -21,7 +23,7 @@ class AuxiliaryParameter(Parameter):
     pass
 
 
-class AuxiliarySampler(object, metaclass=ParameterMeta):
+class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_registry, base_type=ParameterMeta)):
     def __init__(self,
                  name: str,
                  observed: bool = True,
@@ -38,6 +40,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         self._is_observed = observed  # type: bool
         self._secondary_samplers = {}  # type: SamplerDict
         self._is_secondary = False  # type: bool
+        self._parent_names = []
         self._has_secondary = False  # type: bool
         self._is_sampled = False  # type: bool
         self._selector = UnitySelection()  # type: SelectionProbabilty
@@ -96,7 +99,7 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         # this causes it to throw a flag in the main
         # loop if we try to add it again
 
-        sampler.make_secondary()
+        sampler.make_secondary(self.name)
         # attach the sampler to this class
 
         self._secondary_samplers[sampler.name] = sampler
@@ -111,29 +114,39 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         # do not resample!
         if not self._is_sampled:
 
-            log.info("Sampling: %s" % self.name)
+            log.info(f"Sampling: {self.name}")
 
             if self._has_secondary:
 
-                log.info("%s is sampling its secondary quantities" % self.name)
+                log.info(f"{self.name} is sampling its secondary quantities")
 
-            if self._uses_distance:
-                self._selector.set_distance(self._distance)
+            self._selector.set_distance(self._distance)
 
-            if self._uses_luminosity:
+            try:
+
                 self._selector.set_luminosity(self._luminosity)
+
+            except(AttributeError):
+
+                log.debug("tried to set luminosity, but could not")
+
+                pass
 
             for k, v in self._secondary_samplers.items():
 
-                assert v.is_secondary, "Tried to sample a non-secondary, this is a bug"
+                if not v.is_secondary:
+
+                    log.error("Tried to sample a non-secondary, this is a bug")
+
+                    raise RuntimeError()
 
                 # we do not allow for the secondary
                 # quantities to derive a luminosity
                 # as it should be the last thing dervied
 
-                if v.uses_distance or v.uses_sky_position:
+                log.debug(f"{k} will have it spatial values set")
 
-                    v.set_spatial_values(self._spatial_values)
+                v.set_spatial_values(self._spatial_values)
 
                 v.draw(size=size)
 
@@ -143,6 +156,8 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
             self.true_sampler(size=size)
 
             if self._is_observed:
+
+                log.debug(f"{self.name} is sampling the observed values")
 
                 self.observation_sampler(size)
 
@@ -164,17 +179,42 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
             # if there is nothing coded, it will be
             # list of all true
 
-            self._apply_selection()
-
             self._is_sampled = True
 
-    def make_secondary(self) -> None:
+            self._apply_selection()
+
+    def reset(self):
+        """
+        reset all the selections
+        """
+
+        if self._is_sampled:
+
+            log.info(f"Auxiliary sampler: {self.name} is being reset")
+
+            self._is_sampled = False
+            self._obs_values = None  # type: ArrayLike
+            self._true_values = None  # type: ArrayLike
+
+            self._selector.reset()
+
+        else:
+
+            log.debug(
+                f"{self.name} is not reseting as it has not been sampled")
+
+        for k, v in self._secondary_samplers.items():
+
+            v.reset()
+
+    def make_secondary(self, parent_name: str) -> None:
 
         self._is_secondary = True  # type: bool
+        self._parent_names.append(parent_name)
 
     def get_secondary_properties(
         self,
-        recursive_secondaries: Union[Dict[str, ArrayLike], None] = None,
+        recursive_secondaries: Optional[Dict[str, ArrayLike]] = None,
         graph=None,
         primary=None,
         spatial_distribution=None,
@@ -237,6 +277,10 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
         return self._is_secondary
 
     @property
+    def parents(self) -> List[str]:
+        return self._parent_names
+
+    @property
     def has_secondary(self) -> bool:
 
         return self._has_secondary
@@ -295,7 +339,16 @@ class AuxiliarySampler(object, metaclass=ParameterMeta):
 
     @property
     def truth(self) -> Dict[str, float]:
-        return self._parameter_storage
+
+        out = {}
+
+        for k, v in self._parameter_storage.items():
+
+            if v is not None:
+
+                out[k] = v
+
+        return out
 
     @property
     def uses_distance(self) -> bool:

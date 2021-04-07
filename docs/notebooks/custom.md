@@ -8,9 +8,9 @@ jupyter:
       format_version: '1.2'
       jupytext_version: 1.8.0
   kernelspec:
-    display_name: Python3
+    display_name: Python 3
     language: python
-    name: Python3
+    name: python3
 ---
 
 # Custom populations
@@ -47,7 +47,11 @@ warnings.simplefilter('ignore')
 from popsynth.distribution import SpatialDistribution
 
 
-class SphericalDistribution(SpatialDistribution):
+class MySphericalDistribution(SpatialDistribution):
+    
+    # we need this property to register the class
+    
+    _distribution_name = "MySphericalDistribution"
     def __init__(self, seed=1234, form=None,):
 
         
@@ -57,7 +61,7 @@ class SphericalDistribution(SpatialDistribution):
         # we do not need a "truth" dict here because
         # there are no parameters
         
-        super(SphericalDistribution, self).__init__(
+        super(MySphericalDistribution, self).__init__(
          seed=seed, name='sphere', form=form,
         )
 
@@ -90,7 +94,8 @@ Now we define a luminosity distribution.
 from popsynth.distribution import LuminosityDistribution, DistributionParameter
 
 
-class ParetoDistribution(LuminosityDistribution):
+class MyParetoDistribution(LuminosityDistribution):
+    _distribution_name = "MyParetoDistribution"
     
     Lmin = DistributionParameter(default=1, vmin=0)
     alpha = DistributionParameter(default=2)
@@ -102,7 +107,7 @@ class ParetoDistribution(LuminosityDistribution):
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
         
         
-        super(ParetoDistribution, self).__init__(
+        super(MyParetoDistribution, self).__init__(
             seed=seed, name='pareto', form=lf_form,
         )
 
@@ -135,12 +140,12 @@ class MyPopulation(PopulationSynth):
     def __init__(self, Lmin, alpha, r_max=5, seed=1234):
         
         # instantiate the distributions
-        luminosity_distribution = ParetoDistribution(seed=seed)
+        luminosity_distribution = MyParetoDistribution(seed=seed)
         
         luminosity_distribution.alpha = alpha
         luminosity_distribution.Lmin = Lmin
         
-        spatial_distribution = SphericalDistribution(seed=seed)
+        spatial_distribution = MySphericalDistribution(seed=seed)
         spatial_distribution.r_max = r_max
         
         # pass to the super class
@@ -154,7 +159,12 @@ class MyPopulation(PopulationSynth):
 ```python
 my_pop_gen = MyPopulation(Lmin=1,alpha=1,r_max=10)
 
-population = my_pop_gen.draw_survey(boundary=1.E-2)
+flux_selector= popsynth.HardFluxSelection()
+flux_selector.boundary=1e-2
+
+my_pop_gen.set_flux_selection(flux_selector)
+
+population = my_pop_gen.draw_survey()
 ```
 
 ```python

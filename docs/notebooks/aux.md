@@ -8,14 +8,14 @@ jupyter:
       format_version: '1.2'
       jupytext_version: 1.8.0
   kernelspec:
-    display_name: Python3
+    display_name: Python 3
     language: python
-    name: Python3
+    name: python3
 ---
 
 # Auxiliary Samplers
 
-Along with sampling the spatial and luminosity distributions, auxiliary properties and be sampled that both depend on and/or influence the luminosity. 
+Along with sampling the spatial and luminosity distributions, auxiliary properties and be sampled that both depend on and/or influence the luminosity as well each other. This allows you to build up arbitrailiy complex dependencies between parameters which can lead to diverse populations.
 
 
 ```python
@@ -39,7 +39,33 @@ popsynth.update_logging_level("INFO")
 
 ```
 
-## Creating an auxiliary sampler
+## Built in auxiliary samplers
+
+There are several built in auxiliary samplers that allow you to quickly add on auxiliary parameters.
+
+
+```python
+popsynth.list_available_auxiliary_samplers()
+```
+
+We can add these on to the populations, but let's have a look at how to use them. 
+
+```python
+x = popsynth.NormalAuxSampler(name="aux_param", observed=True)
+
+x.mu = 0
+x.sigma = 1
+
+# draws the observed values from normal distribution with std equal to tau
+x.tau = 1
+
+
+```
+
+If value of x is observed (generates data), then we can set the width of the normal distribtuion from which the observed values are sampled from the latent values. Otherwise, only the latent values are stored. This applies to any of the built in auxiliary samplers. However, this can all be customized by adding our own:
+
+
+## Creating a custom auxiliary sampler
 Let's create two auxiliary samplers that sample values from normal distributions with some dependency on each other.
 
 First, we specify the main population. This time, we will chose a SFR-like redshift distribution and a Schecter luminosity function
@@ -63,6 +89,7 @@ We create an AuxiliarySampler child class, and define the *true_sampler* for the
 
 ```python
 class DemoSampler(popsynth.AuxiliarySampler):
+    _auxiliary_sampler_name = "DemoSampler"
     
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
@@ -88,7 +115,7 @@ demo1 = DemoSampler()
 
 pop_gen.add_observed_quantity(demo1)
 
-population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1)
+population = pop_gen.draw_survey()
 
 options = {
 'node_color':green,
@@ -126,7 +153,7 @@ We will create a second demo sampler and tell it what the observational error is
 
 ```python
 class DemoSampler2(popsynth.AuxiliarySampler):
-    
+    _auxiliary_sampler_name = "DemoSampler2"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
     sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
@@ -207,7 +234,12 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos,ax=ax, **options)
 ```
 
 ```python
-population = pop_gen.draw_survey(boundary=1E-8, hard_cut=True, flux_sigma= 0.1)
+
+flux_selector = popsynth.HardFluxSelection()
+flux_selector.boundary=1e-8
+
+pop_gen.set_flux_selection(flux_selector)
+population = pop_gen.draw_survey(flux_sigma= 0.1)
 ```
 
 ```python
@@ -227,7 +259,7 @@ This allows you to sample auxiliary parameters and compute a luminosity from tho
 ```python
 
 class DemoSampler3(popsynth.DerivedLumAuxSampler):
-    
+    _auxiliary_sampler_name = "DemoSampler3"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1)
     tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
     
@@ -286,7 +318,10 @@ nx.draw(pop_gen.graph, with_labels=True,pos=pos, **options, ax=ax)
 ```
 
 ```python
-population = pop_gen.draw_survey(boundary=1E-5, hard_cut=True, flux_sigma= 0.1)
+flux_selector = popsynth.HardFluxSelection()
+flux_selector.boundary=1e-5
+pop_gen.set_flux_selection(flux_selector)
+population = pop_gen.draw_survey( flux_sigma= 0.1)
 ```
 
 ```python

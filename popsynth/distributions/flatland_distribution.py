@@ -4,6 +4,7 @@ from popsynth.distribution import SpatialDistribution, DistributionParameter
 
 
 class FlatlandDistribution(SpatialDistribution):
+    _distribution_name = "FlatlandDistribution"
 
     Lambda = DistributionParameter(default=1, vmin=0)
 

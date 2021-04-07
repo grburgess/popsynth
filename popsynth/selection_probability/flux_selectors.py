@@ -2,37 +2,36 @@ import numpy as np
 
 from popsynth.utils.logging import setup_logger
 
-from .generic_selectors import HardSelection, SoftSelection
+from .generic_selectors import LowerBound, SoftSelection
 
 log = setup_logger(__name__)
 
 
-class HardFluxSelection(HardSelection):
-    def __init__(self, boundary: float) -> None:
+class HardFluxSelection(LowerBound):
+    _selection_name = "HardFluxSelection"
 
-        assert boundary >= 0
+    def __init__(self) -> None:
 
-        log.debug(f"created a hard flux selection with boundary {boundary}")
-
-        super(HardFluxSelection, self).__init__(boundary)
+        super(HardFluxSelection, self).__init__(use_flux=True)
 
     def draw(self, size: int):
 
-        self._selection = self._draw(self._observed_flux)  # type: np.ndarray
+        super(HardFluxSelection, self).draw(size)
 
 
 class SoftFluxSelection(SoftSelection):
-    def __init__(self, boundary: float, strength: float) -> None:
+    _selection_name = "SoftFluxSelection"
 
-        log.debug(
-            f"created a hard flux selection with boundary {boundary} and strenhth {strength}"
-        )
+    def __init__(self) -> None:
 
-        super(SoftFluxSelection, self).__init__(boundary, strength)
+        super(SoftFluxSelection, self).__init__(use_flux=True)
 
     def draw(
         self,
         size: int,
     ):
 
-        self._selection = self._draw(size, self._observed_flux, use_log=True)
+        super(SoftFluxSelection, self).draw(size, use_log=True)
+
+
+__all__ = ["HardFluxSelection", "SoftFluxSelection"]

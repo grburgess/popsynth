@@ -3,11 +3,13 @@ from dataclasses import dataclass
 from typing import Dict, List, Union
 
 import numpy as np
+from class_registry import AutoRegister
 
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
 from popsynth.utils.progress_bar import progress_bar
+from popsynth.utils.registry import distribution_registry
 from popsynth.utils.rejection_sample import rejection_sample
 from popsynth.utils.spherical_geometry import sample_theta_phi
 
@@ -22,7 +24,9 @@ class DistributionParameter(Parameter):
     pass
 
 
-class Distribution(object, metaclass=ParameterMeta):
+class Distribution(object, metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta)):
+    _distribution_name = "Distribution"
+
     def __init__(self, name: str, seed: int, form: str) -> None:
         """
         A distribution base class
@@ -36,7 +40,7 @@ class Distribution(object, metaclass=ParameterMeta):
 
         """
 
-        self._parameter_storage = {}  # type: dict
+        self._parameter_storage: Dict[str, float] = {}
 
         self._seed = seed  # type: int
         self._name = name  # type: str
@@ -56,7 +60,16 @@ class Distribution(object, metaclass=ParameterMeta):
 
     @property
     def truth(self) -> Dict[str, float]:
-        return self._parameter_storage
+
+        out = {}
+
+        for k, v in self._parameter_storage.items():
+
+            if v is not None:
+
+                out[k] = v
+
+        return out
 
 
 @dataclass
@@ -76,6 +89,7 @@ class SpatialContainer:
 
 
 class SpatialDistribution(Distribution):
+    _distribution_name = "SpatialDistribution"
 
     r_max = DistributionParameter(vmin=0, default=10)
 
@@ -179,7 +193,7 @@ class SpatialDistribution(Distribution):
 
         # slow
 
-        if popsynth_config["show_progress"]:
+        if popsynth_config.show_progress:
             for i in progress_bar(range(size), desc="Drawing distances"):
                 flag = True
                 while flag:
@@ -207,6 +221,8 @@ class SpatialDistribution(Distribution):
 
 
 class LuminosityDistribution(Distribution):
+    _distribution_name = "LuminosityDistribtuion"
+
     def __init__(self, name: str, seed: int, form: Union[str, None] = None):
         """
         A luminosity distribution such as a

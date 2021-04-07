@@ -3,4 +3,10 @@ from .lognormal_aux_sampler import LogNormalAuxSampler, Log10NormalAuxSampler
 from .normal_aux_sampler import NormalAuxSampler
 from .trunc_normal_aux_sampler import TruncatedNormalAuxSampler
 
-__all__ = ["ViewingAngleSampler"]
+__all__ = ["ViewingAngleSampler",
+           "LogNormalAuxSampler",
+           "Log10NormalAuxSampler",
+           "NormalAuxSampler",
+           "TruncatedNormalAuxSampler"
+           
+           ]

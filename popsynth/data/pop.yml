@@ -1,0 +1,65 @@
+## Creating populations from YAML files (experimental)
+
+# the seed
+seed: 1234
+
+# specifiy the luminosity distribution
+# and it's parmeters
+luminosity distribution:
+    ParetoDistribution:
+        Lmin: 1e51
+        alpha: 2
+
+# specifiy the flux selection function
+# and it's parmeters
+flux selection:
+    HardFluxSelection:
+        boundary: 1e-6
+
+# specifiy the spatial distribution
+# and it's parmeters
+
+spatial distribution:
+    ZPowerCosmoDistribution:
+        Lambda: .5
+        delta: -2
+        r_max: 5
+
+# specify the distance selection function
+# and it's parmeters
+distance selection:
+    BernoulliSelection:
+        probability: 0.5
+
+# a spatial selection if needed
+spatial selection:
+    # None
+
+# all the auxiliary functions
+# these must be known to the
+# registry at run time if
+# the are custom!
+
+auxiliary samplers:
+    NormalAuxSampler:
+        name: stellar_mass
+        observed: False
+        mu: 0
+        sigma: 1
+        selection:
+        secondary:
+        init variables:
+
+    DemoSampler:
+        name: demo
+        observed: False
+        selection:
+            UpperBound:
+                boundary: 20
+
+    DemoSampler2:
+        name: demo2
+        observed: True
+        selection:
+        secondary: [demo, stellar_mass] # other samplers that this sampler depends on
+
