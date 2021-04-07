@@ -1,56 +1,45 @@
 seed: 1234
 
 luminosity distribution:
-  ParetoDistribution:
-    Lmin: 1e51
-    alpha: 2
+    ParetoDistribution:
+        Lmin: 1e51
+        alpha: 2
 
 flux selection:
-  HardFluxSelection:
-    boundary: 1e-6
-    
+    HardFluxSelection:
+        boundary: 1e-6
+
 spatial distribution:
-
-  ZPowerCosmoDistribution:
-    Lambda: .5
-    delta: -2
-    r_max: 5
-
+    ZPowerCosmoDistribution:
+        Lambda: .5
+        delta: -2
+        r_max: 5
 
 distance selection:
-  BernoulliSelection:
-    probability: 0.5
-
+    BernoulliSelection:
+        probability: 0.5
 
 spatial selection:
- # None
+    # None
 
-
-    
 auxiliary samplers:
+    NormalAuxSampler:
+        name: test
+        observed: False
+        mu: 0
+        sigma: 1
+        selection:
+        secondary: 
+        init variables:
 
-  NormalAuxSampler:
-    name: test
-    observed: False
-    mu: 0
-    sigma: 1
-    selection: 
-    secondary:
-    init variables:
+    DemoSampler:
+        name: demo
+        observed: False
+        selection:
+            UnitySelection:
 
-  DemoSampler:
-    name: demo
-    observed: False
-    selection:
-      UnitySelection:
-
-
-  DemoSampler2:
-    name: demo2
-    observed: False
-    selection:
-    secondary: demo
-
-        
-
-
+    DemoSampler2:
+        name: demo2
+        observed: True
+        selection:
+        secondary: [demo, test]

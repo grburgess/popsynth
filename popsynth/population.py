@@ -1,5 +1,5 @@
 import importlib
-from typing import List, Type
+from typing import Any, Dict, List, Optional, Type
 
 import h5py
 import ipyvolume as ipv
@@ -46,19 +46,19 @@ class Population(object):
         flux_sigma: float,
         r_max: float,
         n_model: int,
-        lf_params: dict,
-        spatial_params: dict = None,
-        model_spaces=None,
+        lf_params: Dict[str, Any],
+        spatial_params: Optional[Dict[str, Any]] = None,
+        model_spaces: Optional[ArrayLike] = None,
         seed: int = 1234,
-        name: str = None,
-        spatial_form: dict = None,
-        lf_form: dict = None,
-        auxiliary_quantities: dict = None,
-        truth: dict = {},
-
-        graph=None,
+        name: Optional[str] = None,
+        spatial_form: Optional[Dict[str, Any]] = None,
+        lf_form: Optional[Dict[str, Any]] = None,
+        auxiliary_quantities: Optional[Dict[str, Any]] = None,
+        truth: Dict[str, float] = {},
+        graph: Optional[Dict[str, Any]] = None,
         theta=None,
         phi=None,
+        pop_synth: Optional[Dict[str, Any]] = None
     ) -> None:
         """
         A population containing all the simulated variables
@@ -135,6 +135,8 @@ class Population(object):
         self._n_objects = len(selection)  # type: int
         self._n_detections = sum(self._selection)  # type: int
         self._n_non_detections = self._n_objects - self._n_detections  # type: int
+
+        self._pop_synth: Optional[Dict[str, Any]] = pop_synth
 
         if self._n_detections == 0:
 
@@ -493,6 +495,10 @@ class Population(object):
         recursively_save_dict_contents_to_group(
             f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph)))
 
+        recursively_save_dict_contents_to_group(f, "popsynth", self._pop_synth)
+
+        # now store the popsymnth
+
     @classmethod
     def from_file(cls, file_name):
         """
@@ -604,6 +610,8 @@ class Population(object):
             clean_graph_dict(
                 recursively_load_dict_contents_from_group(f, "graph")))
 
+        pop_synth = recursively_load_dict_contents_from_group(f, "popsynth")
+
         return cls(
             luminosities=luminosities,
             distances=distances,
@@ -628,6 +636,7 @@ class Population(object):
             graph=graph,
             theta=theta,
             phi=phi,
+            pop_synth=pop_synth
         )
 
     def to_sub_population(self, observed: bool = True) -> "Population":

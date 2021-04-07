@@ -120,23 +120,33 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
 
                 log.info(f"{self.name} is sampling its secondary quantities")
 
-            if self._uses_distance:
-                self._selector.set_distance(self._distance)
+            self._selector.set_distance(self._distance)
 
-            if self._uses_luminosity:
+            try:
+
                 self._selector.set_luminosity(self._luminosity)
+
+            except(AttributeError):
+
+                log.debug("tried to set luminosity, but could not")
+
+                pass
 
             for k, v in self._secondary_samplers.items():
 
-                assert v.is_secondary, "Tried to sample a non-secondary, this is a bug"
+                if not v.is_secondary:
+
+                    log.error("Tried to sample a non-secondary, this is a bug")
+
+                    raise RuntimeError()
 
                 # we do not allow for the secondary
                 # quantities to derive a luminosity
                 # as it should be the last thing dervied
 
-                if v.uses_distance or v.uses_sky_position:
+                log.debug(f"{k} will have it spatial values set")
 
-                    v.set_spatial_values(self._spatial_values)
+                v.set_spatial_values(self._spatial_values)
 
                 v.draw(size=size)
 

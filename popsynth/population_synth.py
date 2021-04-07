@@ -177,6 +177,17 @@ class PopulationSynth(object, metaclass=ABCMeta):
     def write_to(self, file_name: str) -> None:
         """
         write the population synth to a file
+        :param file_name: the file name of the output yaml
+
+        """
+        with open(file_name, "w") as f:
+
+            yaml.dump(stream=f, data=self.to_dict(),
+                      default_flow_style=False, Dumper=yaml.SafeDumper)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        convert the population synth to a dictionary
         """
 
         output: Dict[str, Any] = {}
@@ -206,7 +217,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             flux_selection = {}
 
-            flux_selection[self._flux_selector._selection_name] = {}
+            flux_selection[self._flux_selector._selection_name] = self._flux_selector.parameters
 
             output["flux selection"] = flux_selection
 
@@ -214,9 +225,17 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             distance_selection = {}
 
-            distance_selection[self._distance_selector._selection_name] = {}
+            distance_selection[self._distance_selector._selection_name] = self._distance_selector.parameters
 
             output["distance selection"] = distance_selection
+
+        if self._spatial_selector is not None:
+
+            spatial_selection = {}
+
+            spatial_selection[self._spatial_selector._selection_name] = self._spatial_selector.parameters
+
+            output["spatial selection"] = spatial_selection
 
         aux_samplers = {}
 
@@ -225,22 +244,32 @@ class PopulationSynth(object, metaclass=ABCMeta):
             tmp = {}
 
             tmp["name"] = v.name
-            tmp["observed"] = v.is_observed
+            tmp["observed"] = v.observed
 
-            for k2, v2 in tmp.truth.items():
+            for k2, v2 in v.truth.items():
 
                 tmp[k2] = v2
 
             tmp["secondary"] = list(v.secondary_samplers.keys())
 
+            selection = {}
+            selection[v.selector._selection_name] = v.selector.parameters
+
+            tmp["selection"] = selection
+
             aux_samplers[v._auxiliary_sampler_name] = tmp
 
+        output["auxiliary samplers"] = aux_samplers
+
+        return output
+
     @classmethod
-    def from_file(self, file_name: str) -> "PopulationSynth":
+    def from_dict(cls, input: Dict[str, Any]) -> "PopulationSynth":
+        """
+        build a PopulationSynth object from a dictionary
 
-        with open(file_name) as f:
-
-            input: Dict[str, Any] = yaml.load(f, Loader=yaml.SafeLoader)
+        :param input: the dictionary from which to build
+        """
 
         if "luminosity distribution" in input:
 
@@ -302,7 +331,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         # create the poopulation synth
 
-        pop_synth: PopulationSynth = PopulationSynth(
+        pop_synth: PopulationSynth = cls(
             spatial_distribtuion, luminosity_distribution=luminosity_distribtuion, seed=seed)
 
         # if there is a flux selection
@@ -411,13 +440,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     log.debug(f"trying to set {k} to {v}")
 
                     for x in ss.__class__.mro():
-                    
+
                         if k in x.__dict__:
 
                             setattr(ss, k, float(v))
 
                             break
-                            
+
                 pop_synth.add_spatial_selector(ss)
 
         # Now collect the auxiliary samplers
@@ -447,7 +476,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     selection = None
 
                 if "secondary" in v:
-                    secondary = v.pop("secondary")
+                    secondary = list(np.atleast_1d(v.pop("secondary")))
 
                 else:
 
@@ -522,13 +551,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     log.debug(f"trying to set {k} to {v}")
 
                     for x in tmp.__class__.mro():
-                    
+
                         if k in x.__dict__:
 
                             setattr(tmp, k, float(v))
 
                             break
-                            
+
                     log.debug(f"{tmp.truth}")
 
                 if selection is not None:
@@ -577,20 +606,28 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         log.debug(f"have {list(aux_samplers.keys())} as aux samplers")
 
-        for primary, secondary in secondary_samplers.items():
+        for primary, secondaries in secondary_samplers.items():
 
-            # assign it
-            aux_samplers[primary].set_secondary_sampler(
-                aux_samplers[secondary])
+            for secondary in secondaries:
+
+                if secondary is None:
+
+                    break
+
+                # assign it
+                aux_samplers[primary].set_secondary_sampler(
+                    aux_samplers[secondary])
 
         # now we need to pop all the secondaries from the main
         # list so that we do not double add
 
-        for secondary in list(secondary_samplers.values()):
+        for secondaries in list(secondary_samplers.values()):
 
-            if secondary in aux_samplers:
+            for secondary in secondaries:
 
-                aux_samplers.pop(secondary)
+                if secondary in aux_samplers:
+
+                    aux_samplers.pop(secondary)
 
         # now we add the observed quantites on
 
@@ -599,6 +636,19 @@ class PopulationSynth(object, metaclass=ABCMeta):
             pop_synth.add_observed_quantity(v)
 
         return pop_synth
+
+    @classmethod
+    def from_file(cls, file_name: str) -> "PopulationSynth":
+        """
+        read the population in from a yaml file
+
+        :param file_name: the file name of the population synth
+        """
+        with open(file_name) as f:
+
+            input: Dict[str, Any] = yaml.load(f, Loader=yaml.SafeLoader)
+
+        return cls.from_dict(input)
 
     @property
     def spatial_distribution(self) -> SpatialDistribution:
@@ -1088,8 +1138,6 @@ class PopulationSynth(object, metaclass=ABCMeta):
         # if distance_probability is None:
         #     distance_probability = 1.0
 
-        distance_probability = 1.
-
         return Population(
             luminosities=luminosities,
             distances=distances,
@@ -1114,6 +1162,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             graph=self.graph,
             theta=self._spatial_distribution.theta,
             phi=self._spatial_distribution.phi,
+            pop_synth=self.to_dict()
         )
 
     def display(self) -> None:
