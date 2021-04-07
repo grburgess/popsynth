@@ -33,7 +33,7 @@ import popsynth
 popsynth.update_logging_level("INFO")
 
 import networkx as nx
-
+import numpy as np
 import warnings
 warnings.simplefilter('ignore')
 ```
