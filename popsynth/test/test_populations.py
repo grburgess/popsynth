@@ -119,7 +119,8 @@ class Popbuilder(object):
         self.d2 = DemoSampler2()
         self.d2.set_secondary_sampler(self.d1)
 
-        b = popsynth.BernoulliSelection(probability=0.5)
+        b = popsynth.BernoulliSelection()
+        b.probability = 0.5
 
         self.d2.set_selection_probability(b)
 
@@ -129,7 +130,8 @@ class Popbuilder(object):
 
     def draw_hard(self):
 
-        s = popsynth.HardFluxSelection(boundary=1e-6)
+        s = popsynth.HardFluxSelection()
+        s.boundary = 1e-6
 
         self.pop_gen.set_flux_selection(s)
 
@@ -161,7 +163,8 @@ class Popbuilder(object):
 
     def draw_none(self):
 
-        s = popsynth.HardFluxSelection(boundary=1e999)
+        s = popsynth.HardFluxSelection()
+        s.boundary = 1e999
 
         self.pop_gen.set_flux_selection(s)
 
@@ -175,7 +178,9 @@ class Popbuilder(object):
 
     def draw_soft(self):
 
-        s = popsynth.SoftFluxSelection(1e-4, 10)
+        s = popsynth.SoftFluxSelection()
+        s.boundary = 1e-4
+        s.strength = 10
 
         self.pop_gen.set_flux_selection(s)
 
@@ -189,8 +194,11 @@ class Popbuilder(object):
 
     def draw_z_select(self):
 
-        s1 = popsynth.BernoulliSelection(probability=0.5)
-        s2 = popsynth.SoftFluxSelection(1e-6, 10)
+        s1 = popsynth.BernoulliSelection()
+        s1.probability = 0.5
+        s2 = popsynth.SoftFluxSelection()
+        s2.boundary = 1e-6
+        s2.strength = 10
 
         self.pop_gen.set_distance_selection(s1)
         self.pop_gen.set_flux_selection(s2)
@@ -204,7 +212,8 @@ class Popbuilder(object):
 
     def draw_hard_with_selector(self):
 
-        selector = popsynth.HardFluxSelection(boundary=1e-4)
+        selector = popsynth.HardFluxSelection()
+        selector.boundary = 1e-4
 
         self.pop_gen.set_flux_selection(selector)
 
@@ -216,7 +225,9 @@ class Popbuilder(object):
 
     def draw_soft_with_selector(self):
 
-        selector = popsynth.SoftFluxSelection(boundary=1e-4, strength=10)
+        selector = popsynth.SoftFluxSelection()
+        selector.boundary = 1e-4
+        selector.strength = 10
 
         self.pop_gen.set_flux_selection(selector)
 
@@ -244,7 +255,7 @@ class Popbuilder(object):
             # self.d2 = DemoSampler2()
             # self.d2.set_secondary_sampler(self.d1)
 
-            # b = popsynth.BernoulliSelection(probability=0.5)
+            # b = popsynth.BernoulliSelection()
 
 #            self.d2.set_selection_probability(b)
 
@@ -276,8 +287,6 @@ class Popbuilder(object):
 
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
-        assert population_reloaded.hard_cut
-
         os.remove("_saved_pop.h5")
 
         #####################
@@ -306,10 +315,6 @@ class Popbuilder(object):
 
         assert sub_pop.n_objects == sum(~pop.selection)
 
-        assert not population_reloaded.hard_cut
-
-        assert population_reloaded.distance_probability == 1.0
-
         os.remove("_saved_pop.h5")
 
         #####################
@@ -325,8 +330,6 @@ class Popbuilder(object):
 
         pop.writeto("_saved_pop.h5")
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
-
-        #assert population_reloaded.distance_probability < 1.0
 
         os.remove("_saved_pop.h5")
 
@@ -406,8 +409,6 @@ class Popbuilder(object):
 
         population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
-        assert population_reloaded.boundary == 1e-4
-
         os.remove("_saved_pop.h5")
 
         #####################
@@ -425,8 +426,6 @@ class Popbuilder(object):
         # population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
 
         # assert population_reloaded.boundary == 1e-4
-
-        # assert population_reloaded.distance_probability == 1.0
 
         # os.remove("_saved_pop.h5")
 
