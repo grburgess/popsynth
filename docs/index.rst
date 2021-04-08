@@ -32,10 +32,6 @@ selection functions.
    :hidden:
 
    notebooks/quickstart
-   notebooks/aux
-   notebooks/selections
-   notebooks/custom
-   notebooks/milkyway
 
       
 Indices and tables
