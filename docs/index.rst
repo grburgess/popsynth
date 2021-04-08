@@ -35,7 +35,7 @@ selection functions.
     notebooks/selections.ipynb
     notebooks/aux.ipynb
     notebooks/custom.ipynb
-    notbooks/milkyway.ipynb
+    notebooks/milkyway.ipynb
       
 Indices and tables
 ==================
