@@ -29,6 +29,7 @@ jobs:
         run: |
 
           jupytext --to ipynb --pipe black --execute docs/md/*.md
+          mkdir docs/notebooks
           mv docs/md/*.ipynb docs/notebooks/
           ls docs/notebooks
 
