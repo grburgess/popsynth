@@ -59,13 +59,14 @@ def run_apidoc(app):
 extensions = [
     'nbsphinx', 'sphinx.ext.autodoc', 'sphinx.ext.mathjax',
     'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.githubpages',
-    'sphinx.ext.napoleon', 'rtds_action'
+    'sphinx.ext.napoleon',
+    #'rtds_action'
 ]
 
 napoleon_google_docstring = True
 napoleon_use_param = False
 
-# The name of your GitHub repository
+# # The name of your GitHub repository
 rtds_action_github_repo = "grburgess/popsynth"
 
 # The path where the artifact should be extracted
@@ -77,6 +78,10 @@ rtds_action_artifact_prefix = "notebooks-for-"
 
 # A GitHub personal access token is required, more info below
 rtds_action_github_token = os.environ["GITHUB_TOKEN"]
+
+
+rtds_action_error_if_missing = True
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
