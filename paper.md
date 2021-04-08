@@ -83,6 +83,7 @@ Documentation for `popsynth` can be found [here](https://popsynth.readthedocs.io
 
 
 # Acknowledgments
+
 This project was inspired by conversations with Daniel J. Mortlock
 wherein we tried to calibrate an analysis method we will eventually
 get around to finishing. Inspiration also came from wanting to
