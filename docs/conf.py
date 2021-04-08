@@ -113,8 +113,6 @@ html_static_path = ['_static']
 #     'css/custom.js',
 # ]
 
-html_static_path = ["_static"]
-
 html_show_sourcelink = False
 html_favicon = "media/favicon.ico"
 
@@ -173,21 +171,7 @@ html_logo = 'media/logo.png'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
 
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
 }
 
 master_doc = 'index'
@@ -215,3 +199,5 @@ texinfo_documents = [
     (master_doc, 'popsynth', u'popsynth Documentation', author, 'popsynth',
      'One line description of project.', 'Miscellaneous'),
 ]
+def setup(app):
+    app.connect("builder-inited", run_apidoc)
