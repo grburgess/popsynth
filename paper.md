@@ -5,9 +5,9 @@ tags:
   - astronomy
   - population synthesis
   - cosmology
-authors:0000-0003-3345-9515
+authors:
   - name: J. Michael Burgess
-    orcid: 0000-0003-0872-7098
+    orcid: 0000-0003-3345-9515
     affiliation: "1, 2"
 bibliography: paper.bib
 affiliations:
@@ -16,7 +16,6 @@ affiliations:
  - name: Alexander von Humboldt Research Fellow
    index: 2
 date: "07 April 2021"
-
 ---
 
 # Summary
