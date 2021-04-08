@@ -327,7 +327,3 @@ population = pop_gen.draw_survey( flux_sigma= 0.1)
 ```python
 population.display_fluxes(obs_color=green, true_color=red,s=15);
 ```
-
-```python
-
-```

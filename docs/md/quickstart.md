@@ -356,7 +356,3 @@ pop.pop_synth
 ```
 
 Therefore we always know exactly how we simulated our data.
-
-```python
-
-```

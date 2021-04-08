@@ -86,6 +86,3 @@ ax.set(xlabel="log10 fluxes", ylabel="dummy")
 ax.legend()
 ```
 
-```python
-
-```
