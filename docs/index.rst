@@ -28,7 +28,7 @@ selection functions.
 .. _music: https://open.spotify.com/playlist/601WLbJ3Vj91XIugGUJNUe?si=JuXYC9roSxm2PS51aqVaJw
 
 .. toctree::
-   :maxdepth: 7
+   :maxdepth: 3
    :hidden:
 
    notebooks/quickstart
