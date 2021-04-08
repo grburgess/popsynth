@@ -8,18 +8,14 @@ tags:
 authors:0000-0003-3345-9515
   - name: J. Michael Burgess
     orcid: 0000-0003-0872-7098
-    affiliation: "1, 2" # 
-  
+    affiliation: "1, 2"
 affiliations:
  - name: Max Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, 85741 Garching, Germany
    index: 1
  - name: Alexander von Humboldt Research Fellow
    index: 2
-
 date: 07 April 2021
 bibliography: paper.bib
-
-
 ---
 
 # Summary
@@ -64,12 +60,12 @@ total rate of objects in the populations.
 
 
 
-\begin{equation}\label{eq:fourier}
+\begin{equation}\label{eq:totalrate}
 N=\int_{0}^{r^{\prime}} \mathrm{d} r \frac{\mathrm{d} V}{\mathrm{~d} r} \lambda(r ; \vec{\psi})=\Lambda(\vec{\psi})
 \end{equation}
 
 
-and refer to \autoref{eq:fourier} from text.
+and refer to \autoref{eq:totalrate} from text.
 
 
 A survey is created by
@@ -83,7 +79,7 @@ object that can be serialized to disk for later examination.
 
 # Documentation
 
-Documentation for `popsynth` can be found [here](https://popsynth.readthedocs.io/)
+Documentation for `popsynth` can be found [here](https://popsynth.readthedocs.io/).
 
 
 # Acknowledgments
