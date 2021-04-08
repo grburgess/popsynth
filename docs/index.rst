@@ -20,8 +20,7 @@ etc. distributions which can all be connected to arbitrarily complex
 selection functions.
 
 
-.. note:: This is *not* Synth Pop. If you were expecting that… I suggest
-you check out Depeche Mode. Though, it is possible to combine coding and good music_.
+.. note:: This is *not* Synth Pop. If you were expecting that… I suggest you check out Depeche Mode. Though, it is possible to combine coding and good music_.
 
 
 .. image:: ../external/pop.gif
@@ -30,8 +29,8 @@ you check out Depeche Mode. Though, it is possible to combine coding and good mu
 
 .. toctree::
    :maxdepth: 7
+   :hidden:
 
-   notebooks/intro
    notebooks/quickstart
    notebooks/aux
    notebooks/selections
