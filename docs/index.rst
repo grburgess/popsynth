@@ -30,15 +30,14 @@ selection functions.
 
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 5
     :hidden:
-
+    
     notebooks/quickstart.ipynb
     notebooks/selections.ipynb
     notebooks/aux.ipynb
     notebooks/custom.ipynb
     notebooks/milkyway.ipynb
-
       
 Indices and tables
 ==================
