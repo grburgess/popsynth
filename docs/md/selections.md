@@ -15,10 +15,10 @@ jupyter:
 
 ## Selections
 
-Selections on parameters including flux, distance and any auxiliary variables, can be performed in arbitrarily complex way.
-We are familiar now with how to add selections onto fluxes and distances, now we will examine in more detail.
-
-
+Selections on parameters including flux, distance and any auxiliary
+variables, can be performed in arbitrarily complex way.  We are
+familiar now with how to add selections onto fluxes and distances, now
+we will examine in more detail.
 
 
 ## built in selection functions
@@ -35,7 +35,8 @@ popsynth.loud_mode()
 popsynth.list_available_selection_functions()
 ```
 
-We can use these to set selections on parameters. Let's add a dummy parameter that is sampled from a normal distribution:
+We can use these to set selections on parameters. Let's add a dummy
+parameter that is sampled from a normal distribution:
 
 ```python
 aux_parameter = popsynth.NormalAuxSampler(name="dummy",observed=False)
@@ -45,7 +46,9 @@ aux_parameter.sigma = 1
 
 ```
 
-Now we will use the built in Box selection function. Here, we will assign it to an auxiliary sampler, so we need to tell it to select on the observed value:
+Now we will use the built in Box selection function. Here, we will
+assign it to an auxiliary sampler, so we need to tell it to select on
+the observed value:
 
 ```python
 box_select = popsynth.BoxSelection(name="aux_selector", use_obs_value=True)

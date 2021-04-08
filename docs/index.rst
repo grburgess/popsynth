@@ -32,8 +32,8 @@ selection functions.
    :hidden:
 
    notebooks/quickstart
-   notebooks/aux
    notebooks/selections
+   notebooks/aux
    notebooks/custom
    notebooks/milkyway
 
