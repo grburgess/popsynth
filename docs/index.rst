@@ -27,8 +27,6 @@ selection functions.
 
 .. _music: https://open.spotify.com/playlist/601WLbJ3Vj91XIugGUJNUe?si=JuXYC9roSxm2PS51aqVaJw
 
-
-
 .. toctree::
     :maxdepth: 5
     :hidden:
@@ -37,7 +35,7 @@ selection functions.
     notebooks/selections.ipynb
     notebooks/aux.ipynb
     notebooks/custom.ipynb
-    notebooks/milkyway.ipynb
+    notbooks/milkyway.ipynb
       
 Indices and tables
 ==================
