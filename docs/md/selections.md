@@ -12,8 +12,7 @@ jupyter:
     language: python
     name: python3
 ---
-
-## Selections
+# Selections
 
 Selections on parameters including flux, distance and any auxiliary
 variables, can be performed in arbitrarily complex way.  We are
