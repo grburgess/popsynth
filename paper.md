@@ -5,17 +5,17 @@ tags:
   - astronomy
   - population synthesis
   - cosmology
-authors:0000-0003-3345-9515
+authors:
   - name: J. Michael Burgess
-    orcid: 0000-0003-0872-7098
+    orcid: 0000-0003-3345-9515
     affiliation: "1, 2"
+bibliography: paper.bib
 affiliations:
  - name: Max Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, 85741 Garching, Germany
    index: 1
  - name: Alexander von Humboldt Research Fellow
    index: 2
-date: 07 April 2021
-bibliography: paper.bib
+date: "07 April 2021"
 ---
 
 # Summary
@@ -83,6 +83,7 @@ Documentation for `popsynth` can be found [here](https://popsynth.readthedocs.io
 
 
 # Acknowledgments
+
 This project was inspired by conversations with Daniel J. Mortlock
 wherein we tried to calibrate an analysis method we will eventually
 get around to finishing. Inspiration also came from wanting to
