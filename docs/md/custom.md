@@ -31,16 +31,19 @@ The population samplers rely on distributions. Each population has an internal s
 import numpy as np
 import matplotlib.pyplot as plt
 from jupyterthemes import jtplot
-jtplot.style(context='notebook', fscale=1, grid=False)
+
+jtplot.style(context="notebook", fscale=1, grid=False)
 green = "#1DEBA6"
 red = "#FF0059"
 yellow = "#F6EF5B"
 
 
 import popsynth
+
 popsynth.update_logging_level("INFO")
 import warnings
-warnings.simplefilter('ignore')
+
+warnings.simplefilter("ignore")
 ```
 
 ```python
@@ -48,21 +51,27 @@ from popsynth.distribution import SpatialDistribution
 
 
 class MySphericalDistribution(SpatialDistribution):
-    
-    # we need this property to register the class
-    
-    _distribution_name = "MySphericalDistribution"
-    def __init__(self, seed=1234, form=None,):
 
-        
-         # the latex formula for the ditribution
+    # we need this property to register the class
+
+    _distribution_name = "MySphericalDistribution"
+
+    def __init__(
+        self,
+        seed=1234,
+        form=None,
+    ):
+
+        # the latex formula for the ditribution
         form = r"4 \pi r2"
-        
+
         # we do not need a "truth" dict here because
         # there are no parameters
-        
+
         super(MySphericalDistribution, self).__init__(
-         seed=seed, name='sphere', form=form,
+            seed=seed,
+            name="sphere",
+            form=form,
         )
 
     def differential_volume(self, r):
@@ -74,13 +83,12 @@ class MySphericalDistribution(SpatialDistribution):
 
         # luminosity to flux
         return L / (4.0 * np.pi * r * r)
-    
-    def dNdV(self, r):
-        
-        # define some crazy change in the number/volume for fun
-        
-        return 10./(r+1)**2
 
+    def dNdV(self, r):
+
+        # define some crazy change in the number/volume for fun
+
+        return 10.0 / (r + 1) ** 2
 ```
 
 <!-- #region -->
@@ -96,24 +104,24 @@ from popsynth.distribution import LuminosityDistribution, DistributionParameter
 
 class MyParetoDistribution(LuminosityDistribution):
     _distribution_name = "MyParetoDistribution"
-    
+
     Lmin = DistributionParameter(default=1, vmin=0)
     alpha = DistributionParameter(default=2)
-    
-    def __init__(self, seed=1234, name="pareto"):
 
+    def __init__(self, seed=1234, name="pareto"):
 
         # the latex formula for the ditribution
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
-        
-        
+
         super(MyParetoDistribution, self).__init__(
-            seed=seed, name='pareto', form=lf_form,
+            seed=seed,
+            name="pareto",
+            form=lf_form,
         )
 
     def phi(self, L):
-        
-        # the actual function, only for plotting 
+
+        # the actual function, only for plotting
 
         out = np.zeros_like(L)
 
@@ -126,7 +134,6 @@ class MyParetoDistribution(LuminosityDistribution):
     def draw_luminosity(self, size=1):
         # how to sample the latent parameters
         return (np.random.pareto(self.alpha, size) + 1) * self.Lmin
-        
 ```
 
 ## Creating a population synthesizer
@@ -136,31 +143,32 @@ Now that we have defined our distributions, we can create a population synthesiz
 ```python
 from popsynth.population_synth import PopulationSynth
 
+
 class MyPopulation(PopulationSynth):
     def __init__(self, Lmin, alpha, r_max=5, seed=1234):
-        
+
         # instantiate the distributions
         luminosity_distribution = MyParetoDistribution(seed=seed)
-        
+
         luminosity_distribution.alpha = alpha
         luminosity_distribution.Lmin = Lmin
-        
+
         spatial_distribution = MySphericalDistribution(seed=seed)
         spatial_distribution.r_max = r_max
-        
+
         # pass to the super class
-        super(MyPopulation, self).__init__(         
+        super(MyPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
             luminosity_distribution=luminosity_distribution,
-            seed=seed
+            seed=seed,
         )
 ```
 
 ```python
-my_pop_gen = MyPopulation(Lmin=1,alpha=1,r_max=10)
+my_pop_gen = MyPopulation(Lmin=1, alpha=1, r_max=10)
 
-flux_selector= popsynth.HardFluxSelection()
-flux_selector.boundary=1e-2
+flux_selector = popsynth.HardFluxSelection()
+flux_selector.boundary = 1e-2
 
 my_pop_gen.set_flux_selection(flux_selector)
 
@@ -168,5 +176,9 @@ population = my_pop_gen.draw_survey()
 ```
 
 ```python
-fig = population.display_obs_fluxes_sphere(cmap='viridis',s=50);
+fig = population.display_obs_fluxes_sphere(cmap="viridis", s=50)
+```
+
+```python
+
 ```

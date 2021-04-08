@@ -13,7 +13,6 @@ jupyter:
     name: python3
 ---
 
-
 # Quick start
 
 A simple example of simulating a population via the built-in populations provided.
@@ -24,19 +23,22 @@ A simple example of simulating a population via the built-in populations provide
 
 import matplotlib.pyplot as plt
 from jupyterthemes import jtplot
-jtplot.style(context='notebook', fscale=1, grid=False)
+
+jtplot.style(context="notebook", fscale=1, grid=False)
 green = "#1DEBA6"
 red = "#FF0059"
 yellow = "#F6EF5B"
 
 
 import popsynth
+
 popsynth.update_logging_level("INFO")
 
 import networkx as nx
 import numpy as np
 import warnings
-warnings.simplefilter('ignore')
+
+warnings.simplefilter("ignore")
 ```
 
 ## A spherically homogenous population with a pareto luminosity function
@@ -44,11 +46,10 @@ warnings.simplefilter('ignore')
 **popsynth** comes with several types of populations preloaded. To create a population synthesizer, one simply instantiates the population form the **popsynth.populations** module.
 
 ```python
-homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(Lambda=5, # the density normalization
-                                                                              Lmin=1, # lower bound on the LF
-                                                                              alpha=2.) # index of the LF
+homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
+    Lambda=5, Lmin=1, alpha=2.0  # the density normalization  # lower bound on the LF
+)  # index of the LF
 homo_pareto_synth.display()
-
 ```
 
 
@@ -56,18 +57,11 @@ homo_pareto_synth.display()
 # we can also display a graph of the object
 
 
-options = {
-'node_color':green,
-'node_size': 2000,
-'width': .5}
+options = {"node_color": green, "node_size": 2000, "width": 0.5}
 
-pos=nx.drawing.nx_agraph.graphviz_layout(
-        homo_pareto_synth.graph, prog='dot'
-    )
-    
-nx.draw(homo_pareto_synth.graph, with_labels=True,pos=pos, **options)
+pos = nx.drawing.nx_agraph.graphviz_layout(homo_pareto_synth.graph, prog="dot")
 
-
+nx.draw(homo_pareto_synth.graph, with_labels=True, pos=pos, **options)
 ```
 
 
@@ -78,16 +72,14 @@ We can now sample from this population with the **draw_survey** function, but fi
 
 ```python
 flux_selector = popsynth.HardFluxSelection()
-flux_selector.boundary=1E-2
+flux_selector.boundary = 1e-2
 
 homo_pareto_synth.set_flux_selection(flux_selector)
-
 ```
 
 
 ```python
-population = homo_pareto_synth.draw_survey(
-    flux_sigma= 0.1)
+population = homo_pareto_synth.draw_survey(flux_sigma=0.1)
 ```
 
 We now have created a population. How did we get here?
@@ -109,13 +101,13 @@ We could have specified a soft cutoff (an inverse logit) with logarithmic with a
 ```python
 homo_pareto_synth.clean()
 flux_selector = popsynth.SoftFluxSelection()
-flux_selector.boundary=1E-2
-flux_selector.strength=10
+flux_selector.boundary = 1e-2
+flux_selector.strength = 10
 
 
 homo_pareto_synth.set_flux_selection(flux_selector)
 
-population = homo_pareto_synth.draw_survey( flux_sigma= 0.1)
+population = homo_pareto_synth.draw_survey(flux_sigma=0.1)
 ```
 
 ## The Population Object
@@ -123,16 +115,16 @@ population = homo_pareto_synth.draw_survey( flux_sigma= 0.1)
 The population object stores all the information about the sampled survey. This includes information on the latent parameters, measured parameters, and distances for both the selected and non-selected objects.
 
 
-We can have a look at the flux-distance distribution from the survey. Here, pink dots are the *latent* flux value, i.e., without observational noise, and green dots are the *measured values for the *selected* objects. Arrows point from the latent to measured values. 
+We can have a look at the flux-distance distribution from the survey. Here, pink dots are the *latent* flux value, i.e., without observational noise, and green dots are the *measured values for the *selected* objects. Arrows point from the latent to measured values.
 
 ```python
-population.display_fluxes(obs_color=green, true_color=red);
+population.display_fluxes(obs_color=green, true_color=red)
 ```
 
 For fun, we can display the fluxes on in a simulated universe in 3D
 
 ```python
-fig = population.display_obs_fluxes_sphere();
+fig = population.display_obs_fluxes_sphere()
 ```
 
 The population object stores a lot of information. For example, an array of selection booleans:
@@ -160,11 +152,11 @@ population.truth
 ```
 
 ```python
-population.writeto('saved_pop.h5')
+population.writeto("saved_pop.h5")
 ```
 
 ```python
-reloaded_population = popsynth.Population.from_file('saved_pop.h5')
+reloaded_population = popsynth.Population.from_file("saved_pop.h5")
 ```
 
 ```python
@@ -218,8 +210,8 @@ spatial selection:
 
 
 # all the auxiliary functions
-# these must be known to the 
-# registry at run time if 
+# these must be known to the
+# registry at run time if
 # the are custom!
 
 auxiliary samplers:
@@ -229,7 +221,7 @@ auxiliary samplers:
         mu: 0
         sigma: 1
         selection:
-        secondary: 
+        secondary:
         init variables:
 
     DemoSampler:
@@ -287,20 +279,23 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
 
         secondary = self._secondary_samplers["demo"]
 
-        self._true_values = ((np.random.normal(self.mu, self.tau, size=size)) +
-                             secondary.true_values -
-                             np.log10(1 + self._distance))
+        self._true_values = (
+            (np.random.normal(self.mu, self.tau, size=size))
+            + secondary.true_values
+            - np.log10(1 + self._distance)
+        )
 
     def observation_sampler(self, size):
 
         self._obs_values = self._true_values + np.random.normal(
-            0, self.sigma, size=size)
+            0, self.sigma, size=size
+        )
 
     def compute_luminosity(self):
 
         secondary = self._secondary_samplers["demo"]
 
-        return (10**(self._true_values + 54)) / secondary.true_values
+        return (10 ** (self._true_values + 54)) / secondary.true_values
 ```
 
 ### Load the file
@@ -313,24 +308,16 @@ ps = popsynth.PopulationSynth.from_file(my_file)
 ```
 
 ```python
-options = {
-'node_color':green,
-'node_size': 2000,
-'width': .5}
+options = {"node_color": green, "node_size": 2000, "width": 0.5}
 
-pos=nx.drawing.nx_agraph.graphviz_layout(
-        ps.graph, prog='dot'
-    )
-    
-nx.draw(ps.graph, with_labels=True,pos=pos, **options)
+pos = nx.drawing.nx_agraph.graphviz_layout(ps.graph, prog="dot")
 
-
-
+nx.draw(ps.graph, with_labels=True, pos=pos, **options)
 ```
 
 
 <!-- #region -->
-We can see that our population was created correctly for us. 
+We can see that our population was created correctly for us.
 
 
 Now, this means we can easily pass populations around to our collaborators for testing
@@ -357,3 +344,7 @@ pop.pop_synth
 ```
 
 Therefore we always know exactly how we simulated our data.
+
+```python
+
+```
