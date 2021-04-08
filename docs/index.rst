@@ -31,11 +31,11 @@ selection functions.
    :maxdepth: 3
    :hidden:
 
-   notebooks/quickstart
-   notebooks/selections
-   notebooks/aux
-   notebooks/custom
-   notebooks/milkyway
+   notebooks/quickstart.ipynb
+   notebooks/selections.ipynb
+   notebooks/aux.ipynb
+   notebooks/custom.ipynb
+   notebooks/milkyway.ipynb
 
       
 Indices and tables

@@ -29,11 +29,10 @@ There are several available selection functions:
 import matplotlib.pyplot as plt
 import numpy as np
 
-%matplotlib notebook
+%matplotlib inline
 
 import popsynth
 
-popsynth.loud_mode()
 popsynth.list_available_selection_functions()
 ```
 
@@ -94,8 +93,4 @@ ax.scatter(
 
 ax.set(xlabel="log10 fluxes", ylabel="dummy")
 ax.legend()
-```
-
-```python
-
 ```
