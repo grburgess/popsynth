@@ -30,6 +30,7 @@ selection functions.
 .. toctree::
    :maxdepth: 3
    :hidden:
+
    notebooks/quickstart
    notebooks/selections
    notebooks/aux
