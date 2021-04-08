@@ -51,7 +51,7 @@ property when generating a population is vital to the calibration of
 any survey analysis method which operates on an incomplete sample.
 
 Similar frameworks exist for simulating data from specific catalogs
-such as `SkyPy` [@skypy] and `firesong` [@firesong], however, these
+such as `SkyPy` @skypy and `firesong` @firesong, however, these
 have a much more focused application and do not include the ability to
 impose selection functions.
 
@@ -66,7 +66,6 @@ total rate of objects in the populations.
 
 \begin{equation}\label{eq:fourier}
 N=\int_{0}^{r^{\prime}} \mathrm{d} r \frac{\mathrm{d} V}{\mathrm{~d} r} \lambda(r ; \vec{\psi})=\Lambda(\vec{\psi})
-
 \end{equation}
 
 
