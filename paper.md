@@ -9,13 +9,14 @@ authors:0000-0003-3345-9515
   - name: J. Michael Burgess
     orcid: 0000-0003-0872-7098
     affiliation: "1, 2"
+bibliography: paper.bib
 affiliations:
  - name: Max Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, 85741 Garching, Germany
    index: 1
  - name: Alexander von Humboldt Research Fellow
    index: 2
-date: 07 April 2021
-bibliography: paper.bib
+date: "07 April 2021"
+
 ---
 
 # Summary
