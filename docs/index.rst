@@ -11,16 +11,14 @@ Welcome to popsynth's documentation!
 .. toctree::
    :maxdepth: 7
 
-   notebooks/intro.ipynb
-   notebooks/quickstart.ipynb
-   notebooks/aux.ipynb
-   notebooks/selections.ipynb
-   notebooks/custom.ipynb
-   notebooks/milkyway.ipynb
+   notebooks/intro
+   notebooks/quickstart
+   notebooks/aux
+   notebooks/selections
+   notebooks/custom
+   notebooks/milkyway
 
-   
-
-   
+      
 Indices and tables
 ==================
 
