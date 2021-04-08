@@ -16,3 +16,4 @@ cython
 betagen
 tqdm
 numba
+class-registry
