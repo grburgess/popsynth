@@ -17,3 +17,4 @@ betagen
 tqdm
 numba
 class-registry
+better_apidoc
