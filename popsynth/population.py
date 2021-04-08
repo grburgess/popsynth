@@ -1006,10 +1006,10 @@ class Population(object):
             fig.controls = control
             control.autoRotate = True
             fig.render_continuous = True
-            control.autoRotate = True
-            toggle_rotate = widgets.ToggleButton(description="Rotate")
-            widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
-            r_value = toggle_rotate
+            #control.autoRotate = True
+            # toggle_rotate = widgets.ToggleButton(description="Rotate")
+            # widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
+            # r_value = toggle_rotate
 
         return fig
 

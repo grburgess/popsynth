@@ -19,6 +19,7 @@ While not entirely useful at the moment. There is support for generating simplis
 
 ```python
 import popsynth
+import ipyvolume as ipv
 popsynth.update_logging_level("INFO")
 from popsynth.populations.spatial_populations import MWRadialPopulation
 ```
@@ -38,9 +39,6 @@ population = synth.draw_survey()
 ```
 
 ```python
-fig = population.display_obs_fluxes_sphere(cmap='magma', background_color='black', size=.1);
-```
-
-```python
+fig = population.display_obs_fluxes_sphere(cmap='magma', background_color='black', size=.1)
 
 ```

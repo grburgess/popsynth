@@ -43,12 +43,13 @@ warnings.simplefilter('ignore')
 **popsynth** comes with several types of populations preloaded. To create a population synthesizer, one simply instantiates the population form the **popsynth.populations** module.
 
 ```python
-homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(Lambda=0.25, # the density normalization
+homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(Lambda=5, # the density normalization
                                                                               Lmin=1, # lower bound on the LF
                                                                               alpha=2.) # index of the LF
 homo_pareto_synth.display()
 
 ```
+
 
 ```python
 # we can also display a graph of the object
@@ -68,6 +69,7 @@ nx.draw(homo_pareto_synth.graph, with_labels=True,pos=pos, **options)
 
 ```
 
+
 ## Creating a survey
 
 
@@ -80,6 +82,7 @@ flux_selector.boundary=1E-2
 homo_pareto_synth.set_flux_selection(flux_selector)
 
 ```
+
 
 ```python
 population = homo_pareto_synth.draw_survey(
@@ -323,6 +326,7 @@ nx.draw(ps.graph, with_labels=True,pos=pos, **options)
 
 
 ```
+
 
 <!-- #region -->
 We can see that our population was created correctly for us. 

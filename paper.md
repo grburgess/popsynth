@@ -62,15 +62,14 @@ Once a rate function and all associated distributions are specified in
 `popsynth`, a numeric integral over the rate function produces the
 total rate of objects in the populations.
 
-$$\Theta(x) = \left\{\begin{array}{l}
-0\textrm{ if } x < 0\cr
-1\textrm{ else}
-\end{array}\right.$$
 
-You can also use plain \LaTeX for equations
+
 \begin{equation}\label{eq:fourier}
-\hat f(\omega) = \int_{-\infty}^{\infty} f(x) e^{i\omega x} dx
+N=\int_{0}^{r^{\prime}} \mathrm{d} r \frac{\mathrm{d} V}{\mathrm{~d} r} \lambda(r ; \vec{\psi})=\Lambda(\vec{\psi})
+
 \end{equation}
+
+
 and refer to \autoref{eq:fourier} from text.
 
 
