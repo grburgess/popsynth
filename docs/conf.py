@@ -60,7 +60,7 @@ extensions = [
     'nbsphinx', 'sphinx.ext.autodoc', 'sphinx.ext.mathjax',
     'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    #'rtds_action'
+    'rtds_action'
 ]
 
 napoleon_google_docstring = True
