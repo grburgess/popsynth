@@ -13,7 +13,7 @@ jupyter:
     name: python3
 ---
 
-# Selections
+## Selections
 
 Selections on parameters including flux, distance and any auxiliary variables, can be performed in arbitrarily complex way.
 We are familiar now with how to add selections onto fluxes and distances, now we will examine in more detail.
