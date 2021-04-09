@@ -1,5 +1,5 @@
 popsynth
-=======
+========
 
 .. toctree::
    :maxdepth: 4

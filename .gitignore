@@ -117,3 +117,4 @@ venv.bak/
 /docs/make.bat
 /auto/
 /docs/md/intro.md
+/docs/md/*.ipynb

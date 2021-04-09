@@ -135,6 +135,10 @@ class MyParetoDistribution(LuminosityDistribution):
         return (np.random.pareto(self.alpha, size) + 1) * self.Lmin
 ```
 
+<!-- #raw -->
+.. note:: If you want to create a cosmological distribution, inherit from from ComologicalDistribution class!
+<!-- #endraw -->
+
 ## Creating a population synthesizer
 
 Now that we have defined our distributions, we can create a population synthesizer that encapsulated them
