@@ -113,3 +113,7 @@ venv.bak/
 /deploy/
 /docs/.DS_Store
 /docs/notebooks/*.ipynb
+/docs/Makefile
+/docs/make.bat
+/auto/
+/docs/md/intro.md
