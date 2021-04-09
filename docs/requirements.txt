@@ -18,3 +18,4 @@ tqdm
 numba
 class-registry
 better_apidoc
+docutils==0.16

@@ -95,8 +95,8 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
 
-nbsphinx_allow_errors =True
-nbsphinx_execute = "never"
+# nbsphinx_allow_errors =True
+# nbsphinx_execute = "never"
 
 # -- Options for HTML output -------------------------------------------------
 
