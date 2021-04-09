@@ -20,8 +20,6 @@ import os
 import sys
 from pathlib import Path
 
-
-
 project = 'popsynth'
 copyright = '2019, J. Michael Burgess'
 author = 'J. Michael Burgess'
@@ -59,7 +57,7 @@ sys.path.insert(0, os.path.abspath("../"))
 extensions = [
     'nbsphinx',
     'recommonmark',
-#    'sphinx.ext.autodoc',
+    #    'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.autodoc',
