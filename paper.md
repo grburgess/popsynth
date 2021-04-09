@@ -19,13 +19,16 @@ date: "07 April 2021"
 ---
 
 # Summary
+
 Simulating a population of fluxes and redshifts (distances) from an
 astrophysical population is a routine task. `popsynth` provides a
 generic, object-oriented framework to produce synthetic surveys from
 various distributions and luminosity functions, apply selection
 functions the observed variables and store them in a portable (HDF5)
-format. Users can not only sample the luminosity and distance of the
-populations, but they can create auxiliary distributions for
+format. Population synthesis routines can be constructed either using
+classes or from a serializable YAML format allowing flexibility and
+portability. Users can not only sample the luminosity and distance of
+the populations, but they can create auxiliary distributions for
 parameters which can have arbitrarily complex dependencies on one
 another. Thus, users can simulate complex astrophysical populations
 which can be used to calibrate analysis frameworks or quickly test
@@ -38,16 +41,17 @@ populations with an easily extensible class inheritance scheme that
 allows users to adapt the code to their own needs. As understanding
 the rate functions of astrophysical populations (e.g., gravitational
 wave sources, gamma-ray bursts, active galactic nuclei) becomes an
-increasingly important field [@Loredo:2019], researchers develop various ways to
-estimate these populations from real data. `popsynth` provides a way
-to calibrate these analysis techniques by producing synthetic data
-where the inputs are known. Moreover, selection effects are an
-important part of population analysis and the ability to include this
-property when generating a population is vital to the calibration of
-any survey analysis method which operates on an incomplete sample.
+increasingly important field [@Loredo:2019], researchers develop
+various ways to estimate these populations from real data. `popsynth`
+provides a way to calibrate these analysis techniques by producing
+synthetic data where the inputs are known
+[e.g. @Mortlock:2019]. Moreover, selection effects are an important
+part of population analysis and the ability to include this property
+when generating a population is vital to the calibration of any survey
+analysis method which operates on an incomplete sample.
 
 Similar frameworks exist for simulating data from specific catalogs
-such as `SkyPy` @skypy and `firesong` @firesong, however, these
+such as `SkyPy` [@skypy] and `firesong` [@firesong], however, these
 have much more focused applications and do not include the ability to
 impose selection functions.
 
