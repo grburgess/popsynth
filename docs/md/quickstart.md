@@ -122,7 +122,7 @@ fig = population.display_fluxes(obs_color=purple, true_color=yellow)
 For fun, we can display the fluxes on in a simulated universe in 3D
 
 ```python
-fig = population.display_obs_fluxes_sphere()
+#fig = population.display_obs_fluxes_sphere()
 ```
 
 The population object stores a lot of information. For example, an array of selection booleans:
@@ -350,7 +350,3 @@ pop.pop_synth
 ```
 
 Therefore we always know exactly how we simulated our data.
-
-```python
-
-```
