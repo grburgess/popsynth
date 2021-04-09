@@ -34,8 +34,9 @@ selection functions.
     :hidden:
        
     notebooks/quickstart.ipynb
+    notebooks/distributions.ipynb
+    notebooks/custom.ipynb
     notebooks/selections.ipynb
     notebooks/aux.ipynb
-    notebooks/custom.ipynb
     notebooks/milkyway.ipynb
     api/API
