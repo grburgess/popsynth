@@ -38,4 +38,4 @@ selection functions.
     notebooks/aux.ipynb
     notebooks/custom.ipynb
     notebooks/milkyway.ipynb
-      
+    api/API
