@@ -29,7 +29,7 @@ There are several available selection functions:
 import matplotlib.pyplot as plt
 import numpy as np
 
-%matplotlib notebook
+%matplotlib inline
 
 from jupyterthemes import jtplot
 

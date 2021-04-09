@@ -24,7 +24,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
-%matplotlib notebook
+%matplotlib inline
 from jupyterthemes import jtplot
 
 jtplot.style(context="notebook", fscale=1, grid=False)
@@ -256,8 +256,6 @@ Sometimes, the luminosity does not come directly from a distribution. Rather, it
 This allows you to sample auxiliary parameters and compute a luminosity from those.
 
 ```python
-
-
 class DemoSampler3(popsynth.DerivedLumAuxSampler):
     _auxiliary_sampler_name = "DemoSampler3"
     mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1)
@@ -318,8 +316,4 @@ population = pop_gen.draw_survey(flux_sigma=0.1)
 
 ```python
 population.display_fluxes(obs_color=purple, true_color=yellow, s=15)
-```
-
-```python
-
 ```

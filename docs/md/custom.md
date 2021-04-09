@@ -26,7 +26,7 @@ The population samplers rely on distributions. Each population has an internal s
 
 
 ```python
-%matplotlib notebook
+%matplotlib inline
 
 import numpy as np
 import matplotlib.pyplot as plt

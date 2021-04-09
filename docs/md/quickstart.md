@@ -18,7 +18,7 @@ jupyter:
 A simple example of simulating a population via the built-in populations provided.
 
 ```python
-%matplotlib notebook
+%matplotlib inline
 
 
 import matplotlib.pyplot as plt
