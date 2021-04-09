@@ -38,7 +38,7 @@ populations with an easily extensible class inheritance scheme that
 allows users to adapt the code to their own needs. As understanding
 the rate functions of astrophysical populations (e.g., gravitational
 wave sources, gamma-ray bursts, active galactic nuclei) becomes an
-increasingly important field, researchers develop various ways to
+increasingly important field [@Loredo:2019], researchers develop various ways to
 estimate these populations from real data. `popsynth` provides a way
 to calibrate these analysis techniques by producing synthetic data
 where the inputs are known. Moreover, selection effects are an
@@ -48,27 +48,14 @@ any survey analysis method which operates on an incomplete sample.
 
 Similar frameworks exist for simulating data from specific catalogs
 such as `SkyPy` @skypy and `firesong` @firesong, however, these
-have a much more focused application and do not include the ability to
+have much more focused applications and do not include the ability to
 impose selection functions.
-
 
 # Procedure
 
 Once a rate function and all associated distributions are specified in
 `popsynth`, a numeric integral over the rate function produces the
-total rate of objects in the populations.
-
-
-
-\begin{equation}\label{eq:totalrate}
-N=\int_{0}^{r^{\prime}} \mathrm{d} r \frac{\mathrm{d} V}{\mathrm{~d} r} \lambda(r ; \vec{\psi})=\Lambda(\vec{\psi})
-\end{equation}
-
-
-and refer to \autoref{eq:totalrate} from text.
-
-
-A survey is created by
+total rate of objects in the populations. A survey is created by
 making a draw from a Poisson distribution with mean equal to the total
 rate of objects for the number of objects in the survey. For each
 object, the properties such as distance and luminosity are sampled
