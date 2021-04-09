@@ -102,10 +102,59 @@ ax.set(xlabel="log10 fluxes", ylabel="dummy")
 ax.legend()
 ```
 
+<!-- #region -->
 ## custom selections
 
-we can also create our own custom selection functions
+we can also create our own custom selection functions.
+
+
+First, we will look at simply creating a selection. For simplicity, we will look at the Bernoulli selection class built in:
+<!-- #endregion -->
 
 ```python
+class BernoulliSelection(popsynth.SelectionProbabilty):
+    
+    # required to register class!
+    _selection_name = "BernoulliSelection"
+
+    # define the parameters to be used
+    probability = SelectionParameter(vmin=0, vmax=1, default=0.5)
+
+    def __init__(self) -> None:
+
+        super(BernoulliSelection, self).__init__(name="Bernoulli")
+
+    def draw(self, size: int) -> None:
+        """
+        The draw function takes an integer for the size of the 
+        samples and sets the private variable _selections which 
+        should be an array of boolean values
+        
+        """
+        
+        self._selection = stats.bernoulli.rvs(
+                self._probability, size=size).astype(bool)  # type: np.ndarray
 
 ```
+
+The procedure can become arbitraliy complex. It is important to note that selections will know about several private variables:
+
+```_observed_flux```
+```_observed_value```
+```_distance```
+```_luminosity```
+
+
+which enables you to use these values in your selection function.
+
+Because of this, several of the build in selections can be used to select on these variables (though some of this is done in the background for you.)
+
+
+```python
+my_box_selection = popsynth.BoxSelection(name="box_flux_selection", use_flux=True)
+my_box_selection.vmin = 1E-4
+my_box_selection.vmax = 1E-2
+
+```
+
+Setting this as the flux selector will select only the fluxes above and below the limits

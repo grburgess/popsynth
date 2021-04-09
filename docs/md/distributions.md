@@ -138,7 +138,7 @@ population = pop_gen.draw_survey()
 ```
 
 ```python
-fig=population.display_obs_fluxes_sphere(background_color="black",size=0.7);
+fig=population.display_obs_fluxes_sphere(cmap="viridis", background_color="black",size=0.7);
 ```
 
 The cosmological parameters used when simulating are stored in the cosmology object:
@@ -155,9 +155,15 @@ popsynth.cosmology.h0
 popsynth.cosmology.Ode
 ```
 
-<!-- #raw -->
-.. note:: The values of Om and h0 can be changed and will change the values of all cosmological calculations
-<!-- #endraw -->
+
+<div class="alert alert-info">
+
+**Note:** The values of Om and h0 can be changed and will change the values of all cosmological calculations
+
+</div>
+
+
+
 
 ```python
 popsynth.cosmology.Om=0.7

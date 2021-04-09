@@ -135,9 +135,12 @@ class MyParetoDistribution(LuminosityDistribution):
         return (np.random.pareto(self.alpha, size) + 1) * self.Lmin
 ```
 
-<!-- #raw -->
-.. note:: If you want to create a cosmological distribution, inherit from from ComologicalDistribution class!
-<!-- #endraw -->
+
+<div class="alert alert-info">
+
+**Note:** If you want to create a cosmological distribution, inherit from from ComologicalDistribution class!
+
+</div>
 
 ## Creating a population synthesizer
 
@@ -179,5 +182,5 @@ population = my_pop_gen.draw_survey()
 ```
 
 ```python
-fig = population.display_obs_fluxes_sphere(cmap="magma", s=50)
+fig = population.display_obs_fluxes_sphere(cmap="magma", background_color="black" ,s=50)
 ```
