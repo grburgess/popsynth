@@ -5,8 +5,8 @@ jupyter:
     text_representation:
       extension: .md
       format_name: markdown
-      format_version: '1.2'
-      jupytext_version: 1.8.0
+      format_version: '1.3'
+      jupytext_version: 1.11.1
   kernelspec:
     display_name: Python 3
     language: python
@@ -18,17 +18,15 @@ jupyter:
 A simple example of simulating a population via the built-in populations provided.
 
 ```python
-%matplotlib inline
+%matplotlib notebook
 
 
 import matplotlib.pyplot as plt
 from jupyterthemes import jtplot
 
 jtplot.style(context="notebook", fscale=1, grid=False)
-green = "#1DEBA6"
-red = "#FF0059"
+purple = "#B833FF"
 yellow = "#F6EF5B"
-
 
 import popsynth
 
@@ -57,7 +55,7 @@ homo_pareto_synth.display()
 # we can also display a graph of the object
 
 
-options = {"node_color": green, "node_size": 2000, "width": 0.5}
+options = {"node_color": purple, "node_size": 3000, "width": 0.5}
 
 pos = nx.drawing.nx_agraph.graphviz_layout(homo_pareto_synth.graph, prog="dot")
 
@@ -102,7 +100,7 @@ We could have specified a soft cutoff (an inverse logit) with logarithmic with a
 homo_pareto_synth.clean()
 flux_selector = popsynth.SoftFluxSelection()
 flux_selector.boundary = 1e-2
-flux_selector.strength = 10
+flux_selector.strength = 20
 
 
 homo_pareto_synth.set_flux_selection(flux_selector)
@@ -115,10 +113,10 @@ population = homo_pareto_synth.draw_survey(flux_sigma=0.1)
 The population object stores all the information about the sampled survey. This includes information on the latent parameters, measured parameters, and distances for both the selected and non-selected objects.
 
 
-We can have a look at the flux-distance distribution from the survey. Here, pink dots are the *latent* flux value, i.e., without observational noise, and green dots are the *measured values for the *selected* objects. Arrows point from the latent to measured values.
+We can have a look at the flux-distance distribution from the survey. Here, yellow dots are the *latent* flux value, i.e., without observational noise, and purple dots are the *measured values for the *selected* objects. Arrows point from the latent to measured values.
 
 ```python
-population.display_fluxes(obs_color=green, true_color=red)
+fig = population.display_fluxes(obs_color=purple, true_color=yellow)
 ```
 
 For fun, we can display the fluxes on in a simulated universe in 3D
@@ -136,11 +134,23 @@ population.selection
 We can retrieve selected and non-selected distances:
 
 ```python
-population.selected_distances
+distances = population.selected_distances
 ```
 
 ```python
-population.hidden_distances
+hidden_distances = population.hidden_distances
+```
+
+```python
+fig, ax = plt.subplots()
+
+bins = np.linspace(0, 6, 20)
+
+
+ax.hist(hidden_distances, bins=bins, fc=yellow, ec="k",lw=1)
+ax.hist(distances, bins=bins, fc=purple, ec="k",lw=1)
+ax.set_xlabel("z")
+
 ```
 
 ## Saving the population
@@ -161,10 +171,6 @@ reloaded_population = popsynth.Population.from_file("saved_pop.h5")
 
 ```python
 reloaded_population.truth
-```
-
-```python
-
 ```
 
 ## Creating populations from YAML files (experimental)
@@ -242,8 +248,13 @@ auxiliary samplers:
 We can load this yaml file into a population synth like this:
 
 
+
+
+
+
+
 ### Create our demo auxiliary samplers
-read ahead int he docs for more details on auxiliary samplers
+read ahead in the docs for more details on auxiliary samplers
 
 ```python
 class DemoSampler(popsynth.AuxiliarySampler):
@@ -303,7 +314,7 @@ ps = popsynth.PopulationSynth.from_file(my_file)
 ```
 
 ```python
-options = {"node_color": green, "node_size": 2000, "width": 0.5}
+options = {"node_color": purple, "node_size": 3000, "width": 0.5}
 
 pos = nx.drawing.nx_agraph.graphviz_layout(ps.graph, prog="dot")
 

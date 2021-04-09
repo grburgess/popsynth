@@ -5,8 +5,8 @@ jupyter:
     text_representation:
       extension: .md
       format_name: markdown
-      format_version: '1.2'
-      jupytext_version: 1.8.0
+      format_version: '1.3'
+      jupytext_version: 1.11.1
   kernelspec:
     display_name: Python 3
     language: python
@@ -28,8 +28,8 @@ import matplotlib.pyplot as plt
 from jupyterthemes import jtplot
 
 jtplot.style(context="notebook", fscale=1, grid=False)
-green = "#1DEBA6"
-red = "#FF0059"
+
+purple = "#B833FF"
 yellow = "#F6EF5B"
 
 import warnings
@@ -81,10 +81,10 @@ pop_gen = popsynth.populations.SchechterSFRPopulation(
 ```
 
 <!-- #region -->
-Suppose we have a property "demo" that we want to sample as well. For this property, we do not observe it directly. We will get to that.
+Suppose we have a property "demo" that we want to sample as well. For this property, we do not observe it directly. We will get to that. This means that our property latent and could influence other parameters but we can not measure it directly. If you are familiar with Bayesian hierarchical models, this concept may be more familiar to you. As an example, this could be the temperature of a star, which influences its spectrum. The spectrum creates an observable, but the tempreature is imply a random latent variable sampled from a distribution. 
 
 
-We create an AuxiliarySampler child class, and define the *true_sampler* for the latent values
+We create an ```AuxiliarySampler``` child class, and define the *true_sampler* for the latent values:
 <!-- #endregion -->
 
 ```python
@@ -113,29 +113,41 @@ demo1 = DemoSampler()
 
 pop_gen.add_observed_quantity(demo1)
 
+
+flux_selector = popsynth.HardFluxSelection()
+flux_selector.boundary = 1e-9
+
+pop_gen.set_flux_selection(flux_selector)
+
 population = pop_gen.draw_survey()
 
-options = {"node_color": green, "node_size": 2000, "width": 0.5}
 
 
+## plot it
+options = {"node_color": purple, "node_size": 3000, "width": 0.5}
 pos = nx.drawing.nx_agraph.graphviz_layout(population.graph, prog="dot")
-
 nx.draw(population.graph, with_labels=True, pos=pos, **options)
 ```
 
 
 ```python
-population.display_fluxes(obs_color=green, true_color=red, s=15)
+fig = population.display_fluxes(obs_color=purple, true_color=yellow, s=15)
 ```
 
-We can see that the population has stored out demo auxiliary property
+We can see that the population has stored out demo auxiliary property.
 
 ```python
-population.demo
+all_demo = population.demo
+
+obs_demo = population.demo_obs
+
+selected_demo = population.demo_selected
 ```
 
+We can also see that our demo sampler is now known which is important when creating populations from YAML files. This registering happens when we add the property ```_auxiliary_sampler_name = "DemoSampler" ``` which must be name of the class!
+
 ```python
-population.demo_selected
+popsynth.list_available_auxiliary_samplers()
 ```
 
 ## Observed auxiliary properties and dependent parameters
@@ -231,9 +243,9 @@ population = pop_gen.draw_survey(flux_sigma=0.1)
 ```python
 fig, ax = plt.subplots()
 
-ax.scatter(population.demo2_selected, population.demo_selected, c=green, s=40)
+ax.scatter(population.demo2_selected, population.demo_selected, c=purple, s=40)
 
-ax.scatter(population.demo2, population.demo, c=red, s=20)
+ax.scatter(population.demo2, population.demo, c=yellow, s=20)
 ```
 
 
@@ -305,7 +317,7 @@ population = pop_gen.draw_survey(flux_sigma=0.1)
 ```
 
 ```python
-population.display_fluxes(obs_color=green, true_color=red, s=15)
+population.display_fluxes(obs_color=purple, true_color=yellow, s=15)
 ```
 
 ```python

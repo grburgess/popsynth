@@ -5,15 +5,15 @@ jupyter:
     text_representation:
       extension: .md
       format_name: markdown
-      format_version: '1.2'
-      jupytext_version: 1.8.0
+      format_version: '1.3'
+      jupytext_version: 1.11.1
   kernelspec:
     display_name: Python 3
     language: python
     name: python3
 ---
 
-# Custom populations
+# Custom distributions and populations
 
 Custom populations can be created either by piecing together existing populations (spatial and luminosity populations) or building them from scratch with distributions.
 
@@ -33,8 +33,7 @@ import matplotlib.pyplot as plt
 from jupyterthemes import jtplot
 
 jtplot.style(context="notebook", fscale=1, grid=False)
-green = "#1DEBA6"
-red = "#FF0059"
+purple = "#B833FF"
 yellow = "#F6EF5B"
 
 
@@ -176,9 +175,5 @@ population = my_pop_gen.draw_survey()
 ```
 
 ```python
-fig = population.display_obs_fluxes_sphere(cmap="viridis", s=50)
-```
-
-```python
-
+fig = population.display_obs_fluxes_sphere(cmap="magma", s=50)
 ```

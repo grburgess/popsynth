@@ -5,8 +5,8 @@ jupyter:
     text_representation:
       extension: .md
       format_name: markdown
-      format_version: '1.2'
-      jupytext_version: 1.8.0
+      format_version: '1.3'
+      jupytext_version: 1.11.1
   kernelspec:
     display_name: Python 3
     language: python
@@ -29,10 +29,17 @@ There are several available selection functions:
 import matplotlib.pyplot as plt
 import numpy as np
 
-%matplotlib inline
+%matplotlib notebook
+
+from jupyterthemes import jtplot
+
+jtplot.style(context="notebook", fscale=1, grid=False)
+purple = "#B833FF"
+yellow = "#F6EF5B"
 
 import popsynth
 
+popsynth.loud_mode()
 popsynth.list_available_selection_functions()
 ```
 
@@ -93,4 +100,12 @@ ax.scatter(
 
 ax.set(xlabel="log10 fluxes", ylabel="dummy")
 ax.legend()
+```
+
+## custom selections
+
+we can also create our own custom selection functions
+
+```python
+
 ```
