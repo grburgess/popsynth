@@ -126,7 +126,7 @@ html_show_sphinx = False
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-autosectionlabel_prefix_document = True
+#autosectionlabel_prefix_document = True
 
 # avoid time-out when running the doc
 nbsphinx_timeout = 30 * 60
@@ -136,14 +136,6 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.rc={'figure.dpi': 96}",
 ]
 
-# autodoc_member_order = 'bysource'
-
-# autoclass_content = 'both'
-
-# edit_on_github_project = 'JohannesBuchner/UltraNest'
-# edit_on_github_branch = 'master'
-# #edit_on_github_url
-# edit_on_github_src = 'docs/'  # optional. default: ''
 
 from pygments.formatters import HtmlFormatter  # noqa: E402
 from pygments.styles import get_all_styles  # noqa: E402

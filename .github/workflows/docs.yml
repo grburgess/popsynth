@@ -28,8 +28,8 @@ jobs:
         shell: bash -l {0}
         run: |
 
-          jupytext --to ipynb --execute docs/md/*.md
-          mv docs/md/*.ipynb docs/notebooks/
+          jupytext --to ipynb --execute md/*.md
+          mv md/*.ipynb docs/notebooks/
           ls docs/notebooks
 
       - uses: actions/upload-artifact@v2
