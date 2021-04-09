@@ -1,5 +1,5 @@
 ---
-title: 'popsynth: A generic astrophysical population synthesis code'
+title: 'popsynth: A generic astrophysical population synthesis framework'
 tags:
   - Python
   - astronomy
