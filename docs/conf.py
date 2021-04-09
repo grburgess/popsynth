@@ -20,7 +20,7 @@ import os
 import sys
 from pathlib import Path
 
-import sphinx_rtd_theme
+
 
 project = 'popsynth'
 copyright = '2019, J. Michael Burgess'
@@ -46,7 +46,7 @@ def run_apidoc(app):
         "--no-toc",
         "--separate",
         "-o",
-        str(DOCS / "API"),
+        str(DOCS / "api"),
         str(DOCS / ".." / "popsynth"),
     ])
 
@@ -57,8 +57,13 @@ def run_apidoc(app):
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'nbsphinx', 'sphinx.ext.autodoc', 'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.githubpages',
+    'nbsphinx',
+    'recommonmark',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'rtds_action'
 ]
