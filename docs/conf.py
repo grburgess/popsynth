@@ -29,26 +29,26 @@ author = 'J. Michael Burgess'
 
 sys.path.insert(0, os.path.abspath("../"))
 
-DOCS = Path(__file__).parent
+# DOCS = Path(__file__).parent
 
 
-# -- Generate API documentation ------------------------------------------------
-def run_apidoc(app):
-    """Generage API documentation"""
-    import better_apidoc
+# # -- Generate API documentation ------------------------------------------------
+# def run_apidoc(app):
+#     """Generage API documentation"""
+#     import better_apidoc
 
-    better_apidoc.APP = app
-    better_apidoc.main([
-        "better-apidoc",
-        # "-t",
-        # str(docs / "_templates"),
-        "--force",
-        "--no-toc",
-        "--separate",
-        "-o",
-        str(DOCS / "api"),
-        str(DOCS / ".." / "popsynth"),
-    ])
+#     better_apidoc.APP = app
+#     better_apidoc.main([
+#         "better-apidoc",
+#         # "-t",
+#         # str(docs / "_templates"),
+#         "--force",
+#         "--no-toc",
+#         "--separate",
+#         "-o",
+#         str(DOCS / "api"),
+#         str(DOCS / ".." / "popsynth"),
+#     ])
 
 
 # -- General configuration ---------------------------------------------------
@@ -59,7 +59,7 @@ def run_apidoc(app):
 extensions = [
     'nbsphinx',
     'recommonmark',
-    'sphinx.ext.autodoc',
+#    'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.autodoc',
@@ -204,5 +204,5 @@ texinfo_documents = [
     (master_doc, 'popsynth', u'popsynth Documentation', author, 'popsynth',
      'One line description of project.', 'Miscellaneous'),
 ]
-def setup(app):
-    app.connect("builder-inited", run_apidoc)
+# def setup(app):
+#     app.connect("builder-inited", run_apidoc)
