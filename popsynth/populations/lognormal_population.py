@@ -104,6 +104,7 @@ class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
 class LogNormalSFRPopulation(SFRPopulation):
     def __init__(self,
                  r0,
+                 a,
                  rise,
                  decay,
                  peak,
@@ -115,6 +116,7 @@ class LogNormalSFRPopulation(SFRPopulation):
         """FIXME! briefly describe function
 
         :param r0:
+        :param a:
         :param rise:
         :param decay:
         :param peak:

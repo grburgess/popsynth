@@ -106,6 +106,7 @@ class SchechterSFRPopulation(SFRPopulation):
     def __init__(
         self,
         r0,
+        a,
         rise,
         decay,
         peak,
@@ -118,6 +119,7 @@ class SchechterSFRPopulation(SFRPopulation):
         """FIXME! briefly describe function
 
         :param r0:
+        :param a:
         :param rise:
         :param decay:
         :param peak:
