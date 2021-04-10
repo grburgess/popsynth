@@ -135,6 +135,7 @@ class LogNormalSFRPopulation(SFRPopulation):
 
         super(LogNormalSFRPopulation, self).__init__(
             r0=r0,
+            a=a,
             rise=rise,
             decay=decay,
             peak=peak,

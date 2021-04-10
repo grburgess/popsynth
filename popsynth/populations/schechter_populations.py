@@ -139,6 +139,7 @@ class SchechterSFRPopulation(SFRPopulation):
 
         super(SchechterSFRPopulation, self).__init__(
             r0=r0,
+            a=a,
             rise=rise,
             decay=decay,
             peak=peak,

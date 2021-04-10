@@ -135,6 +135,7 @@ class ParetoSFRPopulation(SFRPopulation):
 
         super(ParetoSFRPopulation, self).__init__(
             r0=r0,
+            a=a,
             rise=rise,
             decay=decay,
             peak=peak,

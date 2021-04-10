@@ -180,6 +180,7 @@ class BPLSFRPopulation(SFRPopulation):
 
         super(BPLSFRPopulation, self).__init__(
             r0=r0,
+            a=a,
             rise=rise,
             decay=decay,
             peak=peak,

@@ -1,18 +1,12 @@
+from popsynth.distributions.cosmological_distribution import (  # MergerDistribution,
+    SFRDistribution, ZPowerCosmoDistribution)
 from popsynth.distributions.spherical_distribution import (
-    ConstantSphericalDistribution,
-    ZPowerSphericalDistribution,
-)
-from popsynth.distributions.cosmological_distribution import (
-    SFRDistribution,
-    # MergerDistribution,
-    ZPowerCosmoDistribution,
-)
-
-from popsynth.distributions.spiral_galaxy_distribution import SpiralGalaxyDistribution
-
+    ConstantSphericalDistribution, ZPowerSphericalDistribution)
+from popsynth.distributions.spiral_galaxy_distribution import \
+    SpiralGalaxyDistribution
 from popsynth.population_synth import PopulationSynth
 
-## First create a bunch of spatial distributions
+# First create a bunch of spatial distributions
 
 
 class SphericalPopulation(PopulationSynth):
@@ -142,6 +136,7 @@ class SFRPopulation(PopulationSynth):
         spatial_distribution = SFRDistribution(seed=seed, is_rate=is_rate)
 
         spatial_distribution.r0 = r0
+        spatial_distribution.a = a
         spatial_distribution.rise = rise
         spatial_distribution.decay = decay
         spatial_distribution.peak = peak
