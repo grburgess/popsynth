@@ -114,18 +114,20 @@ class ZPowerCosmoPopulation(PopulationSynth):
 class SFRPopulation(PopulationSynth):
     def __init__(
         self,
-        r0,
-        rise,
-        decay,
-        peak,
-        r_max=5,
-        seed=1234,
+        r0: float,
+        a: float,
+        rise: float,
+        decay: float,
+        peak: float,
+        r_max: float = 5,
+        seed: int = 1234,
         luminosity_distribution=None,
         is_rate=True,
     ):
         """FIXME! briefly describe function
 
         :param r0:
+        :param a:
         :param rise:
         :param decay:
         :param peak:

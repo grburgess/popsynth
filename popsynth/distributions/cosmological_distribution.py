@@ -41,6 +41,7 @@ class SFRDistribution(CosmologicalDistribution):
     _distribution_name = "SFRDistribution"
 
     r0 = DistributionParameter(vmin=0)
+    a = DistributionParameter(vmin=0)
     rise = DistributionParameter()
     decay = DistributionParameter()
     peak = DistributionParameter(vmin=0)
@@ -60,6 +61,7 @@ class SFRDistribution(CosmologicalDistribution):
         return _dndv(
             z,
             self.r0,
+            self.a,
             self.rise,
             self.decay,
             self.peak,
@@ -67,8 +69,8 @@ class SFRDistribution(CosmologicalDistribution):
 
 
 @nb.njit(fastmath=True)
-def _dndv(z, r0, rise, decay, peak):
-    top = 1.0 + rise * z
+def _dndv(z, r0, a, rise, decay, peak):
+    top = a + rise * z
     bottom = 1.0 + np.power(z / peak, decay)
 
     return r0 * top / bottom
