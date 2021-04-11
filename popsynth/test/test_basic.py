@@ -134,6 +134,7 @@ def test_basic_population():
 
     sfr_synth = popsynth.populations.ParetoSFRPopulation(r0=10.0,
                                                          rise=0.1,
+                                                         a=0.015,
                                                          decay=2.0,
                                                          peak=5.0,
                                                          Lmin=1e52,
@@ -145,6 +146,7 @@ def test_auxiliary_sampler():
 
     sfr_synth = popsynth.populations.ParetoSFRPopulation(r0=10.0,
                                                          rise=0.1,
+                                                         a=0.015,
                                                          decay=2.0,
                                                          peak=5.0,
                                                          Lmin=1e52,
