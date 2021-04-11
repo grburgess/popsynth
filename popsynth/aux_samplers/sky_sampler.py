@@ -6,6 +6,7 @@ from popsynth.utils.spherical_geometry import sample_theta_phi
 
 class SkySampler(object):
     _auxiliary_sampler_name = "SkySampler"
+
     def __init__(self, ra_sampler=None, dec_sampler=None):
         """
         A sky sampler that samples theta phi positions
@@ -41,6 +42,7 @@ class SkySampler(object):
 
 class RASampler(NonObservedAuxSampler):
     _auxiliary_sampler_name = "RASampler"
+
     def __init__(self):
         """
 
@@ -61,6 +63,7 @@ class RASampler(NonObservedAuxSampler):
 
 class DecSampler(NonObservedAuxSampler):
     _auxiliary_sampler_name = "DecSampler"
+
     def __init__(self):
         """
         sampler the dec of the sky uniformly

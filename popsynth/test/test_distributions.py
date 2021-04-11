@@ -1,7 +1,9 @@
 import numpy as np
 
-from popsynth.distribution import SpatialDistribution
-from popsynth.distribution import LuminosityDistribution
+from popsynth.distribution import LuminosityDistribution, SpatialDistribution
+from popsynth.distributions.flatland_distribution import FlatlandDistribution
+from popsynth.distributions.spiral_galaxy_distribution import \
+    SpiralGalaxyDistribution
 from popsynth.population_synth import PopulationSynth
 
 
@@ -69,8 +71,67 @@ class MyPopulation(PopulationSynth):
         )
 
 
+class MyFlatPopulation(PopulationSynth):
+    def __init__(self, r_max=5, seed=1234):
+
+        # instantiate the distributions
+        luminosity_distribution = DummyLDistribution(seed=seed)
+        spatial_distribution = FlatlandDistribution()
+        spatial_distribution.Lambda = 1
+        spatial_distribution.r_max = r_max
+
+        # pass to the super class
+        super(MyPopulation, self).__init__(
+            spatial_distribution=spatial_distribution,
+            luminosity_distribution=luminosity_distribution,
+            seed=seed,
+        )
+
+
+class MySpiralPopulation(PopulationSynth):
+    def __init__(self, r_max=5, seed=1234):
+
+        # instantiate the distributions
+        luminosity_distribution = DummyLDistribution(seed=seed)
+        spatial_distribution = SpiralGalaxyDistribution()
+        spatial_distribution.Lambda = 1
+        spatial_distribution.r_max = r_max
+
+        # pass to the super class
+        super(MyPopulation, self).__init__(
+            spatial_distribution=spatial_distribution,
+            luminosity_distribution=luminosity_distribution,
+            seed=seed,
+        )
+
+
 def test_distribution_with_no_parameters():
 
     popgen = MyPopulation()
 
-    popgen.draw_survey(1e-50)
+    popgen.draw_survey()
+
+
+def test_flatland():
+
+    popgen = MyFlatPopulation()
+
+    popgen.draw_survey()
+
+
+def test_spiral():
+
+    import popsynth
+
+    popsynth.update_logging_level("INFO")
+    from popsynth.populations.spatial_populations import MWRadialPopulation
+
+    ld = popsynth.distributions.pareto_distribution.ParetoDistribution()
+    ld.alpha = 3
+    ld.Lmin = 1
+    synth = MWRadialPopulation(rho=1, luminosity_distribution=ld)
+    population = synth.draw_survey()
+
+    popgen = MySpiralPopulation()
+
+    popgen.draw_survey()

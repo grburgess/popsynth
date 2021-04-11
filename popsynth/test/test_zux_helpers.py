@@ -1,5 +1,5 @@
 import numpy as np
-from popsynth.aux_samplers.lognormal_aux_sampler import LogNormalAuxSampler
+from popsynth.aux_samplers.lognormal_aux_sampler import LogNormalAuxSampler, Log10NormalAuxSampler
 from popsynth.aux_samplers.normal_aux_sampler import NormalAuxSampler
 from popsynth.aux_samplers.trunc_normal_aux_sampler import TruncatedNormalAuxSampler
 
@@ -53,7 +53,7 @@ def test_lognorm_sampler(mu, tau, size):
 
     assert len(sampler._true_values) == size
 
-    sampler = LogNormalAuxSampler("test", observed=True)
+    sampler = Log10NormalAuxSampler("test", observed=True)
 
     sampler.mu = mu
     sampler.tau = tau
@@ -65,6 +65,30 @@ def test_lognorm_sampler(mu, tau, size):
 
     assert len(sampler._true_values) == size
 
+    sampler = Log10NormalAuxSampler("test", observed=False)
+
+    sampler.true_sampler(size)
+
+    sampler.mu = mu
+    sampler.tau = tau
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+    sampler = Log10NormalAuxSampler("test", observed=True)
+
+    sampler.mu = mu
+    sampler.tau = tau
+    sampler.sigma = 1
+
+    sampler.true_sampler(size)
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+    
 
 @given(
     st.floats(),
