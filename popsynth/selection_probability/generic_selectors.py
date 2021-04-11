@@ -51,7 +51,7 @@ class BernoulliSelection(SelectionProbabilty):
         else:
 
             self._selection = stats.bernoulli.rvs(
-                self._probability, size=size).astype(bool)  # type: np.ndarray
+                self.probability, size=size).astype(bool)  # type: np.ndarray
 
 
 class BoxSelection(SelectionProbabilty):
