@@ -6,4 +6,4 @@ from .selection_probability import (DummySelection, SelectionParameter,
 from .spatial_selection import SpatialSelection
 
 __all__ = ["HardFluxSelection", "SoftFluxSelection", "BernoulliSelection", "LowerBound", "UpperBound",
-                                "SoftSelection", "UnitySelection", "SelectionProbabilty", "SpatialSelection", "BoxSelection", "DummySelection", "SelectionProbabilityParameter"]
+                                "SoftSelection", "UnitySelection", "SelectionProbabilty", "SpatialSelection", "BoxSelection", "DummySelection", "SelectionParameter"]
