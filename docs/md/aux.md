@@ -283,7 +283,7 @@ class DemoSampler3(popsynth.DerivedLumAuxSampler):
 
 ```python
 pop_gen = popsynth.populations.SchechterSFRPopulation(
-    r0=100,a=0.0157 rise=1.0, decay=1.0, peak=1.0, Lmin=1e50, alpha=2.0
+    r0=100,a=0.0157, rise=1.0, decay=1.0, peak=1.0, Lmin=1e50, alpha=2.0
 )
 ```
 
