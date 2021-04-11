@@ -1078,6 +1078,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         for k, v in auxiliary_quantities.items():
 
+            # unity selections don't add anything
+            
+            if isinstance(v["selection"], UnitySelection):
+
+                log.debug(f"skipping {k} selection because it is unity")
+                
+                continue
+            
             auxiliary_selection += v["selection"]
 
             log.info(
