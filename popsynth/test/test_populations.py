@@ -101,7 +101,7 @@ _spatial_params = [
     dict(Lambda=1.0),
     dict(Lambda=5.0, delta=0.1),
     dict(Lambda=5.0, delta=0.1),
-    dict(r0=5.0, rise=0.5, decay=2.0, peak=1.5),
+    dict(r0=5.0,a=0.015 ,rise=0.5, decay=2.0, peak=1.5),
 ]
 _pareto_params = dict(Lmin=2.0, alpha=1.0)
 

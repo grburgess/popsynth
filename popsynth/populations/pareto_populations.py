@@ -103,6 +103,7 @@ class ParetoSFRPopulation(SFRPopulation):
     def __init__(
         self,
         r0,
+        a,
         rise,
         decay,
         peak,
@@ -115,6 +116,7 @@ class ParetoSFRPopulation(SFRPopulation):
         """FIXME! briefly describe function
 
         :param r0:
+        :param a:
         :param rise:
         :param decay:
         :param peak:
@@ -133,6 +135,7 @@ class ParetoSFRPopulation(SFRPopulation):
 
         super(ParetoSFRPopulation, self).__init__(
             r0=r0,
+            a=a,
             rise=rise,
             decay=decay,
             peak=peak,

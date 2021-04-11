@@ -1,18 +1,12 @@
+from popsynth.distributions.cosmological_distribution import (  # MergerDistribution,
+    SFRDistribution, ZPowerCosmoDistribution)
 from popsynth.distributions.spherical_distribution import (
-    ConstantSphericalDistribution,
-    ZPowerSphericalDistribution,
-)
-from popsynth.distributions.cosmological_distribution import (
-    SFRDistribution,
-    # MergerDistribution,
-    ZPowerCosmoDistribution,
-)
-
-from popsynth.distributions.spiral_galaxy_distribution import SpiralGalaxyDistribution
-
+    ConstantSphericalDistribution, ZPowerSphericalDistribution)
+from popsynth.distributions.spiral_galaxy_distribution import \
+    SpiralGalaxyDistribution
 from popsynth.population_synth import PopulationSynth
 
-## First create a bunch of spatial distributions
+# First create a bunch of spatial distributions
 
 
 class SphericalPopulation(PopulationSynth):
@@ -114,18 +108,20 @@ class ZPowerCosmoPopulation(PopulationSynth):
 class SFRPopulation(PopulationSynth):
     def __init__(
         self,
-        r0,
-        rise,
-        decay,
-        peak,
-        r_max=5,
-        seed=1234,
+        r0: float,
+        a: float,
+        rise: float,
+        decay: float,
+        peak: float,
+        r_max: float = 5,
+        seed: int = 1234,
         luminosity_distribution=None,
         is_rate=True,
     ):
         """FIXME! briefly describe function
 
         :param r0:
+        :param a:
         :param rise:
         :param decay:
         :param peak:
@@ -140,6 +136,7 @@ class SFRPopulation(PopulationSynth):
         spatial_distribution = SFRDistribution(seed=seed, is_rate=is_rate)
 
         spatial_distribution.r0 = r0
+        spatial_distribution.a = a
         spatial_distribution.rise = rise
         spatial_distribution.decay = decay
         spatial_distribution.peak = peak
