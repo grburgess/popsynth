@@ -76,7 +76,7 @@ First, we specify the main population. This time, we will chose a SFR-like redsh
 
 ```python
 pop_gen = popsynth.populations.SchechterSFRPopulation(
-    r0=10, rise=1.0, decay=1.0, peak=1.0, Lmin=1e50, alpha=2.0
+    r0=10,a=0.0157, rise=1.0, decay=1.0, peak=1.0, Lmin=1e50, alpha=2.0
 )
 ```
 
@@ -200,7 +200,7 @@ We recreate our base sampler:
 
 ```python
 pop_gen = popsynth.populations.SchechterSFRPopulation(
-    r0=10, rise=1.0, decay=1.0, peak=1.0, Lmin=1e50, alpha=2.0
+    r0=10, a=0.0157, rise=1.0, decay=1.0, peak=1.0, Lmin=1e50, alpha=2.0
 )
 ```
 
