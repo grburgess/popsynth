@@ -118,7 +118,7 @@ class BernoulliSelection(popsynth.SelectionProbabilty):
     _selection_name = "BernoulliSelection"
 
     # define the parameters to be used
-    probability = SelectionParameter(vmin=0, vmax=1, default=0.5)
+    probability = popsynth.SelectionParameter(vmin=0, vmax=1, default=0.5)
 
     def __init__(self) -> None:
 
