@@ -81,28 +81,13 @@ class MyFlatPopulation(PopulationSynth):
         spatial_distribution.r_max = r_max
 
         # pass to the super class
-        super(MyPopulation, self).__init__(
+        super(MyFlatPopulation, self).__init__(
             spatial_distribution=spatial_distribution,
             luminosity_distribution=luminosity_distribution,
             seed=seed,
         )
 
 
-class MySpiralPopulation(PopulationSynth):
-    def __init__(self, r_max=5, seed=1234):
-
-        # instantiate the distributions
-        luminosity_distribution = DummyLDistribution(seed=seed)
-        spatial_distribution = SpiralGalaxyDistribution()
-        spatial_distribution.Lambda = 1
-        spatial_distribution.r_max = r_max
-
-        # pass to the super class
-        super(MyPopulation, self).__init__(
-            spatial_distribution=spatial_distribution,
-            luminosity_distribution=luminosity_distribution,
-            seed=seed,
-        )
 
 
 def test_distribution_with_no_parameters():
@@ -132,6 +117,4 @@ def test_spiral():
     synth = MWRadialPopulation(rho=1, luminosity_distribution=ld)
     population = synth.draw_survey()
 
-    popgen = MySpiralPopulation()
-
-    popgen.draw_survey()
+    
