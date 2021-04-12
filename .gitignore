@@ -118,3 +118,6 @@ venv.bak/
 /auto/
 /docs/md/intro.md
 /docs/md/*.ipynb
+/logo.key
+/.dir-locals.el
+/.envrc
