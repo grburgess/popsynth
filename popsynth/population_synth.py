@@ -58,9 +58,17 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._graph = nx.DiGraph()  # type: nx.Digraph
 
+        if not isinstance(
+                spatial_distribution,
+                SpatialDistribution):
+
+            log.error("the spatial_distribution is the wrong type")
+
+            raise RuntimeError()
+
         self._name = f"{spatial_distribution.name}"  # type: str
+
         if luminosity_distribution is not None:
-            self._name = f"{self._name}_{luminosity_distribution.name}"
 
             if not isinstance(
                 luminosity_distribution, LuminosityDistribution
@@ -70,13 +78,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 raise RuntimeError()
 
-        if not isinstance(
-                spatial_distribution,
-                SpatialDistribution):
-
-            log.error("the spatial_distribution is the wrong type")
-
-            raise RuntimeError()
+            self._name = f"{self._name}_{luminosity_distribution.name}"
 
         self._spatial_distribution = spatial_distribution  # type: SpatialDistribution
         self._luminosity_distribution = (
@@ -373,7 +375,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 # oh yes we are doing that
                 fs._use_flux = True
-                
+
                 pop_synth.set_flux_selection(fs)
 
         if "distance selection" in input:
@@ -413,7 +415,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                             break
 
                 ds._use_distance = True
-                        
+
                 pop_synth.set_distance_selection(ds)
 
         if "spatial selection" in input:
@@ -592,7 +594,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                             setattr(selector, k, float(v))
 
                     selector._use_obs_value = True
-                    
+
                     tmp.set_selection_probability(selector)
 
                 # now we store this sampler
@@ -719,7 +721,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             self._has_derived_luminosity = True
             self._derived_luminosity_sampler = auxiliary_sampler
 
-        else:
+        elif isinstance(auxiliary_sampler, AuxiliarySampler):
 
             if auxiliary_sampler.is_secondary:
                 log.error(
@@ -740,6 +742,12 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             self._auxiliary_observations[
                 auxiliary_sampler.name] = auxiliary_sampler
+
+        else:
+
+            log.error("This not an auxiliary sampler")
+
+            raise RuntimeError()
 
     def set_distance_selection(self, selector: SelectionProbabilty) -> None:
         """
@@ -1079,13 +1087,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
         for k, v in auxiliary_quantities.items():
 
             # unity selections don't add anything
-            
+
             if isinstance(v["selection"], UnitySelection):
 
                 log.debug(f"skipping {k} selection because it is unity")
-                
+
                 continue
-            
+
             auxiliary_selection += v["selection"]
 
             log.info(
