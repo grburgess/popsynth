@@ -73,8 +73,7 @@ def test_basic_population():
     flux_selector = popsynth.SoftFluxSelection()
     flux_selector.boundary = 1e-2
     flux_selector.strength = 50
-    
-    
+
     homo_pareto_synth.clean(reset=True)
 
     homo_pareto_synth.set_flux_selection(flux_selector)
@@ -155,9 +154,46 @@ def test_auxiliary_sampler():
 
     d = DemoSampler()
 
+    sfr_synth.add_observed_quantity(d)
+
+    with pytest.raises(RuntimeError):
+
+        sfr_synth.add_observed_quantity(d)
+
+    with pytest.raises(RuntimeError):
+
+        sfr_synth.add_observed_quantity(1)
+
+    dic = sfr_synth.to_dict()
+
+    sfr_synth.draw_survey(.1)
+
+    _ = popsynth.PopulationSynth.from_dict(dic)
+
+    sfr_synth = popsynth.populations.ParetoSFRPopulation(r0=10.0,
+                                                         rise=0.1,
+                                                         a=0.015,
+                                                         decay=2.0,
+                                                         peak=5.0,
+                                                         Lmin=1e52,
+                                                         alpha=1.0,
+                                                         seed=123)
+
+    d = DemoSampler()
+
     d2 = DemoSampler2()
 
     d2.set_secondary_sampler(d)
+
+    dic = sfr_synth.to_dict()
+
+    _ = popsynth.PopulationSynth.from_dict(dic)
+
+    sfr_synth.add_auxiliary_sampler(d2)
+
+    with pytest.raises(RuntimeError):
+
+        sfr_synth.add_auxiliary_sampler(d)
 
     sfr_synth.draw_survey(.1)
 
@@ -174,3 +210,40 @@ def test_loading_from_file():
     assert ps.spatial_distribution.Lambda == 0.5
 
     ps.draw_survey()
+
+    ps.write_to("/tmp/test.yml")
+
+
+def test_errors():
+
+    pg = popsynth.populations.SchechterHomogeneousSphericalPopulation(
+        10, 1, 1.5)
+
+    with pytest.raises(RuntimeError):
+
+        pg.set_distance_selection(1)
+
+    with pytest.raises(RuntimeError):
+
+        pg.set_flux_selection(1)
+
+    with pytest.raises(RuntimeError):
+
+        pg.add_spatial_selector(1)
+
+    sd = popsynth.populations.spatial_populations.ConstantSphericalDistribution()
+
+    with pytest.raises(RuntimeError):
+
+        _ = popsynth.PopulationSynth(
+            spatial_distribution=sd, luminosity_distribution=1)
+
+    with pytest.raises(RuntimeError):
+
+        _ = popsynth.PopulationSynth(spatial_distribution=1)
+
+    pg = popsynth.PopulationSynth(spatial_distribution=sd)
+
+    with pytest.raises(RuntimeError):
+
+        pg.draw_survey()
