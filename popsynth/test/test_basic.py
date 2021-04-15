@@ -226,6 +226,8 @@ def test_loading_from_file():
 
     assert ps._auxiliary_observations["two"].name == "two"
 
+    assert ps._auxiliary_observations["two"].secondary_samplers["one"].name == "one"
+
     
 def test_errors():
 
