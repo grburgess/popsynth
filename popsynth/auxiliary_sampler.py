@@ -263,6 +263,53 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
 
         return recursive_secondaries
 
+    def get_secondary_objects(
+        self,
+        recursive_secondaries: Optional[Dict[str, Any]] = None,
+
+    ) -> Dict[str, Any]:
+        """FIXME! briefly describe function
+
+        :param recursive_secondaries:
+        :returns:
+        :rtype:
+
+        """
+
+        # if a holder was not passed, create one
+        if recursive_secondaries is None:
+
+            recursive_secondaries = {}  # type: SamplerDict
+
+        # now collect each property. This should keep recursing
+        if self._has_secondary:
+
+            for k, v in self._secondary_samplers.items():
+                recursive_secondaries = v.get_secondary_objects(
+                    recursive_secondaries)  # type: SamplerDict
+
+        # add our own on
+
+        tmp = {}
+
+        tmp["type"] = self._auxiliary_sampler_name
+        tmp["observed"] = self.observed
+
+        for k2, v2 in self.truth.items():
+
+            tmp[k2] = v2
+
+        tmp["secondary"] = list(self.secondary_samplers.keys())
+
+        selection = {}
+        selection[self.selector._selection_name] = self.selector.parameters
+
+        tmp["selection"] = selection
+
+        recursive_secondaries[self._name] = tmp
+
+        return recursive_secondaries
+
     @property
     def secondary_samplers(self) -> SamplerDict:
         """

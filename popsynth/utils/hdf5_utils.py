@@ -10,11 +10,49 @@ def recursively_save_dict_contents_to_group(h5file, path, dic):
 
     """
     for key, item in dic.items():
+
+        if isinstance(item, list):
+
+            is_ok = True
+
+            for i in item:
+
+                if isinstance(i, str):
+
+                    pass
+
+                else:
+
+                    is_ok = False
+
+            if is_ok:
+
+                # now create a dict
+
+                tmp = {}
+
+                for i in item:
+
+                    tmp[i] = {}
+
+                item = tmp
+
+            else:
+
+                raise ValueError("Cannot save %s type" % type(item))
+
         if isinstance(
             item,
                 (np.ndarray, np.int64, np.float64, str, bytes, float, int)):
+
             h5file[path + "/" + key] = item
+
         elif isinstance(item, dict):
+
+            if len(item) == 0:
+
+                h5file[path + "/" + key] = "FILL_VALUE"
+
             recursively_save_dict_contents_to_group(h5file,
                                                     path + "/" + key + "/",
                                                     item)
@@ -32,6 +70,19 @@ def recursively_load_dict_contents_from_group(h5file, path):
 
         if isinstance(item, h5py._hl.dataset.Dataset):
             ans[key] = item[()]
+
+            try:
+
+                ans[key] = ans[key].decode()
+
+                if ans[key] == "FILL_VALUE":
+
+                    ans[key] = {}
+
+            except:
+
+                pass
+
         elif isinstance(item, h5py._hl.group.Group):
             ans[key] = recursively_load_dict_contents_from_group(
                 h5file, path + "/" + key + "/")
@@ -43,14 +94,14 @@ def recursively_load_dict_contents_from_group(h5file, path):
 # an hdf5 file
 
 
-def fill_graph_dict(graph_dict):
+def fill_graph_dict(graph_dict, fill_value=1):
     new_dict = {}
 
     for k, v in graph_dict.items():
         if len(v) == 0:
             # this is an empty dict
             # so fill it
-            new_dict[k] = 1
+            new_dict[k] = fill_value
         else:
             new_dict[k] = fill_graph_dict(v)
     return new_dict

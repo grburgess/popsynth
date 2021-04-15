@@ -221,8 +221,8 @@ spatial selection:
 # the are custom!
 
 auxiliary samplers:
-    NormalAuxSampler:
-        name: stellar_mass
+    stellar_mass
+        type: NormalAuxSampler
         observed: False
         mu: 0
         sigma: 1
@@ -230,15 +230,15 @@ auxiliary samplers:
         secondary:
         init variables:
 
-    DemoSampler:
-        name: demo
+    demo:
+        type: DemoSampler
         observed: False
         selection:
             UpperBound:
                 boundary: 20
 
-    DemoSampler2:
-        name: demo2
+    demo2:
+        type: DemoSampler2
         observed: True
         selection:
         secondary: [demo, stellar_mass] # other samplers that this sampler depends on

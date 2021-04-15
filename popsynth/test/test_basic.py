@@ -209,11 +209,24 @@ def test_loading_from_file():
 
     assert ps.spatial_distribution.Lambda == 0.5
 
-    ps.draw_survey()
+    pop = ps.draw_survey()
 
     ps.write_to("/tmp/test.yml")
 
 
+    pop.writeto("/tmp/_pop.h5")
+
+
+
+    ####
+    
+    p = get_path_of_data_file("test_pop.yml")
+
+    ps = popsynth.PopulationSynth.from_file(p)
+
+    assert ps._auxiliary_observations["two"].name == "two"
+
+    
 def test_errors():
 
     pg = popsynth.populations.SchechterHomogeneousSphericalPopulation(

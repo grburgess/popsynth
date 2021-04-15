@@ -241,11 +241,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         aux_samplers = {}
 
+        
+
+        
         for k, v in self._auxiliary_observations.items():
 
             tmp = {}
 
-            tmp["name"] = v.name
+            tmp["type"] = v._auxiliary_sampler_name
             tmp["observed"] = v.observed
 
             for k2, v2 in v.truth.items():
@@ -259,8 +262,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             tmp["selection"] = selection
 
-            aux_samplers[v._auxiliary_sampler_name] = tmp
+            aux_samplers[k] = tmp
 
+            if v.has_secondary:
+
+                aux_samplers = v.get_secondary_objects(aux_samplers)
+        
+
+            
         output["auxiliary samplers"] = aux_samplers
 
         return output
@@ -464,17 +473,18 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         if "auxiliary samplers" in input:
 
-            for k, v in input["auxiliary samplers"].items():
+            for obj_name, v in input["auxiliary samplers"].items():
 
                 # first we extract the required info
 
-                sampler_name = k
-                obj_name = v.pop("name")
+                sampler_name = v.pop("type")
                 is_observed = v.pop("observed")
 
                 # now we extract the selection
                 # and secondary if they are there
 
+                log.debug(f"starting to scan {obj_name} of type {sampler_name}")
+                
                 if "selection" in v:
                     selection = v.pop("selection")
 
@@ -483,7 +493,20 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     selection = None
 
                 if "secondary" in v:
-                    secondary = list(np.atleast_1d(v.pop("secondary")))
+
+                    log.debug(f"auxiliary sampler {obj_name} has secondaries")
+                    
+                    secondary = v.pop("secondary")
+
+                    if isinstance(secondary, dict):
+                        
+                        secondary = list(np.atleast_1d(list(secondary.keys())))
+
+                    else:
+                        secondary = list(np.atleast_1d(secondary))
+
+
+                    log.debug(f"secondaries are {secondary}")
 
                 else:
 
@@ -600,13 +623,15 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 # now we store this sampler
 
                 log.debug(f"{obj_name} built")
-
+                
                 aux_samplers[obj_name] = tmp
 
                 # if there is a secondary sampler,
                 # we need to make a mapping
 
                 if secondary is not None:
+
+                    log.debug(f"{obj_name} is adding {secondary} as secondaries")
 
                     secondary_samplers[obj_name] = secondary
 
