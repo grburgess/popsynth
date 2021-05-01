@@ -347,17 +347,17 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         sd_name = list(tmp.keys())[0]
 
-        spatial_distribtuion: SpatialDistribution = distribution_registry[sd_name]
+        spatial_distribution: SpatialDistribution = distribution_registry[sd_name]
 
         for k, v in tmp[sd_name].items():
 
             log.debug(f"trying to set {k} to {v}")
 
-            for x in spatial_distribtuion.__class__.mro():
+            for x in spatial_distribution.__class__.mro():
 
                 if k in x.__dict__:
 
-                    setattr(spatial_distribtuion, k, float(v))
+                    setattr(spatial_distribution, k, float(v))
 
                     break
 
@@ -366,7 +366,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
         # create the poopulation synth
 
         pop_synth: PopulationSynth = cls(
-            spatial_distribtuion,
+            spatial_distribution,
             luminosity_distribution=luminosity_distribtuion,
             seed=seed,
         )
