@@ -216,7 +216,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         # store is_rate if cosmological distribution
 
-        if isinstance(spatial_distribution, CosmologicalDistribution):
+        if isinstance(self._spatial_distribution, CosmologicalDistribution):
 
             spatial_distribution["is_rate"] = self._spatial_distribution._is_rate
 
