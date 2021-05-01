@@ -24,6 +24,7 @@ spatial distribution:
         Lambda: .5
         delta: -2
         r_max: 5
+    is_rate: true
 
 # specify the distance selection function
 # and it's parmeters
