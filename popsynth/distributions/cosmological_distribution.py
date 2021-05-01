@@ -8,6 +8,7 @@ from popsynth.utils.cosmology import cosmology
 
 class CosmologicalDistribution(SpatialDistribution):
     _distribution_name = "CosmologicalDistribution"
+
     def __init__(self,
                  seed=1234,
                  name="cosmo",
@@ -102,12 +103,12 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
 
         return _zp_dndv(distance, self.Lambda, self.delta)
 
+
 @nb.njit(fastmath=True)
 def _zp_dndv(z, Lambda, delta):
     return Lambda * np.power(z + 1, delta)
-    
 
-    
+
 # class MergerDistribution(CosmologicalDistribution):
 #_distribution_name = "MergerDistribution"
 #     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):

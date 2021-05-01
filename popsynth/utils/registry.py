@@ -25,5 +25,7 @@ def list_available_auxiliary_samplers():
         print(k)
 
 
-__all__ = ["auxiliary_parameter_registry",
-           "distribution_registry", "distribution_registry"]
+__all__ = [
+    "auxiliary_parameter_registry", "distribution_registry",
+    "distribution_registry"
+]

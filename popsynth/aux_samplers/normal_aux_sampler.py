@@ -5,7 +5,7 @@ from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
 
 class NormalAuxSampler(AuxiliarySampler):
     _auxiliary_sampler_name = "NormalAuxSampler"
-    
+
     mu = AuxiliaryParameter(default=0)
     tau = AuxiliaryParameter(default=1, vmin=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
