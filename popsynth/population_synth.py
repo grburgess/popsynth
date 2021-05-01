@@ -361,6 +361,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                     break
 
+        if isinstance(spatial_distribution, CosmologicalDistribution):
+
+            spatial_distribution._is_rate = tmp["is_rate"]
+
         seed: int = input["seed"]
 
         # create the poopulation synth
