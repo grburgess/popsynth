@@ -101,7 +101,7 @@ _spatial_params = [
     dict(Lambda=1.0),
     dict(Lambda=5.0, delta=0.1),
     dict(Lambda=5.0, delta=0.1),
-    dict(r0=5.0,a=0.015 ,rise=0.5, decay=2.0, peak=1.5),
+    dict(r0=5.0, a=0.015, rise=0.5, decay=2.0, peak=1.5),
 ]
 _pareto_params = dict(Lmin=2.0, alpha=1.0)
 
@@ -135,11 +135,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-
-            flux_sigma=0.4,
-
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.4, )
 
         self.reset()
 
@@ -151,9 +147,7 @@ class Popbuilder(object):
 
         self.d2.set_selection_probability(s)
 
-        pop = self.pop_gen.draw_survey(
-
-        )
+        pop = self.pop_gen.draw_survey()
 
         assert isinstance(self.pop_gen._flux_selector, popsynth.UnitySelection)
 
@@ -168,9 +162,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.1,
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.1, )
 
         self.reset()
 
@@ -184,9 +176,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.1,
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.1, )
 
         self.reset()
 
@@ -203,8 +193,7 @@ class Popbuilder(object):
         self.pop_gen.set_distance_selection(s1)
         self.pop_gen.set_flux_selection(s2)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.5)
+        pop = self.pop_gen.draw_survey(flux_sigma=0.5)
 
         self.reset()
 
@@ -257,7 +246,7 @@ class Popbuilder(object):
 
             # b = popsynth.BernoulliSelection()
 
-#            self.d2.set_selection_probability(b)
+            #            self.d2.set_selection_probability(b)
 
             self.pop_gen.add_observed_quantity(self.d2)
 

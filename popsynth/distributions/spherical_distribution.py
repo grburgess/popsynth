@@ -5,6 +5,7 @@ from popsynth.distribution import SpatialDistribution, DistributionParameter
 
 class SphericalDistribution(SpatialDistribution):
     _distribution_name = "SphericalDistribution"
+
     def __init__(self, seed=1234, name="sphere", form=None):
 
         super(SphericalDistribution, self).__init__(seed=seed,

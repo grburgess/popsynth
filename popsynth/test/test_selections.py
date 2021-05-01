@@ -20,7 +20,8 @@ class GalacticPlaceSelection(popsynth.SpatialSelection):
 
         b = []
 
-        for ra, dec in zip(self._spatial_distribution.ra, self._spatial_distribution.dec):
+        for ra, dec in zip(self._spatial_distribution.ra,
+                           self._spatial_distribution.dec):
 
             g_coor = SkyCoord(ra, dec, unit="deg",
                               frame="icrs").transform_to("galactic")
