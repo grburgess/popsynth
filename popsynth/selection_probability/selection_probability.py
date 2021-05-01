@@ -15,8 +15,15 @@ class SelectionParameter(Parameter):
     pass
 
 
-class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry, base_type=ParameterMeta)):
-    def __init__(self, name: str = "name", use_obs_value: bool = False, use_distance: bool = False, use_luminosity: bool = False, use_flux: bool = False) -> None:
+class SelectionProbabilty(object,
+                          metaclass=AutoRegister(selection_registry,
+                                                 base_type=ParameterMeta)):
+    def __init__(self,
+                 name: str = "name",
+                 use_obs_value: bool = False,
+                 use_distance: bool = False,
+                 use_luminosity: bool = False,
+                 use_flux: bool = False) -> None:
 
         self._name = name  # type: str
 

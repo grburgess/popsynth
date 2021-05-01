@@ -88,8 +88,6 @@ class MyFlatPopulation(PopulationSynth):
         )
 
 
-
-
 def test_distribution_with_no_parameters():
 
     popgen = MyPopulation()
@@ -116,5 +114,3 @@ def test_spiral():
     ld.Lmin = 1
     synth = MWRadialPopulation(rho=1, luminosity_distribution=ld)
     population = synth.draw_survey()
-
-    

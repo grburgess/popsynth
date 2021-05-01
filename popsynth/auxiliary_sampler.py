@@ -23,7 +23,9 @@ class AuxiliaryParameter(Parameter):
     pass
 
 
-class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_registry, base_type=ParameterMeta)):
+class AuxiliarySampler(object,
+                       metaclass=AutoRegister(auxiliary_parameter_registry,
+                                              base_type=ParameterMeta)):
     def __init__(self,
                  name: str,
                  observed: bool = True,
@@ -126,7 +128,7 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
 
                 self._selector.set_luminosity(self._luminosity)
 
-            except(AttributeError):
+            except (AttributeError):
 
                 log.debug("tried to set luminosity, but could not")
 
@@ -266,7 +268,6 @@ class AuxiliarySampler(object, metaclass=AutoRegister(auxiliary_parameter_regist
     def get_secondary_objects(
         self,
         recursive_secondaries: Optional[Dict[str, Any]] = None,
-
     ) -> Dict[str, Any]:
         """FIXME! briefly describe function
 

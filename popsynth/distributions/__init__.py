@@ -11,18 +11,9 @@ from .spherical_distribution import (ConstantSphericalDistribution,
                                      ZPowerSphericalDistribution)
 
 __all__ = [
-    "SphericalDistribution",
-    "CosmologicalDistribution",
-    "SFRDistribution",
-    "ZPowerCosmoDistribution",
-    "ParetoDistribution",
-    "Log10NormalDistribution",
-    "LogNormalDistribution",
-    "SchechterDistribution",
-    "BPLDistribution",
-    "SphericalDistribution",
-    "ConstantSphericalDistribution",
+    "SphericalDistribution", "CosmologicalDistribution", "SFRDistribution",
+    "ZPowerCosmoDistribution", "ParetoDistribution", "Log10NormalDistribution",
+    "LogNormalDistribution", "SchechterDistribution", "BPLDistribution",
+    "SphericalDistribution", "ConstantSphericalDistribution",
     "ZPowerSphericalDistribution"
-
-
 ]
