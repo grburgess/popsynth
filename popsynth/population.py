@@ -11,6 +11,7 @@ import pandas as pd
 import pythreejs
 from betagen import betagen
 from IPython.display import Markdown, Math, display
+from numpy.typing import ArrayLike
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
@@ -22,10 +23,6 @@ from popsynth.utils.spherical_geometry import xyz
 
 log = setup_logger(__name__)
 
-# from numpy.typing import ArrayLike
-
-# dummy
-ArrayLike = List[float]
 
 wine = "#8F2727"
 dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
@@ -348,6 +345,15 @@ class Population(object):
     @property
     def spatial_parameters(self):
         return self._spatial_params
+
+    def __repr__(self):
+
+        out = ""
+        out += f"total number of objects: {self.n_detections + self.n_non_detections}"
+        out += f"\n number of detections: {self.n_detections}"
+        out += f"\n number of non-detections: {self.n_non_detections}"
+
+        return out
 
     def to_stan_data(self) -> dict:
         """

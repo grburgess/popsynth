@@ -1,23 +1,26 @@
 import logging
 import logging.handlers as handlers
 import sys
-from typing import Dict, Optional
 from contextlib import contextmanager
+from typing import Dict, Optional
+
 import colorama
 from colorama import Back, Fore, Style
 
 from popsynth.utils.configuration import popsynth_config
-from popsynth.utils.package_data import get_path_of_log_dir, get_path_of_log_file
+from popsynth.utils.package_data import (get_path_of_log_dir,
+                                         get_path_of_log_file)
 
 colorama.deinit()
 colorama.init(strip=False)
-## set up the console logging
+# set up the console logging
 
 
 class ColoredFormatter(logging.Formatter):
     """
     Colored log formatter.
     """
+
     def __init__(self,
                  *args,
                  colors: Optional[Dict[str, str]] = None,
@@ -96,11 +99,10 @@ popsynth_console_log_handler.setLevel(
 warning_filter = MyFilter(logging.WARNING)
 
 
-
 class LoggingState(object):
 
     def __init__(self, popsynth_usr_log_handler, popsynth_console_log_handler,
-       
+
                  ):
         """
         A container to store the stat of the logs
@@ -111,7 +113,6 @@ class LoggingState(object):
         self.popsynth_usr_log_handler = popsynth_usr_log_handler
         self.popsynth_console_log_handler = popsynth_console_log_handler
 
-
         # store their current states
 
         self.popsynth_usr_log_handler_state = popsynth_usr_log_handler.level
@@ -121,7 +122,6 @@ class LoggingState(object):
 
         self.popsynth_usr_log_handler_state = popsynth_usr_log_handler.level
         self.popsynth_console_log_handler_state = popsynth_console_log_handler.level
-
 
     def restore_last_state(self):
 
@@ -141,7 +141,6 @@ class LoggingState(object):
             logging.CRITICAL)
         self.popsynth_console_log_handler.setLevel(
             logging.CRITICAL)
-
 
     def loud_logs(self):
 
@@ -165,11 +164,8 @@ class LoggingState(object):
             logging.DEBUG)
 
 
-
 _log_state = LoggingState(popsynth_usr_log_handler, popsynth_console_log_handler,
                           )
-
-
 
 
 def silence_warnings():
@@ -203,7 +199,6 @@ def silence_logs():
     # handle dev logs independently
     popsynth_dev_log_handler.setLevel(logging.CRITICAL)
 
-
     _log_state.silence_logs()
 
 
@@ -217,8 +212,6 @@ def silence_progress_bars():
     popsynth_config.show_progress = False
 
 
-
-    
 def quiet_mode():
     """
     turn off all logging and progress bars
@@ -249,7 +242,6 @@ def activate_logs():
     # handle dev logs independently
     popsynth_dev_log_handler.setLevel(logging.DEBUG)
 
-
     _log_state.restore_last_state()
 
 
@@ -261,10 +253,7 @@ def debug_mode():
     # store state and switch console to debug
     _log_state.debug_logs()
 
-    
 
-
-    
 @contextmanager
 def silence_console_log():
 
@@ -281,7 +270,6 @@ def silence_console_log():
 
         popsynth_console_log_handler.setLevel(current_console_logging_level)
         popsynth_usr_log_handler.setLevel(current_usr_logging_level)
-
 
 
 def setup_logger(name):
