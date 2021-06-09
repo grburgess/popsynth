@@ -15,7 +15,7 @@ class DeltaDistribution(LuminosityDistribution):
         super(DeltaDistribution, self).__init__(
             seed=seed,
             name=name,
-            lf_form=lf_form,
+            form=lf_form,
         )
 
     def phi(self, L):
