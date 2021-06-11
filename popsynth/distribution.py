@@ -4,6 +4,7 @@ from typing import Dict, List, Union
 
 import numpy as np
 from class_registry import AutoRegister
+from numpy.typing import ArrayLike
 
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.logging import setup_logger
@@ -12,10 +13,6 @@ from popsynth.utils.progress_bar import progress_bar
 from popsynth.utils.registry import distribution_registry
 from popsynth.utils.rejection_sample import rejection_sample
 from popsynth.utils.spherical_geometry import sample_theta_phi
-
-#from numpy.typing import ArrayLike
-
-ArrayLike = List[float]
 
 log = setup_logger(__name__)
 

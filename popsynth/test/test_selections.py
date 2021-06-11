@@ -18,19 +18,11 @@ class GalacticPlaceSelection(popsynth.SpatialSelection):
 
     def draw(self, size: int):
 
-        b = []
+        g_coor = SkyCoord(self._spatial_distribution.ra, self._spatial_distribution.dec, unit="deg",
+                          frame="icrs").transform_to("galactic")
 
-        for ra, dec in zip(self._spatial_distribution.ra,
-                           self._spatial_distribution.dec):
-
-            g_coor = SkyCoord(ra, dec, unit="deg",
-                              frame="icrs").transform_to("galactic")
-
-            b.append(g_coor.b.deg)
-
-        b = np.array(b)
-
-        self._selection = (b >= self.b_limit) | (b <= -self.b_limit)
+        self._selection = (g_coor.b.deg >= self.b_limit) | (
+            g_coor.b.deg <= -self.b_limit)
 
 
 def test_spatial_selection():
