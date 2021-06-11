@@ -20,7 +20,6 @@ class ColoredFormatter(logging.Formatter):
     """
     Colored log formatter.
     """
-
     def __init__(self,
                  *args,
                  colors: Optional[Dict[str, str]] = None,
@@ -163,6 +162,7 @@ _log_state = LoggingState(
     popsynth_usr_log_handler,
     popsynth_console_log_handler,
 )
+
 
 def silence_warnings():
     """

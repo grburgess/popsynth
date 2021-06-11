@@ -23,7 +23,6 @@ from popsynth.utils.spherical_geometry import xyz
 
 log = setup_logger(__name__)
 
-
 wine = "#8F2727"
 dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
     wine)

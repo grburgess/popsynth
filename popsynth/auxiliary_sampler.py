@@ -14,7 +14,6 @@ from popsynth.utils.registry import auxiliary_parameter_registry
 
 log = setup_logger(__name__)
 
-
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
 
