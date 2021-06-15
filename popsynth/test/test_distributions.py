@@ -16,9 +16,7 @@ class DummySDistribution(SpatialDistribution):
         # we do not need a "truth" dict here because
         # there are no parameters
 
-        super(DummySDistribution, self).__init__(seed=seed,
-                                                 name="dummy1",
-                                                 form=form)
+        super(DummySDistribution, self).__init__(seed=seed, name="dummy1", form=form)
 
     def differential_volume(self, r):
 
@@ -40,9 +38,7 @@ class DummyLDistribution(LuminosityDistribution):
         # the latex formula for the ditribution
         lf_form = r"1"
 
-        super(DummyLDistribution, self).__init__(seed=seed,
-                                                 name="pareto",
-                                                 form=lf_form)
+        super(DummyLDistribution, self).__init__(seed=seed, name="pareto", form=lf_form)
 
     def phi(self, L):
 
@@ -146,6 +142,7 @@ def test_delta_lf():
     luminosity_distribution = DeltaDistribution()
     luminosity_distribution.Lp = 1
 
+    assert luminosity_distribution.phi(1) == 1
     assert luminosity_distribution.phi(2) == 0
 
     L = [1, 2, 3, 4]

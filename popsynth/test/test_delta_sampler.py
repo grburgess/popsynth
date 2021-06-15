@@ -4,7 +4,7 @@ import pytest
 from popsynth.aux_samplers.delta_aux_sampler import DeltaAuxSampler
 
 
-def test_delta_sampler():
+def test_delta_sampler_obs():
 
     N = 1000
 
@@ -21,3 +21,18 @@ def test_delta_sampler():
     delta_sampler.observation_sampler(N)
 
     assert pytest.approx(np.std(delta_sampler._obs_values), 0.1) == 1
+
+
+def test_delta_sampler():
+
+    N = 1000
+
+    delta_sampler = DeltaAuxSampler(name="delta", observed=False)
+
+    delta_sampler.xp = 1.0
+
+    delta_sampler.true_sampler(N)
+
+    delta_sampler.observation_sampler(N)
+
+    assert delta_sampler._obs_values.all() == delta_sampler._true_values.all()
