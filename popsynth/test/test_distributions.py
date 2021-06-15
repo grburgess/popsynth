@@ -135,3 +135,16 @@ def test_delta():
     popgen = MyDeltaPopulation()
 
     popgen.draw_survey()
+
+
+def test_delta_lf():
+
+    luminosity_distribution = DeltaDistribution()
+    luminosity_distribution.Lp = 1
+
+    assert luminosity_distribution.phi(2) == 0
+
+    L = [1, 2, 3, 4]
+
+    assert luminosity_distribution.phi(L)[0] == 1
+    assert luminosity_distribution.phi(L)[1] == 0
