@@ -6,7 +6,7 @@ class DeltaDistribution(LuminosityDistribution):
 
     _distribution_name = "DeltaDistribution"
 
-    Lp = DistributionParameter(vmin=0)
+    Lp = DistributionParameter(vmin=0, default=0)
 
     def __init__(self, seed=1234, name="delta"):
 
@@ -20,13 +20,27 @@ class DeltaDistribution(LuminosityDistribution):
 
     def phi(self, L):
 
-        if L == self.Lp:
+        if isinstance(L, (list, np.ndarray)):
 
-            return 1
+            L = np.array(L)
+
+            out = np.zeros(len(L))
+
+            out[L == self.Lp] = 1
+
+            out[L != self.Lp] = 0
+
+            return out
 
         else:
 
-            return 0
+            if L == self.Lp:
+
+                return 1
+
+            else:
+
+                return 0
 
     def draw_luminosity(self, size=1):
 
