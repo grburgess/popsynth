@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 from class_registry import AutoRegister
+from numpy.typing import ArrayLike
 
 from popsynth.distribution import SpatialContainer
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
@@ -11,11 +12,8 @@ from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
 from popsynth.utils.registry import auxiliary_parameter_registry
 
-#from numpy.typing import ArrayLike
-
 log = setup_logger(__name__)
 
-ArrayLike = List[float]
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
 

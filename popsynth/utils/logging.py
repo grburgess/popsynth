@@ -1,17 +1,19 @@
 import logging
 import logging.handlers as handlers
 import sys
-from typing import Dict, Optional
 from contextlib import contextmanager
+from typing import Dict, Optional
+
 import colorama
 from colorama import Back, Fore, Style
 
 from popsynth.utils.configuration import popsynth_config
-from popsynth.utils.package_data import get_path_of_log_dir, get_path_of_log_file
+from popsynth.utils.package_data import (get_path_of_log_dir,
+                                         get_path_of_log_file)
 
 colorama.deinit()
 colorama.init(strip=False)
-## set up the console logging
+# set up the console logging
 
 
 class ColoredFormatter(logging.Formatter):
@@ -134,7 +136,6 @@ class LoggingState(object):
         self._store_state()
 
         # silence the logs
-
         self.popsynth_usr_log_handler.setLevel(logging.CRITICAL)
         self.popsynth_console_log_handler.setLevel(logging.CRITICAL)
 

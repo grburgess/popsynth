@@ -1,12 +1,10 @@
-#from numpy.typing import ArrayLike
 from typing import List
 
 import numpy as np
 import scipy.stats as stats
+from numpy.typing import ArrayLike
 
 from popsynth.auxiliary_sampler import AuxiliaryParameter, AuxiliarySampler
-
-ArrayLike = List[float]
 
 
 class LogNormalAuxSampler(AuxiliarySampler):
@@ -20,7 +18,7 @@ class LogNormalAuxSampler(AuxiliarySampler):
         """
         A Log normal sampler
 
-        where x ~ 10^N(mu, sigma)
+        where x ~ e^N(mu, sigma)
 
 
         :param name:
