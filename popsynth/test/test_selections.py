@@ -25,14 +25,14 @@ class GalacticPlaneSelection(popsynth.SpatialSelection):
             frame="icrs",
         ).transform_to("galactic")
 
-        self._selection = (g_coor.b.deg >= self.b_limit) | (
-            g_coor.b.deg <= -self.b_limit
-        )
+        self._selection = (g_coor.b.deg >= self.b_limit) | (g_coor.b.deg <=
+                                                            -self.b_limit)
 
 
 def test_spatial_selection():
 
-    pg = popsynth.populations.Log10NormalHomogeneousSphericalPopulation(10, 1, 1)
+    pg = popsynth.populations.Log10NormalHomogeneousSphericalPopulation(
+        10, 1, 1)
 
     gps = GalacticPlaneSelection()
     gps.b_limit = 10.0
