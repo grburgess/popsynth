@@ -39,23 +39,20 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
 
         secondary = self._secondary_samplers["demo"]
 
-        self._true_values = (
-            (np.random.normal(self.mu, self.tau, size=size))
-            + secondary.true_values
-            - np.log10(1 + self._distance)
-        )
+        self._true_values = ((np.random.normal(self.mu, self.tau, size=size)) +
+                             secondary.true_values -
+                             np.log10(1 + self._distance))
 
     def observation_sampler(self, size):
 
         self._obs_values = self._true_values + np.random.normal(
-            0, self.sigma, size=size
-        )
+            0, self.sigma, size=size)
 
     def compute_luminosity(self):
 
         secondary = self._secondary_samplers["demo"]
 
-        return (10 ** (self._true_values + 54)) / secondary.true_values
+        return (10**(self._true_values + 54)) / secondary.true_values
 
 
 _spatial_dict = [
@@ -151,9 +148,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.4,
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.4, )
 
         self.reset()
 
@@ -180,9 +175,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.1,
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.1, )
 
         self.reset()
 
@@ -196,9 +189,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.1,
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.1, )
 
         self.reset()
 
