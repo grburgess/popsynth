@@ -98,8 +98,7 @@ def test_basic_population():
 
     homo_pareto_synth.set_distance_selection(u_select)
 
-    population = homo_pareto_synth.draw_survey(flux_sigma=0.1,
-                                               )
+    population = homo_pareto_synth.draw_survey(flux_sigma=0.1, )
     homo_pareto_synth.clean(reset=True)
 
     homo_sch_synth = popsynth.populations.SchechterHomogeneousSphericalPopulation(
@@ -122,9 +121,7 @@ def test_basic_population():
 
     homo_sch_synth.set_flux_selection(u_select)
 
-    homo_sch_synth.draw_survey(
-        flux_sigma=0.1,
-    )
+    homo_sch_synth.draw_survey(flux_sigma=0.1, )
 
     population.writeto("_saved_pop.h5")
     population_reloaded = popsynth.Population.from_file("_saved_pop.h5")
@@ -213,22 +210,20 @@ def test_loading_from_file():
 
     ps.write_to("/tmp/test.yml")
 
-
     pop.writeto("/tmp/_pop.h5")
 
-
-
     ####
-    
+
     p = get_path_of_data_file("test_pop.yml")
 
     ps = popsynth.PopulationSynth.from_file(p)
 
     assert ps._auxiliary_observations["two"].name == "two"
 
-    assert ps._auxiliary_observations["two"].secondary_samplers["one"].name == "one"
+    assert ps._auxiliary_observations["two"].secondary_samplers[
+        "one"].name == "one"
 
-    
+
 def test_errors():
 
     pg = popsynth.populations.SchechterHomogeneousSphericalPopulation(
@@ -246,12 +241,13 @@ def test_errors():
 
         pg.add_spatial_selector(1)
 
-    sd = popsynth.populations.spatial_populations.ConstantSphericalDistribution()
+    sd = popsynth.populations.spatial_populations.ConstantSphericalDistribution(
+    )
 
     with pytest.raises(RuntimeError):
 
-        _ = popsynth.PopulationSynth(
-            spatial_distribution=sd, luminosity_distribution=1)
+        _ = popsynth.PopulationSynth(spatial_distribution=sd,
+                                     luminosity_distribution=1)
 
     with pytest.raises(RuntimeError):
 

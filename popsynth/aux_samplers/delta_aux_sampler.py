@@ -1,13 +1,13 @@
+import numpy as np
 import scipy.stats as stats
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
 
 
-class NormalAuxSampler(AuxiliarySampler):
-    _auxiliary_sampler_name = "NormalAuxSampler"
+class DeltaAuxSampler(AuxiliarySampler):
+    _auxiliary_sampler_name = "DeltaAuxSampler"
 
-    mu = AuxiliaryParameter(default=0)
-    tau = AuxiliaryParameter(default=1, vmin=0)
+    xp = AuxiliaryParameter(default=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
     def __init__(self, name: str, observed: bool = True):
@@ -23,13 +23,11 @@ class NormalAuxSampler(AuxiliarySampler):
 
         """
 
-        super(NormalAuxSampler, self).__init__(name=name, observed=observed)
+        super(DeltaAuxSampler, self).__init__(name=name, observed=observed)
 
     def true_sampler(self, size: int):
 
-        self._true_values = stats.norm.rvs(loc=self.mu,
-                                           scale=self.tau,
-                                           size=size)
+        self._true_values = np.repeat(self.xp, repeats=size)
 
     def observation_sampler(self, size: int):
 

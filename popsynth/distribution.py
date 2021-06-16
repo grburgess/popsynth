@@ -21,7 +21,9 @@ class DistributionParameter(Parameter):
     pass
 
 
-class Distribution(object, metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta)):
+class Distribution(object,
+                   metaclass=AutoRegister(distribution_registry,
+                                          base_type=ParameterMeta)):
     _distribution_name = "Distribution"
 
     def __init__(self, name: str, seed: int, form: str) -> None:

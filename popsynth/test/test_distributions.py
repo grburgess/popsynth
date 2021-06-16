@@ -1,9 +1,9 @@
 import numpy as np
 
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
+from popsynth.distributions.delta_distribution import DeltaDistribution
 from popsynth.distributions.flatland_distribution import FlatlandDistribution
-from popsynth.distributions.spiral_galaxy_distribution import \
-    SpiralGalaxyDistribution
+from popsynth.distributions.spiral_galaxy_distribution import SpiralGalaxyDistribution
 from popsynth.population_synth import PopulationSynth
 
 
@@ -88,6 +88,22 @@ class MyFlatPopulation(PopulationSynth):
         )
 
 
+class MyDeltaPopulation(PopulationSynth):
+    def __init__(self, r_max=5, seed=1234):
+
+        # instantiate the distributions
+        luminosity_distribution = DeltaDistribution()
+        luminosity_distribution.Lp = 1
+
+        spatial_distribution = FlatlandDistribution()
+        spatial_distribution.Lambda = 1
+        spatial_distribution.r_max = r_max
+
+        super(MyDeltaPopulation, self).__init__(
+            spatial_distribution=spatial_distribution,
+            luminosity_distribution=luminosity_distribution,
+            seed=seed,
+        )
 
 
 def test_distribution_with_no_parameters():
@@ -117,4 +133,23 @@ def test_spiral():
     synth = MWRadialPopulation(rho=1, luminosity_distribution=ld)
     population = synth.draw_survey()
 
-    
+
+def test_delta():
+
+    popgen = MyDeltaPopulation()
+
+    popgen.draw_survey()
+
+
+def test_delta_lf():
+
+    luminosity_distribution = DeltaDistribution()
+    luminosity_distribution.Lp = 1
+
+    assert luminosity_distribution.phi(1) == 1
+    assert luminosity_distribution.phi(2) == 0
+
+    L = [1, 2, 3, 4]
+
+    assert luminosity_distribution.phi(L)[0] == 1
+    assert luminosity_distribution.phi(L)[1] == 0

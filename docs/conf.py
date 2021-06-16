@@ -24,7 +24,6 @@ project = 'popsynth'
 copyright = '2019, J. Michael Burgess'
 author = 'J. Michael Burgess'
 
-
 sys.path.insert(0, os.path.abspath("../"))
 
 DOCS = Path(__file__).parent
@@ -55,15 +54,9 @@ def run_apidoc(app):
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'nbsphinx',
-    'recommonmark',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.napoleon',
-    'rtds_action'
+    'nbsphinx', 'recommonmark', 'sphinx.ext.autodoc', 'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon', 'rtds_action'
 ]
 
 napoleon_google_docstring = True
@@ -82,9 +75,7 @@ rtds_action_artifact_prefix = "notebooks-for-"
 # A GitHub personal access token is required, more info below
 rtds_action_github_token = os.environ["GITHUB_TOKEN"]
 
-
 rtds_action_error_if_missing = True
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -93,7 +84,6 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
-
 
 # nbsphinx_allow_errors =True
 # nbsphinx_execute = "never"
@@ -138,7 +128,6 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.rc={'figure.dpi': 96}",
 ]
 
-
 from pygments.formatters import HtmlFormatter  # noqa: E402
 from pygments.styles import get_all_styles  # noqa: E402
 
@@ -169,9 +158,7 @@ html_logo = 'media/logo.png'
 
 # -- Options for LaTeX output ---------------------------------------------
 
-latex_elements = {
-
-}
+latex_elements = {}
 
 master_doc = 'index'
 
@@ -198,6 +185,7 @@ texinfo_documents = [
     (master_doc, 'popsynth', u'popsynth Documentation', author, 'popsynth',
      'One line description of project.', 'Miscellaneous'),
 ]
+
 
 def setup(app):
     app.connect("builder-inited", run_apidoc)

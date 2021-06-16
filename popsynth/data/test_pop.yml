@@ -24,6 +24,7 @@ spatial distribution:
         Lambda: .5
         delta: -2
         r_max: 5
+    is_rate: true
 
 
 # a spatial selection if needed
