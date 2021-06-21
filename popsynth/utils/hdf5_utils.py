@@ -42,8 +42,8 @@ def recursively_save_dict_contents_to_group(h5file, path, dic):
                 raise ValueError("Cannot save %s type" % type(item))
 
         if isinstance(
-            item,
-                (np.ndarray, np.int64, np.float64, str, bytes, float, int)):
+                item,
+            (np.ndarray, np.int64, np.float64, str, bytes, float, int)):
 
             h5file[path + "/" + key] = item
 

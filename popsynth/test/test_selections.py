@@ -4,9 +4,9 @@ from astropy.coordinates import SkyCoord
 import popsynth
 
 
-class GalacticPlaceSelection(popsynth.SpatialSelection):
+class GalacticPlaneSelection(popsynth.SpatialSelection):
 
-    _selection_name = "GalacticPlaceSelection"
+    _selection_name = "GalacticPlaneSelection"
 
     b_limit = popsynth.SelectionParameter(vmin=0, vmax=90)
 
@@ -14,15 +14,19 @@ class GalacticPlaceSelection(popsynth.SpatialSelection):
         """
         places a limit above the galactic plane for objects
         """
-        super(GalacticPlaceSelection, self).__init__(name=name)
+        super(GalacticPlaneSelection, self).__init__(name=name)
 
     def draw(self, size: int):
 
-        g_coor = SkyCoord(self._spatial_distribution.ra, self._spatial_distribution.dec, unit="deg",
-                          frame="icrs").transform_to("galactic")
+        g_coor = SkyCoord(
+            self._spatial_distribution.ra,
+            self._spatial_distribution.dec,
+            unit="deg",
+            frame="icrs",
+        ).transform_to("galactic")
 
-        self._selection = (g_coor.b.deg >= self.b_limit) | (
-            g_coor.b.deg <= -self.b_limit)
+        self._selection = (g_coor.b.deg >= self.b_limit) | (g_coor.b.deg <=
+                                                            -self.b_limit)
 
 
 def test_spatial_selection():
@@ -30,8 +34,8 @@ def test_spatial_selection():
     pg = popsynth.populations.Log10NormalHomogeneousSphericalPopulation(
         10, 1, 1)
 
-    gps = GalacticPlaceSelection()
-    gps.b_limit = 10.
+    gps = GalacticPlaneSelection()
+    gps.b_limit = 10.0
 
     pg.add_spatial_selector(gps)
 

@@ -60,10 +60,18 @@ class BoxSelection(SelectionProbabilty):
     vmin = SelectionParameter()
     vmax = SelectionParameter()
 
-    def __init__(self, name: str = "box selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
+    def __init__(self,
+                 name: str = "box selection",
+                 use_obs_value: bool = False,
+                 use_distance=False,
+                 use_luminosity=False,
+                 use_flux: bool = False):
 
-        super(BoxSelection, self).__init__(name=name, use_distance=use_distance,
-                                           use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux)
+        super(BoxSelection, self).__init__(name=name,
+                                           use_distance=use_distance,
+                                           use_luminosity=use_luminosity,
+                                           use_obs_value=use_obs_value,
+                                           use_flux=use_flux)
 
     def draw(self, size: int) -> np.ndarray:
 
@@ -90,13 +98,20 @@ class LowerBound(SelectionProbabilty):
 
     boundary = SelectionParameter()
 
-    def __init__(self, name="Hard selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
+    def __init__(self,
+                 name="Hard selection",
+                 use_obs_value: bool = False,
+                 use_distance=False,
+                 use_luminosity=False,
+                 use_flux: bool = False):
         """
         hard selection above the boundary
         """
-        super(LowerBound, self).__init__(name=name, use_distance=use_distance,
-                                         use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux
-                                         )
+        super(LowerBound, self).__init__(name=name,
+                                         use_distance=use_distance,
+                                         use_luminosity=use_luminosity,
+                                         use_obs_value=use_obs_value,
+                                         use_flux=use_flux)
 
     def draw(self, size: int) -> None:
 
@@ -123,13 +138,20 @@ class UpperBound(SelectionProbabilty):
 
     boundary = SelectionParameter()
 
-    def __init__(self, name="Hard selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False):
+    def __init__(self,
+                 name="Hard selection",
+                 use_obs_value: bool = False,
+                 use_distance=False,
+                 use_luminosity=False,
+                 use_flux: bool = False):
         """
         hard selection below the boundary
         """
-        super(UpperBound, self).__init__(name=name, use_distance=use_distance,
-                                         use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux
-                                         )
+        super(UpperBound, self).__init__(name=name,
+                                         use_distance=use_distance,
+                                         use_luminosity=use_luminosity,
+                                         use_obs_value=use_obs_value,
+                                         use_flux=use_flux)
 
     def draw(self, size: int) -> None:
 
@@ -157,7 +179,12 @@ class SoftSelection(SelectionProbabilty):
     boundary = SelectionParameter()
     strength = SelectionParameter(vmin=0)
 
-    def __init__(self, name="Soft Selection", use_obs_value: bool = False, use_distance=False, use_luminosity=False, use_flux: bool = False) -> None:
+    def __init__(self,
+                 name="Soft Selection",
+                 use_obs_value: bool = False,
+                 use_distance=False,
+                 use_luminosity=False,
+                 use_flux: bool = False) -> None:
         """
         selection using an inverse logit function either on the 
         log are linear value of the parameter
@@ -166,12 +193,13 @@ class SoftSelection(SelectionProbabilty):
         :param strength: width of the logit
         """
 
-        super(SoftSelection, self).__init__(name=name, use_distance=use_distance,
-                                            use_luminosity=use_luminosity, use_obs_value=use_obs_value, use_flux=use_flux)
+        super(SoftSelection, self).__init__(name=name,
+                                            use_distance=use_distance,
+                                            use_luminosity=use_luminosity,
+                                            use_obs_value=use_obs_value,
+                                            use_flux=use_flux)
 
-    def draw(self,
-             size: int,
-             use_log=True) -> None:
+    def draw(self, size: int, use_log=True) -> None:
 
         if self._use_distance:
             values = self._distance
@@ -198,8 +226,10 @@ class SoftSelection(SelectionProbabilty):
                              (np.log10(values) -
                               np.log10(self.boundary)))  # type: np.ndarray
 
-        self._selection = stats.bernoulli.rvs(
-            probs, size=len(values)).astype(bool)
+        self._selection = stats.bernoulli.rvs(probs,
+                                              size=len(values)).astype(bool)
 
-    __all__ = ["UnitySelection", "BernoulliSelection",
-               "BoxSelection", "UpperBound", "UpperBound", "SoftSelection"]
+    __all__ = [
+        "UnitySelection", "BernoulliSelection", "BoxSelection", "UpperBound",
+        "UpperBound", "SoftSelection"
+    ]

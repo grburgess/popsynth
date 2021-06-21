@@ -9,18 +9,23 @@ import scipy.integrate as integrate
 
 import yaml
 from IPython.display import Markdown, Math, display
+
 # from numpy.typing import np.ndarray
 
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
+from popsynth.distributions.cosmological_distribution import CosmologicalDistribution
 from popsynth.population import Population
 from popsynth.selection_probability import ( SelectionProbabilty,
                                              UnitySelection)
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.progress_bar import progress_bar
-from popsynth.utils.registry import (auxiliary_parameter_registry,
-                                     distribution_registry, selection_registry)
+from popsynth.utils.registry import (
+    auxiliary_parameter_registry,
+    distribution_registry,
+    selection_registry,
+)
 
 log = setup_logger(__name__)
 
@@ -55,9 +60,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._graph = nx.DiGraph()  # type: nx.Digraph
 
-        if not isinstance(
-                spatial_distribution,
-                SpatialDistribution):
+        if not isinstance(spatial_distribution, SpatialDistribution):
 
             log.error("the spatial_distribution is the wrong type")
 
@@ -67,9 +70,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         if luminosity_distribution is not None:
 
-            if not isinstance(
-                luminosity_distribution, LuminosityDistribution
-            ):
+            if not isinstance(luminosity_distribution, LuminosityDistribution):
 
                 log.error("the luminosity_distribution is the wrong type")
 
@@ -116,7 +117,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def clean(self, reset: bool = False):
         """
-        clean the auxiliary samplers, selections, etc 
+        clean the auxiliary samplers, selections, etc
         from the population synth
         :param reset: reset any attached distributions and samplers
 
@@ -181,8 +182,12 @@ class PopulationSynth(object, metaclass=ABCMeta):
         """
         with open(file_name, "w") as f:
 
-            yaml.dump(stream=f, data=self.to_dict(),
-                      default_flow_style=False, Dumper=yaml.SafeDumper)
+            yaml.dump(
+                stream=f,
+                data=self.to_dict(),
+                default_flow_style=False,
+                Dumper=yaml.SafeDumper,
+            )
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -197,7 +202,16 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         spatial_distribution = {}
 
-        spatial_distribution[self._spatial_distribution._distribution_name] = self._spatial_distribution.truth
+        spatial_distribution[
+            self._spatial_distribution.
+            _distribution_name] = self._spatial_distribution.truth
+
+        # store is_rate if cosmological distribution
+
+        if isinstance(self._spatial_distribution, CosmologicalDistribution):
+
+            spatial_distribution[
+                "is_rate"] = self._spatial_distribution._is_rate
 
         output["spatial distribution"] = spatial_distribution
 
@@ -208,7 +222,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             luminosity_distribution = {}
 
-            luminosity_distribution[self._luminosity_distribution._distribution_name] = self._luminosity_distribution.truth
+            luminosity_distribution[
+                self._luminosity_distribution.
+                _distribution_name] = self._luminosity_distribution.truth
 
             output["luminosity distribution"] = luminosity_distribution
 
@@ -216,7 +232,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             flux_selection = {}
 
-            flux_selection[self._flux_selector._selection_name] = self._flux_selector.parameters
+            flux_selection[self._flux_selector.
+                           _selection_name] = self._flux_selector.parameters
 
             output["flux selection"] = flux_selection
 
@@ -224,7 +241,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             distance_selection = {}
 
-            distance_selection[self._distance_selector._selection_name] = self._distance_selector.parameters
+            distance_selection[
+                self._distance_selector.
+                _selection_name] = self._distance_selector.parameters
 
             output["distance selection"] = distance_selection
 
@@ -232,15 +251,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             spatial_selection = {}
 
-            spatial_selection[self._spatial_selector._selection_name] = self._spatial_selector.parameters
+            spatial_selection[
+                self._spatial_selector.
+                _selection_name] = self._spatial_selector.parameters
 
             output["spatial selection"] = spatial_selection
 
         aux_samplers = {}
 
-        
-
-        
         for k, v in self._auxiliary_observations.items():
 
             tmp = {}
@@ -264,9 +282,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             if v.has_secondary:
 
                 aux_samplers = v.get_secondary_objects(aux_samplers)
-        
 
-            
         output["auxiliary samplers"] = aux_samplers
 
         return output
@@ -291,7 +307,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             # create the instance
 
-            luminosity_distribtuion: LuminosityDistribution = distribution_registry[ld_name]
+            luminosity_distribtuion: LuminosityDistribution = distribution_registry[
+                ld_name]
 
             # now set the values of the parameters
 
@@ -321,26 +338,34 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         sd_name = list(tmp.keys())[0]
 
-        spatial_distribtuion: SpatialDistribution = distribution_registry[sd_name]
+        spatial_distribution: SpatialDistribution = distribution_registry[
+            sd_name]
 
         for k, v in tmp[sd_name].items():
 
             log.debug(f"trying to set {k} to {v}")
 
-            for x in spatial_distribtuion.__class__.mro():
+            for x in spatial_distribution.__class__.mro():
 
                 if k in x.__dict__:
 
-                    setattr(spatial_distribtuion, k, float(v))
+                    setattr(spatial_distribution, k, float(v))
 
                     break
+
+        if isinstance(spatial_distribution, CosmologicalDistribution):
+
+            spatial_distribution._is_rate = tmp["is_rate"]
 
         seed: int = input["seed"]
 
         # create the poopulation synth
 
         pop_synth: PopulationSynth = cls(
-            spatial_distribtuion, luminosity_distribution=luminosity_distribtuion, seed=seed)
+            spatial_distribution,
+            luminosity_distribution=luminosity_distribtuion,
+            seed=seed,
+        )
 
         # if there is a flux selection
         # then add it on
@@ -480,8 +505,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 # now we extract the selection
                 # and secondary if they are there
 
-                log.debug(f"starting to scan {obj_name} of type {sampler_name}")
-                
+                log.debug(
+                    f"starting to scan {obj_name} of type {sampler_name}")
+
                 if "selection" in v:
                     selection = v.pop("selection")
 
@@ -492,16 +518,15 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 if "secondary" in v:
 
                     log.debug(f"auxiliary sampler {obj_name} has secondaries")
-                    
+
                     secondary = v.pop("secondary")
 
                     if isinstance(secondary, dict):
-                        
+
                         secondary = list(np.atleast_1d(list(secondary.keys())))
 
                     else:
                         secondary = list(np.atleast_1d(secondary))
-
 
                     log.debug(f"secondaries are {secondary}")
 
@@ -533,10 +558,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
                         sampler_name,
                         name=obj_name,
                         observed=is_observed,
+                        **init_variables,
+                    )
 
-                        **init_variables)
-
-                except(TypeError):
+                except (TypeError):
 
                     # try without name
 
@@ -546,10 +571,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
                             sampler_name,
                             # name=obj_name,
                             observed=is_observed,
+                            **init_variables,
+                        )
 
-                            **init_variables)
-
-                    except(TypeError):
+                    except (TypeError):
 
                         try:
 
@@ -557,10 +582,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
                                 sampler_name,
                                 name=obj_name,
                                 # observed=is_observed,
+                                **init_variables,
+                            )
 
-                                **init_variables)
-
-                        except(TypeError):
+                        except (TypeError):
 
                             tmp: AuxiliarySampler = auxiliary_parameter_registry.get(
                                 sampler_name, **init_variables)
@@ -620,7 +645,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 # now we store this sampler
 
                 log.debug(f"{obj_name} built")
-                
+
                 aux_samplers[obj_name] = tmp
 
                 # if there is a secondary sampler,
@@ -628,7 +653,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 if secondary is not None:
 
-                    log.debug(f"{obj_name} is adding {secondary} as secondaries")
+                    log.debug(
+                        f"{obj_name} is adding {secondary} as secondaries")
 
                     secondary_samplers[obj_name] = secondary
 
@@ -738,7 +764,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
         if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
 
             log.info(
-                f"registering derived luminosity sampler: {auxiliary_sampler.name}")
+                f"registering derived luminosity sampler: {auxiliary_sampler.name}"
+            )
 
             self._has_derived_luminosity = True
             self._derived_luminosity_sampler = auxiliary_sampler
@@ -747,7 +774,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             if auxiliary_sampler.is_secondary:
                 log.error(
-                    f"{auxiliary_sampler.name} is already set as a secondary sampler!")
+                    f"{auxiliary_sampler.name} is already set as a secondary sampler!"
+                )
                 log.error(
                     f"and registered to {','.join(auxiliary_sampler.parents)}")
 
@@ -868,7 +896,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
         # create a callback of the integrand
         dNdr = (lambda r: self._spatial_distribution.dNdV(
             r) * self._spatial_distribution.differential_volume(r) / self.
-            _spatial_distribution.time_adjustment(r))
+                _spatial_distribution.time_adjustment(r))
 
         # integrate the population to determine the true number of
         # objects
@@ -1064,16 +1092,16 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                     log.debug("making a log10 flux draw")
 
-                    log10_fluxes_obs = self.draw_log10_fobs(fluxes, flux_sigma,
-                                                            size=n)  # type: np.ndarray
+                    log10_fluxes_obs = self.draw_log10_fobs(
+                        fluxes, flux_sigma, size=n)  # type: np.ndarray
                     flux_obs = np.power(10, log10_fluxes_obs)
 
                 else:
 
                     log.debug("making a logflux draw")
 
-                    log10_fluxes_obs = self.draw_log_fobs(fluxes, flux_sigma,
-                                                          size=n)  # type: np.ndarray
+                    log10_fluxes_obs = self.draw_log_fobs(
+                        fluxes, flux_sigma, size=n)  # type: np.ndarray
 
                     flux_obs = np.exp(log10_fluxes_obs)
 
@@ -1137,7 +1165,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         # now scan the spatial selector
 
-        if (self._spatial_selector is not None):
+        if self._spatial_selector is not None:
 
             self._spatial_selector.set_spatial_distribution(
                 self._spatial_distribution)
@@ -1166,7 +1194,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
         try:
 
             log.info(
-                f"Detected {global_selection.n_selected} objects out to a distance of {max(known_distances):.2f}")
+                f"Detected {global_selection.n_selected} objects out to a distance of {max(known_distances):.2f}"
+            )
 
         except:
 
@@ -1207,7 +1236,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             graph=self.graph,
             theta=self._spatial_distribution.theta,
             phi=self._spatial_distribution.phi,
-            pop_synth=self.to_dict()
+            pop_synth=self.to_dict(),
         )
 
     def display(self) -> None:

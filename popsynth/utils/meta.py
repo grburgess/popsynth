@@ -6,13 +6,11 @@ log = setup_logger(__name__)
 
 
 class Parameter(object):
-    def __init__(
-        self,
-        default: Optional[float] = None,
-        vmin: Optional[float] = None,
-        vmax: Optional[float] = None,
-        free: bool = True
-    ):
+    def __init__(self,
+                 default: Optional[float] = None,
+                 vmin: Optional[float] = None,
+                 vmax: Optional[float] = None,
+                 free: bool = True):
 
         self.name = None  # type: Union[None, str]
         self._vmin = vmin  # type: Optional[float]
@@ -32,15 +30,17 @@ class Parameter(object):
 
                 obj._parameter_storage[self.name] = self._default
 
-            assert obj._parameter_storage[self.name] is not None, "parameters must have values!"
+            assert obj._parameter_storage[
+                self.name] is not None, "parameters must have values!"
 
             return obj._parameter_storage[self.name]
 
-        except(KeyError):
+        except (KeyError):
 
             obj._parameter_storage[self.name] = self._default
 
-        assert obj._parameter_storage[self.name] is not None, "parameters must have values!"
+        assert obj._parameter_storage[
+            self.name] is not None, "parameters must have values!"
 
         return obj._parameter_storage[self.name]
 
@@ -55,7 +55,8 @@ class Parameter(object):
         if self._vmin is not None:
             if not (value >= self._vmin):
                 log.error(
-                    f"trying to set {self.x} to a value below {self._vmin} is not allowed")
+                    f"trying to set {self.x} to a value below {self._vmin} is not allowed"
+                )
 
                 raise RuntimeError()
 
@@ -63,7 +64,8 @@ class Parameter(object):
             if not (value <= self._vmax):
 
                 log.error(
-                    f"trying to set {self.name} to a value above {self._vmax} is not allowed")
+                    f"trying to set {self.name} to a value above {self._vmax} is not allowed"
+                )
                 raise RuntimeError()
 
         obj._parameter_storage[self.name] = value
@@ -81,7 +83,8 @@ class Parameter(object):
     free = property(
         _get_free,
         _set_free,
-        doc="Gets or sets whether the parameter is free or not. Use booleans, like: 'p.free = True' "
+        doc=
+        "Gets or sets whether the parameter is free or not. Use booleans, like: 'p.free = True' "
         " or 'p.free = False'. ",
     )
 
@@ -98,7 +101,8 @@ class Parameter(object):
     fix = property(
         _get_fix,
         _set_fix,
-        doc="Gets or sets whether the parameter is fixed or not. Use booleans, like: 'p.fix = True' "
+        doc=
+        "Gets or sets whether the parameter is fixed or not. Use booleans, like: 'p.fix = True' "
         " or 'p.fix = False'. ",
     )
 

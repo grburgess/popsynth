@@ -62,6 +62,11 @@ _spatial_dict = [
     popsynth.populations.SFRPopulation,
 ]
 
+_cosmo_dict = [
+    popsynth.populations.ZPowerCosmoPopulation,
+    popsynth.populations.SFRPopulation,
+]
+
 _pareto_dict = [
     popsynth.populations.ParetoHomogeneousSphericalPopulation,
     popsynth.populations.ParetoZPowerSphericalPopulation,
@@ -101,8 +106,14 @@ _spatial_params = [
     dict(Lambda=1.0),
     dict(Lambda=5.0, delta=0.1),
     dict(Lambda=5.0, delta=0.1),
-    dict(r0=5.0,a=0.015 ,rise=0.5, decay=2.0, peak=1.5),
+    dict(r0=5.0, a=0.015, rise=0.5, decay=2.0, peak=1.5),
 ]
+
+_cosmo_params = [
+    dict(Lambda=5.0, delta=0.1),
+    dict(r0=5.0, a=0.015, rise=0.5, decay=2.0, peak=1.5),
+]
+
 _pareto_params = dict(Lmin=2.0, alpha=1.0)
 
 _bpl_params = dict(Lmin=10.0, alpha=-0.5, Lbreak=100, beta=-2.0, Lmax=1000.0)
@@ -126,7 +137,9 @@ class Popbuilder(object):
 
         for k, v in params.items():
 
-            assert k in self.pop_gen._params
+            if k != "is_rate":
+
+                assert k in self.pop_gen._params
 
     def draw_hard(self):
 
@@ -135,11 +148,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-
-            flux_sigma=0.4,
-
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.4, )
 
         self.reset()
 
@@ -151,9 +160,7 @@ class Popbuilder(object):
 
         self.d2.set_selection_probability(s)
 
-        pop = self.pop_gen.draw_survey(
-
-        )
+        pop = self.pop_gen.draw_survey()
 
         assert isinstance(self.pop_gen._flux_selector, popsynth.UnitySelection)
 
@@ -168,9 +175,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.1,
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.1, )
 
         self.reset()
 
@@ -184,9 +189,7 @@ class Popbuilder(object):
 
         self.pop_gen.set_flux_selection(s)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.1,
-        )
+        pop = self.pop_gen.draw_survey(flux_sigma=0.1, )
 
         self.reset()
 
@@ -203,8 +206,7 @@ class Popbuilder(object):
         self.pop_gen.set_distance_selection(s1)
         self.pop_gen.set_flux_selection(s2)
 
-        pop = self.pop_gen.draw_survey(
-            flux_sigma=0.5)
+        pop = self.pop_gen.draw_survey(flux_sigma=0.5)
 
         self.reset()
 
@@ -257,7 +259,7 @@ class Popbuilder(object):
 
             # b = popsynth.BernoulliSelection()
 
-#            self.d2.set_selection_probability(b)
+            #            self.d2.set_selection_probability(b)
 
             self.pop_gen.add_observed_quantity(self.d2)
 
@@ -550,3 +552,20 @@ def test_l10norm():
         pb.pop_gen.add_observed_quantity(pb.d2)
 
         pb.test_it()
+
+
+def test_non_transient():
+
+    for pop, param in zip(_cosmo_dict, _cosmo_params):
+
+        param = copy.deepcopy(param)
+
+        param["is_rate"] = False
+
+        pb = Popbuilder(pop, **param)
+
+        pb.pop_gen.add_auxiliary_sampler(pb.d2)
+
+        pb.test_it()
+
+        assert pb.pop_gen.spatial_distribution._is_rate == False
