@@ -7,8 +7,8 @@ Welcome to popsynth's documentation!
 ====================================
 .. image:: ../external/logo.png
 
-This framework provides an abstract way to generate populations from
-various luminosity functions and redshift distributions. Additionally,
+This framework provides an abstract way to generate survey populations from
+arbitrary luminosity functions and redshift distributions. Additionally,
 auxiliary quantities can be sampled and stored.
 
 Populations can be saved and restored via an HDF5 files for later

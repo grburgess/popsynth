@@ -20,7 +20,7 @@ date: "07 April 2021"
 
 # Summary
 
-Simulating a population of fluxes and redshifts (distances) from an
+Simulating a population survey of fluxes and redshifts (distances) from an
 astrophysical population is a routine task. `popsynth` provides a
 generic, object-oriented framework to produce synthetic surveys from
 various distributions and luminosity functions, apply selection
@@ -61,16 +61,15 @@ Once a rate function and all associated distributions are specified in
 `popsynth`, a numeric integral over the rate function produces the
 total rate of objects in the populations. A survey is created by
 making a draw from a Poisson distribution with mean equal to the total
-rate of objects for the number of objects in the survey. For each
-object, the properties such as distance and luminosity are sampled
-from their associated distributions. Selection functions are then
-applied to latent or observed variables as specified by the
-user. Finally, all population objects and variables are returned in an
-object that can be serialized to disk for later examination.
-
-# Documentation
-
-Documentation for `popsynth` can be found [here](https://popsynth.readthedocs.io/).
+rate of objects multiplied by survey duration for the number of
+objects in the survey. For each object, the properties such as
+distance and luminosity are sampled from their associated
+distributions. Selection functions are then applied to latent or
+observed variables as specified by the user. Finally, all population
+objects and variables are returned in an object that can be serialized
+to disk for later examination. Further details on the mathematics,
+procedure, and details on customization can be foun in the extensive
+[documentation](https://popsynth.readthedocs.io/).
 
 
 # Acknowledgments

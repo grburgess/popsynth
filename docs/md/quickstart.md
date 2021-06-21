@@ -41,7 +41,7 @@ warnings.simplefilter("ignore")
 
 ## A spherically homogenous population with a pareto luminosity function
 
-**popsynth** comes with several types of populations preloaded. To create a population synthesizer, one simply instantiates the population form the **popsynth.populations** module.
+**popsynth** comes with several types of populations included, though you can easily construct your own. To create a population synthesizer, one simply instantiates the population form the **popsynth.populations** module.
 
 ```python
 homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
