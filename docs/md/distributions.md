@@ -55,10 +55,6 @@ jtplot.style(context="notebook", fscale=1, grid=False)
 purple = "#B833FF"
 yellow = "#F6EF5B"
 
-import popsynth
-
-popsynth.update_logging_level("INFO")
-
 import networkx as nx
 import numpy as np
 import warnings
@@ -69,6 +65,10 @@ warnings.simplefilter("ignore")
 `popsynth` comes with several built in distributions included
 
 ```python
+import popsynth
+popsynth.update_logging_level("INFO")
+
+
 popsynth.list_available_distributions()
 ```
 
