@@ -16,6 +16,18 @@ class SpiralGalaxyDistribution(SphericalDistribution):
 
     def __init__(self, seed=1234, name="spiral_galaxy", form=None):
 
+        """
+        A spiral galaxy spatial distribution
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :param form: 
+        :type form: 
+        :returns: 
+
+        """
         super(SpiralGalaxyDistribution, self).__init__(seed=seed,
                                                        name=name,
                                                        form=form)

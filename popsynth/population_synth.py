@@ -41,9 +41,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
         Basic and generic population synth. One specifies the spatial and luminosity distribution OR
         derived luminosity distribution and everything is setup.
 
-        :param spatial_distribution:
-        :param luminosity_distribution:
-        :param seed:
+        :param spatial_distribution: The spatial distribution to sample locations from
+        :param luminosity_distribution: the optional luminosity distribution
+        :param seed: random see
         :returns:
         :rtype:
 
@@ -877,8 +877,16 @@ class PopulationSynth(object, metaclass=ABCMeta):
         log10_flux_draw: bool = True,
     ) -> Population:
         """
-        Draw the total survey and return a Population object
+        Draw the total survey and return a Population object.
+        
+        This will sample all attached distributions and apply selection functions.
+        
+        If a value of flux_sigma is given, the log10 observed fluxes are sampled with 
+        measurement error.
+        
+
         :param flux_sigma: the homoskedastic sigma for the flux in log10 space
+        :param log10_flux_draw: if True, fluxes are drawn in log space
         :return: a Population object
         """
 

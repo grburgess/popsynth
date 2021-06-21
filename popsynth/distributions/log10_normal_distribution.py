@@ -11,6 +11,16 @@ class Log10NormalDistribution(LuminosityDistribution):
 
     def __init__(self, seed=1234, name="log10norm"):
 
+        """
+        a log10-normal luminosity function
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :returns: 
+
+        """
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 
         super(Log10NormalDistribution, self).__init__(name=name,

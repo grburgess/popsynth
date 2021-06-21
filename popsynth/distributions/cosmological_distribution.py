@@ -16,6 +16,22 @@ class CosmologicalDistribution(SpatialDistribution):
                  truth={},
                  is_rate=True):
 
+        """
+        base cosmological spatial distribution
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :param form: 
+        :type form: 
+        :param truth: 
+        :type truth: 
+        :param is_rate: 
+        :type is_rate: 
+        :returns: 
+
+        """
         super(CosmologicalDistribution, self).__init__(
             seed=seed,
             name=name,
@@ -49,6 +65,19 @@ class SFRDistribution(CosmologicalDistribution):
 
     def __init__(self, seed=1234, name="sfr", is_rate=True):
 
+        """
+        A star-formation like distribution of the form
+        presented in Cole et al. 2001
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :param is_rate: 
+        :type is_rate: 
+        :returns: 
+
+        """
         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
 
         super(SFRDistribution, self).__init__(
@@ -90,6 +119,19 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
         is_rate=True,
     ):
 
+        """
+        a cosmological distribution where the density 
+        evolves as a power law
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :param is_rate: 
+        :type is_rate: 
+        :returns: 
+
+        """
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
         super(ZPowerCosmoDistribution, self).__init__(

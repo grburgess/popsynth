@@ -14,6 +14,17 @@ class BPLDistribution(LuminosityDistribution):
 
     def __init__(self, seed=1234, name="bpl"):
 
+        """
+
+        a broken power law distribution 
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :returns: 
+
+        """
         lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
 
         super(BPLDistribution, self).__init__(seed=seed,

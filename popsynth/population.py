@@ -55,7 +55,7 @@ class Population(object):
                  phi=None,
                  pop_synth: Optional[Dict[str, Any]] = None) -> None:
         """
-        A population containing all the simulated variables
+        A population container for all the properties of the population.
 
         :param luminosities: the luminosities
         :param distances: the distances
@@ -183,23 +183,53 @@ class Population(object):
 
     @property
     def flux_sigma(self) -> float:
+        """
+        the simulated flux sigma
 
+        :returns: 
+
+        """
+        
         return self._flux_sigma
 
     @property
     def theta(self) -> np.ndarray:
+        """
+        the polar angle of the objects
+
+        :returns: 
+
+        """
         return self._theta
 
     @property
     def phi(self) -> np.ndarray:
+        """
+        the phi angle of the objects
+
+        :returns: 
+
+        """
         return self._phi
 
     @property
     def dec(self) -> np.ndarray:
+        """
+        the declenation of the objects
+
+        :returns: 
+
+        """
         return 90 - np.rad2deg(self._theta)
 
     @property
     def ra(self) -> np.ndarray:
+        """
+        the right ascension of the objects
+
+        :returns: 
+
+        """
         return np.rad2deg(self._phi)
 
     @property

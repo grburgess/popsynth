@@ -10,6 +10,18 @@ class FlatlandDistribution(SpatialDistribution):
 
     def __init__(self, seed: int = 1234, name: str = "flatland", form=None):
 
+        """
+        a distribution with only length
+
+        :param seed: 
+        :type seed: int
+        :param name: 
+        :type name: str
+        :param form: 
+        :type form: 
+        :returns: 
+
+        """
         super(FlatlandDistribution, self).__init__(seed=seed,
                                                    name=name,
                                                    form=form)

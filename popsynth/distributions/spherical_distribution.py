@@ -8,6 +8,19 @@ class SphericalDistribution(SpatialDistribution):
 
     def __init__(self, seed=1234, name="sphere", form=None):
 
+        """
+        a generic spherical distribution. Can be inherited to
+        form more complex spherical distributions
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :param form: 
+        :type form: 
+        :returns: 
+
+        """
         super(SphericalDistribution, self).__init__(seed=seed,
                                                     name=name,
                                                     form=form)
@@ -35,6 +48,18 @@ class ConstantSphericalDistribution(SphericalDistribution):
         form=None,
     ):
 
+        """
+        A spherical distribution with constant density
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :param form: 
+        :type form: 
+        :returns: 
+
+        """
         if form is None:
             form = r"\Lambda"
 
@@ -54,6 +79,16 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
 
     def __init__(self, seed=1234, name="zpow_sphere"):
 
+        """
+        a spherical population with a power law denisty profile
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :returns: 
+
+        """
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
         super(ZPowerSphericalDistribution, self).__init__(seed,

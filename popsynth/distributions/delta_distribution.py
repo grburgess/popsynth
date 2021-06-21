@@ -10,6 +10,16 @@ class DeltaDistribution(LuminosityDistribution):
 
     def __init__(self, seed=1234, name="delta"):
 
+        """
+        a dirac delta distribution
+
+        :param seed: 
+        :type seed: 
+        :param name: 
+        :type name: 
+        :returns: 
+
+        """
         lf_form = r"\delta(L - L_p)"
 
         super(DeltaDistribution, self).__init__(

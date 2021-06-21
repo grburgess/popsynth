@@ -27,7 +27,8 @@ class SchechterDistribution(LuminosityDistribution):
                                                     form=form)
 
     def phi(self, L):
-        """FIXME! briefly describe function
+        """
+        the functional form
 
         :param L:
         :returns:
@@ -39,7 +40,8 @@ class SchechterDistribution(LuminosityDistribution):
                 (self.Lmin**(1 + self.alpha) * sf.gamma(1 + self.alpha)))
 
     def draw_luminosity(self, size=1):
-        """FIXME! briefly describe function
+        """
+        function to sample the distribution
 
         :param size:
         :returns:
