@@ -15,7 +15,7 @@ jupyter:
 
 # Quick start
 
-A simple example of simulating a population via the built-in populations provided.
+A simple example of simulating a population survey via the built-in populations provided.
 
 ```python
 %matplotlib inline
@@ -39,15 +39,70 @@ import warnings
 warnings.simplefilter("ignore")
 ```
 
+```python nbsphinx="hidden"
+class DemoSampler(popsynth.AuxiliarySampler):
+    _auxiliary_sampler_name = "DemoSampler"
+    mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
+    tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
+
+    def __init__(self):
+
+        super(DemoSampler, self).__init__("demo", observed=False)
+
+    def true_sampler(self, size):
+
+        self._true_values = np.random.normal(self.mu, self.tau, size=size)
+
+
+class DemoSampler2(popsynth.DerivedLumAuxSampler):
+    _auxiliary_sampler_name = "DemoSampler2"
+    mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
+    tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
+    sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
+
+    def __init__(self):
+
+        super(DemoSampler2, self).__init__("demo2")
+
+    def true_sampler(self, size):
+
+        secondary = self._secondary_samplers["demo"]
+
+        self._true_values = (
+            (np.random.normal(self.mu, self.tau, size=size))
+            + secondary.true_values
+            - np.log10(1 + self._distance)
+        )
+
+    def observation_sampler(self, size):
+
+        self._obs_values = self._true_values + np.random.normal(
+            0, self.sigma, size=size
+        )
+
+    def compute_luminosity(self):
+
+        secondary = self._secondary_samplers["demo"]
+
+        return (10 ** (self._true_values + 54)) / secondary.true_values
+```
+
+
+
 ## A spherically homogenous population with a pareto luminosity function
 
-**popsynth** comes with several types of populations included, though you can easily construct your own. To create a population synthesizer, one simply instantiates the population form the **popsynth.populations** module.
+**popsynth** comes with several types of populations included, though
+you can easily construct your own. To create a population synthesizer,
+one simply instantiates the population form the
+**popsynth.populations** module. Here, we will simulate a survey that
+has a homogenous spherical spatial distribution and a pareto
+distributed luminosity.
 
 ```python
-homo_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
+homogeneous_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
     Lambda=5, Lmin=1, alpha=2.0  # the density normalization  # lower bound on the LF
 )  # index of the LF
-homo_pareto_synth.display()
+homogeneous_pareto_synth.display()
 ```
 
 
@@ -57,9 +112,9 @@ homo_pareto_synth.display()
 
 options = {"node_color": purple, "node_size": 3000, "width": 0.5}
 
-pos = nx.drawing.nx_agraph.graphviz_layout(homo_pareto_synth.graph, prog="dot")
+pos = nx.drawing.nx_agraph.graphviz_layout(homogeneous_pareto_synth.graph, prog="dot")
 
-nx.draw(homo_pareto_synth.graph, with_labels=True, pos=pos, **options)
+nx.draw(homogeneous_pareto_synth.graph, with_labels=True, pos=pos, **options)
 ```
 
 
@@ -72,12 +127,12 @@ We can now sample from this population with the **draw_survey** function, but fi
 flux_selector = popsynth.HardFluxSelection()
 flux_selector.boundary = 1e-2
 
-homo_pareto_synth.set_flux_selection(flux_selector)
+homogeneous_pareto_synth.set_flux_selection(flux_selector)
 ```
 
 
 ```python
-population = homo_pareto_synth.draw_survey(flux_sigma=0.1)
+population = homogeneous_pareto_synth.draw_survey(flux_sigma=0.1)
 ```
 
 We now have created a population. How did we get here?
@@ -97,23 +152,29 @@ We now have created a population. How did we get here?
 We could have specified a soft cutoff (an inverse logit) with logarithmic with as well:
 
 ```python
-homo_pareto_synth.clean()
+homogeneous_pareto_synth.clean()
 flux_selector = popsynth.SoftFluxSelection()
 flux_selector.boundary = 1e-2
 flux_selector.strength = 20
 
 
-homo_pareto_synth.set_flux_selection(flux_selector)
+homogeneous_pareto_synth.set_flux_selection(flux_selector)
 
-population = homo_pareto_synth.draw_survey(flux_sigma=0.1)
+population = homogeneous_pareto_synth.draw_survey(flux_sigma=0.1)
 ```
 
 ## The Population Object
 
-The population object stores all the information about the sampled survey. This includes information on the latent parameters, measured parameters, and distances for both the selected and non-selected objects.
+The population object stores all the information about the sampled
+survey. This includes information on the latent parameters, measured
+parameters, and distances for both the selected and non-selected
+objects.
 
 
-We can have a look at the flux-distance distribution from the survey. Here, yellow dots are the *latent* flux value, i.e., without observational noise, and purple dots are the *measured values for the *selected* objects. Arrows point from the latent to measured values.
+We can have a look at the flux-distance distribution from the
+survey. Here, yellow dots are the *latent* flux value, i.e., without
+observational noise, and purple dots are the *measured values for the
+*selected* objects. Arrows point from the latent to measured values.
 
 ```python
 fig = population.display_fluxes(obs_color=purple, true_color=yellow)
@@ -154,7 +215,9 @@ ax.set_xlabel("z")
 ```
 
 ## Saving the population
-We can record the results of a population synth to an HDF5 file that maintains all the information from the run. The true values of the population parameters are always stored in the truth dictionary:
+We can record the results of a population synth to an HDF5 file that
+maintains all the information from the run. The true values of the
+population parameters are always stored in the truth dictionary:
 
 
 ```python
@@ -173,9 +236,11 @@ reloaded_population = popsynth.Population.from_file("saved_pop.h5")
 reloaded_population.truth
 ```
 
-## Creating populations from YAML files (experimental)
+## Creating populations from YAML files
 
-It is sometimes easier to quickly write down population in a YAML file without having to create all the objects in python. Let's a take a look at the format:
+It is sometimes easier to quickly write down population in a YAML file
+without having to create all the objects in python. Let's a take a
+look at the format:
 
 ```yaml
 
@@ -245,67 +310,8 @@ auxiliary samplers:
 
 
 ```
-We can load this yaml file into a population synth like this:
 
-
-
-
-
-
-
-### Create our demo auxiliary samplers
-read ahead in the docs for more details on auxiliary samplers
-
-```python
-class DemoSampler(popsynth.AuxiliarySampler):
-    _auxiliary_sampler_name = "DemoSampler"
-    mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
-    tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
-
-    def __init__(self):
-
-        super(DemoSampler, self).__init__("demo", observed=False)
-
-    def true_sampler(self, size):
-
-        self._true_values = np.random.normal(self.mu, self.tau, size=size)
-
-
-class DemoSampler2(popsynth.DerivedLumAuxSampler):
-    _auxiliary_sampler_name = "DemoSampler2"
-    mu = popsynth.auxiliary_sampler.AuxiliaryParameter(default=2)
-    tau = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
-    sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=1, vmin=0)
-
-    def __init__(self):
-
-        super(DemoSampler2, self).__init__("demo2")
-
-    def true_sampler(self, size):
-
-        secondary = self._secondary_samplers["demo"]
-
-        self._true_values = (
-            (np.random.normal(self.mu, self.tau, size=size))
-            + secondary.true_values
-            - np.log10(1 + self._distance)
-        )
-
-    def observation_sampler(self, size):
-
-        self._obs_values = self._true_values + np.random.normal(
-            0, self.sigma, size=size
-        )
-
-    def compute_luminosity(self):
-
-        secondary = self._secondary_samplers["demo"]
-
-        return (10 ** (self._true_values + 54)) / secondary.true_values
-```
-
-### Load the file
-We use a saved file to demonstrate
+We can load this yaml file into a population synth. We use a saved file to demonstrate:
 
 ```python
 my_file = popsynth.utils.package_data.get_path_of_data_file("pop.yml")
