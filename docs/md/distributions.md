@@ -30,7 +30,7 @@ $$\pi(\vec{r}, \vec{\phi} | \vec{\psi}) = \frac{\lambda(\vec{r}; \vec{\psi})  \p
 
 $$N \sim \mathrm{Poisson(\Delta t \frac{d\Lambda}{dt})} \mathrm{.}$$
 
-Thus, ```popsynth``` first numerically integrates the spatial distribution to determine the Poisson rate parameter for the given $\vec{psi}$, then makes a Poisson draw for the number of objects in the populatiuon survey. For each object, positions and properties and drawn with arbirtrary dependencies between them. Finally, selection functions are applied to either latent or observed (with or without measurement error) properties. 
+Thus, ```popsynth``` first numerically integrates the spatial distribution to determine the Poisson rate parameter for the given $\vec{\psi}$, then makes a Poisson draw for the number of objects in the populatiuon survey. For each object, positions and properties and drawn with arbirtrary dependencies between them. Finally, selection functions are applied to either latent or observed (with or without measurement error) properties. 
 
 
 **Note:** If instead we draw a preset number of objects, as is done in many astrophysical population simulation frameworks, it is equivalent to running a survey up until that specific number of objects is detected. This process is distributed as a negative binomial process, i.e, wait for a number of successes and requires a different statsitical framework to compare models to data. 

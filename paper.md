@@ -68,7 +68,7 @@ distributions. Selection functions are then applied to latent or
 observed variables as specified by the user. Finally, all population
 objects and variables are returned in an object that can be serialized
 to disk for later examination. Further details on the mathematics,
-procedure, and details on customization can be foun in the extensive
+procedure, and details on customization can be found in the extensive
 [documentation](https://popsynth.readthedocs.io/).
 
 

@@ -19,7 +19,6 @@ Users can construct their own classes for spatial, luminosity,
 etc. distributions which can all be connected to arbitrarily complex
 selection functions.
 
-
 .. note:: This is *not* Synth Pop. If you were expecting that… I suggest you check out Depeche Mode. Though, it is possible to combine coding and good music_.
 
 
@@ -32,11 +31,13 @@ selection functions.
 .. toctree::
     :maxdepth: 5
     :hidden:
-       
+
+    notebooks/installation.ipynb
     notebooks/quickstart.ipynb
     notebooks/distributions.ipynb
     notebooks/custom.ipynb
     notebooks/selections.ipynb
     notebooks/aux.ipynb
     notebooks/milkyway.ipynb
+    notebooks/contribute.ipynb
     api/API
