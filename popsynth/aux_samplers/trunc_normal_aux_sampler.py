@@ -13,15 +13,18 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
     upper = AuxiliaryParameter()
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
-    def __init__(self, name, observed=True):
-        """FIXME! briefly describe function
+    def __init__(self, name: str, observed: bool=True):
+        """
+        A truncated normal distribution
 
-        :param name:
-        :param observed:
-        :returns:
-        :rtype:
+        :param name: 
+        :type name: str
+        :param observed: 
+        :type observed: bool
+        :returns: 
 
         """
+        
 
         super(TruncatedNormalAuxSampler, self).__init__(name=name,
                                                         observed=observed)

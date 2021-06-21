@@ -49,7 +49,8 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry, bas
     #     return self.__add__(other)
 
     def set_luminosity(self, luminosity: np.ndarray) -> None:
-        """FIXME! briefly describe function
+        """
+        set the luminosity of the selection
 
         :param luminosity:
         :returns:
@@ -60,7 +61,8 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry, bas
         self._luminosity = luminosity  # type: np.ndarray
 
     def set_distance(self, distance: np.ndarray) -> None:
-        """FIXME! briefly describe function
+        """
+        set the distance of the selection
 
         :param distance:
         :returns:
@@ -71,7 +73,8 @@ class SelectionProbabilty(object, metaclass=AutoRegister(selection_registry, bas
         self._distance = distance  # type: np.ndarray
 
     def set_observed_flux(self, observed_flux: np.ndarray) -> None:
-        """FIXME! briefly describe function
+        """
+        set the observed flux of the selection
 
         :param luminosity:
         :returns:

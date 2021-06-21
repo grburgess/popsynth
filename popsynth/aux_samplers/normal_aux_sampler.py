@@ -11,18 +11,17 @@ class NormalAuxSampler(AuxiliarySampler):
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
     def __init__(self, name: str, observed: bool = True):
-        """FIXME! briefly describe function
+        """
+        A normal distribution sampler
 
-        :param name:
-        :param mu:
-        :param tau:
-        :param sigma:
-        :param observed:
-        :returns:
-        :rtype:
+        :param name: 
+        :type name: str
+        :param observed: 
+        :type observed: bool
+        :returns: 
 
         """
-
+    
         super(NormalAuxSampler, self).__init__(name=name, observed=observed)
 
     def true_sampler(self, size: int):

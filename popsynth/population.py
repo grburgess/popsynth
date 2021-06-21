@@ -23,40 +23,37 @@ from popsynth.utils.spherical_geometry import xyz
 
 log = setup_logger(__name__)
 
-
 wine = "#8F2727"
 dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
     wine)
 
 
 class Population(object):
-    def __init__(
-        self,
-        luminosities: ArrayLike,
-        distances: ArrayLike,
-        known_distances: ArrayLike,
-        known_distance_idx: ArrayLike,
-        unknown_distance_idx: ArrayLike,
-        fluxes: ArrayLike,
-        flux_obs: ArrayLike,
-        selection: ArrayLike,
-        flux_sigma: float,
-        r_max: float,
-        n_model: int,
-        lf_params: Dict[str, Any],
-        spatial_params: Optional[Dict[str, Any]] = None,
-        model_spaces: Optional[ArrayLike] = None,
-        seed: int = 1234,
-        name: Optional[str] = None,
-        spatial_form: Optional[Dict[str, Any]] = None,
-        lf_form: Optional[Dict[str, Any]] = None,
-        auxiliary_quantities: Optional[Dict[str, Any]] = None,
-        truth: Dict[str, float] = {},
-        graph: Optional[Dict[str, Any]] = None,
-        theta=None,
-        phi=None,
-        pop_synth: Optional[Dict[str, Any]] = None
-    ) -> None:
+    def __init__(self,
+                 luminosities: ArrayLike,
+                 distances: ArrayLike,
+                 known_distances: ArrayLike,
+                 known_distance_idx: ArrayLike,
+                 unknown_distance_idx: ArrayLike,
+                 fluxes: ArrayLike,
+                 flux_obs: ArrayLike,
+                 selection: ArrayLike,
+                 flux_sigma: float,
+                 r_max: float,
+                 n_model: int,
+                 lf_params: Dict[str, Any],
+                 spatial_params: Optional[Dict[str, Any]] = None,
+                 model_spaces: Optional[ArrayLike] = None,
+                 seed: int = 1234,
+                 name: Optional[str] = None,
+                 spatial_form: Optional[Dict[str, Any]] = None,
+                 lf_form: Optional[Dict[str, Any]] = None,
+                 auxiliary_quantities: Optional[Dict[str, Any]] = None,
+                 truth: Dict[str, float] = {},
+                 graph: Optional[Dict[str, Any]] = None,
+                 theta=None,
+                 phi=None,
+                 pop_synth: Optional[Dict[str, Any]] = None) -> None:
         """
         A population containing all the simulated variables
 
@@ -625,32 +622,30 @@ class Population(object):
 
         pop_synth = recursively_load_dict_contents_from_group(f, "popsynth")
 
-        return cls(
-            luminosities=luminosities,
-            distances=distances,
-            known_distances=known_distances,
-            known_distance_idx=known_distance_idx,
-            unknown_distance_idx=unknown_distance_idx,
-            fluxes=fluxes,
-            flux_obs=flux_obs,
-            selection=selection,
-            flux_sigma=flux_sigma,
-            n_model=n_model,
-            r_max=r_max,
-            lf_params=lf_params,
-            spatial_params=spatial_params,
-            model_spaces=model_spaces,
-            seed=seed,
-            name=name,
-            spatial_form=spatial_form,
-            lf_form=lf_form,
-            auxiliary_quantities=auxiliary_quantities,
-            truth=truth,
-            graph=graph,
-            theta=theta,
-            phi=phi,
-            pop_synth=pop_synth
-        )
+        return cls(luminosities=luminosities,
+                   distances=distances,
+                   known_distances=known_distances,
+                   known_distance_idx=known_distance_idx,
+                   unknown_distance_idx=unknown_distance_idx,
+                   fluxes=fluxes,
+                   flux_obs=flux_obs,
+                   selection=selection,
+                   flux_sigma=flux_sigma,
+                   n_model=n_model,
+                   r_max=r_max,
+                   lf_params=lf_params,
+                   spatial_params=spatial_params,
+                   model_spaces=model_spaces,
+                   seed=seed,
+                   name=name,
+                   spatial_form=spatial_form,
+                   lf_form=lf_form,
+                   auxiliary_quantities=auxiliary_quantities,
+                   truth=truth,
+                   graph=graph,
+                   theta=theta,
+                   phi=phi,
+                   pop_synth=pop_synth)
 
     def to_sub_population(self, observed: bool = True) -> "Population":
         """
@@ -794,7 +789,7 @@ class Population(object):
             **kwargs,
         )
 
-#        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
+        #        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
 
         # ax.set_xscale('log')
         ax.set_yscale("log")
@@ -813,7 +808,8 @@ class Population(object):
         ax.set_ylabel("flux")
 
     def display_obs_fluxes(self, ax=None, flux_color=dark, **kwargs):
-        """FIXME! briefly describe function
+        """
+        display the observed fluxes
 
         :param ax:
         :param flux_color:
@@ -853,7 +849,7 @@ class Population(object):
             **kwargs,
         )
 
-#        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
+        #        ax.axhline(self._boundary, color="grey", zorder=-5000, ls="--")
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
@@ -874,7 +870,8 @@ class Population(object):
         with_arrows=True,
         **kwargs,
     ):
-        """FIXME! briefly describe function
+        """
+        display the fluxes
 
         :param ax:
         :param true_color:
@@ -930,7 +927,8 @@ class Population(object):
         obs_color=dark,
         **kwargs,
     ):
-        """FIXME! briefly describe function
+        """
+        display the luminosities
 
         :param ax:
         :param true_color:
@@ -1112,37 +1110,9 @@ class Population(object):
 
         return fig
 
-    # def display_luminosty(self, ax=None, **kwargs):
-
-    #     if self._no_detection:
-    #         return
-
-    #     if ax is None:
-    #         fig, ax = plt.subplots()
-
-    #     else:
-
-    #         fig = ax.get_figure()
-
-    #     bins = np.logspace(
-    #         np.log10(self._luminosities.min()), np.log10(self._luminosities.max()), 30
-    #     )
-
-    #     ax.hist(
-    #         self._luminosities,
-    #         #bins=bins,
-    #         #density=True,
-    #         fc=dark,
-    #         ec=dark_highlight,
-    #         lw=1.5,
-    #     )
-
-    #     ax.set_xscale("log")
-    #     ax.set_yscale("log")
-    #     ax.set_xlabel("L")
-
     def display_distances(self, ax=None):
-        """FIXME! briefly describe function
+        """
+        display the distances
 
         :param ax:
         :returns:

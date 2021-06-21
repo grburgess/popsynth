@@ -6,20 +6,17 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import scipy.integrate as integrate
-import scipy.special as sf
-import scipy.stats as stats
+
 import yaml
 from IPython.display import Markdown, Math, display
 # from numpy.typing import np.ndarray
-from numba import float64, jit, njit, prange
+
 
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.population import Population
-from popsynth.selection_probability import (BernoulliSelection,
-                                            HardFluxSelection,
-                                            SelectionProbabilty,
-                                            SoftFluxSelection, UnitySelection)
+from popsynth.selection_probability import ( SelectionProbabilty,
+                                             UnitySelection)
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.progress_bar import progress_bar
 from popsynth.utils.registry import (auxiliary_parameter_registry,

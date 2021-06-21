@@ -15,7 +15,8 @@ class SphericalPopulation(PopulationSynth):
                  r_max=5.0,
                  seed=1234,
                  luminosity_distribution=None):
-        """FIXME! briefly describe function
+        """
+        A generic spherical population
 
         :param Lambda:
         :param r_max:
@@ -44,7 +45,10 @@ class ZPowerSphericalPopulation(PopulationSynth):
                  r_max=5.0,
                  seed=1234,
                  luminosity_distribution=None):
-        """FIXME! briefly describe function
+        """
+        
+        A spherical population with a density that 
+        scales as (r+1)^delta
 
         :param Lambda:
         :param delta:

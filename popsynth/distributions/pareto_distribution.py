@@ -9,7 +9,7 @@ class ParetoDistribution(LuminosityDistribution):
     Lmin = DistributionParameter(default=1, vmin=0)
     alpha = DistributionParameter(default=1)
 
-    def __init__(self, seed=1234, name="pareto"):
+    def __init__(self, seed: int = 1234, name: str = "pareto"):
         """
         A Pareto luminosity function
         :param seed:
@@ -44,8 +44,9 @@ class ParetoDistribution(LuminosityDistribution):
 
         return out
 
-    def draw_luminosity(self, size=1):
-        """FIXME! briefly describe function
+    def draw_luminosity(self, size: int = 1):
+        """
+        draw the luminosity
 
         :param size:
         :returns:
