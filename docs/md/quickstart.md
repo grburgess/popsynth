@@ -15,7 +15,14 @@ jupyter:
 
 # Quick start
 
-A simple example of simulating a population survey via the built-in populations provided.
+First, lets just run through some examples to see where we are going
+by simulating a simple example population which we observe as a
+survey. Let's say we are in a giant sphere surrounded by fire flies
+that fill the volume homogeneously. Furthermore, the light they emit
+follows a Pareto distribution (power law) in luminosity. Of course,
+this population can be anything; active galactic nuclei (AGN),
+gamma-ray bursts (GRBs), etc. The framework provided in popsynth is
+intended to be generic.
 
 ```python
 %matplotlib inline
@@ -89,14 +96,15 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
 
 
 
-## A spherically homogenous population with a pareto luminosity function
+## A spherically homogenous population of fire flies with a pareto luminosity function
 
 **popsynth** comes with several types of populations included, though
-you can easily construct your own. To create a population synthesizer,
-one simply instantiates the population form the
-**popsynth.populations** module. Here, we will simulate a survey that
-has a homogenous spherical spatial distribution and a pareto
-distributed luminosity.
+you can easily [construct your
+own](https://popsynth.readthedocs.io/en/latest/notebooks/custom.html). To
+access the built in population synthesizers, one simply instantiates
+the population from the **popsynth.populations** module. Here, we will
+simulate a survey that has a homogenous spherical spatial distribution
+and a pareto distributed luminosity.
 
 ```python
 homogeneous_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
@@ -105,6 +113,9 @@ homogeneous_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopula
 homogeneous_pareto_synth.display()
 ```
 
+If you have [networkx](https://networkx.org) and
+[graviz](https://graphviz.readthedocs.io/en/stable/), you can plot a
+graph of the connections.
 
 ```python
 # we can also display a graph of the object
@@ -120,8 +131,14 @@ nx.draw(homogeneous_pareto_synth.graph, with_labels=True, pos=pos, **options)
 
 ## Creating a survey
 
-
-We can now sample from this population with the **draw_survey** function, but fits we need specfiy how the flux is selected
+We can now sample from this population with the **draw_survey**
+function, but first we need specify how the flux is selected by adding
+a flux selection function. Here, we will use a hard selection function
+in this example, but you [can make your
+own](https://popsynth.readthedocs.io/en/latest/notebooks/selections.html#custom-selections). The
+selection function will mark objects with **observed** fluxes below
+the selection boundary as "hidden", but we will still have access to
+them in our population. 
 
 ```python
 flux_selector = popsynth.HardFluxSelection()
@@ -129,13 +146,13 @@ flux_selector.boundary = 1e-2
 
 homogeneous_pareto_synth.set_flux_selection(flux_selector)
 ```
-
+And by observed fluxes, we mean those where the latent flux is obscured by observational error, here we sample the observational error from a log normal distribution with $\sigma=1$. In the future, ```popsynth``` will have more options.
 
 ```python
 population = homogeneous_pareto_synth.draw_survey(flux_sigma=0.1)
 ```
 
-We now have created a population. How did we get here?
+We now have created a population survey. How did we get here?
 
 * Once the spatial and luminosity functions are specified, we can integrate out to a given distance and compute the number of expected objects.
 
@@ -162,6 +179,10 @@ homogeneous_pareto_synth.set_flux_selection(flux_selector)
 
 population = homogeneous_pareto_synth.draw_survey(flux_sigma=0.1)
 ```
+
+More detail on the [process behind the
+simulation](https://popsynth.readthedocs.io/en/latest/notebooks/distributions.html#Core-Concept)
+can be found deeper in the documentation
 
 ## The Population Object
 

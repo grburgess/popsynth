@@ -67,10 +67,12 @@ In the following, the process for constructing distributions and
 populations is described.
 
 
-## Distributions
+# Distributions
 
 
-The basic required object to create a population synth are a spatial and (optional if a derived luminosity sampler is create) luminosity distribution. 
+The basic required object to create a population synth are a spatial
+and (optional if a derived luminosity sampler is create) luminosity
+distribution.
 
 
 ```python
