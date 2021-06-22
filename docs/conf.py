@@ -47,7 +47,13 @@ def run_apidoc(app):
         str(DOCS / ".." / "popsynth"),
     ])
 
+def skip(app, what, name, obj, would_skip, options):
+    if name == "__init__":
+        return False
+    return would_skip
 
+
+    
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -189,3 +195,4 @@ texinfo_documents = [
 
 def setup(app):
     app.connect("builder-inited", run_apidoc)
+    app.connect("autodoc-skip-member", skip)
