@@ -111,7 +111,7 @@ First we create a spatial distribution, in the case, a Spherical distribution wi
 ```python
 spatial_distribution = popsynth.ZPowerSphericalDistribution()
 
-spatial_distribution.Lambda = 100
+spatial_distribution.Lambda = 30
 spatial_distribution.delta = -2
 spatial_distribution.r_max = 10
 
@@ -152,8 +152,8 @@ fig=population.display_obs_fluxes_sphere(background_color="black",size=0.7);
 
 ## Cosmological Distributions
 
-If we want to create cosmological spatial distributions, we can use some of those that are built in.
-
+If we want to create cosmological spatial distributions, we can use
+some of those that are built in.
 
 ```python
 spatial_distribution = popsynth.ZPowerCosmoDistribution()
@@ -163,7 +163,9 @@ spatial_distribution.r_max = 10
 
 ```
 
-These distributions know about the cosmological Universe and have their fluxes computed using the luminosity distance rather than linear distace. 
+These distributions know about the cosmological Universe and have
+their fluxes computed using the luminosity distance rather than linear
+distace.
 
 ```python
 luminosity_distribution = popsynth.SchechterDistribution()
