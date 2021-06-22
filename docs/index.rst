@@ -38,6 +38,7 @@ selection functions.
     notebooks/custom.ipynb
     notebooks/selections.ipynb
     notebooks/aux.ipynb
+    notebooks/examples.ipynb
     notebooks/milkyway.ipynb
     notebooks/contribute.ipynb
     api/API
