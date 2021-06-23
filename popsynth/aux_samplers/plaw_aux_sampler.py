@@ -62,7 +62,7 @@ class PowerLawAuxSampler(AuxiliarySampler):
 
         """
     
-        super(ParetoAuxSampler, self).__init__(name=name, observed=observed)
+        super(PowerLawAuxSampler, self).__init__(name=name, observed=observed)
 
     def true_sampler(self, size: int):
 
@@ -81,16 +81,14 @@ class PowerLawAuxSampler(AuxiliarySampler):
             self._obs_values = self._true_values
 
 
-
-
 class BrokenPowerLawAuxSampler(AuxiliarySampler):
     _auxiliary_sampler_name = "BrokenPowerLawAuxSampler"
 
-    xmin = DistributionParameter(vmin=0)
-    alpha = DistributionParameter()
-    xbreak = DistributionParameter(vmin=0)
-    beta = DistributionParameter()
-    xmax = DistributionParameter(vmin=0)
+    xmin = AuxiliaryParameter(vmin=0)
+    alpha = AuxiliaryParameter()
+    xbreak = AuxiliaryParameter(vmin=0)
+    beta = AuxiliaryParameter()
+    xmax = AuxiliaryParameter(vmin=0)
 
 
     def __init__(self, name: str, observed: bool = True):
@@ -133,7 +131,7 @@ class BrokenPowerLawAuxSampler(AuxiliarySampler):
 @nb.njit(fastmath=True)
 def _sample_power_law(xmin, xmax, alpha, size):
 
-    out = np.empty(size):
+    out = np.empty(size)
 
     for i in range(size):
 

@@ -55,7 +55,7 @@ class Parameter(object):
         if self._vmin is not None:
             if not (value >= self._vmin):
                 log.error(
-                    f"trying to set {self.x} to a value below {self._vmin} is not allowed"
+                    f"trying to set {self.name} to a value below {self._vmin} is not allowed"
                 )
 
                 raise RuntimeError()
