@@ -1,5 +1,3 @@
-import scipy.stats as stats
-
 import popsynth.populations as populations
 from popsynth.aux_samplers import *
 from popsynth.auxiliary_sampler import (AuxiliaryParameter, AuxiliarySampler,
