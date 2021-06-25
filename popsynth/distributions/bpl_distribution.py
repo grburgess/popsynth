@@ -13,7 +13,6 @@ class BPLDistribution(LuminosityDistribution):
     Lmax = DistributionParameter(vmin=0)
 
     def __init__(self, seed=1234, name="bpl"):
-
         """
 
         a broken power law distribution 

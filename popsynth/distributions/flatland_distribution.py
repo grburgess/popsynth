@@ -9,7 +9,6 @@ class FlatlandDistribution(SpatialDistribution):
     Lambda = DistributionParameter(default=1, vmin=0)
 
     def __init__(self, seed: int = 1234, name: str = "flatland", form=None):
-
         """
         a distribution with only length
 

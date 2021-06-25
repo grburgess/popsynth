@@ -9,7 +9,6 @@ class DeltaDistribution(LuminosityDistribution):
     Lp = DistributionParameter(vmin=0, default=0)
 
     def __init__(self, seed=1234, name="delta"):
-
         """
         a dirac delta distribution
 

@@ -21,7 +21,7 @@ class NormalAuxSampler(AuxiliarySampler):
         :returns: 
 
         """
-    
+
         super(NormalAuxSampler, self).__init__(name=name, observed=observed)
 
     def true_sampler(self, size: int):

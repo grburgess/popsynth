@@ -12,13 +12,12 @@ from IPython.display import Markdown, Math, display
 
 # from numpy.typing import np.ndarray
 
-
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.distributions.cosmological_distribution import CosmologicalDistribution
 from popsynth.population import Population
-from popsynth.selection_probability import ( SelectionProbabilty,
-                                             UnitySelection)
+from popsynth.selection_probability import (SelectionProbabilty,
+                                            UnitySelection)
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.progress_bar import progress_bar
 from popsynth.utils.registry import (

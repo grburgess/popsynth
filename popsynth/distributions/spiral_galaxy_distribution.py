@@ -15,7 +15,6 @@ class SpiralGalaxyDistribution(SphericalDistribution):
     R0 = DistributionParameter()
 
     def __init__(self, seed=1234, name="spiral_galaxy", form=None):
-
         """
         A spiral galaxy spatial distribution
 

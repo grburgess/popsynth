@@ -11,7 +11,6 @@ class LogNormalDistribution(LuminosityDistribution):
     tau = DistributionParameter(vmin=0)
 
     def __init__(self, seed=1234, name="lognorm"):
-
         """
         a log-normal luminosity distribution
 

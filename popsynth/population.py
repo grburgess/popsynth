@@ -189,7 +189,7 @@ class Population(object):
         :returns: 
 
         """
-        
+
         return self._flux_sigma
 
     @property

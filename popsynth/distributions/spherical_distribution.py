@@ -7,7 +7,6 @@ class SphericalDistribution(SpatialDistribution):
     _distribution_name = "SphericalDistribution"
 
     def __init__(self, seed=1234, name="sphere", form=None):
-
         """
         a generic spherical distribution. Can be inherited to
         form more complex spherical distributions
@@ -47,7 +46,6 @@ class ConstantSphericalDistribution(SphericalDistribution):
         name="cons_sphere",
         form=None,
     ):
-
         """
         A spherical distribution with constant density
 
@@ -78,7 +76,6 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
     delta = DistributionParameter(default=1)
 
     def __init__(self, seed=1234, name="zpow_sphere"):
-
         """
         a spherical population with a power law denisty profile
 

@@ -15,7 +15,6 @@ class CosmologicalDistribution(SpatialDistribution):
                  form=None,
                  truth={},
                  is_rate=True):
-
         """
         base cosmological spatial distribution
 
@@ -64,7 +63,6 @@ class SFRDistribution(CosmologicalDistribution):
     peak = DistributionParameter(vmin=0)
 
     def __init__(self, seed=1234, name="sfr", is_rate=True):
-
         """
         A star-formation like distribution of the form
         presented in Cole et al. 2001
@@ -118,7 +116,6 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
         name="zpow_cosmo",
         is_rate=True,
     ):
-
         """
         a cosmological distribution where the density 
         evolves as a power law

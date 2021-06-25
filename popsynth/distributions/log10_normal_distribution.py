@@ -10,7 +10,6 @@ class Log10NormalDistribution(LuminosityDistribution):
     tau = DistributionParameter(vmin=0)
 
     def __init__(self, seed=1234, name="log10norm"):
-
         """
         a log10-normal luminosity function
 

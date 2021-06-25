@@ -13,7 +13,7 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
     upper = AuxiliaryParameter()
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
-    def __init__(self, name: str, observed: bool=True):
+    def __init__(self, name: str, observed: bool = True):
         """
         A truncated normal distribution
 
@@ -24,7 +24,6 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
         :returns: 
 
         """
-        
 
         super(TruncatedNormalAuxSampler, self).__init__(name=name,
                                                         observed=observed)
