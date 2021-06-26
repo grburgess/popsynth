@@ -82,13 +82,16 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._has_derived_luminosity = False  # type: bool
         self._derived_luminosity_sampler = (
-            None)  # type: Union[DerivedLumAuxSampler, None]
+            None
+        )  # type: Union[DerivedLumAuxSampler, None]
 
         # set the selections be fully seen unless it is set by the user
         self._distance_selector: SelectionProbabilty = UnitySelection(
-            name="unity distance selector")
+            name="unity distance selector"
+        )
         self._flux_selector: SelectionProbabilty = UnitySelection(
-            name="unity flux selector")
+            name="unity flux selector"
+        )
 
         # check to see if the selectors are set
         self._distance_selector_set: bool = False
@@ -159,8 +162,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             self._distance_selector.reset()
 
-        self._distance_selector = UnitySelection(
-            name="unity distance selector")
+        self._distance_selector = UnitySelection(name="unity distance selector")
 
         log.warning("removing spatial selector")
 
@@ -205,15 +207,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
         spatial_distribution = {}
 
         spatial_distribution[
-            self._spatial_distribution.
-            _distribution_name] = self._spatial_distribution.truth
+            self._spatial_distribution._distribution_name
+        ] = self._spatial_distribution.truth
 
         # store is_rate if cosmological distribution
 
         if isinstance(self._spatial_distribution, CosmologicalDistribution):
 
-            spatial_distribution[
-                "is_rate"] = self._spatial_distribution._is_rate
+            spatial_distribution["is_rate"] = self._spatial_distribution._is_rate
 
         output["spatial distribution"] = spatial_distribution
 
@@ -225,8 +226,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
             luminosity_distribution = {}
 
             luminosity_distribution[
-                self._luminosity_distribution.
-                _distribution_name] = self._luminosity_distribution.truth
+                self._luminosity_distribution._distribution_name
+            ] = self._luminosity_distribution.truth
 
             output["luminosity distribution"] = luminosity_distribution
 
@@ -234,8 +235,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             flux_selection = {}
 
-            flux_selection[self._flux_selector.
-                           _selection_name] = self._flux_selector.parameters
+            flux_selection[
+                self._flux_selector._selection_name
+            ] = self._flux_selector.parameters
 
             output["flux selection"] = flux_selection
 
@@ -244,8 +246,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
             distance_selection = {}
 
             distance_selection[
-                self._distance_selector.
-                _selection_name] = self._distance_selector.parameters
+                self._distance_selector._selection_name
+            ] = self._distance_selector.parameters
 
             output["distance selection"] = distance_selection
 
@@ -254,8 +256,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
             spatial_selection = {}
 
             spatial_selection[
-                self._spatial_selector.
-                _selection_name] = self._spatial_selector.parameters
+                self._spatial_selector._selection_name
+            ] = self._spatial_selector.parameters
 
             output["spatial selection"] = spatial_selection
 
@@ -312,8 +314,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             # create the instance
 
-            luminosity_distribtuion: LuminosityDistribution = distribution_registry[
-                ld_name]
+            luminosity_distribution: LuminosityDistribution = distribution_registry[
+                ld_name
+            ]
 
             # now set the values of the parameters
 
@@ -323,19 +326,19 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 log.debug(f"trying to set {k} to {v}")
 
-                for x in luminosity_distribtuion.__class__.mro():
+                for x in luminosity_distribution.__class__.mro():
 
                     if k in x.__dict__:
 
-                        setattr(luminosity_distribtuion, k, float(v))
+                        setattr(luminosity_distribution, k, float(v))
 
                         break
 
-                log.debug(f"{luminosity_distribtuion.params}")
+                log.debug(f"{luminosity_distribution.params}")
 
         else:
 
-            luminosity_distribtuion = None
+            luminosity_distribution = None
 
         # try
 
@@ -343,8 +346,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         sd_name = list(tmp.keys())[0]
 
-        spatial_distribution: SpatialDistribution = distribution_registry[
-            sd_name]
+        spatial_distribution: SpatialDistribution = distribution_registry[sd_name]
 
         for k, v in tmp[sd_name].items():
 
@@ -368,7 +370,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         pop_synth: PopulationSynth = cls(
             spatial_distribution,
-            luminosity_distribution=luminosity_distribtuion,
+            luminosity_distribution=luminosity_distribution,
             seed=seed,
         )
 
@@ -510,8 +512,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 # now we extract the selection
                 # and secondary if they are there
 
-                log.debug(
-                    f"starting to scan {obj_name} of type {sampler_name}")
+                log.debug(f"starting to scan {obj_name} of type {sampler_name}")
 
                 if "selection" in v:
                     selection = v.pop("selection")
@@ -593,7 +594,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
                         except (TypeError):
 
                             tmp: AuxiliarySampler = auxiliary_parameter_registry.get(
-                                sampler_name, **init_variables)
+                                sampler_name, **init_variables
+                            )
 
                             # we will do a dirty trick
                             tmp._name = obj_name
@@ -658,8 +660,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 if secondary is not None:
 
-                    log.debug(
-                        f"{obj_name} is adding {secondary} as secondaries")
+                    log.debug(f"{obj_name} is adding {secondary} as secondaries")
 
                     secondary_samplers[obj_name] = secondary
 
@@ -677,8 +678,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     break
 
                 # assign it
-                aux_samplers[primary].set_secondary_sampler(
-                    aux_samplers[secondary])
+                aux_samplers[primary].set_secondary_sampler(aux_samplers[secondary])
 
         # now we need to pop all the secondaries from the main
         # list so that we do not double add
@@ -738,9 +738,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._model_spaces[name] = space
 
-    def add_auxiliary_sampler(self,
-                              auxiliary_sampler: Union[DerivedLumAuxSampler,
-                                                       AuxiliarySampler]):
+    def add_auxiliary_sampler(
+        self, auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]
+    ):
         """
         Add an auxiliary sampler or derived luminosity sampler to the population
         synth.
@@ -751,9 +751,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self.add_observed_quantity(auxiliary_sampler)
 
-    def add_observed_quantity(self,
-                              auxiliary_sampler: Union[DerivedLumAuxSampler,
-                                                       AuxiliarySampler]):
+    def add_observed_quantity(
+        self, auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]
+    ):
         """
         Add an auxiliary sampler or derived luminosity sampler to the population
         synth
@@ -777,8 +777,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 log.error(
                     f"{auxiliary_sampler.name} is already set as a secondary sampler!"
                 )
-                log.error(
-                    f"and registered to {','.join(auxiliary_sampler.parents)}")
+                log.error(f"and registered to {','.join(auxiliary_sampler.parents)}")
 
                 raise RuntimeError()
 
@@ -788,11 +787,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 raise RuntimeError()
 
-            log.info("registering auxilary sampler: %s" %
-                     auxiliary_sampler.name)
+            log.info("registering auxilary sampler: %s" % auxiliary_sampler.name)
 
-            self._auxiliary_observations[
-                auxiliary_sampler.name] = auxiliary_sampler
+            self._auxiliary_observations[auxiliary_sampler.name] = auxiliary_sampler
 
         else:
 
@@ -835,8 +832,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._flux_selector_set = True
 
-    def add_spatial_selector(self,
-                             spatial_selector: SelectionProbabilty) -> None:
+    def add_spatial_selector(self, spatial_selector: SelectionProbabilty) -> None:
         """
         Add a spatial selector into the mix
 
@@ -864,8 +860,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
         log10_f = np.log10(f)
 
         # sample from the log distribution to keep positive fluxes
-        log10_fobs = log10_f + np.random.normal(
-            loc=0, scale=f_sigma, size=size)
+        log10_fobs = log10_f + np.random.normal(loc=0, scale=f_sigma, size=size)
 
         return log10_fobs
 
@@ -906,22 +901,24 @@ class PopulationSynth(object, metaclass=ABCMeta):
         truth = dict()  # type: dict
 
         # store the spatial distributVion truths
-        truth[
-            self._spatial_distribution.name] = self._spatial_distribution.truth
+        truth[self._spatial_distribution.name] = self._spatial_distribution.truth
 
         # set the random seed
 
         np.random.seed(self._seed)
 
         # create a callback of the integrand
-        dNdr = (lambda r: self._spatial_distribution.dNdV(
-            r) * self._spatial_distribution.differential_volume(r) / self.
-                _spatial_distribution.time_adjustment(r))
+        dNdr = (
+            lambda r: self._spatial_distribution.dNdV(r)
+            * self._spatial_distribution.differential_volume(r)
+            / self._spatial_distribution.time_adjustment(r)
+        )
 
         # integrate the population to determine the true number of
         # objects
-        N = integrate.quad(dNdr, 0.0,
-                           self._spatial_distribution.r_max)[0]  # type: float
+        N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
+            0
+        ]  # type: float
 
         log.info("The volume integral is %f" % N)
 
@@ -950,7 +947,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
         # from the auxilliary samplers
 
         auxiliary_selection: SelectionProbabilty = UnitySelection(
-            name="total auxiliary selection")
+            name="total auxiliary selection"
+        )
         auxiliary_selection.select(n)
 
         auxiliary_quantities: Dict[str, Dict] = {}
@@ -963,8 +961,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             if not self._has_derived_luminosity:
 
                 log.error("No luminosity distribution was specified")
-                log.error(
-                    "and no derived luminosity auxiliary sampler was added")
+                log.error("and no derived luminosity auxiliary sampler was added")
                 raise RuntimeError()
 
         if self._has_derived_luminosity:
@@ -973,7 +970,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
             # pbar.set_description(desc='Getting derived luminosities')
             # set the distance to the auxilary sampler
             self._derived_luminosity_sampler.set_spatial_values(
-                self._spatial_distribution.spatial_values)
+                self._spatial_distribution.spatial_values
+            )
 
             # sample the true and obs
             # values which are held internally
@@ -983,11 +981,15 @@ class PopulationSynth(object, metaclass=ABCMeta):
             log.debug("derived luminosity sampled")
 
             # check to make sure we sampled!
-            assert (self._derived_luminosity_sampler.true_values is not None
-                    and len(self._derived_luminosity_sampler.true_values) == n)
+            assert (
+                self._derived_luminosity_sampler.true_values is not None
+                and len(self._derived_luminosity_sampler.true_values) == n
+            )
 
-            assert (self._derived_luminosity_sampler.obs_values is not None
-                    and len(self._derived_luminosity_sampler.obs_values) == n)
+            assert (
+                self._derived_luminosity_sampler.obs_values is not None
+                and len(self._derived_luminosity_sampler.obs_values) == n
+            )
 
             # append these values to a dict
             auxiliary_quantities[self._derived_luminosity_sampler.name] = {
@@ -1006,13 +1008,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             # store the truth from the derived lum sampler
 
-            truth[self._derived_luminosity_sampler.
-                  name] = self._derived_luminosity_sampler.truth
+            truth[
+                self._derived_luminosity_sampler.name
+            ] = self._derived_luminosity_sampler.truth
 
             log.debug("sampling ")
 
-            for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items(
-            ):
+            for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
 
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
@@ -1033,15 +1035,18 @@ class PopulationSynth(object, metaclass=ABCMeta):
         else:
 
             luminosities = self.luminosity_distribution.draw_luminosity(
-                size=n)  # type: np.ndarray
+                size=n
+            )  # type: np.ndarray
 
             # store the truths from the luminosity distribution
-            truth[self.luminosity_distribution.
-                  name] = self.luminosity_distribution.truth
+            truth[
+                self.luminosity_distribution.name
+            ] = self.luminosity_distribution.truth
 
         # transform the fluxes
         fluxes = self._spatial_distribution.transform(
-            luminosities, distances)  # type: np.ndarray
+            luminosities, distances
+        )  # type: np.ndarray
 
         # now sample any auxilary quantities
         # if needed
@@ -1113,7 +1118,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     log.debug("making a log10 flux draw")
 
                     log10_fluxes_obs = self.draw_log10_fobs(
-                        fluxes, flux_sigma, size=n)  # type: np.ndarray
+                        fluxes, flux_sigma, size=n
+                    )  # type: np.ndarray
                     flux_obs = np.power(10, log10_fluxes_obs)
 
                 else:
@@ -1121,7 +1127,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     log.debug("making a logflux draw")
 
                     log10_fluxes_obs = self.draw_log_fobs(
-                        fluxes, flux_sigma, size=n)  # type: np.ndarray
+                        fluxes, flux_sigma, size=n
+                    )  # type: np.ndarray
 
                     flux_obs = np.exp(log10_fluxes_obs)
 
@@ -1167,12 +1174,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
             auxiliary_selection += v["selection"]
 
             log.info(
-                "Applying selection from %s which selected %d of %d objects" %
-                (k, v["selection"].n_selected, v["selection"].n_objects))
+                "Applying selection from %s which selected %d of %d objects"
+                % (k, v["selection"].n_selected, v["selection"].n_objects)
+            )
 
             log.info(
-                "Before auxiliary selection there were %d objects selected" %
-                self._flux_selector.n_selected)
+                "Before auxiliary selection there were %d objects selected"
+                % self._flux_selector.n_selected
+            )
 
         # now we can add the values onto the global
         # selection
@@ -1187,8 +1196,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         if self._spatial_selector is not None:
 
-            self._spatial_selector.set_spatial_distribution(
-                self._spatial_distribution)
+            self._spatial_selector.set_spatial_distribution(self._spatial_distribution)
 
             self._spatial_selector.select(n)
 
@@ -1205,7 +1213,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
         self._distance_selector.select(size=global_selection.n_selected)
 
         known_distances = distances[global_selection.selection][
-            self._distance_selector.selection]
+            self._distance_selector.selection
+        ]
         known_distance_idx = self._distance_selector.selection_index
         unknown_distance_idx = self._distance_selector.non_selection_index
 
@@ -1312,8 +1321,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             self._graph.add_node(self._derived_luminosity_sampler.name)
 
-            self._graph.add_edge(self._derived_luminosity_sampler.name,
-                                 "obs_flux")
+            self._graph.add_edge(self._derived_luminosity_sampler.name, "obs_flux")
 
             if self._derived_luminosity_sampler.uses_distance:
 
@@ -1322,8 +1330,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     self._derived_luminosity_sampler.name,
                 )
 
-            for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items(
-            ):
+            for k2, v2 in self._derived_luminosity_sampler.secondary_samplers.items():
 
                 self._graph.add_node(k2)
                 self._graph.add_edge(k2, self._derived_luminosity_sampler.name)
@@ -1337,8 +1344,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 )
 
         else:
-            self._graph.add_edge(self._luminosity_distribution.name,
-                                 "obs_flux")
+            self._graph.add_edge(self._luminosity_distribution.name, "obs_flux")
         # now do the same fro everything else
 
         for k, v in self._auxiliary_observations.items():
