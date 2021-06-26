@@ -1,6 +1,5 @@
 from popsynth.distributions.cosmological_distribution import (  # MergerDistribution,
-    SFRDistribution,
-    ZPowerCosmoDistribution,
+    SFRDistribution, ZPowerCosmoDistribution,
 )
 from popsynth.distributions.spherical_distribution import (
     ConstantSphericalDistribution,
@@ -9,7 +8,6 @@ from popsynth.distributions.spherical_distribution import (
 from popsynth.distribution import LuminosityDistribution
 from popsynth.distributions.spiral_galaxy_distribution import SpiralGalaxyDistribution
 from popsynth.population_synth import PopulationSynth
-
 """
 Create a range of spatial populations that can
 be expanded with luminosity distributions.

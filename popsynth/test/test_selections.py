@@ -5,7 +5,8 @@ from popsynth.selection_probability.spatial_selection import GalacticPlaneSelect
 
 def test_spatial_selection():
 
-    pg = popsynth.populations.Log10NormalHomogeneousSphericalPopulation(10, 1, 1)
+    pg = popsynth.populations.Log10NormalHomogeneousSphericalPopulation(
+        10, 1, 1)
 
     gps = GalacticPlaneSelection()
     gps.b_limit = 10.0

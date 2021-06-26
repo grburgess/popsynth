@@ -9,7 +9,6 @@ from .plaw_aux_sampler import (
     BrokenPowerLawAuxSampler,
 )
 
-
 __all__ = [
     "DeltaAuxSampler",
     "ViewingAngleSampler",

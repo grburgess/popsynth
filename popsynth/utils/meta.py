@@ -43,9 +43,8 @@ class Parameter(object):
 
                 obj._parameter_storage[self.name] = self._default
 
-            assert (
-                obj._parameter_storage[self.name] is not None
-            ), "parameters must have values!"
+            assert (obj._parameter_storage[self.name]
+                    is not None), "parameters must have values!"
 
             return obj._parameter_storage[self.name]
 
@@ -53,9 +52,8 @@ class Parameter(object):
 
             obj._parameter_storage[self.name] = self._default
 
-        assert (
-            obj._parameter_storage[self.name] is not None
-        ), "parameters must have values!"
+        assert (obj._parameter_storage[self.name]
+                is not None), "parameters must have values!"
 
         return obj._parameter_storage[self.name]
 
@@ -98,7 +96,8 @@ class Parameter(object):
     free = property(
         _get_free,
         _set_free,
-        doc="Gets or sets whether the parameter is free or not. Use booleans, like: 'p.free = True' "
+        doc=
+        "Gets or sets whether the parameter is free or not. Use booleans, like: 'p.free = True' "
         " or 'p.free = False'. ",
     )
 
@@ -115,7 +114,8 @@ class Parameter(object):
     fix = property(
         _get_fix,
         _set_fix,
-        doc="Gets or sets whether the parameter is fixed or not. Use booleans, like: 'p.fix = True' "
+        doc=
+        "Gets or sets whether the parameter is fixed or not. Use booleans, like: 'p.fix = True' "
         " or 'p.fix = False'. ",
     )
 

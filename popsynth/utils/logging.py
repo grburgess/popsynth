@@ -19,10 +19,10 @@ class ColoredFormatter(logging.Formatter):
     """
     Colored log formatter.
     """
-
-    def __init__(
-        self, *args, colors: Optional[Dict[str, str]] = None, **kwargs
-    ) -> None:
+    def __init__(self,
+                 *args,
+                 colors: Optional[Dict[str, str]] = None,
+                 **kwargs) -> None:
         """Initialize the formatter with specified format strings."""
 
         super().__init__(*args, **kwargs)
@@ -49,8 +49,7 @@ class MyFilter(object):
 # now create the developer handler that rotates every day and keeps
 # 10 days worth of backup
 popsynth_dev_log_handler = handlers.TimedRotatingFileHandler(
-    get_path_of_log_file("dev.log"), when="D", interval=1, backupCount=10
-)
+    get_path_of_log_file("dev.log"), when="D", interval=1, backupCount=10)
 
 # lots of info written out
 
@@ -65,15 +64,13 @@ popsynth_dev_log_handler.setLevel(logging.DEBUG)
 # now set up the usr log which will save the info
 
 popsynth_usr_log_handler = handlers.TimedRotatingFileHandler(
-    get_path_of_log_file("usr.log"), when="D", interval=1, backupCount=10
-)
+    get_path_of_log_file("usr.log"), when="D", interval=1, backupCount=10)
 
 popsynth_usr_log_handler.setLevel(popsynth_config["logging"]["file"]["level"])
 
 # lots of info written out
-_usr_formatter = logging.Formatter(
-    "%(asctime)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-)
+_usr_formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s",
+                                   datefmt="%Y-%m-%d %H:%M:%S")
 
 popsynth_usr_log_handler.setFormatter(_usr_formatter)
 
@@ -94,7 +91,8 @@ _console_formatter = ColoredFormatter(
 
 popsynth_console_log_handler = logging.StreamHandler(sys.stdout)
 popsynth_console_log_handler.setFormatter(_console_formatter)
-popsynth_console_log_handler.setLevel(popsynth_config["logging"]["console"]["level"])
+popsynth_console_log_handler.setLevel(
+    popsynth_config["logging"]["console"]["level"])
 
 warning_filter = MyFilter(logging.WARNING)
 
@@ -126,10 +124,10 @@ class LoggingState(object):
 
     def restore_last_state(self):
 
-        self.popsynth_usr_log_handler.setLevel(self.popsynth_usr_log_handler_state)
+        self.popsynth_usr_log_handler.setLevel(
+            self.popsynth_usr_log_handler_state)
         self.popsynth_console_log_handler.setLevel(
-            self.popsynth_console_log_handler_state
-        )
+            self.popsynth_console_log_handler_state)
 
     def silence_logs(self):
 
