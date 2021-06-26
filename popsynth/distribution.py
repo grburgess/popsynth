@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import Dict, List, Union
+from typing import Dict, Union
 
 import numpy as np
 from class_registry import AutoRegister
@@ -21,22 +21,21 @@ class DistributionParameter(Parameter):
     pass
 
 
-class Distribution(object,
-                   metaclass=AutoRegister(distribution_registry,
-                                          base_type=ParameterMeta)):
+class Distribution(
+    object, metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta)
+):
     _distribution_name = "Distribution"
 
     def __init__(self, name: str, seed: int, form: str) -> None:
         """
-        A distribution base class
+        A distribution base class.
 
-        :param name: the name of the distribution
-        :param seed: the random seed
-        :param form: the latex form
-        :param truth: dictionary holding true parameters
-        :returns:
-        :rtype:
-
+        :param name: Name of the distribution
+        :type name: str
+        :param seed: Random seed
+        :type seed: int
+        :param form: the LaTeX form
+        :type form: str
         """
 
         self._parameter_storage: Dict[str, float] = {}
@@ -73,6 +72,9 @@ class Distribution(object,
 
 @dataclass
 class SpatialContainer:
+    """
+    Container for 3D spatial values.
+    """
 
     distance: ArrayLike
     theta: ArrayLike
@@ -94,31 +96,27 @@ class SpatialDistribution(Distribution):
 
     def __init__(self, name: str, seed: int, form: Union[str, None] = None):
         """
-        A spatial distribution such as a redshift
-        distribution
+        A base class for spatial distributions,
+        such as redshift distributions.
 
-        :param name: the name of the distribution
-        :param r_max: the maximum distance to sample
-        :param seed: the random seed
-        :param form: the latex form
-
+        :param name: Name of the distribution
+        :type name: str
+        :param seed: Random seed
+        :type seed: int
+        :param form: the LaTeX form
+        :type form: Union[str, None]
         """
         self._theta = None
         self._phi = None
 
-        super(SpatialDistribution, self).__init__(name=name,
-                                                  seed=seed,
-                                                  form=form)
+        super(SpatialDistribution, self).__init__(name=name, seed=seed, form=form)
 
     @abc.abstractmethod
     def differential_volume(self, distance):
         """
-        the differential volume
+        The differential volume
 
-        :param distance:
-        :returns:
-        :rtype:
-
+        :param distance: Distance
         """
 
         raise RuntimeError("Must be implemented in derived class")
@@ -129,14 +127,11 @@ class SpatialDistribution(Distribution):
         raise RuntimeError("Must be implemented in derived class")
         pass
 
-    def time_adjustment(self, r):
+    def time_adjustment(self, distance):
         """
-        the time adjustment
+        The time adjustment
 
-        :param r:
-        :returns:
-        :rtype:
-
+        :param distance: Distance
         """
 
         return 1.0
@@ -176,16 +171,21 @@ class SpatialDistribution(Distribution):
 
     def draw_distance(self, size: int) -> None:
         """
-        Draw the distances from the specified dN/dr model
+        Draw the distances from the specified dN/dr model.
+
+        :param size: Number of distances to sample
+        :type size: int
         """
 
         # create a callback for the sampler
-        dNdr = (lambda r: self.dNdV(r) * self.differential_volume(r) / self.
-                time_adjustment(r))
+        dNdr = (
+            lambda r: self.dNdV(r)
+            * self.differential_volume(r)
+            / self.time_adjustment(r)
+        )
 
         # find the maximum point
-        tmp = np.linspace(0.0, self.r_max, 500,
-                          dtype=np.float64)  # type: ArrayLike
+        tmp = np.linspace(0.0, self.r_max, 500, dtype=np.float64)  # type: ArrayLike
         ymax = np.max(dNdr(tmp))  # type: float
 
         # rejection sampling the distribution
@@ -204,8 +204,7 @@ class SpatialDistribution(Distribution):
 
                     # get an rvs from 0 to the maximum distance
 
-                    r = np.random.uniform(low=0,
-                                          high=self.r_max)  # type: float
+                    r = np.random.uniform(low=0, high=self.r_max)  # type: float
 
                     # compare them
 
@@ -214,8 +213,7 @@ class SpatialDistribution(Distribution):
                         flag = False
         else:
 
-            r_out = rejection_sample(size, ymax, self.r_max,
-                                     dNdr)  # type: ArrayLike
+            r_out = rejection_sample(size, ymax, self.r_max, dNdr)  # type: ArrayLike
 
         self._distances = np.array(r_out)  # type: ArrayLike
 
@@ -225,12 +223,14 @@ class LuminosityDistribution(Distribution):
 
     def __init__(self, name: str, seed: int, form: Union[str, None] = None):
         """
-        A luminosity distribution such as a
-        distribution
+        A base class for luminosity distributions.
 
-        :param name: the name of the distribution
-        :param seed: the random seed
-        :param form: the latex form
+        :param name: Name of the distribution
+        :type name: str
+        :param seed: Random seed
+        :type seed: int
+        :param form: the LaTeX form
+        :type form: Union[str, None]
         """
 
         super(LuminosityDistribution, self).__init__(
@@ -242,12 +242,9 @@ class LuminosityDistribution(Distribution):
     @abc.abstractmethod
     def phi(self, luminosity):
         """
-        The functional form of the distribution
+        The functional form of the distribution.
 
-        :param L:
-        :returns:
-        :rtype:
-
+        :param luminosity: Luminosity
         """
 
         raise RuntimeError("Must be implemented in derived class")
