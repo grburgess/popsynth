@@ -117,6 +117,11 @@ class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
         :type r_max: float
         :param seed: Random seed
         :type seed: int
+        :param is_rate: `True` if modelling a population of transient events,
+        `False` if modelling a population of steady-state objects.
+        Affects the ``time_adjustment`` method used in cosmo calculations.
+        Default is `True`.
+        :type is_rate: bool
         """
 
         luminosity_distribution = LogNormalDistribution(seed=seed)
@@ -170,6 +175,11 @@ class LogNormalSFRPopulation(SFRPopulation):
         :type r_max: float
         :param seed: Random seed
         :type seed: int
+        :param is_rate: `True` if modelling a population of transient events,
+        `False` if modelling a population of steady-state objects.
+        Affects the ``time_adjustment`` method used in cosmo calculations.
+        Default is `True`.
+        :type is_rate: bool
         """
 
         luminosity_distribution = LogNormalDistribution(seed=seed)
@@ -228,7 +238,15 @@ class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
-    def __init__(self, Lambda, delta, mu, tau, r_max=5, seed=1234):
+    def __init__(
+        self,
+        Lambda: float,
+        delta: float,
+        mu: float,
+        tau: float,
+        r_max: float = 5,
+        seed: int = 1234,
+    ):
         """
         A population built on the :class:`ZPowerSphericalDistribution`
         spatial distribution and the :class:`Log10NormalDistribution`
@@ -264,13 +282,13 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
     def __init__(
         self,
-        Lambda,
-        delta,
-        mu,
-        tau,
-        r_max=5,
-        seed=1234,
-        is_rate=True,
+        Lambda: float,
+        delta: float,
+        mu: float,
+        tau: float,
+        r_max: float = 5,
+        seed: float = 1234,
+        is_rate: float = True,
     ):
         """
         A population built on the :class:`ZPowerCosmoDistribution`
@@ -289,6 +307,11 @@ class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
         :type r_max: float
         :param seed: Random seed
         :type seed: int
+        :param is_rate: `True` if modelling a population of transient events,
+        `False` if modelling a population of steady-state objects.
+        Affects the ``time_adjustment`` method used in cosmo calculations.
+        Default is `True`.
+        :type is_rate: bool
         """
 
         luminosity_distribution = Log10NormalDistribution(seed=seed)
@@ -342,6 +365,11 @@ class Log10NormalSFRPopulation(SFRPopulation):
         :type r_max: float
         :param seed: Random seed
         :type seed: int
+        :param is_rate: `True` if modelling a population of transient events,
+        `False` if modelling a population of steady-state objects.
+        Affects the ``time_adjustment`` method used in cosmo calculations.
+        Default is `True`.
+        :type is_rate: bool
         """
 
         luminosity_distribution = Log10NormalDistribution(seed=seed)
