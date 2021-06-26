@@ -1,6 +1,6 @@
 import numpy as np
 import numba as nb
-from typing import Any
+from typing import Dict, Any
 from popsynth.distribution import SpatialDistribution, DistributionParameter
 from popsynth.utils.cosmology import cosmology
 
@@ -13,7 +13,7 @@ class CosmologicalDistribution(SpatialDistribution):
         seed: int = 1234,
         name: str = "cosmo",
         form: str = None,
-        truth: dict[str, Any] = {},
+        truth: Dict[str, Any] = {},
         is_rate: bool = True,
     ):
         """
