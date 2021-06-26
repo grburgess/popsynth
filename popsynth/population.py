@@ -1,9 +1,7 @@
-import importlib
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, Optional
 
 import h5py
 import ipyvolume as ipv
-import ipywidgets as widgets
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
@@ -15,71 +13,99 @@ from numpy.typing import ArrayLike
 
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
-    clean_graph_dict, fill_graph_dict,
+    clean_graph_dict,
+    fill_graph_dict,
     recursively_load_dict_contents_from_group,
-    recursively_save_dict_contents_to_group)
+    recursively_save_dict_contents_to_group,
+)
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.spherical_geometry import xyz
 
 log = setup_logger(__name__)
 
 wine = "#8F2727"
-dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
-    wine)
+dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
 
 
 class Population(object):
-    def __init__(self,
-                 luminosities: ArrayLike,
-                 distances: ArrayLike,
-                 known_distances: ArrayLike,
-                 known_distance_idx: ArrayLike,
-                 unknown_distance_idx: ArrayLike,
-                 fluxes: ArrayLike,
-                 flux_obs: ArrayLike,
-                 selection: ArrayLike,
-                 flux_sigma: float,
-                 r_max: float,
-                 n_model: int,
-                 lf_params: Dict[str, Any],
-                 spatial_params: Optional[Dict[str, Any]] = None,
-                 model_spaces: Optional[ArrayLike] = None,
-                 seed: int = 1234,
-                 name: Optional[str] = None,
-                 spatial_form: Optional[Dict[str, Any]] = None,
-                 lf_form: Optional[Dict[str, Any]] = None,
-                 auxiliary_quantities: Optional[Dict[str, Any]] = None,
-                 truth: Dict[str, float] = {},
-                 graph: Optional[Dict[str, Any]] = None,
-                 theta=None,
-                 phi=None,
-                 pop_synth: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(
+        self,
+        luminosities: ArrayLike,
+        distances: ArrayLike,
+        known_distances: ArrayLike,
+        known_distance_idx: ArrayLike,
+        unknown_distance_idx: ArrayLike,
+        fluxes: ArrayLike,
+        flux_obs: ArrayLike,
+        selection: ArrayLike,
+        flux_sigma: float,
+        r_max: float,
+        n_model: int,
+        lf_params: Dict[str, Any],
+        spatial_params: Optional[Dict[str, Any]] = None,
+        model_spaces: Optional[ArrayLike] = None,
+        seed: int = 1234,
+        name: Optional[str] = None,
+        spatial_form: Optional[Dict[str, Any]] = None,
+        lf_form: Optional[Dict[str, Any]] = None,
+        auxiliary_quantities: Optional[Dict[str, Any]] = None,
+        truth: Dict[str, float] = {},
+        graph: Optional[Dict[str, Any]] = None,
+        theta=None,
+        phi=None,
+        pop_synth: Optional[Dict[str, Any]] = None,
+    ) -> None:
         """
         A population container for all the properties of the population.
 
-        :param luminosities: the luminosities
-        :param distances: the distances
-        :param known_distances: the known distances
-        :param known_distance_idx: the index of the known distances
-        :param unknown_distance_idx:  the index of the unknown distances
-        :param fluxes: the latent fluxes
-        :param flux_obs: the observed fluxes
-        :param selection: the selection vector
-        :param flux_sigma: the uncertainty on the observed flux
-        :param r_max: the maximum distance of the survey
-        :param n_model:
-        :param lf_params:
-        :param spatial_params:
-        :param model_spaces:
-        :param seed: the random seed
-        :param name:
-        :param spatial_form:
-        :param lf_form:
-        :param auxiliary_quantities:
-        :param truth:
-        :returns:
-        :rtype:
-
+        :param luminosities: The luminosities
+        :type luminosities: ArrayLike
+        :param distances: The distances
+        :type distances: ArrayLike
+        :param known_distances: The known distances
+        :type known_distances: ArrayLike
+        :param known_distance_idx: The index of the known distances
+        :type known_distance_idx: ArrayLike
+        :param unknown_distance_idx: The index of the unknown distances
+        :type unknown_distance_idx: ArrayLike
+        :param fluxes: The latent fluxes
+        :type fluxes: ArrayLike
+        :param flux_obs: The observed fluxes
+        :type flux_obs: ArrayLike
+        :param selection: The selection vector
+        :type selection: ArrayLike
+        :param flux_sigma: The uncertainty on the observed flux
+        :type flux_sigma: float
+        :param r_max: The maximum distance of the survey
+        :type r_max: float
+        :param n_model: Number of models
+        :type n_model: int
+        :param lf_params: Luminosity function parameters
+        :type lf_params: Dict[str, Any]
+        :param spatial_params: Spatial distribution parameters
+        :type spatial_params: Optional[Dict[str, Any]]
+        :param model_spaces: Model spaces
+        :type model_spaces: ArrayLike
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the population
+        :type name: str
+        :param spatial_form: Form of the spatial distribution
+        :type spatial_form: Optional[Dict[str, Any]]
+        :param lf_form: Form of the luminosity function
+        :type lf_form: Optional[Dict[str, Any]]
+        :param auxiliary_quantities: Dict of auxiliary quantities
+        :type auxiliary_quantities: Optional[Dict[str, Any]]
+        :param truth: Dict of true values
+        :type truth: Dict[str, float]
+        :param graph: Graph of generative model
+        :type graph: Optional[Dict[str, Any]]
+        :param theta: Theta
+        :type theta:
+        :param phi: Phi
+        :type phi:
+        :param pop_synth: Population synth
+        :type pop_synth: Optional[Dict[str, Any]]
         """
         self._luminosities = luminosities  # type: ArrayLike
 
@@ -92,7 +118,8 @@ class Population(object):
         self._phi = phi  # type: ArrayLike
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
-            selection), "the distances are not the correct size"
+            selection
+        ), "the distances are not the correct size"
 
         # latent fluxes
         self._fluxes = fluxes  # type: ArrayLike
@@ -172,11 +199,7 @@ class Population(object):
     @property
     def truth(self):
         """
-        the simulated truth parameters
-
-        :returns:
-        :rtype:
-
+        The simulated truth parameters
         """
 
         return self._truth
@@ -184,51 +207,36 @@ class Population(object):
     @property
     def flux_sigma(self) -> float:
         """
-        the simulated flux sigma
-
-        :returns: 
-
+        The simulated flux sigma
         """
-        
+
         return self._flux_sigma
 
     @property
     def theta(self) -> np.ndarray:
         """
-        the polar angle of the objects
-
-        :returns: 
-
+        The polar angle of the objects
         """
         return self._theta
 
     @property
     def phi(self) -> np.ndarray:
         """
-        the phi angle of the objects
-
-        :returns: 
-
+        The phi angle of the objects
         """
         return self._phi
 
     @property
     def dec(self) -> np.ndarray:
         """
-        the declenation of the objects
-
-        :returns: 
-
+        The declination of the objects
         """
         return 90 - np.rad2deg(self._theta)
 
     @property
     def ra(self) -> np.ndarray:
         """
-        the right ascension of the objects
-
-        :returns: 
-
+        The right ascension of the objects
         """
         return np.rad2deg(self._phi)
 
@@ -236,7 +244,7 @@ class Population(object):
     def luminosities_latent(self) -> np.ndarray:
         """
         The true luminosities of the objects. These are always latent
-        as one cannot directly observe them
+        as one cannot directly observe them.
         """
         return self._luminosities
 
@@ -274,7 +282,6 @@ class Population(object):
         """
         All of the observed fluxes, i.e.,
         scattered with error
-
         """
         return self._flux_obs
 
@@ -298,7 +305,7 @@ class Population(object):
     def selected_distances(self) -> np.ndarray:
         """
         The selected distances. Note, this is different than
-        the KNOWN distances
+        the KNOWN distances.
         """
         return self._distance_selected
 
@@ -427,12 +434,10 @@ class Population(object):
 
     def writeto(self, file_name: str) -> None:
         """
-        write population to an HDF5 file
+        Write population to an HDF5 file
 
-        :param file_name:
-        :returns:
-        :rtype:
-
+        :param file_name: Name of the file
+        :type file_name: str
         """
 
         with h5py.File(file_name, "w") as f:
@@ -441,8 +446,13 @@ class Population(object):
 
     def addto(self, file_name: str, group_name: str) -> None:
         """
-        write population to a group in an existing
+        Write population to a group in an existing
         HDF5 file.
+
+        :param file_name: Name of the file
+        :type file_name: str
+        :param group_name: Name of the group
+        :type group_name: str
         """
 
         with h5py.File(file_name, "r+") as f:
@@ -453,7 +463,7 @@ class Population(object):
 
     def _writeto(self, f):
         """
-        write to file or group
+        Write to an HDF5 file or group.
 
         :param f: h5py file or group handle
         """
@@ -462,9 +472,7 @@ class Population(object):
 
         for k, v in self._spatial_params.items():
 
-            spatial_grp.create_dataset(k,
-                                       data=np.array([v]),
-                                       compression="lzf")
+            spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
 
         if self._lf_params is not None:
 
@@ -472,9 +480,7 @@ class Population(object):
 
             for k, v in self._lf_params.items():
 
-                lum_grp.create_dataset(k,
-                                       data=np.array([v]),
-                                       compression="lzf")
+                lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
 
             f.attrs["lf_form"] = np.string_(self._lf_form)
 
@@ -490,16 +496,14 @@ class Population(object):
         f.attrs["r_max"] = self._r_max
         f.attrs["seed"] = int(self._seed)
 
-        f.create_dataset("luminosities",
-                         data=self._luminosities,
-                         compression="lzf")
+        f.create_dataset("luminosities", data=self._luminosities, compression="lzf")
         f.create_dataset("distances", data=self._distances, compression="lzf")
-        f.create_dataset("known_distances",
-                         data=self._known_distances,
-                         compression="lzf")
-        f.create_dataset("known_distance_idx",
-                         data=self._known_distance_idx,
-                         compression="lzf")
+        f.create_dataset(
+            "known_distances", data=self._known_distances, compression="lzf"
+        )
+        f.create_dataset(
+            "known_distance_idx", data=self._known_distance_idx, compression="lzf"
+        )
         f.create_dataset(
             "unknown_distance_idx",
             data=self._unknown_distance_idx,
@@ -516,12 +520,10 @@ class Population(object):
         for k, v in self._auxiliary_quantities.items():
 
             q_grp = aux_grp.create_group(k)
-            q_grp.create_dataset("true_values",
-                                 data=v["true_values"],
-                                 compression="lzf")
-            q_grp.create_dataset("obs_values",
-                                 data=v["obs_values"],
-                                 compression="lzf")
+            q_grp.create_dataset(
+                "true_values", data=v["true_values"], compression="lzf"
+            )
+            q_grp.create_dataset("obs_values", data=v["obs_values"], compression="lzf")
 
         model_grp = f.create_group("model_spaces")
 
@@ -533,20 +535,18 @@ class Population(object):
         recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
         recursively_save_dict_contents_to_group(
-            f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph)))
+            f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph))
+        )
 
+        # now store the popsynth
         recursively_save_dict_contents_to_group(f, "popsynth", self._pop_synth)
 
-        # now store the popsymnth
-
     @classmethod
-    def from_file(cls, file_name):
+    def from_file(cls, file_name: str):
         """
-        load a population from a file
-        :param file_name:
-        :returns:
-        :rtype:
-
+        Load a population from a file
+        :param file_name: Name of the file
+        :type file_name: str
         """
 
         with h5py.File(file_name, "r") as f:
@@ -554,10 +554,15 @@ class Population(object):
             return cls._loadfrom(f)
 
     @classmethod
-    def from_group(cls, file_name, group_name):
+    def from_group(cls, file_name: str, group_name: str):
         """
-        load a population from a group
+        Load a population from a group
         in a file.
+
+        :param file_name: Name of the file
+        :type file_name: str
+        :param group_name: Name of the group
+        :type group_name: str
         """
 
         with h5py.File(file_name, "r") as f:
@@ -569,7 +574,7 @@ class Population(object):
     @classmethod
     def _loadfrom(cls, f):
         """
-        load from file or group
+        Load from and HDF5 file or group.
 
         :param f: h5py file or group handle
         """
@@ -647,43 +652,47 @@ class Population(object):
         truth = recursively_load_dict_contents_from_group(f, "truth")
 
         graph = nx.from_dict_of_dicts(
-            clean_graph_dict(
-                recursively_load_dict_contents_from_group(f, "graph")))
+            clean_graph_dict(recursively_load_dict_contents_from_group(f, "graph"))
+        )
 
         pop_synth = recursively_load_dict_contents_from_group(f, "popsynth")
 
-        return cls(luminosities=luminosities,
-                   distances=distances,
-                   known_distances=known_distances,
-                   known_distance_idx=known_distance_idx,
-                   unknown_distance_idx=unknown_distance_idx,
-                   fluxes=fluxes,
-                   flux_obs=flux_obs,
-                   selection=selection,
-                   flux_sigma=flux_sigma,
-                   n_model=n_model,
-                   r_max=r_max,
-                   lf_params=lf_params,
-                   spatial_params=spatial_params,
-                   model_spaces=model_spaces,
-                   seed=seed,
-                   name=name,
-                   spatial_form=spatial_form,
-                   lf_form=lf_form,
-                   auxiliary_quantities=auxiliary_quantities,
-                   truth=truth,
-                   graph=graph,
-                   theta=theta,
-                   phi=phi,
-                   pop_synth=pop_synth)
+        return cls(
+            luminosities=luminosities,
+            distances=distances,
+            known_distances=known_distances,
+            known_distance_idx=known_distance_idx,
+            unknown_distance_idx=unknown_distance_idx,
+            fluxes=fluxes,
+            flux_obs=flux_obs,
+            selection=selection,
+            flux_sigma=flux_sigma,
+            n_model=n_model,
+            r_max=r_max,
+            lf_params=lf_params,
+            spatial_params=spatial_params,
+            model_spaces=model_spaces,
+            seed=seed,
+            name=name,
+            spatial_form=spatial_form,
+            lf_form=lf_form,
+            auxiliary_quantities=auxiliary_quantities,
+            truth=truth,
+            graph=graph,
+            theta=theta,
+            phi=phi,
+            pop_synth=pop_synth,
+        )
 
     def to_sub_population(self, observed: bool = True) -> "Population":
         """
         Create a population that is down selected from either the
         observed or unobserved population
 
-        :param observed: extract the observed or unobserved object
-
+        :param observed: Extract the observed or unobserved object
+        :type observed: bool
+        :returns: A new population object
+        :rtype: :class:`Population`
         """
 
         if observed:
@@ -756,8 +765,7 @@ class Population(object):
 
     def display(self):
         """
-        Display the simulation parameters
-
+        Display the simulation parameters.
         """
 
         info = "### %s simulation\nDetected %d out of %d objects" % (
@@ -793,13 +801,11 @@ class Population(object):
         display(pd.DataFrame(out))
 
     def display_true_fluxes(self, ax=None, flux_color=dark, **kwargs):
-        """Display the fluxes
+        """
+        Display the fluxes.
 
-        :param ax:
-        :param flux_color:
-        :returns:
-        :rtype:
-
+        :param ax: Axis on which to plot
+        :flux_color: Color of fluxes
         """
 
         if ax is None:
@@ -826,9 +832,7 @@ class Population(object):
 
         try:
 
-            ax.set_ylim(
-                bottom=min([self._fluxes.min(),
-                            self._flux_selected.min()]))
+            ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
 
         except:
 
@@ -839,13 +843,10 @@ class Population(object):
 
     def display_obs_fluxes(self, ax=None, flux_color=dark, **kwargs):
         """
-        display the observed fluxes
+        Display the observed fluxes.
 
-        :param ax:
-        :param flux_color:
-        :returns:
-        :rtype:
-
+        :param ax: Axis on which to plot
+        :flux_color: Color of fluxes
         """
 
         # do not try to plot if there is nothing
@@ -883,8 +884,7 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min([self._fluxes.min(),
-                                self._flux_selected.min()]))
+        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
         ax.set_xlim(right=self._r_max)
 
         ax.set_xlabel("distance")
@@ -901,16 +901,13 @@ class Population(object):
         **kwargs,
     ):
         """
-        display the fluxes
+        Display the fluxes.
 
-        :param ax:
-        :param true_color:
-        :param obs_color:
-        :param arrow_color:
-        :param with_arrows:
-        :returns:
-        :rtype:
-
+        :param ax: Axis on which to plot
+        :param true_color: Color of true values
+        :param obs_color: Color of obs values
+        :param arrow_color: Color of arrows
+        :param with_arrows: If `True`, display arrows
         """
 
         if ax is None:
@@ -927,9 +924,9 @@ class Population(object):
 
         if (with_arrows) and (not self._no_detection):
             for start, stop, z in zip(
-                    self._fluxes[self._selection],
-                    self._flux_selected,
-                    self._distance_selected,
+                self._fluxes[self._selection],
+                self._flux_selected,
+                self._distance_selected,
             ):
 
                 x = z
@@ -958,15 +955,11 @@ class Population(object):
         **kwargs,
     ):
         """
-        display the luminosities
+        Display the luminosities
 
-        :param ax:
-        :param true_color:
-        :param obs_color:
-
-        :returns:
-        :rtype:
-
+        :param ax: Axis on which to plot
+        :param true_color: Color of true values
+        :param obs_color: Color of obs values
         """
 
         if ax is None:
@@ -976,14 +969,12 @@ class Population(object):
 
             fig = ax.get_figure()
 
-        ax.scatter(self._distance_selected,
-                   self._luminosity_selected,
-                   s=5,
-                   color=obs_color)
-        ax.scatter(self._distance_hidden,
-                   self._luminosity_hidden,
-                   s=5,
-                   color=true_color)
+        ax.scatter(
+            self._distance_selected, self._luminosity_selected, s=5, color=obs_color
+        )
+        ax.scatter(
+            self._distance_hidden, self._luminosity_hidden, s=5, color=true_color
+        )
 
         return fig
 
@@ -1040,7 +1031,7 @@ class Population(object):
             fig.controls = control
             control.autoRotate = True
             fig.render_continuous = True
-            #control.autoRotate = True
+            # control.autoRotate = True
             # toggle_rotate = widgets.ToggleButton(description="Rotate")
             # widgets.jslink((control, "autoRotate"), (toggle_rotate, "value"))
             # r_value = toggle_rotate
@@ -1142,12 +1133,9 @@ class Population(object):
 
     def display_distances(self, ax=None):
         """
-        display the distances
+        Display the distances
 
-        :param ax:
-        :returns:
-        :rtype:
-
+        :param ax: Axis on which to plot
         """
 
         if ax is None:
