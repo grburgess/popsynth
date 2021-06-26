@@ -1,9 +1,9 @@
-import os
-import warnings
 from pathlib import Path
 from dataclasses import dataclass
 
 from omegaconf import OmegaConf
+
+# Path to configuration
 
 _config_path = Path("~/.config/popsynth/").expanduser()
 
@@ -12,7 +12,9 @@ _config_name = Path("popsynth_config.yml")
 _config_file = _config_path / _config_name
 
 
-# Define structure with dataclasses
+# Define structure of configuration with dataclasses
+
+
 @dataclass
 class LogConsole:
 
@@ -53,15 +55,14 @@ class PopSynthConfig:
 # Read the default config
 popsynth_config: PopSynthConfig = OmegaConf.structured(PopSynthConfig)
 
-# Merge with local config
+# Merge with local config if it exists
 if _config_file.is_file():
 
     _local_config = OmegaConf.load(_config_file)
 
-    popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config,
-                                                      _local_config)
+    popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config, _local_config)
 
-# Write defaults
+# Write defaults if not
 else:
 
     # Make directory if needed

@@ -8,8 +8,7 @@ import colorama
 from colorama import Back, Fore, Style
 
 from popsynth.utils.configuration import popsynth_config
-from popsynth.utils.package_data import (get_path_of_log_dir,
-                                         get_path_of_log_file)
+from popsynth.utils.package_data import get_path_of_log_dir, get_path_of_log_file
 
 colorama.deinit()
 colorama.init(strip=False)
@@ -20,10 +19,10 @@ class ColoredFormatter(logging.Formatter):
     """
     Colored log formatter.
     """
-    def __init__(self,
-                 *args,
-                 colors: Optional[Dict[str, str]] = None,
-                 **kwargs) -> None:
+
+    def __init__(
+        self, *args, colors: Optional[Dict[str, str]] = None, **kwargs
+    ) -> None:
         """Initialize the formatter with specified format strings."""
 
         super().__init__(*args, **kwargs)
@@ -50,7 +49,8 @@ class MyFilter(object):
 # now create the developer handler that rotates every day and keeps
 # 10 days worth of backup
 popsynth_dev_log_handler = handlers.TimedRotatingFileHandler(
-    get_path_of_log_file("dev.log"), when="D", interval=1, backupCount=10)
+    get_path_of_log_file("dev.log"), when="D", interval=1, backupCount=10
+)
 
 # lots of info written out
 
@@ -65,13 +65,15 @@ popsynth_dev_log_handler.setLevel(logging.DEBUG)
 # now set up the usr log which will save the info
 
 popsynth_usr_log_handler = handlers.TimedRotatingFileHandler(
-    get_path_of_log_file("usr.log"), when="D", interval=1, backupCount=10)
+    get_path_of_log_file("usr.log"), when="D", interval=1, backupCount=10
+)
 
 popsynth_usr_log_handler.setLevel(popsynth_config["logging"]["file"]["level"])
 
 # lots of info written out
-_usr_formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s",
-                                   datefmt="%Y-%m-%d %H:%M:%S")
+_usr_formatter = logging.Formatter(
+    "%(asctime)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+)
 
 popsynth_usr_log_handler.setFormatter(_usr_formatter)
 
@@ -92,8 +94,7 @@ _console_formatter = ColoredFormatter(
 
 popsynth_console_log_handler = logging.StreamHandler(sys.stdout)
 popsynth_console_log_handler.setFormatter(_console_formatter)
-popsynth_console_log_handler.setLevel(
-    popsynth_config["logging"]["console"]["level"])
+popsynth_console_log_handler.setLevel(popsynth_config["logging"]["console"]["level"])
 
 warning_filter = MyFilter(logging.WARNING)
 
@@ -105,7 +106,7 @@ class LoggingState(object):
         popsynth_console_log_handler,
     ):
         """
-        A container to store the stat of the logs
+        A container to store the state of the logs.
         """
 
         # attach the log handlers
@@ -125,10 +126,10 @@ class LoggingState(object):
 
     def restore_last_state(self):
 
-        self.popsynth_usr_log_handler.setLevel(
-            self.popsynth_usr_log_handler_state)
+        self.popsynth_usr_log_handler.setLevel(self.popsynth_usr_log_handler_state)
         self.popsynth_console_log_handler.setLevel(
-            self.popsynth_console_log_handler_state)
+            self.popsynth_console_log_handler_state
+        )
 
     def silence_logs(self):
 
@@ -166,7 +167,7 @@ _log_state = LoggingState(
 
 def silence_warnings():
     """
-    supress warning messages in console and file usr logs
+    Supress warning messages in console and file usr logs.
     """
 
     popsynth_usr_log_handler.addFilter(warning_filter)
@@ -175,7 +176,7 @@ def silence_warnings():
 
 def activate_warnings():
     """
-    supress warning messages in console and file usr logs
+    Supress warning messages in console and file usr logs.
     """
 
     popsynth_usr_log_handler.removeFilter(warning_filter)
@@ -189,7 +190,7 @@ def update_logging_level(level):
 
 def silence_logs():
     """
-    Turn off all logging
+    Turn off all logging.
     """
 
     # handle dev logs independently
@@ -210,7 +211,7 @@ def silence_progress_bars():
 
 def quiet_mode():
     """
-    turn off all logging and progress bars
+    Turn off all logging and progress bars.
     """
 
     silence_progress_bars()
@@ -221,7 +222,7 @@ def quiet_mode():
 
 def loud_mode():
     """
-    turn on all progress bars and logging
+    Turn on all progress bars and logging.
     """
 
     show_progress_bars()
@@ -232,7 +233,7 @@ def loud_mode():
 
 def activate_logs():
     """
-    re-activate silenced logs
+    Re-activate silenced logs.
     """
 
     # handle dev logs independently
@@ -243,7 +244,7 @@ def activate_logs():
 
 def debug_mode():
     """
-    activate debug in the console
+    Activate debug in the console.
     """
 
     # store state and switch console to debug
@@ -269,6 +270,11 @@ def silence_console_log():
 
 
 def setup_logger(name):
+    """
+    Set up a new logger.
+
+    :param name: Name of the logger
+    """
 
     # A logger with name name will be created
     # and then add it to the print stream

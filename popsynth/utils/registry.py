@@ -1,4 +1,4 @@
-from class_registry import AutoRegister, ClassRegistry
+from class_registry import ClassRegistry
 
 auxiliary_parameter_registry = ClassRegistry("_auxiliary_sampler_name")
 
@@ -26,6 +26,7 @@ def list_available_auxiliary_samplers():
 
 
 __all__ = [
-    "auxiliary_parameter_registry", "distribution_registry",
-    "distribution_registry"
+    "auxiliary_parameter_registry",
+    "distribution_registry",
+    "distribution_registry",
 ]
