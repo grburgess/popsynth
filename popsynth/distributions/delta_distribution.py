@@ -8,17 +8,17 @@ class DeltaDistribution(LuminosityDistribution):
 
     Lp = DistributionParameter(vmin=0, default=0)
 
-    def __init__(self, seed=1234, name="delta"):
-
+    def __init__(self, seed: int = 1234, name: str = "delta"):
         """
-        a dirac delta distribution
+        A delta function luminosity distribution,
+        centred on ``Lp``.
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :returns: 
-
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param Lp: The central value
+        :type Lp: :class:`DistributionParameter`
         """
         lf_form = r"\delta(L - L_p)"
 

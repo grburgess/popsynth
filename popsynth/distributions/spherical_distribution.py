@@ -6,24 +6,28 @@ from popsynth.distribution import SpatialDistribution, DistributionParameter
 class SphericalDistribution(SpatialDistribution):
     _distribution_name = "SphericalDistribution"
 
-    def __init__(self, seed=1234, name="sphere", form=None):
-
+    def __init__(
+        self,
+        seed: int = 1234,
+        name: str = "sphere",
+        form: str = None,
+    ):
         """
-        a generic spherical distribution. Can be inherited to
+        A generic spherical distribution. Can be inherited to
         form more complex spherical distributions
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :param form: 
-        :type form: 
-        :returns: 
-
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param form: Mathematical description of distribution
+        :type form: str
         """
-        super(SphericalDistribution, self).__init__(seed=seed,
-                                                    name=name,
-                                                    form=form)
+        super(SphericalDistribution, self).__init__(
+            seed=seed,
+            name=name,
+            form=form,
+        )
 
     def differential_volume(self, r):
 
@@ -43,29 +47,28 @@ class ConstantSphericalDistribution(SphericalDistribution):
 
     def __init__(
         self,
-        seed=1234,
-        name="cons_sphere",
-        form=None,
+        seed: int = 1234,
+        name: str = "cons_sphere",
+        form: str = None,
     ):
-
         """
-        A spherical distribution with constant density
+        A spherical distribution with constant density.
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :param form: 
-        :type form: 
-        :returns: 
-
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param form: Mathematical description of distribution
+        :type form: str
+        :param Lambda: Density per unit volume
+        :type Lambda: :class:`DistributionParameter`
         """
         if form is None:
             form = r"\Lambda"
 
-        super(ConstantSphericalDistribution, self).__init__(seed=seed,
-                                                            name=name,
-                                                            form=form)
+        super(ConstantSphericalDistribution, self).__init__(
+            seed=seed, name=name, form=form
+        )
 
     def dNdV(self, distance):
 
@@ -77,23 +80,28 @@ class ZPowerSphericalDistribution(ConstantSphericalDistribution):
 
     delta = DistributionParameter(default=1)
 
-    def __init__(self, seed=1234, name="zpow_sphere"):
-
+    def __init__(self, seed: int = 1234, name: str = "zpow_sphere"):
         """
-        a spherical population with a power law denisty profile
+        A spherical distribution with a power law density profile.
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :returns: 
+        ``Lambda`` (1+r)^``delta``
 
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param form: Mathematical description of distribution
+        :type form: str
+        :param delta: Index of power law distribution
+        :type delta: :class:`DistributionParameter`
         """
-        spatial_form = r"\Lambda (z+1)^{\delta}"
+        spatial_form = r"\Lambda (1+r)^{\delta}"
 
-        super(ZPowerSphericalDistribution, self).__init__(seed,
-                                                          name,
-                                                          form=spatial_form)
+        super(ZPowerSphericalDistribution, self).__init__(
+            seed,
+            name,
+            form=spatial_form,
+        )
 
     def dNdV(self, distance):
 
