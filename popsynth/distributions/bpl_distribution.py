@@ -12,24 +12,33 @@ class BPLDistribution(LuminosityDistribution):
     beta = DistributionParameter()
     Lmax = DistributionParameter(vmin=0)
 
-    def __init__(self, seed=1234, name="bpl"):
+    def __init__(self, seed: int = 1234, name: str = "bpl"):
+        """A broken power law luminosity distribution.
 
+        L ~ L^alpha for L <= Lbreak
+        L ~ L^beta for L > Lbreak
+
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param Lmin: Minimum value of the luminosity
+        :type Lmin: :class:`DistributionParameter`
+        :param alpha: Index of the lower power law
+        :type alpha: :class:`DistributionParameter`
+        :param Lbreak: Luminosity of the power law break
+        :type Lbreak: :class:`DistributionParameter`
+        :param beta: Index of the upper power law
+        :type beta: :class:`DistributionParameter`
+        :param Lmax: Maximum value of the luminosity
+        :type Lmax: :class:`DistributionParameter`
         """
+        lf_form = r"\begin{cases} C L^{\alpha} & \mbox{if } L"
+        lf_form += r"\leq L_\mathrm{break},\\ C L^{\beta} "
+        lf_form += r"L_\mathrm{break}^{\alpha - \beta}"
+        lf_form += r" & \mbox{if } L > L_\mathrm{break}. \end{cases}"
 
-        a broken power law distribution 
-
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :returns: 
-
-        """
-        lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
-
-        super(BPLDistribution, self).__init__(seed=seed,
-                                              name=name,
-                                              form=lf_form)
+        super(BPLDistribution, self).__init__(seed=seed, name=name, form=lf_form)
 
     def phi(self, L):
 
@@ -39,24 +48,27 @@ class BPLDistribution(LuminosityDistribution):
 
         u = np.atleast_1d(np.random.uniform(size=size))
 
-        return sample_bpl(u, self.Lmin, self.Lbreak, self.Lmax, self.alpha,
-                          self.beta)
+        return sample_bpl(u, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta)
 
 
 def integrate_pl(x0, x1, x2, a1, a2):
     """
-    x0: lower bound
-    x1: break point
-    x2: upper bound
-    a1: lower power law index
-    a2: upper power low index
+    Integrate a broken power law between bounds.
 
+    :param x0: Lower bound
+    :param x1: Break point
+    :param x2: Upper bound
+    :param a1: Lower power law index
+    :param a2: Upper power low index
     """
 
     # compute the integral of each piece analytically
     int_1 = (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) / (a1 + 1)
-    int_2 = (np.power(x1, a1 - a2) *
-             (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0)) / (a2 + 1))
+    int_2 = (
+        np.power(x1, a1 - a2)
+        * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
+        / (a2 + 1)
+    )
 
     # compute the total integral
     total = int_1 + int_2
@@ -70,13 +82,14 @@ def integrate_pl(x0, x1, x2, a1, a2):
 
 def bpl(x, x0, x1, x2, a1, a2):
     """
-    x: the domain of the function
-    x0: lower bound
-    x1: break point
-    x2: upper bound
-    a1: lower power law index
-    a2: upper power low index
+    Broken power law between bounds.
 
+    :param x: The domain of the function
+    :param x0: Lower bound
+    :param x1: Break point
+    :param x2: Upper bound
+    :param a1: Lower power law index
+    :param a2: Upper power low index
     """
 
     # creatre a holder for the values
@@ -100,12 +113,15 @@ def bpl(x, x0, x1, x2, a1, a2):
 
 def sample_bpl(u, x0, x1, x2, a1, a2):
     """
-    u: uniform random number between on {0,1}
-    x0: lower bound
-    x1: break point
-    x2: upper bound
-    a1: lower power law index
-    a2: upper power low index
+    Sample from a broken power law
+    between bounds.
+
+    :param u: Uniform random number on {0,1}
+    :param x0: Lower bound
+    :param x1: Break point
+    :param x2: Upper bound
+    :param a1: Lower power law index
+    :param a2: Upper power low index
     """
 
     # compute the weights with our integral function
@@ -121,15 +137,15 @@ def sample_bpl(u, x0, x1, x2, a1, a2):
 
     # inverse transform sample the lower part for the "successes"
     out[idx] = np.power(
-        u[idx] * (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) +
-        np.power(x0, a1 + 1.0),
+        u[idx] * (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0))
+        + np.power(x0, a1 + 1.0),
         1.0 / (1 + a1),
     )
 
     # inverse transform sample the upper part for the "failures"
     out[~idx] = np.power(
-        u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0)) +
-        np.power(x1, a2 + 1.0),
+        u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
+        + np.power(x1, a2 + 1.0),
         1.0 / (1 + a2),
     )
 
