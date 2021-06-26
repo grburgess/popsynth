@@ -15,14 +15,27 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
 
     def __init__(self, name: str, observed: bool = True):
         """
-        A truncated normal distribution
+        A truncated normal sampler,
+        where property ~ N(``mu``, ``sigma``), between
+        ``lower`` and ``upper``.
 
-        :param name: 
+        :param name: Name of the property
         :type name: str
-        :param observed: 
+        :param observed: `True` if the property is observed,
+        `False` if it is latent. Defaults to `True`
         :type observed: bool
-        :returns: 
-
+        :param mu: Mean of the normal
+        :type mu: :class:`AuxiliaryParameter`
+        :param tau: Standard deviation of the normal
+        :type tau: :class:`AuxiliaryParameter`
+        :param lower: Lower bound of the truncation
+        :type lower: :class:`AuxiliaryParameter`
+        :param upper: Upper bound of the truncation
+        :type upper: :class:`AuxiliaryParameter`
+        :param sigma: Standard deviation of normal distribution
+        from which observed values are sampled, if ``observed``
+        is `True`
+        :type sigma: :class:`AuxiliaryParameter`
         """
 
         super(TruncatedNormalAuxSampler, self).__init__(name=name,

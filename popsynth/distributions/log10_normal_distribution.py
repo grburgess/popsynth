@@ -9,18 +9,22 @@ class Log10NormalDistribution(LuminosityDistribution):
     mu = DistributionParameter()
     tau = DistributionParameter(vmin=0)
 
-    def __init__(self, seed=1234, name="log10norm"):
+    def __init__(self, seed: int = 1234, name: str = "log10norm"):
         """
-        a log10-normal luminosity function
+        A log10-normal luminosity function
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :returns: 
+        Log10Normal(``mu``, ``tau``)
 
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param mu: Mean of the log10 normal
+        :type mu: :class:`DistributionParameter`
+        :param tau: Standard deviation of the log10 normal
+        :type tau: :class:`DistributionParameter`
         """
-        lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        lf_form = r"\mathrm{Log_{10}Normal(\mu, \tau)}"
 
         super(Log10NormalDistribution, self).__init__(name=name,
                                                       seed=seed,

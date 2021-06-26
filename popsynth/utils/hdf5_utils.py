@@ -1,13 +1,16 @@
-import os
-
 import h5py
 import numpy as np
+from typing import Dict, Any
 
 
-def recursively_save_dict_contents_to_group(h5file, path, dic):
+def recursively_save_dict_contents_to_group(h5file, path, dic: Dict[Any, Any]):
     """
-    load files from hdf5
+    Save dict to HDF5.
 
+    :param h5file: HDF5 file
+    :param path: Path inside file
+    :param dic: Dictionary to save
+    :type dic: Dict[Any, Any]
     """
     for key, item in dic.items():
 
@@ -62,7 +65,12 @@ def recursively_save_dict_contents_to_group(h5file, path, dic):
 
 def recursively_load_dict_contents_from_group(h5file, path):
     """
-    load files from hdf5
+    Load files from hdf5.
+
+    :param h5file: HDF5 file
+    :param path: Path in file
+    :returns: A dictionary
+    :rtype: Dict[Any, Any]
     """
     ans = {}
 
@@ -89,12 +97,11 @@ def recursively_load_dict_contents_from_group(h5file, path):
     return ans
 
 
-# these two functions add and clean
-# a networkx graph dict so that it will be stored in
-# an hdf5 file
-
-
 def fill_graph_dict(graph_dict, fill_value=1):
+    """
+    Fill a networkx graph dict so that it
+    can be stored in an HDF5 file.
+    """
     new_dict = {}
 
     for k, v in graph_dict.items():
@@ -108,6 +115,10 @@ def fill_graph_dict(graph_dict, fill_value=1):
 
 
 def clean_graph_dict(graph_dict):
+    """
+    Clean networkx graph dict so that it
+    can be stored in an HDF5 file.
+    """
     new_dict = {}
 
     for k, v in graph_dict.items():

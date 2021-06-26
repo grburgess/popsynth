@@ -11,16 +11,23 @@ class DeltaAuxSampler(AuxiliarySampler):
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
     def __init__(self, name: str, observed: bool = True):
-        """FIXME! briefly describe function
+        """
+        A delta-function sampler for which the true value
+        is fixed at ``xp``. Assumes property is observed by default,
+        in which case the observed value is sampled from
+        the true value with some normally-distributed error, ``sigma``.
 
-        :param name:
-        :param mu:
-        :param tau:
-        :param sigma:
-        :param observed:
-        :returns:
-        :rtype:
-
+        :param name: Name of the property
+        :type name: str
+        :param observed: `True` if the property is observed,
+        `False` if it is latent. Defaults to `True`
+        :type observed: bool
+        :param xp: Value at which delta function is located
+        :type xp: :class:`AuxiliaryParameter`
+        :param sigma: Standard deviation of normal distribution
+        from which observed values are sampled, if ``observed``
+        is `True`
+        :type sigma: :class:`AuxiliaryParameter`
         """
 
         super(DeltaAuxSampler, self).__init__(name=name, observed=observed)

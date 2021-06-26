@@ -15,14 +15,22 @@ class ParetoAuxSampler(AuxiliarySampler):
 
     def __init__(self, name: str, observed: bool = True):
         """
-        A pareto distribution sampler
+        A pareto distribution sampler,
+        where property ~ 1 / x^(``alpha`` + 1).
 
-        :param name: 
+        :param name: Name of the property
         :type name: str
-        :param observed: 
+        :param observed: `True` if the property is observed,
+        `False` if it is latent. Defaults to `True`
         :type observed: bool
-        :returns: 
-
+        :param xmin: Minimum value of the pareto
+        :type xmin: :class:`AuxiliaryParameter`
+        :param alpha: Index of the pareto
+        :type alpha: :class:`AuxiliaryParameter`
+        :param sigma: Standard deviation of normal distribution
+        from which observed values are sampled, if ``observed``
+        is `True`
+        :type sigma: :class:`AuxiliaryParameter`
         """
 
         super(ParetoAuxSampler, self).__init__(name=name, observed=observed)
@@ -55,14 +63,22 @@ class PowerLawAuxSampler(AuxiliarySampler):
 
     def __init__(self, name: str, observed: bool = True):
         """
-        A power law distribution sampler
+        A bounded power law distribution sampler,
+        where property ~ x^``alpha``.
 
-        :param name: 
+        :param name: Name of the property
         :type name: str
-        :param observed: 
+        :param observed: `True` if the property is observed,
+        `False` if it is latent. Defaults to `True`
         :type observed: bool
-        :returns: 
-
+        :param xmin: Minimum value of the power law
+        :type xmin: :class:`AuxiliaryParameter`
+        :param xmax: Maximum value of the power law
+        :type xmax: :class:``AuxiliaryParameter
+        :param sigma: Standard deviation of normal distribution
+        from which observed values are sampled, if ``observed``
+        is `True`
+        :type sigma: :class:`AuxiliaryParameter`
         """
 
         super(PowerLawAuxSampler, self).__init__(name=name, observed=observed)
@@ -96,14 +112,23 @@ class BrokenPowerLawAuxSampler(AuxiliarySampler):
 
     def __init__(self, name: str, observed: bool = True):
         """
-        A power law distribution sampler
+        A broken power law distribution sampler,
+        where property ~ x^``alpha`` for x < ``xbreak``,
+        and property ~ x^``beta`` for x > ``xbreak``.
 
-        :param name: 
+        :param name: Name of the property
         :type name: str
-        :param observed: 
+        :param observed: `True` if the property is observed,
+        `False` if it is latent. Defaults to `True`
         :type observed: bool
-        :returns: 
-
+        :param xmin: Minimum value of the broken power law
+        :type xmin: :class:`AuxiliaryParameter`
+        :param xmax: Maximum value of the broken power law
+        :type xmax: :class:``AuxiliaryParameter
+        :param sigma: Standard deviation of normal distribution
+        from which observed values are sampled, if ``observed``
+        is `True`
+        :type sigma: :class:`AuxiliaryParameter`
         """
 
         super(BrokenPowerLawAuxSampler, self).__init__(name=name,

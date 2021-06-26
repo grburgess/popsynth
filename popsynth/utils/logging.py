@@ -8,8 +8,7 @@ import colorama
 from colorama import Back, Fore, Style
 
 from popsynth.utils.configuration import popsynth_config
-from popsynth.utils.package_data import (get_path_of_log_dir,
-                                         get_path_of_log_file)
+from popsynth.utils.package_data import get_path_of_log_dir, get_path_of_log_file
 
 colorama.deinit()
 colorama.init(strip=False)
@@ -105,7 +104,7 @@ class LoggingState(object):
         popsynth_console_log_handler,
     ):
         """
-        A container to store the stat of the logs
+        A container to store the state of the logs.
         """
 
         # attach the log handlers
@@ -166,7 +165,7 @@ _log_state = LoggingState(
 
 def silence_warnings():
     """
-    supress warning messages in console and file usr logs
+    Supress warning messages in console and file usr logs.
     """
 
     popsynth_usr_log_handler.addFilter(warning_filter)
@@ -175,7 +174,7 @@ def silence_warnings():
 
 def activate_warnings():
     """
-    supress warning messages in console and file usr logs
+    Supress warning messages in console and file usr logs.
     """
 
     popsynth_usr_log_handler.removeFilter(warning_filter)
@@ -189,7 +188,7 @@ def update_logging_level(level):
 
 def silence_logs():
     """
-    Turn off all logging
+    Turn off all logging.
     """
 
     # handle dev logs independently
@@ -210,7 +209,7 @@ def silence_progress_bars():
 
 def quiet_mode():
     """
-    turn off all logging and progress bars
+    Turn off all logging and progress bars.
     """
 
     silence_progress_bars()
@@ -221,7 +220,7 @@ def quiet_mode():
 
 def loud_mode():
     """
-    turn on all progress bars and logging
+    Turn on all progress bars and logging.
     """
 
     show_progress_bars()
@@ -232,7 +231,7 @@ def loud_mode():
 
 def activate_logs():
     """
-    re-activate silenced logs
+    Re-activate silenced logs.
     """
 
     # handle dev logs independently
@@ -243,7 +242,7 @@ def activate_logs():
 
 def debug_mode():
     """
-    activate debug in the console
+    Activate debug in the console.
     """
 
     # store state and switch console to debug
@@ -269,6 +268,11 @@ def silence_console_log():
 
 
 def setup_logger(name):
+    """
+    Set up a new logger.
+
+    :param name: Name of the logger
+    """
 
     # A logger with name name will be created
     # and then add it to the print stream

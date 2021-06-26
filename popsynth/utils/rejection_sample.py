@@ -4,15 +4,13 @@ import numpy as np
 
 # @jit(parallel=False, forceobj=True)
 def rejection_sample(size, ymax, xmax, func):
-    """FIXME! briefly describe function
+    """
+    Rejection sample ``func`` up to ``ymax`` and ``xmax``.
 
-    :param size:
-    :param ymax:
-    :param xmax:
-    :param func:
-    :returns:
-    :rtype:
-
+    :param size: Number of samples
+    :param ymax: Maximum value of y
+    :param xmax: Maximum value of x
+    :param func: Function
     """
 
     r_out = np.zeros(size)
