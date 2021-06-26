@@ -77,12 +77,13 @@ class BoxSelection(SelectionProbabilty):
         use_flux: bool = False,
     ):
         """
-        A box selection on distance, luminosity or flux.
+        A box selection on observed_value, distance,
+        luminosity or flux.
 
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed values instead of true values. `False` by default.
+        observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
         `False` by default.
@@ -140,14 +141,15 @@ class LowerBound(SelectionProbabilty):
         use_flux: bool = False,
     ):
         """
-        A hard, lower bound selection on distance, luminosity or flux.
+        A hard, lower bound selection on obs_value, distance,
+        luminosity or flux.
 
         Selects values >= ``boundary``.
 
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed values instead of true values. `False` by default.
+        observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
         `False` by default.
@@ -202,14 +204,15 @@ class UpperBound(SelectionProbabilty):
         use_flux: bool = False,
     ):
         """
-        A hard, upper bound selection on distance, luminosity or flux.
+        A hard, upper bound selection on obs_value, distance,
+        luminosity or flux.
 
         Selects values <= ``boundary``.
 
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed values instead of true values. `False` by default.
+        observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
         `False` by default.
@@ -266,12 +269,13 @@ class SoftSelection(SelectionProbabilty):
     ) -> None:
         """
         A soft selection using an inverse logit function either on the
-        log or linear value of the distance, luminosity or flux.
+        log or linear value of the observed_value, distance,
+        luminosity or flux.
 
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed values instead of true values. `False` by default.
+        observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
         `False` by default.
