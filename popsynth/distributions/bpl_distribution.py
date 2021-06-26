@@ -15,8 +15,8 @@ class BPLDistribution(LuminosityDistribution):
     def __init__(self, seed: int = 1234, name: str = "bpl"):
         """A broken power law luminosity distribution.
 
-        L ~ L^alpha for L <= Lbreak
-        L ~ L^beta for L > Lbreak
+        L ~ L^``alpha`` for L <= ``Lbreak``
+        L ~ L^``beta`` for L > ``Lbreak``
 
         :param seed: Random seed
         :type seed: int

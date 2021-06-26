@@ -1,7 +1,6 @@
 import numpy as np
 import numba as nb
-import math
-
+from typing import Any
 from popsynth.distribution import SpatialDistribution, DistributionParameter
 from popsynth.utils.cosmology import cosmology
 
@@ -9,28 +8,30 @@ from popsynth.utils.cosmology import cosmology
 class CosmologicalDistribution(SpatialDistribution):
     _distribution_name = "CosmologicalDistribution"
 
-    def __init__(self,
-                 seed=1234,
-                 name="cosmo",
-                 form=None,
-                 truth={},
-                 is_rate=True):
-
+    def __init__(
+        self,
+        seed: int = 1234,
+        name: str = "cosmo",
+        form: str = None,
+        truth: dict[str, Any] = {},
+        is_rate: bool = True,
+    ):
         """
-        base cosmological spatial distribution
+        Base class for cosmological spatial distributions.
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :param form: 
-        :type form: 
-        :param truth: 
-        :type truth: 
-        :param is_rate: 
-        :type is_rate: 
-        :returns: 
-
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param form: Mathematical description of distribution
+        :type form: str
+        :param truth: True values of parameters
+        :type truth: dict[str, Any]
+        :param is_rate: `True` if modelling a population of transient events,
+        `False` if modelling a population of steady-state objects.
+        Affects the ``time_adjustment`` method used in cosmo calculations.
+        Default is `True`.
+        :type is_rate: bool
         """
         super(CosmologicalDistribution, self).__init__(
             seed=seed,
@@ -40,17 +41,48 @@ class CosmologicalDistribution(SpatialDistribution):
         self._is_rate = is_rate
 
     def differential_volume(self, z):
+        """
+        Differential comoving volume in Gpc^3 sr^-1.
+
+        dV/dzdOmega
+
+        :param z: Redshift
+        :returns: The differential comoving volume in
+        Gpc^-3 sr^-1.
+        """
 
         return cosmology.differential_comoving_volume(z)
 
     def transform(self, L, z):
+        """
+        Transformation from luminosity to energy flux.
 
-        return L / (4.0 * np.pi * cosmology.luminosity_distance(z)**2)
+        L / 4 pi dL^2
+
+        dL is in cm. Therefore for L in erg s^-1 returns
+        flux in erg cm^-2 s^-1.
+
+        :param L: Luminosity
+        :param z: Redshift
+        :returns: Flux
+        """
+
+        return L / (4.0 * np.pi * cosmology.luminosity_distance(z) ** 2)
 
     def time_adjustment(self, z):
+        """
+        Time adjustment factor to handle both
+        transient and steady-state populations.
+
+        :param z: Redshift
+        :returns: Appropriate factor depending on ``is_rate``
+        """
         if self._is_rate:
+
             return 1 + z
+
         else:
+
             return 1.0
 
 
@@ -63,22 +95,34 @@ class SFRDistribution(CosmologicalDistribution):
     decay = DistributionParameter()
     peak = DistributionParameter(vmin=0)
 
-    def __init__(self, seed=1234, name="sfr", is_rate=True):
-
+    def __init__(self, seed: int = 1234, name: str = "sfr", is_rate: bool = True):
         """
         A star-formation like distribution of the form
-        presented in Cole et al. 2001
+        presented in Cole et al. 2001.
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :param is_rate: 
-        :type is_rate: 
-        :returns: 
+        ``r0``(``a``+``rise``z)/(1 + (z/``peak``)^``decay``)
 
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param is_rate: `True` if modelling a population of transient events,
+        `False` if modelling a population of steady-state objects.
+        Affects the ``time_adjustment`` method used in cosmo calculations.
+        Default is `True`.
+        :type is_rate: bool
+        :param r0: The local density in units of Gpc^-3
+        :type r0: :class:`DistributionParameter`
+        :param a: Offset at z=0
+        :type a: :class:`DistributionParameter`
+        :param rise: Rise at low z
+        :type rise: :class:`DistributionParameter`
+        :param decay: Decay at high z
+        :type decay: :class:`DistributionParameter`
+        :param peak: Peak of z distribution
+        :type peak: :class:`DistributionParameter`
         """
-        spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
+        spatial_form = r"\rho_0 \frac{a+r \cdot z}{1+ \left(z/p\right)^d}"
 
         super(SFRDistribution, self).__init__(
             seed=seed,
@@ -88,7 +132,7 @@ class SFRDistribution(CosmologicalDistribution):
         )
 
     def dNdV(self, z):
-        return _dndv(
+        return _sfr_dndv(
             z,
             self.r0,
             self.a,
@@ -99,7 +143,7 @@ class SFRDistribution(CosmologicalDistribution):
 
 
 @nb.njit(fastmath=True)
-def _dndv(z, r0, a, rise, decay, peak):
+def _sfr_dndv(z, r0, a, rise, decay, peak):
     top = a + rise * z
     bottom = 1.0 + np.power(z / peak, decay)
 
@@ -114,23 +158,29 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
 
     def __init__(
         self,
-        seed=1234,
-        name="zpow_cosmo",
-        is_rate=True,
+        seed: int = 1234,
+        name: str = "zpow_cosmo",
+        is_rate: bool = True,
     ):
-
         """
-        a cosmological distribution where the density 
-        evolves as a power law
+        A cosmological distribution where the density
+        evolves as a power law.
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :param is_rate: 
-        :type is_rate: 
-        :returns: 
+        ``Lambda`` (1+z)^``delta``
 
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param is_rate: `True` if modelling a population of transient events,
+        `False` if modelling a population of steady-state objects.
+        Affects the ``time_adjustment`` method used in cosmo calculations.
+        Default is `True`.
+        :type is_rate: bool
+        :param Lambda: The local density in units of Gpc^-3
+        :type Lambda: :class:`DistributionParameter`
+        :param delta: The index of the power law
+        :type delta: :class:`DistributionParameter`
         """
         spatial_form = r"\Lambda (z+1)^{\delta}"
 
@@ -152,7 +202,7 @@ def _zp_dndv(z, Lambda, delta):
 
 
 # class MergerDistribution(CosmologicalDistribution):
-#_distribution_name = "MergerDistribution"
+# _distribution_name = "MergerDistribution"
 #     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name="merger"):
 
 #         spatial_form = r"\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}"
