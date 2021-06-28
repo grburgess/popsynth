@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 from class_registry import AutoRegister
@@ -40,7 +40,7 @@ class AuxiliarySampler(
         :param name: Name of the sampler
         :type name: str
         :param observed: `True` if the property is observed,
-        `False` if it is latent. Defaults to `True`
+            `False` if it is latent. Defaults to `True`
         :type observed: bool
         :param uses_distance: `True` if sampler uses distance values
         :type uses_distance: bool

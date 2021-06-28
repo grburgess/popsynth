@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 import numpy as np
 from astropy.constants import c
 from astropy.cosmology import WMAP9 as cosmo

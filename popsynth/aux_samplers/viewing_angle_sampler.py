@@ -15,7 +15,7 @@ class ViewingAngleSampler(NonObservedAuxSampler):
         it assumes that this is NOT an observed property
 
         :param max_angle: The maximum angle to which to
-        sample in degrees
+            sample in degrees
         :type max_angle: :class:`AuxiliaryParameter`
         """
 
@@ -25,10 +25,8 @@ class ViewingAngleSampler(NonObservedAuxSampler):
         """
         Sample the viewing angle by inverse CDF
 
-        :param size: number of samples
-        :returns: None
-        :rtype: None
-
+        :param size: Number of samples
+        :type size: int
         """
 
         theta_inverse = np.random.uniform(0.0,

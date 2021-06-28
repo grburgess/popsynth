@@ -1,8 +1,5 @@
-from typing import List
-
 import numpy as np
 import scipy.stats as stats
-from numpy.typing import ArrayLike
 
 from popsynth.auxiliary_sampler import AuxiliaryParameter, AuxiliarySampler
 
@@ -22,15 +19,15 @@ class LogNormalAuxSampler(AuxiliarySampler):
         :param name: Name of the property
         :type name: str
         :param observed: `True` if the property is observed,
-        `False` if it is latent. Defaults to `True`
+            `False` if it is latent. Defaults to `True`
         :type observed: bool
         :param mu: Mean of the lognormal
         :type mu: :class:`AuxiliaryParameter`
         :param tau: Standard deviation of the lognormal
         :type tau: :class:`AuxiliaryParameter`
         :param sigma: Standard deviation of normal distribution
-        from which observed values are sampled, if ``observed``
-        is `True`
+            from which observed values are sampled, if ``observed``
+            is `True`
         :type sigma: :class:`AuxiliaryParameter`
         """
         super(LogNormalAuxSampler, self).__init__(name=name, observed=observed)
@@ -68,15 +65,15 @@ class Log10NormalAuxSampler(AuxiliarySampler):
         :param name: Name of the property
         :type name: str
         :param observed: `True` if the property is observed,
-        `False` if it is latent. Defaults to `True`
+            `False` if it is latent. Defaults to `True`
         :type observed: bool
         :param mu: Mean of the log10normal
         :type mu: :class:`AuxiliaryParameter`
         :param tau: Standard deviation of the log10normal
         :type tau: :class:`AuxiliaryParameter`
         :param sigma: Standard deviation of normal distribution
-        from which observed values are sampled, if ``observed``
-        is `True`
+            from which observed values are sampled, if ``observed``
+            is `True`
         :type sigma: :class:`AuxiliaryParameter`
         """
         super(Log10NormalAuxSampler, self).__init__(name=name,

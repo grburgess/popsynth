@@ -23,7 +23,6 @@ class SkySampler(object):
         :param dec_sampler: Declination (Dec) sampler
         :type dec_sampler: :class:`NonObservedAuxSampler`
         """
-
         self._ra_sampler = ra_sampler
         self._dec_sampler = dec_sampler
 
@@ -58,7 +57,6 @@ class RASampler(NonObservedAuxSampler):
 
         RA is in radians.
         """
-
         super(RASampler, self).__init__(name="ra")
 
     def true_sampler(self, size):
@@ -76,7 +74,6 @@ class DecSampler(NonObservedAuxSampler):
 
         Dec is in radians.
         """
-
         super(DecSampler, self).__init__(name="dec")
 
     def true_sampler(self, size):
