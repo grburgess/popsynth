@@ -94,11 +94,9 @@ class Cosmology(object):
         """
         x = self.xx(z)
         z1 = 1.0 + z
-        val = (
-            (2 * self.dh * z1 / self.Om_sqrt)
-            * (self.Phi(self.xx(0)) - 1.0 / (np.sqrt(z1)) * self.Phi(x))
-            * 3.086e24
-        )  # in cm
+        val = ((2 * self.dh * z1 / self.Om_sqrt) *
+               (self.Phi(self.xx(0)) - 1.0 /
+                (np.sqrt(z1)) * self.Phi(x)) * 3.086e24)  # in cm
         return val
 
     def a(self, z):
