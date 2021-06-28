@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.stats as stats
 
 from popsynth.distribution import LuminosityDistribution, DistributionParameter
 
@@ -10,23 +9,28 @@ class LogNormalDistribution(LuminosityDistribution):
     mu = DistributionParameter()
     tau = DistributionParameter(vmin=0)
 
-    def __init__(self, seed=1234, name="lognorm"):
-
+    def __init__(self, seed: int = 1234, name: str = "lognorm"):
         """
-        a log-normal luminosity distribution
+        A log-normal luminosity distribution.
 
-        :param seed: 
-        :type seed: 
-        :param name: 
-        :type name: 
-        :returns: 
+        LogNormal(``mu``, ``tau``)
 
+        :param seed: Random seed
+        :type seed: int
+        :param name: Name of the distribution
+        :type name: str
+        :param mu: Mean of the log normal
+        :type mu: :class:`DistributionParameter`
+        :param tau: Standard deviation of the log normal
+        :type tau: :class:`DistributionParameter`
         """
-        lf_form = r"\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}"
+        lf_form = r"\mathrm{LogNorm}(\mu, \tau)"
 
-        super(LogNormalDistribution, self).__init__(name=name,
-                                                    seed=seed,
-                                                    form=lf_form)
+        super(LogNormalDistribution, self).__init__(
+            name=name,
+            seed=seed,
+            form=lf_form,
+        )
 
     def phi(self, L):
 

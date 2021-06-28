@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 from collections import OrderedDict
 from typing import Any, Dict, Optional, Union
 
@@ -12,15 +12,12 @@ from IPython.display import Markdown, Math, display
 
 # from numpy.typing import np.ndarray
 
-
 from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.distributions.cosmological_distribution import CosmologicalDistribution
 from popsynth.population import Population
-from popsynth.selection_probability import ( SelectionProbabilty,
-                                             UnitySelection)
+from popsynth.selection_probability import SelectionProbabilty, UnitySelection
 from popsynth.utils.logging import setup_logger
-from popsynth.utils.progress_bar import progress_bar
 from popsynth.utils.registry import (
     auxiliary_parameter_registry,
     distribution_registry,
@@ -42,11 +39,11 @@ class PopulationSynth(object, metaclass=ABCMeta):
         derived luminosity distribution and everything is setup.
 
         :param spatial_distribution: The spatial distribution to sample locations from
-        :param luminosity_distribution: the optional luminosity distribution
-        :param seed: random see
-        :returns:
-        :rtype:
-
+        :type spatial_distribution: :class:`SpatialDistribution`
+        :param luminosity_distribution: The optional luminosity distribution
+        :type luminosity_distribution: :class:`LuminosityDistribution`
+        :param seed: Random seed
+        :type seed: int
         """
 
         self._n_model = 500  # type: int
@@ -117,10 +114,11 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def clean(self, reset: bool = False):
         """
-        clean the auxiliary samplers, selections, etc
+        Clean the auxiliary samplers, selections, etc
         from the population synth
-        :param reset: reset any attached distributions and samplers
 
+        :param reset: If `True`, reset any attached distributions and samplers
+        :type reset: bool
         """
 
         if reset:
@@ -176,9 +174,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def write_to(self, file_name: str) -> None:
         """
-        write the population synth to a file
-        :param file_name: the file name of the output yaml
+        Write the population synth to a YAML file.
 
+        :param file_name: the file name of the output YAML
+        :type file_name: str
         """
         with open(file_name, "w") as f:
 
@@ -191,7 +190,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def to_dict(self) -> Dict[str, Any]:
         """
-        convert the population synth to a dictionary
+        Convert the population synth to a dictionary
+
+        :returns: Popsynth dict
+        :rtype: Dict[str, Any]
         """
 
         output: Dict[str, Any] = {}
@@ -290,9 +292,12 @@ class PopulationSynth(object, metaclass=ABCMeta):
     @classmethod
     def from_dict(cls, input: Dict[str, Any]) -> "PopulationSynth":
         """
-        build a PopulationSynth object from a dictionary
+        Build a PopulationSynth object from a dictionary
 
         :param input: the dictionary from which to build
+        :type input: Dict[str, Any]
+        :returns: Popsynth object
+        :rtype: :class:`PopulationSynth`
         """
 
         if "luminosity distribution" in input:
@@ -307,7 +312,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             # create the instance
 
-            luminosity_distribtuion: LuminosityDistribution = distribution_registry[
+            luminosity_distribution: LuminosityDistribution = distribution_registry[
                 ld_name]
 
             # now set the values of the parameters
@@ -318,19 +323,19 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 log.debug(f"trying to set {k} to {v}")
 
-                for x in luminosity_distribtuion.__class__.mro():
+                for x in luminosity_distribution.__class__.mro():
 
                     if k in x.__dict__:
 
-                        setattr(luminosity_distribtuion, k, float(v))
+                        setattr(luminosity_distribution, k, float(v))
 
                         break
 
-                log.debug(f"{luminosity_distribtuion.params}")
+                log.debug(f"{luminosity_distribution.params}")
 
         else:
 
-            luminosity_distribtuion = None
+            luminosity_distribution = None
 
         # try
 
@@ -363,7 +368,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         pop_synth: PopulationSynth = cls(
             spatial_distribution,
-            luminosity_distribution=luminosity_distribtuion,
+            luminosity_distribution=luminosity_distribution,
             seed=seed,
         )
 
@@ -719,11 +724,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
         """
         Add a model space for stan generated quantities
 
-        :param name: name that Stan will use
-        :param start: start of the grid
-        :param stop: stop of the grid
-        :param log: use log10 or not
-
+        :param name: Name that Stan will use
+        :param start: Start of the grid
+        :param stop: Stop of the grid
+        :param log: Use log10 or not
         """
         if log:
             space = np.logspace(np.log10(start), np.log10(stop), self._n_model)
@@ -738,12 +742,11 @@ class PopulationSynth(object, metaclass=ABCMeta):
                               auxiliary_sampler: Union[DerivedLumAuxSampler,
                                                        AuxiliarySampler]):
         """
-        add an auxiliary sampler or derived luminosity sampler to the population
-        synth
+        Add an auxiliary sampler or derived luminosity sampler to the population
+        synth.
 
-        :param auxiliary_sampler:
-        :returns:
-        :rtype:
+        :param auxiliary_sampler: The auxiliary_sampler
+        :type auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]
         """
 
         self.add_observed_quantity(auxiliary_sampler)
@@ -752,13 +755,11 @@ class PopulationSynth(object, metaclass=ABCMeta):
                               auxiliary_sampler: Union[DerivedLumAuxSampler,
                                                        AuxiliarySampler]):
         """
-        add an auxiliary sampler or derived luminosity sampler to the population
+        Add an auxiliary sampler or derived luminosity sampler to the population
         synth
 
-        :param auxiliary_sampler:
-        :returns:
-        :rtype:
-
+        :param auxiliary_sampler: The auxiliary_sampler
+        :type auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]
         """
 
         if isinstance(auxiliary_sampler, DerivedLumAuxSampler):
@@ -801,7 +802,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def set_distance_selection(self, selector: SelectionProbabilty) -> None:
         """
-        Set the selection type for the distance
+        Set the selection type for the distance.
+
+        :param selector: The selector
+        :type selector: :class:`SelectionProbabilty`
         """
 
         if not isinstance(selector, SelectionProbabilty):
@@ -816,7 +820,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def set_flux_selection(self, selector: SelectionProbabilty) -> None:
         """
-        Set the selection type for the distance
+        Set the selection type for the flux
+
+        :param selector: The selector
+        :type selector: :class:`SelectionProbabilty`
         """
         if not isinstance(selector, SelectionProbabilty):
 
@@ -832,6 +839,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
                              spatial_selector: SelectionProbabilty) -> None:
         """
         Add a spatial selector into the mix
+
+        :param spatial_selector: The spatial selector
+        :type spatial_selector: :class:`SelectionProbabilty`
         """
 
         if not isinstance(spatial_selector, SelectionProbabilty):
@@ -848,7 +858,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def draw_log10_fobs(self, f, f_sigma, size=1) -> np.ndarray:
         """
-        draw the log10 of the the fluxes
+        Draw the log10 of the the fluxes.
         """
 
         log10_f = np.log10(f)
@@ -861,7 +871,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def draw_log_fobs(self, f, f_sigma, size=1) -> np.ndarray:
         """
-        draw the log10 of the the fluxes
+        Draw the log10 of the the fluxes.
         """
 
         log_f = np.log(f)
@@ -877,17 +887,19 @@ class PopulationSynth(object, metaclass=ABCMeta):
         log10_flux_draw: bool = True,
     ) -> Population:
         """
-        Draw the total survey and return a Population object.
-        
-        This will sample all attached distributions and apply selection functions.
-        
-        If a value of flux_sigma is given, the log10 observed fluxes are sampled with 
-        measurement error.
-        
+        Draw the total survey and return a :class:`Population` object.
 
-        :param flux_sigma: the homoskedastic sigma for the flux in log10 space
-        :param log10_flux_draw: if True, fluxes are drawn in log space
+        This will sample all attached distributions and apply selection functions.
+
+        If a value of flux_sigma is given, the log10 observed fluxes are sampled with
+        measurement error.
+
+        :param flux_sigma: The homoskedastic sigma for the flux in log10 space
+        :type flux_sigma: Optional[float]
+        :param log10_flux_draw: if `True`, fluxes are drawn in log space
+        :type log10_flux_draw: bool
         :return: a Population object
+        :rtype: :class:`Population`
         """
 
         # this stores all the "true" population values from all the samplers
@@ -1249,8 +1261,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def display(self) -> None:
         """
-        Display the simulation parameters
-
+        Display the simulation parameters.
         """
 
         if self._luminosity_distribution is not None:
@@ -1290,11 +1301,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def _build_graph(self):
         """
-        builds the graph for all the samplers
-
-        :returns:
-        :rtype:
-
+        Builds the graph for all the samplers.
         """
 
         # first check out the luminosity sampler

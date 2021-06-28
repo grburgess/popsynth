@@ -1,8 +1,6 @@
 from pathlib import Path
 import pkg_resources
 
-from popsynth.utils.configuration import popsynth_config
-
 
 def get_path_of_data_file(data_file) -> Path:
     file_path = pkg_resources.resource_filename("popsynth",

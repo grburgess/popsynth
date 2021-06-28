@@ -21,15 +21,34 @@ class AuxiliaryParameter(Parameter):
     pass
 
 
-class AuxiliarySampler(object,
-                       metaclass=AutoRegister(auxiliary_parameter_registry,
-                                              base_type=ParameterMeta)):
-    def __init__(self,
-                 name: str,
-                 observed: bool = True,
-                 uses_distance: bool = False,
-                 uses_luminosity: bool = False,
-                 uses_sky_position: bool = False) -> None:
+class AuxiliarySampler(
+        object,
+        metaclass=AutoRegister(auxiliary_parameter_registry,
+                               base_type=ParameterMeta),
+):
+    def __init__(
+        self,
+        name: str,
+        observed: bool = True,
+        uses_distance: bool = False,
+        uses_luminosity: bool = False,
+        uses_sky_position: bool = False,
+    ) -> None:
+        """
+        Base class for auxiliary samplers.
+
+        :param name: Name of the sampler
+        :type name: str
+        :param observed: `True` if the property is observed,
+        `False` if it is latent. Defaults to `True`
+        :type observed: bool
+        :param uses_distance: `True` if sampler uses distance values
+        :type uses_distance: bool
+        :param uses_luminosity: `True` if sampler uses luminosities
+        :type uses_luminosity: bool
+        :param uses_sky_position: `True` if sampler uses sky positions
+        :type uses_sky_position: bool
+        """
 
         self._parameter_storage = {}  # type: Dict[str, float]
         self._name = name  # type: str
@@ -49,23 +68,21 @@ class AuxiliarySampler(object,
         self._uses_sky_position = uses_sky_position  # type: bool
 
     def set_luminosity(self, luminosity: ArrayLike) -> None:
-        """FIXME! briefly describe function
+        """
+        Set the luminosity values.
 
-        :param luminosity:
-        :returns:
-        :rtype:
-
+        :param luminosity: Luminosity
+        :type luminosity: ArrayLike
         """
 
         self._luminosity = luminosity  # type:ArrayLike
 
     def set_spatial_values(self, value: SpatialContainer) -> None:
-        """FIXME! briefly describe function
+        """
+        Set the spatial values.
 
-        :param distance:
-        :returns:
-        :rtype:
-
+        :param value: Spatial values
+        :type value: :class:`SpatialContainer`
         """
 
         self._distance = value.distance  # type:ArrayLike
@@ -85,14 +102,14 @@ class AuxiliarySampler(object,
 
     def _apply_selection(self) -> None:
         """
-        Default selection if none is specfied in child class
+        Default selection if none is specfied in child class.
         """
 
         self._selector.draw(len(self._obs_values))
 
     def set_secondary_sampler(self, sampler) -> None:
         """
-        Allows the setting of a secondary sampler from which to derive values
+        Allows the setting of a secondary sampler from which to derive values.
         """
 
         # make sure we set the sampler as a secondary
@@ -109,7 +126,8 @@ class AuxiliarySampler(object,
         """
         Draw the primary and secondary samplers. This is the main call.
 
-        :param size: the number of samples to draw
+        :param size: The number of samples to draw
+        :type size: int
         """
         # do not resample!
         if not self._is_sampled:
@@ -163,7 +181,7 @@ class AuxiliarySampler(object,
 
             else:
 
-                self._obs_values = (self._true_values)  # type: ArrayLike
+                self._obs_values = self._true_values  # type: ArrayLike
 
             self._selector.set_observed_value(self._obs_values)
 
@@ -185,7 +203,7 @@ class AuxiliarySampler(object,
 
     def reset(self):
         """
-        reset all the selections
+        Reset all the selections.
         """
 
         if self._is_sampled:
@@ -219,12 +237,15 @@ class AuxiliarySampler(object,
         primary=None,
         spatial_distribution=None,
     ) -> SamplerDict:
-        """FIXME! briefly describe function
+        """
+        Get properties of secondary samplers.
 
-        :param recursive_secondaries:
-        :returns:
-        :rtype:
-
+        :param recursive_secondaries: Recursive dict of secondaries
+        :param graph: Graph
+        :param primary: Primary sampler
+        :param spatial_distribution: Spatial Distribution
+        :returns: Dict of samplers
+        :rtype: :class:`SamplerDict`
         """
 
         # if a holder was not passed, create one
@@ -267,12 +288,11 @@ class AuxiliarySampler(object,
         self,
         recursive_secondaries: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """FIXME! briefly describe function
+        """Get secondary objects.
 
-        :param recursive_secondaries:
-        :returns:
-        :rtype:
-
+        :param recursive_secondaries: Recursive dict of secondaries
+        :returns: Dict of objects
+        :rtype: Dict[str, Any]
         """
 
         # if a holder was not passed, create one
@@ -312,7 +332,9 @@ class AuxiliarySampler(object,
     @property
     def secondary_samplers(self) -> SamplerDict:
         """
-        Secondary samplers
+        Secondary samplers.
+        :returns: Dict of secondary samplers
+        :rtype: :class:`SamplerDict`
         """
 
         return self._secondary_samplers
@@ -333,7 +355,6 @@ class AuxiliarySampler(object,
 
     @property
     def observed(self) -> bool:
-        """"""
         return self._is_observed
 
     @property
@@ -346,37 +367,14 @@ class AuxiliarySampler(object,
 
     @property
     def true_values(self) -> np.ndarray:
-        """
-        The true values
-
-        :returns:
-        :rtype:
-
-        """
-
         return self._true_values
 
     @property
     def obs_values(self) -> np.ndarray:
-        """
-        The observed values
-        :returns:
-        :rtype:
-
-        """
-
         return self._obs_values
 
     @property
     def selection(self) -> np.ndarray:
-        """
-        The selection function
-
-        :returns:
-        :rtype: np.ndarray
-
-        """
-
         return self._selector.selection
 
     @property
@@ -411,7 +409,7 @@ class AuxiliarySampler(object,
     @property
     def luminosity_distance(self):
         """
-        luminosity distance if needed
+        luminosity distance if needed.
         """
 
         return cosmology.luminosity_distance(self._distance)
@@ -442,14 +440,13 @@ class NonObservedAuxSampler(AuxiliarySampler):
 
 class DerivedLumAuxSampler(AuxiliarySampler):
     def __init__(self, name: str, uses_distance: bool = False):
-        """FIXME! briefly describe function
+        """
+        Base class for generating luminosity from other properties.
 
-        :param name:
-        :param sigma:
-        :param observed:
-        :returns:
-        :rtype:
-
+        :param name: Name of the sampler
+        :type name: str
+        :param uses_distance: `True` if sampler uses distance values
+        :type uses_distance: bool
         """
 
         super(DerivedLumAuxSampler, self).__init__(name,
