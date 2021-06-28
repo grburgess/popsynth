@@ -210,6 +210,7 @@ We can use the results of this paper to build a BL Lac population that is able t
 
 ```python
 from scipy import special as sf
+from astropy.coordinates import SkyCoord
 from popsynth import (ZPowerCosmoDistribution, SoftFluxSelection,
                       GalacticPlaneSelection)
 ```
@@ -274,7 +275,7 @@ flux_selector.strength = 2
 # This is what is happening under the hood
 fig, ax = plt.subplots()
 F = np.geomspace(1e-15, 1e-8)
-ax.plot(F, sf.expit(flux_selector.strength * (np.log10(F) - np.log10(flux_selector.boundary))))
+ax.plot(F, sf.expit(flux_selector.strength * (np.log10(F) - np.log10(flux_selector.boundary))), color=purple)
 ax.set_xscale("log")
 ax.set_xlabel("F [erg $\mathrm{cm}^{-2}$ $\mathrm{s}^{-1}$]")
 ax.set_ylabel("Detection prob.")
@@ -330,6 +331,22 @@ ax.hist(population.index, color=purple, histtype="step", lw=3, label="All")
 ax.hist(population.index[population.selection], histtype="step", lw=3, 
         color=yellow, label="Detected")
 ax.set_xlabel("Spectral index")
+ax.legend()
+```
+
+Let's see the distribution of objects on the sky in Galactic coordinates:
+
+```python
+c_all = SkyCoord(population.ra, population.dec, unit="deg", frame="icrs")
+c_sel = SkyCoord(population.ra[population.selection], 
+                 population.dec[population.selection], unit="deg", frame="icrs",)
+
+fig, ax = plt.subplots(subplot_kw={"projection": "hammer"})
+ax.scatter(c_all.galactic.l.rad-np.pi, c_all.galactic.b.rad, alpha=0.1, 
+           color=purple, label="All")
+ax.scatter(c_sel.galactic.l.rad-np.pi, c_sel.galactic.b.rad, alpha=0.8, 
+           color=yellow, label="Detected")
+ax.axhline(0, color="k")
 ax.legend()
 ```
 
