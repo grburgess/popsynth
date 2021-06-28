@@ -9,12 +9,17 @@ authors:
   - name: J. Michael Burgess
     orcid: 0000-0003-3345-9515
     affiliation: "1, 2"
+  - name: Francesca Capel
+	orcid: 0000-0002-1153-2139
+	affiliation: "3"
 bibliography: paper.bib
 affiliations:
- - name: Max Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, 85741 Garching, Germany
+ - name: Max Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, 85748 Garching, Germany
    index: 1
  - name: Alexander von Humboldt Research Fellow
    index: 2
+ - name: Technical University of Munich, Boltzmannstrasse 2, 85748 Garching, Germany
+   index: 3
 date: "07 April 2021"
 ---
 
@@ -77,7 +82,10 @@ procedure, and details on customization can be found in the extensive
 This project was inspired by conversations with Daniel J. Mortlock
 wherein we tried to calibrate an analysis method we will eventually
 get around to finishing. Inspiration also came from wanting to
-generalize the examples from Will Farr's lecture note [@selection]. I am
-thankful to contributions and critique from Francesca Capel.
+generalize the examples from Will Farr's lecture note [@selection]. 
+Francesca Capel acknowledges financial support from the Excellence
+Cluster ORIGINS, which is funded by the Deutsche Forschungsgemeinschaft 
+(DFG, German Research Foundation) under Germany’s Excellence Strategy 
+- EXC-2094-390783311.
 
 # References
