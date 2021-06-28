@@ -46,8 +46,7 @@ class BernoulliSelection(SelectionProbabilty):
 
         if popsynth_config.show_progress:
 
-            self._selection = np.zeros(size, dtype=int).astype(
-                bool)  # type: np.ndarray
+            self._selection = np.zeros(size, dtype=int).astype(bool)  # type: np.ndarray
 
             for i in progress_bar(range(size), desc=f"Selecting {self.name}"):
 
@@ -58,8 +57,9 @@ class BernoulliSelection(SelectionProbabilty):
 
         else:
 
-            self._selection = stats.bernoulli.rvs(
-                self.probability, size=size).astype(bool)  # type: np.ndarray
+            self._selection = stats.bernoulli.rvs(self.probability, size=size).astype(
+                bool
+            )  # type: np.ndarray
 
 
 class BoxSelection(SelectionProbabilty):
@@ -83,13 +83,13 @@ class BoxSelection(SelectionProbabilty):
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed_value. `False` by default.
+            observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
-        `False` by default.
+            `False` by default.
         :type use_distance: bool
         :param use_luminosity: If `True` make selection on luminosity.
-        `False` by default.
+            `False` by default.
         :type use_luminosity: bool
         :param use_flux: If `True` make selection on flux. `False` by default.
         :type use_flux: bool
@@ -149,13 +149,13 @@ class LowerBound(SelectionProbabilty):
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed_value. `False` by default.
+            observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
-        `False` by default.
+            `False` by default.
         :type use_distance: bool
         :param use_luminosity: If `True` make selection on luminosity.
-        `False` by default.
+            `False` by default.
         :type use_luminosity: bool
         :param use_flux: If `True` make selection on flux. `False` by default.
         :type use_flux: bool
@@ -212,13 +212,13 @@ class UpperBound(SelectionProbabilty):
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed_value. `False` by default.
+            observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
-        `False` by default.
+            `False` by default.
         :type use_distance: bool
         :param use_luminosity: If `True` make selection on luminosity.
-        `False` by default.
+            `False` by default.
         :type use_luminosity: bool
         :param use_flux: If `True` make selection on flux. `False` by default.
         :type use_flux: bool
@@ -275,13 +275,13 @@ class SoftSelection(SelectionProbabilty):
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed_value. `False` by default.
+            observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
-        `False` by default.
+            `False` by default.
         :type use_distance: bool
         :param use_luminosity: If `True` make selection on luminosity.
-        `False` by default.
+            `False` by default.
         :type use_luminosity: bool
         :param use_flux: If `True` make selection on flux. `False` by default.
         :type use_flux: bool
@@ -317,17 +317,17 @@ class SoftSelection(SelectionProbabilty):
             values = self._observed_flux
 
         if not use_log:
-            probs = sf.expit(self.strength *
-                             (values - self.boundary))  # type: np.ndarray
+            probs = sf.expit(
+                self.strength * (values - self.boundary)
+            )  # type: np.ndarray
 
         else:
 
-            probs = sf.expit(self.strength *
-                             (np.log10(values) -
-                              np.log10(self.boundary)))  # type: np.ndarray
+            probs = sf.expit(
+                self.strength * (np.log10(values) - np.log10(self.boundary))
+            )  # type: np.ndarray
 
-        self._selection = stats.bernoulli.rvs(probs,
-                                              size=len(values)).astype(bool)
+        self._selection = stats.bernoulli.rvs(probs, size=len(values)).astype(bool)
 
     __all__ = [
         "UnitySelection",

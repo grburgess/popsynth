@@ -101,7 +101,7 @@ class Cosmology(object):
                 (np.sqrt(z1)) * self.Phi(x)) * 3.086e24)  # in cm
         return val
 
-    def a(self, z):
+    Def a(self, z):
 
         return np.sqrt(np.power(1 + z, 3.0) * self.Om + self.Ode)
 

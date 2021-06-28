@@ -15,9 +15,9 @@ class SelectionParameter(Parameter):
     pass
 
 
-class SelectionProbabilty(object,
-                          metaclass=AutoRegister(selection_registry,
-                                                 base_type=ParameterMeta)):
+class SelectionProbabilty(
+    object, metaclass=AutoRegister(selection_registry, base_type=ParameterMeta)
+):
     def __init__(
         self,
         name: str = "name",
@@ -32,13 +32,13 @@ class SelectionProbabilty(object,
         :param name: Name of the selection
         :type name: str
         :param use_obs_value: If `True`, make selection on
-        observed_value. `False` by default.
+            observed_value. `False` by default.
         :type use_obs_value: bool
         :param use_distance: If `True` make selection on distance.
-        `False` by default.
+            `False` by default.
         :type use_distance: bool
         :param use_luminosity: If `True` make selection on luminosity.
-        `False` by default.
+            `False` by default.
         :type use_luminosity: bool
         :param use_flux: If `True` make selection on flux. `False` by default.
         :type use_flux: bool

@@ -1,5 +1,6 @@
 from popsynth.distributions.cosmological_distribution import (  # MergerDistribution,
-    SFRDistribution, ZPowerCosmoDistribution,
+    SFRDistribution,
+    ZPowerCosmoDistribution,
 )
 from popsynth.distributions.spherical_distribution import (
     ConstantSphericalDistribution,
@@ -8,6 +9,7 @@ from popsynth.distributions.spherical_distribution import (
 from popsynth.distribution import LuminosityDistribution
 from popsynth.distributions.spiral_galaxy_distribution import SpiralGalaxyDistribution
 from popsynth.population_synth import PopulationSynth
+
 """
 Create a range of spatial populations that can
 be expanded with luminosity distributions.
@@ -112,9 +114,9 @@ class ZPowerCosmoPopulation(PopulationSynth):
         :param luminosity_distribution: Luminosity distribution
         :type luminosity_distribution: :class:`LuminosityDistribution`, optional
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         """
 
@@ -169,9 +171,9 @@ class SFRPopulation(PopulationSynth):
         :param luminosity_distribution: Luminosity distribution
         :type luminosity_distribution: :class:`LuminosityDistribution`, optional
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         """
 
@@ -224,9 +226,9 @@ class MWRadialPopulation(PopulationSynth):
         :param luminosity_distribution: Luminosity distribution
         :type luminosity_distribution: :class:`LuminosityDistribution`, optional
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         """
 

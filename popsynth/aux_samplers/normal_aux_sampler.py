@@ -18,15 +18,15 @@ class NormalAuxSampler(AuxiliarySampler):
         :param name: Name of the property
         :type name: str
         :param observed: `True` if the property is observed,
-        `False` if it is latent. Defaults to `True`
+            `False` if it is latent. Defaults to `True`
         :type observed: bool
         :param mu: Mean of the normal
         :type mu: :class:`AuxiliaryParameter`
         :param tau: Standard deviation of the normal
         :type tau: :class:`AuxiliaryParameter`
         :param sigma: Standard deviation of normal distribution
-        from which observed values are sampled, if ``observed``
-        is `True`
+            from which observed values are sampled, if ``observed``
+            is `True`
         :type sigma: :class:`AuxiliaryParameter`
         """
 
@@ -34,17 +34,15 @@ class NormalAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size: int):
 
-        self._true_values = stats.norm.rvs(loc=self.mu,
-                                           scale=self.tau,
-                                           size=size)
+        self._true_values = stats.norm.rvs(loc=self.mu, scale=self.tau, size=size)
 
     def observation_sampler(self, size: int):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(loc=self._true_values,
-                                              scale=self.sigma,
-                                              size=size)
+            self._obs_values = stats.norm.rvs(
+                loc=self._true_values, scale=self.sigma, size=size
+            )
 
         else:
 

@@ -15,25 +15,24 @@ class ViewingAngleSampler(NonObservedAuxSampler):
         it assumes that this is NOT an observed property
 
         :param max_angle: The maximum angle to which to
-        sample in degrees
+            sample in degrees
         :type max_angle: :class:`AuxiliaryParameter`
         """
 
-        super(ViewingAngleSampler, self).__init__(name="va", )
+        super(ViewingAngleSampler, self).__init__(
+            name="va",
+        )
 
     def true_sampler(self, size: int) -> None:
         """
         Sample the viewing angle by inverse CDF
 
-        :param size: number of samples
-        :returns: None
-        :rtype: None
-
+        :param size: Number of samples
+        :type size: int
         """
 
-        theta_inverse = np.random.uniform(0.0,
-                                          1 -
-                                          np.cos(np.deg2rad(self.max_angle)),
-                                          size=size)
+        theta_inverse = np.random.uniform(
+            0.0, 1 - np.cos(np.deg2rad(self.max_angle)), size=size
+        )
 
         self._true_values = np.arccos(1.0 - theta_inverse)

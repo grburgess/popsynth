@@ -21,7 +21,8 @@ class SpatialSelection(SelectionProbabilty):
         self._spatial_distribution: SpatialDistribution = None
 
     def set_spatial_distribution(
-            self, spatial_distribtuion: SpatialDistribution) -> None:
+        self, spatial_distribtuion: SpatialDistribution
+    ) -> None:
         """
         Set the spatial distribution for the selection.
 
@@ -46,7 +47,7 @@ class GalacticPlaneSelection(SpatialSelection):
         :param name: Name of the selection
         :type name: str
         :param b_limit: Limit around Galactic plane to exclude in
-        Galactic latitude and in units of degrees
+            Galactic latitude and in units of degrees
         :type b_limit: :class:`SelectionParameter`
         """
         super(GalacticPlaneSelection, self).__init__(name=name)

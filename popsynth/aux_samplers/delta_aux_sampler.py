@@ -20,13 +20,13 @@ class DeltaAuxSampler(AuxiliarySampler):
         :param name: Name of the property
         :type name: str
         :param observed: `True` if the property is observed,
-        `False` if it is latent. Defaults to `True`
+            `False` if it is latent. Defaults to `True`
         :type observed: bool
         :param xp: Value at which delta function is located
         :type xp: :class:`AuxiliaryParameter`
         :param sigma: Standard deviation of normal distribution
-        from which observed values are sampled, if ``observed``
-        is `True`
+            from which observed values are sampled, if ``observed``
+            is `True`
         :type sigma: :class:`AuxiliaryParameter`
         """
 
@@ -40,9 +40,9 @@ class DeltaAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(loc=self._true_values,
-                                              scale=self.sigma,
-                                              size=size)
+            self._obs_values = stats.norm.rvs(
+                loc=self._true_values, scale=self.sigma, size=size
+            )
 
         else:
 
