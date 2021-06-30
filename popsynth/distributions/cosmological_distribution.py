@@ -28,9 +28,9 @@ class CosmologicalDistribution(SpatialDistribution):
         :param truth: True values of parameters
         :type truth: dict[str, Any]
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         """
         super(CosmologicalDistribution, self).__init__(
@@ -48,7 +48,7 @@ class CosmologicalDistribution(SpatialDistribution):
 
         :param z: Redshift
         :returns: The differential comoving volume in
-        Gpc^-3 sr^-1.
+            Gpc^-3 sr^-1.
         """
 
         return cosmology.differential_comoving_volume(z)
@@ -110,9 +110,9 @@ class SFRDistribution(CosmologicalDistribution):
         :param name: Name of the distribution
         :type name: str
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         :param r0: The local density in units of Gpc^-3
         :type r0: :class:`DistributionParameter`
@@ -176,9 +176,9 @@ class ZPowerCosmoDistribution(CosmologicalDistribution):
         :param name: Name of the distribution
         :type name: str
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         :param Lambda: The local density in units of Gpc^-3
         :type Lambda: :class:`DistributionParameter`

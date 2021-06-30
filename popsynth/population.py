@@ -551,7 +551,8 @@ class Population(object):
     @classmethod
     def from_file(cls, file_name: str):
         """
-        Load a population from a file
+        Load a population from a file.
+
         :param file_name: Name of the file
         :type file_name: str
         """
@@ -812,7 +813,7 @@ class Population(object):
         Display the fluxes.
 
         :param ax: Axis on which to plot
-        :flux_color: Color of fluxes
+        :param flux_color: Color of fluxes
         """
 
         if ax is None:
@@ -855,7 +856,7 @@ class Population(object):
         Display the observed fluxes.
 
         :param ax: Axis on which to plot
-        :flux_color: Color of fluxes
+        :param flux_color: Color of fluxes
         """
 
         # do not try to plot if there is nothing

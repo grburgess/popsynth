@@ -11,7 +11,7 @@ def array_to_cmap(values, cmap, use_log: bool = False):
     :param values: A list a values to map into a cmap
     :param cmap: The mpl colormap to use
     :param use_log: `True` if the mapping should be done in log space
-    `False` by default.
+        `False` by default.
     :type use_log: bool
     :returns: A color map and a normalized color list
     """

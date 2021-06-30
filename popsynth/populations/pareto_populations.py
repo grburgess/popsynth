@@ -116,9 +116,9 @@ class ParetoZPowerCosmoPopulation(ZPowerCosmoPopulation):
         :param seed: Random seed
         :type seed: int
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         """
 
@@ -174,9 +174,9 @@ class ParetoSFRPopulation(SFRPopulation):
         :param seed: Random seed
         :type seed: int
         :param is_rate: `True` if modelling a population of transient events,
-        `False` if modelling a population of steady-state objects.
-        Affects the ``time_adjustment`` method used in cosmo calculations.
-        Default is `True`.
+            `False` if modelling a population of steady-state objects.
+            Affects the ``time_adjustment`` method used in cosmo calculations.
+            Default is `True`.
         :type is_rate: bool
         """
 
