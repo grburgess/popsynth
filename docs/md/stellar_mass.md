@@ -41,6 +41,7 @@ import warnings
 
 warnings.simplefilter("ignore")
 
+import popsynth
 
 # create a sampler for mass
 # we do not directly observe the mass as it is a latent quantity
