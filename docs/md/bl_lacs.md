@@ -179,3 +179,7 @@ ax.legend()
 ```
 
 We can now imagine that by changing the input parameters, we can fit our model to the observations in order to have an optimal representation of the true BL Lac blazar population with this parameterizations.
+
+```python
+
+```

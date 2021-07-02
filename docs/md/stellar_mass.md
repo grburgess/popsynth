@@ -12,6 +12,7 @@ jupyter:
     language: python
     name: python3
 ---
+
 # Stellar Mass-Luminosity Bias
 
 Suppose that stars have a mass-luminosity relationship such that $L
@@ -54,7 +55,6 @@ We now assume the dependent variable is the luminosity, so we need a
 ```DerivedLumAuxSampler``` that generates luminosities given a mass:
 
 ```python
-
 class MassLuminosityRelation(popsynth.DerivedLumAuxSampler):
     _auxiliary_sampler_name = "MassLuminosityRelation"
   
@@ -79,15 +79,14 @@ class MassLuminosityRelation(popsynth.DerivedLumAuxSampler):
 
 luminosity = MassLuminosityRelation()
 
+
 ```
 
 Now we can put everything together. First, we need to assign
 ```mass``` as a secondary quantity to the luminosity
 
 ```python
-
 luminosity.set_secondary_sampler(initial_mass_function)
-
 ```
 
 Finally, we will use a simple spherical geometry to hold our stars. We
@@ -95,17 +94,17 @@ will also put a hard flux limit on our survey to simulate a
 flux-limited catalog.
 
 ```python
-
 pop_gen = popsynth.populations.SphericalPopulation(1, r_max=10)
 
 # create the flux selection
+
 flux_selector = popsynth.HardFluxSelection()
 flux_selector.boundary = 1e-2
 pop_gen.set_flux_selection(flux_selector)
 
 # now add the luminisity sampler
-pop_gen.add_observed_quantity(luminosity)
 
+pop_gen.add_observed_quantity(luminosity)
 
 ```
 
@@ -113,7 +112,7 @@ Now let's draw our survey.
 
 ```python
 
-pop = pop_gen.draw_survey(flux_sigma=0.1)
+pop = pop_gen.draw_survey(flux_sigma=0.5)
 
 ```
 
@@ -121,14 +120,72 @@ We can now look at the distribution of the masses:
 
 
 ```python tags=["nbsphinx-thumbnail"]
-
 fig, ax = plt.subplots()
 
-ax.hist(pop.mass, bins=np.arange(0.2,20.0,0.2), label='all', color=purple);
-ax.hist(pop.mass[pop.selection], bins=np.arange(0.2,20.0,0.2), label='selected', color=yellow);
-ax.set_xlabel('M')
+bins = np.linspace(0,20,50)
+
+ax.hist(pop.mass,
+        bins=bins,
+        label='all', 
+        color=purple,
+        histtype="step",
+        lw=2
+       
+       )
+
+ax.hist(pop.mass[pop.selection],
+        bins=bins,
+        label='selected',
+        color=yellow,
+        histtype="step",
+        lw=2
+       )
+
+ax.set_xlabel('stellar mass')
 ax.legend()
 
 ```
 
 We can see that indeed our selected masses are biased towards higher values. 
+
+Let's look in the mass-luminostiy plane:
+
+```python
+fig, ax = plt.subplots()
+
+bins = np.linspace(0,20,50)
+
+ax.scatter(pop.mass[~pop.selection],
+           pop.luminosities_latent[~pop.selection],        
+           label='not selected', 
+           color=purple,
+           alpha=0.5,
+           s=10
+            
+            
+       
+       )
+
+ax.scatter(pop.mass[pop.selection],
+           pop.luminosities_latent[pop.selection],        
+           label='selected', 
+           color=yellow,
+           alpha=0.5,
+           s=5
+          )
+
+
+
+ax.set_xlabel('stellar mass')
+ax.set_ylabel('luminosity')
+ax.set_yscale('log')
+
+
+ax.legend()
+
+
+```
+
+```python
+
+```
