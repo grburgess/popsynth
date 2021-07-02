@@ -62,7 +62,7 @@ def skip(app, what, name, obj, would_skip, options):
 extensions = [
     'nbsphinx', 'recommonmark', 'sphinx.ext.autodoc', 'sphinx.ext.mathjax',
     'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.githubpages',
-    'sphinx.ext.napoleon', 'rtds_action'
+    'sphinx.ext.napoleon', 'rtds_action', 'sphinx_gallery.load_style',
 ]
 
 napoleon_google_docstring = True

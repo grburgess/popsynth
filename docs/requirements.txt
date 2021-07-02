@@ -1,6 +1,7 @@
 rtds_action
 sphinx>=1.4
 nbsphinx
+sphinx-gallery
 ipykernel
 cython
 jupyterthemes
