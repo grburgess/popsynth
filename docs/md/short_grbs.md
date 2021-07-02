@@ -13,12 +13,7 @@ jupyter:
     name: python3
 ---
 
-# Examples
-
-Here are some examples of astrophysical populations from publications.
-
-
-## Short GRBS 
+# Short GRBS 
 
 In [Ghirlanda et al. 2016](https://arxiv.org/abs/1607.07875) a fitting algorithm was used to determine the redshift and luminosity of short GRBS. We can use the parameters to reproduce the population and the observed GBM survey.
 

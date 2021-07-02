@@ -21,6 +21,16 @@ While not entirely useful at the moment. There is support for generating simplis
 import popsynth
 import ipyvolume as ipv
 
+
+from astropy.coordinates import SkyCoord
+
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+from jupyterthemes import jtplot
+
+purple = "#B833FF"
+
 popsynth.update_logging_level("INFO")
 from popsynth.populations.spatial_populations import MWRadialPopulation
 ```
@@ -43,4 +53,15 @@ population = synth.draw_survey()
 fig = population.display_obs_fluxes_sphere(
     cmap="magma", background_color="black", size=0.1
 )
+```
+
+```python tags=["nbsphinx-thumbnail"]
+c_all = SkyCoord(population.ra, population.dec, unit="deg", frame="icrs")
+
+fig, ax = plt.subplots(subplot_kw={"projection": "hammer"})
+ax.scatter(c_all.galactic.l.rad-np.pi, c_all.galactic.b.rad, alpha=0.1, 
+           color=purple, label="All")
+
+ax.axhline(0, color="k")
+ax.legend()
 ```
