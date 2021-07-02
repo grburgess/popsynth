@@ -10,9 +10,54 @@
 
 ![alt text](https://raw.githubusercontent.com/grburgess/popsynth/master/external/logo.png)
 
-A simple object oreinted  population synthesis framework designed for testing population inference in Stan.
-It has grown passed its orginal intent to be able to produce populations/catalogs from a variety of luminosity functions, redshift distributions, and even more abstractions. Documentation coming soon.
-It also makes a lot of pretty pictures.
+`popsynth` core function is to create **observed** surveys from **latent** population models. 
+
+First, let's define what a population of objects is in terms of a
+generative model. The two main ingredients are the objects' spatial
+distribution ($\lambda(\vec{r}; \vec{\psi})$) and the distribution of
+their inherent properties ($\pi(\vec{\phi} | \vec{\psi})$). Here,
+$\vec{\psi}$ are the latent population parameters, $\vec{r}$ are the
+spatial locations of the objects, and $\vec{\phi}$ are the properties
+of the individual objects (luminosity, spin, viewing angle, mass,
+etc.). The spatial distribution is defined such that:
+
+$$\frac{d \Lambda}{dt}(\vec{\psi}) = \int d r \frac{dV}{dr} \lambda(\vec{r}; \vec{\psi})$$
+
+is the intensity of objects for a given set of population
+parameters. With these definitions we can define the probability for
+an object to have position $\vec{r}$ and properties $\vec{\phi}$ as
+
+$$\pi(\vec{r}, \vec{\phi} | \vec{\psi}) = \frac{\lambda(\vec{r}; \vec{\psi})  \pi(\vec{\phi} | \vec{\psi})}{ \int d r \frac{dV}{dr} \lambda(\vec{r}; \vec{\psi})} $$
+
+`popsynth` allows you to specify these spatial and property
+distributions in an object-oriented way to create surveys. The final
+ingredient to creating a sample for a survey is knowing how many
+objects to sample from the population (before any selection effects
+are applied). Often, we see this number in simulation frameworks
+presented as "we draw N objects to guarantee we have enough." This is
+incorrect. A survey takes place over a given period of time ($\Delta
+t$) in which observed objects are counted. This is a description of a
+Poisson process. Thus, the number of objects in a simulation of this
+survey is a draw from a Poisson distribution:
+
+$$N \sim \mathrm{Poisson(\Delta t \frac{d\Lambda}{dt})} \mathrm{.}$$
+
+Thus, ```popsynth``` first numerically integrates the spatial
+distribution to determine the Poisson rate parameter for the given
+$\vec{\psi}$, then makes a Poisson draw for the number of objects in
+the population survey. For each object, positions and properties are
+drawn with arbitrary dependencies between them. Finally, selection
+functions are applied to either latent or observed (with or without
+measurement error) properties.
+
+
+**Note:** If instead we draw a preset number of objects, as is done in
+many astrophysical population simulation frameworks, it is equivalent
+to running a survey up until that specific number of objects is
+detected. This process is distributed as a negative binomial process,
+i.e, wait for a number of successes and requires a different
+statistical framework to compare models to data.
+
 
 ## Installation
 ```bash
@@ -23,3 +68,32 @@ pip install popsynth
 Note: **This is not synth pop!** If you were looking for some hard driving beats out of a yamaha keyboard with bells... look elsewhere
 
 ![alt text](https://raw.githubusercontent.com/grburgess/popsynth/master/external/pop.gif)
+
+
+## Contributing
+
+Contributions to ```popsynth``` are always welcome. They can come in the form of:
+
+### Bug reports
+
+Please use the [Github issue tracking system for any
+bugs](https://github.com/grburgess/popsynth/issues), for questions,
+and or feature requests.
+
+### Code and more distributions
+
+While it is easy to create custom distributions in your local setup,
+if you would like to add them to popsynth directly, go ahead. Please
+include tests to ensure that your contributions are compatible with
+the code and can be maintained in the long term.
+
+### Documentation
+
+Additions or examples, tutorials, or better explanations are always
+welcome. To ensure that the documentation builds with the current
+version of the software, I am using
+[jupytext](https://jupytext.readthedocs.io/en/latest/) to write the
+documentation in Markdown. These are automatically converted to and
+executed as jupyter notebooks when changes are pushed to Github.
+
+

@@ -14,8 +14,7 @@ jupyter:
 ---
 
 # Core Concept
-```popsynth``` core function is to create **observed** surveys from **latent** population models. 
-
+`popsynth` core function is to create **observed** surveys from **latent** population models. 
 
 First, let's define what a population of objects is in terms of a
 generative model. The two main ingredients are the objects' spatial
@@ -34,7 +33,7 @@ an object to have position $\vec{r}$ and properties $\vec{\phi}$ as
 
 $$\pi(\vec{r}, \vec{\phi} | \vec{\psi}) = \frac{\lambda(\vec{r}; \vec{\psi})  \pi(\vec{\phi} | \vec{\psi})}{ \int d r \frac{dV}{dr} \lambda(\vec{r}; \vec{\psi})} $$
 
-```popsynth``` allows you to specify these spatial and property
+`popsynth` allows you to specify these spatial and property
 distributions in an object-oriented way to create surveys. The final
 ingredient to creating a sample for a survey is knowing how many
 objects to sample from the population (before any selection effects
@@ -47,7 +46,7 @@ survey is a draw from a Poisson distribution:
 
 $$N \sim \mathrm{Poisson(\Delta t \frac{d\Lambda}{dt})} \mathrm{.}$$
 
-Thus, ```popsynth``` first numerically integrates the spatial
+Thus, `popsynth` first numerically integrates the spatial
 distribution to determine the Poisson rate parameter for the given
 $\vec{\psi}$, then makes a Poisson draw for the number of objects in
 the population survey. For each object, positions and properties are
