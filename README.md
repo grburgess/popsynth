@@ -14,20 +14,20 @@
 
 First, let's define what a population of objects is in terms of a
 generative model. The two main ingredients are the objects' spatial
-distribution ($\lambda(\vec{r}; \vec{\psi})$) and the distribution of
-their inherent properties ($\pi(\vec{\phi} | \vec{\psi})$). Here,
-$\vec{\psi}$ are the latent population parameters, $\vec{r}$ are the
-spatial locations of the objects, and $\vec{\phi}$ are the properties
+distribution (<img src="https://render.githubusercontent.com/render/math?math=\lambda(\vec{r},\vec{\psi})">) and the distribution of
+their inherent properties (<img src="https://render.githubusercontent.com/render/math?math=\pi(\vec{\phi} | \vec{\psi})">). Here,
+<img src="https://render.githubusercontent.com/render/math?math=\vec{\psi}"> are the latent population parameters, <img src="https://render.githubusercontent.com/render/math?math=\vec{r}"> are the
+spatial locations of the objects, and <img src="https://render.githubusercontent.com/render/math?math=\vec{\phi}"> are the properties
 of the individual objects (luminosity, spin, viewing angle, mass,
 etc.). The spatial distribution is defined such that:
 
-<img src="https://render.githubusercontent.com/render/math?math=\frac{d \Lambda}{dt}(\vec{\psi}) = \int d r \frac{dV}{dr} \lambda(\vec{r}; \vec{\psi})>
+<img src="https://render.githubusercontent.com/render/math?math=\frac{d \Lambda}{dt}(\vec{\psi}) = \int d r \frac{dV}{dr} \lambda(\vec{r}, \vec{\psi}))">
 
 is the intensity of objects for a given set of population
 parameters. With these definitions we can define the probability for
-an object to have position $\vec{r}$ and properties $\vec{\phi}$ as
+an object to have position <img src="https://render.githubusercontent.com/render/math?math=\vec{r}"> and properties <img src="https://render.githubusercontent.com/render/math?math=\vec{\phi}"> as
 
-$$\pi(\vec{r}, \vec{\phi} | \vec{\psi}) = \frac{\lambda(\vec{r}; \vec{\psi})  \pi(\vec{\phi} | \vec{\psi})}{ \int d r \frac{dV}{dr} \lambda(\vec{r}; \vec{\psi})} $$
+<img src="https://render.githubusercontent.com/render/math?math=\pi(\vec{r}, \vec{\phi} | \vec{\psi}) = \frac{\lambda(\vec{r}, \vec{\psi})  \pi(\vec{\phi} | \vec{\psi})}{ \int d r \frac{dV}{dr} \lambda(\vec{r}, \vec{\psi})}">
 
 `popsynth` allows you to specify these spatial and property
 distributions in an object-oriented way to create surveys. The final
@@ -35,12 +35,11 @@ ingredient to creating a sample for a survey is knowing how many
 objects to sample from the population (before any selection effects
 are applied). Often, we see this number in simulation frameworks
 presented as "we draw N objects to guarantee we have enough." This is
-incorrect. A survey takes place over a given period of time ($\Delta
-t$) in which observed objects are counted. This is a description of a
+incorrect. A survey takes place over a given period of time (<img src="https://render.githubusercontent.com/render/math?math=\Delta t">) in which observed objects are counted. This is a description of a
 Poisson process. Thus, the number of objects in a simulation of this
 survey is a draw from a Poisson distribution:
 
-$$N \sim \mathrm{Poisson(\Delta t \frac{d\Lambda}{dt})} \mathrm{.}$$
+<img src="https://render.githubusercontent.com/render/math?math=N \sim Poisson \left( \Delta t \frac{d\Lambda}{dt} \right)">
 
 Thus, ```popsynth``` first numerically integrates the spatial
 distribution to determine the Poisson rate parameter for the given
