@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Dict, Optional
+from typing import Dict
 
 import numpy as np
 from class_registry import AutoRegister
@@ -18,12 +18,31 @@ class SelectionParameter(Parameter):
 class SelectionProbabilty(object,
                           metaclass=AutoRegister(selection_registry,
                                                  base_type=ParameterMeta)):
-    def __init__(self,
-                 name: str = "name",
-                 use_obs_value: bool = False,
-                 use_distance: bool = False,
-                 use_luminosity: bool = False,
-                 use_flux: bool = False) -> None:
+    def __init__(
+        self,
+        name: str = "name",
+        use_obs_value: bool = False,
+        use_distance: bool = False,
+        use_luminosity: bool = False,
+        use_flux: bool = False,
+    ) -> None:
+        """
+        Base class for selections on a population.
+
+        :param name: Name of the selection
+        :type name: str
+        :param use_obs_value: If `True`, make selection on
+            observed_value. `False` by default.
+        :type use_obs_value: bool
+        :param use_distance: If `True` make selection on distance.
+            `False` by default.
+        :type use_distance: bool
+        :param use_luminosity: If `True` make selection on luminosity.
+            `False` by default.
+        :type use_luminosity: bool
+        :param use_flux: If `True` make selection on flux. `False` by default.
+        :type use_flux: bool
+        """
 
         self._name = name  # type: str
 
@@ -57,41 +76,30 @@ class SelectionProbabilty(object,
 
     def set_luminosity(self, luminosity: np.ndarray) -> None:
         """
-        set the luminosity of the selection
-
-        :param luminosity:
-        :returns:
-        :rtype:
-
+        Set the luminosity of the selection.
         """
 
         self._luminosity = luminosity  # type: np.ndarray
 
     def set_distance(self, distance: np.ndarray) -> None:
         """
-        set the distance of the selection
-
-        :param distance:
-        :returns:
-        :rtype:
-
+        Set the distance of the selection.
         """
 
         self._distance = distance  # type: np.ndarray
 
     def set_observed_flux(self, observed_flux: np.ndarray) -> None:
         """
-        set the observed flux of the selection
-
-        :param luminosity:
-        :returns:
-        :rtype:
-
+        Set the observed flux of the selection.
         """
 
         self._observed_flux = observed_flux  # type: np.ndarray
 
     def set_observed_value(self, observed_value: np.ndarray) -> None:
+        """
+        Set the observed value of the selection.
+        """
+
         self._observed_value = observed_value  # type: np.ndarray
 
     @abc.abstractclassmethod
@@ -101,7 +109,7 @@ class SelectionProbabilty(object,
 
     def reset(self):
         """
-        resest the selector
+        Reset the selector.
         """
         if self._is_sampled:
 
@@ -177,6 +185,9 @@ class DummySelection(SelectionProbabilty):
     _selection_name = "DummySelection"
 
     def __init__(self):
+        """
+        A Dummy selection for testing.
+        """
 
         super(DummySelection, self).__init__(name="dummy")
 

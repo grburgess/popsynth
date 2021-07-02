@@ -1,7 +1,6 @@
 import numpy as np
 
-from popsynth.auxiliary_sampler import (AuxiliaryParameter,
-                                        NonObservedAuxSampler)
+from popsynth.auxiliary_sampler import AuxiliaryParameter, NonObservedAuxSampler
 
 
 class ViewingAngleSampler(NonObservedAuxSampler):
@@ -11,13 +10,13 @@ class ViewingAngleSampler(NonObservedAuxSampler):
 
     def __init__(self):
         """
-        A viewing angle sampler that samples from 0, max_angle.
-        It assumes that this is NOT an observed property
+        A viewing angle sampler that samples
+        from 0 to ``max_angle``. Unlike other samplers,
+        it assumes that this is NOT an observed property
 
-        :param max_angle: the maximum angle to which to sample in DEGS
-        :returns: None
-        :rtype: None
-
+        :param max_angle: The maximum angle to which to
+            sample in degrees
+        :type max_angle: :class:`AuxiliaryParameter`
         """
 
         super(ViewingAngleSampler, self).__init__(name="va", )
@@ -26,10 +25,8 @@ class ViewingAngleSampler(NonObservedAuxSampler):
         """
         Sample the viewing angle by inverse CDF
 
-        :param size: number of samples
-        :returns: None
-        :rtype: None
-
+        :param size: Number of samples
+        :type size: int
         """
 
         theta_inverse = np.random.uniform(0.0,

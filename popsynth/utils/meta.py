@@ -6,11 +6,24 @@ log = setup_logger(__name__)
 
 
 class Parameter(object):
-    def __init__(self,
-                 default: Optional[float] = None,
-                 vmin: Optional[float] = None,
-                 vmax: Optional[float] = None,
-                 free: bool = True):
+    def __init__(
+        self,
+        default: Optional[float] = None,
+        vmin: Optional[float] = None,
+        vmax: Optional[float] = None,
+        free: bool = True,
+    ):
+        """
+        Parameter base class.
+
+        :param default: Default parameter value
+        :type default: Optional[float]
+        :param vmin: Minimum parameter value
+        :type vmin: Optional[float]
+        :param vmax: Maximum parameter value
+        :type vmax: Optional[float]
+        :param free: If `True`, parameter is free
+        """
 
         self.name = None  # type: Union[None, str]
         self._vmin = vmin  # type: Optional[float]
@@ -30,8 +43,8 @@ class Parameter(object):
 
                 obj._parameter_storage[self.name] = self._default
 
-            assert obj._parameter_storage[
-                self.name] is not None, "parameters must have values!"
+            assert (obj._parameter_storage[self.name]
+                    is not None), "parameters must have values!"
 
             return obj._parameter_storage[self.name]
 
@@ -39,8 +52,8 @@ class Parameter(object):
 
             obj._parameter_storage[self.name] = self._default
 
-        assert obj._parameter_storage[
-            self.name] is not None, "parameters must have values!"
+        assert (obj._parameter_storage[self.name]
+                is not None), "parameters must have values!"
 
         return obj._parameter_storage[self.name]
 
@@ -49,7 +62,7 @@ class Parameter(object):
 
         if not self._free:
 
-            log.error(f"{self.name} is fixed and cannot me set")
+            log.error(f"{self.name} is fixed and cannot be set")
             raise RuntimeError()
 
         if self._vmin is not None:

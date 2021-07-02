@@ -1,5 +1,3 @@
-import numpy as np
-
 from popsynth.distribution import SpatialDistribution, DistributionParameter
 
 
@@ -8,19 +6,21 @@ class FlatlandDistribution(SpatialDistribution):
 
     Lambda = DistributionParameter(default=1, vmin=0)
 
-    def __init__(self, seed: int = 1234, name: str = "flatland", form=None):
-
+    def __init__(self,
+                 seed: int = 1234,
+                 name: str = "flatland",
+                 form: str = None):
         """
-        a distribution with only length
+        A flat spatial distribution with only length.
 
-        :param seed: 
+        :param seed: Random seed
         :type seed: int
-        :param name: 
+        :param name: Name of the distribution
         :type name: str
-        :param form: 
-        :type form: 
-        :returns: 
-
+        :param form: Mathematical description of distribution
+        :type form: str
+        :param Lambda: Length
+        :type Lambda: :class:`DistributionParameter`
         """
         super(FlatlandDistribution, self).__init__(seed=seed,
                                                    name=name,

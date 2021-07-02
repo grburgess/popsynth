@@ -1,9 +1,7 @@
-from dataclasses import dataclass
-
 import numpy as np
 from astropy.constants import c
 from astropy.cosmology import WMAP9 as cosmo
-from numba import bool_, float32, float64
+from numba import float32
 from numba.experimental import jitclass
 
 from popsynth.utils.configuration import popsynth_config
@@ -12,8 +10,8 @@ _sol = c.value  # speed of light
 
 spec = [
     #    ("_is_setup", bool_),
-    ('Om', float32),
-    ('h0', float32),
+    ("Om", float32),
+    ("h0", float32),
     # ('_dh', float64),
     # ('_om_reduced', float64),
     # ('_om_sqrt', float64),
@@ -26,9 +24,20 @@ Ogamma0 = cosmo.Ogamma0
 
 @jitclass(spec)
 class Cosmology(object):
-    def __init__(self,
-                 Om=popsynth_config["cosmology"]["Om"],
-                 h0=popsynth_config["cosmology"]["h0"]):
+    def __init__(
+        self,
+        Om: float = popsynth_config["cosmology"]["Om"],
+        h0: float = popsynth_config["cosmology"]["h0"],
+    ):
+        """
+        Cosmological model used in relevant calculations.
+        Flat LambdaCDM. Can be set using configuration.
+
+        :param Om: Omega matter
+        :type Om: float
+        :param h0: Hubble constant in km s^-1 Mpc^-1
+        :type h0: float
+        """
 
         #      self._is_setup = False
 
@@ -79,7 +88,9 @@ class Cosmology(object):
 
     def luminosity_distance(self, z):
         """
-        dL in cm
+        Luminosity distance in units of cm.
+
+        :param z: Redshift
         """
         x = self.xx(z)
         z1 = 1.0 + z
@@ -98,7 +109,9 @@ class Cosmology(object):
 
     def differential_comoving_volume(self, z):
         """
-        differential comoving volume in Gpc2
+        Differential comoving volume in Gpc^3 sr^-1
+
+        :param z: Redshift
         """
 
         td = self.comoving_transverse_distance(z) / 3.086e24
