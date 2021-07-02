@@ -21,7 +21,7 @@ spatial locations of the objects, and $\vec{\phi}$ are the properties
 of the individual objects (luminosity, spin, viewing angle, mass,
 etc.). The spatial distribution is defined such that:
 
-$$\frac{d \Lambda}{dt}(\vec{\psi}) = \int d r \frac{dV}{dr} \lambda(\vec{r}; \vec{\psi})$$
+<img src="https://render.githubusercontent.com/render/math?math=\frac{d \Lambda}{dt}(\vec{\psi}) = \int d r \frac{dV}{dr} \lambda(\vec{r}; \vec{\psi})>
 
 is the intensity of objects for a given set of population
 parameters. With these definitions we can define the probability for
