@@ -18,7 +18,7 @@ jupyter:
 Suppose that stars have a mass-luminosity relationship such that $L
 \propto M^3$. If we have a flux-limited survey, it will bias us
 towards observing more massive stars which are not representative of
-the full mass distribution. Let's see how to set this up in ```popsynth``. 
+the full mass distribution. Let's see how to set this up in `popsynth`. 
 
 ## Setup the problem
 First, we will assume that we have some initial mass function (IMF)
@@ -52,7 +52,7 @@ initial_mass_function = popsynth.LogNormalAuxSampler(name="mass", observed = Fal
 ```
 
 We now assume the dependent variable is the luminosity, so we need a
-```DerivedLumAuxSampler``` that generates luminosities given a mass:
+`DerivedLumAuxSampler` that generates luminosities given a mass:
 
 ```python
 class MassLuminosityRelation(popsynth.DerivedLumAuxSampler):
@@ -83,7 +83,7 @@ luminosity = MassLuminosityRelation()
 ```
 
 Now we can put everything together. First, we need to assign
-```mass``` as a secondary quantity to the luminosity
+`mass` as a secondary quantity to the luminosity
 
 ```python
 luminosity.set_secondary_sampler(initial_mass_function)
@@ -186,6 +186,3 @@ ax.legend()
 
 ```
 
-```python
-
-```
