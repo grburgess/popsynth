@@ -47,7 +47,7 @@ class PowerLawAuxSampler(AuxiliarySampler):
 
     xmin = AuxiliaryParameter(default=1, vmin=0)
     xmax = AuxiliaryParameter(default=-2, vmin=0)
-    alpha = AuxiliaryParameter(default=1, vmin=0)
+    alpha = AuxiliaryParameter(default=1)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
     def __init__(self, name: str, observed: bool = True):
