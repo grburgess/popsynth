@@ -44,7 +44,7 @@ t$) in which observed objects are counted. This is a description of a
 Poisson process. Thus, the number of objects in a simulation of this
 survey is a draw from a Poisson distribution:
 
-$$N \sim \mathrm{Poisson(\Delta t \frac{d\Lambda}{dt})} \mathrm{.}$$
+$$N \sim \mathrm{Poisson}\left(\Delta t \frac{d\Lambda}{dt}\right) \mathrm{.}$$
 
 Thus, `popsynth` first numerically integrates the spatial
 distribution to determine the Poisson rate parameter for the given
