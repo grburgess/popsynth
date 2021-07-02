@@ -42,3 +42,11 @@ selection functions.
     notebooks/milkyway.ipynb
     notebooks/contribute.ipynb
     api/API
+
+.. nbgallery::
+   :caption: Examples:
+
+   notebooks/short_grbs.ipynb
+   notebooks/bl_lacs.ipynb
+   notebooks/stellar_mass.ipynb
+   notebooks/milkyway.ipynb

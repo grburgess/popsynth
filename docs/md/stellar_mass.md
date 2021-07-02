@@ -12,7 +12,6 @@ jupyter:
     language: python
     name: python3
 ---
-
 # Stellar Mass-Luminosity Bias
 
 Suppose that stars have a mass-luminosity relationship such that $L
@@ -26,6 +25,22 @@ for our stars that describes how there masses are distributed. For
 simplicity, we will assume that this IMF is just a log-normal distribution:
 
 ```python
+
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+from jupyterthemes import jtplot
+
+jtplot.style(context="notebook", fscale=1, grid=False)
+purple = "#B833FF"
+yellow = "#F6EF5B"
+
+import networkx as nx
+import numpy as np
+import warnings
+
+warnings.simplefilter("ignore")
+
 
 # create a sampler for mass
 # we do not directly observe the mass as it is a latent quantity
@@ -104,7 +119,7 @@ pop = pop_gen.draw_survey(flux_sigma=0.1)
 We can now look at the distribution of the masses:
 
 
-```python 
+```python tags=["nbsphinx-thumbnail"]
 
 fig, ax = plt.subplots()
 
