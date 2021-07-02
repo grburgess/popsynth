@@ -55,13 +55,3 @@ fig = population.display_obs_fluxes_sphere(
 )
 ```
 
-```python tags=["nbsphinx-thumbnail"]
-c_all = SkyCoord(population.ra, population.dec, unit="deg", frame="icrs")
-
-fig, ax = plt.subplots(subplot_kw={"projection": "hammer"})
-ax.scatter(c_all.galactic.l.rad-np.pi, c_all.galactic.b.rad, alpha=0.1, 
-           color=purple, label="All")
-
-ax.axhline(0, color="k")
-ax.legend()
-```
