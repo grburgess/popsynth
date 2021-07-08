@@ -11,6 +11,7 @@ from betagen import betagen
 from IPython.display import Markdown, Math, display
 from numpy.typing import ArrayLike
 
+from popsynth.auxiliary_sampler import SecondaryStorage
 from popsynth.utils.array_to_cmap import array_to_cmap
 from popsynth.utils.hdf5_utils import (
     clean_graph_dict,
@@ -49,7 +50,7 @@ class Population(object):
         name: Optional[str] = None,
         spatial_form: Optional[Dict[str, Any]] = None,
         lf_form: Optional[Dict[str, Any]] = None,
-        auxiliary_quantities: Optional[Dict[str, Any]] = None,
+        auxiliary_quantities: Optional[SecondaryStorage] = None,
         truth: Dict[str, float] = {},
         graph: Optional[Dict[str, Any]] = None,
         theta=None,
@@ -187,6 +188,13 @@ class Population(object):
 
     @property
     def graph(self):
+        """
+        The networkx graph of the population
+
+        :returns: 
+
+        """
+        
         return self._graph
 
     @property

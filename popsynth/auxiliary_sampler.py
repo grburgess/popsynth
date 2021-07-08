@@ -373,7 +373,6 @@ class AuxiliarySampler(
 
     def make_secondary(self, parent_name: str) -> None:
         """
-
         sets this sampler as secondary for book keeping
 
         :param parent_name: 
@@ -491,24 +490,51 @@ class AuxiliarySampler(
 
     @property
     def is_secondary(self) -> bool:
+        """
 
+        If another sampler depends on this
+
+        :returns: 
+
+        """
         return self._is_secondary
 
     @property
     def parents(self) -> List[str]:
+    """
+    The parents of this sampler
+    """    
         return self._parent_names
 
     @property
     def has_secondary(self) -> bool:
+        """
+        if this sampler has a secondary
+        :returns: 
 
+        """
         return self._has_secondary
 
     @property
     def observed(self) -> bool:
+        """
+        if this sampler is observed
+
+        :returns: 
+
+        """
+        
+        
         return self._is_observed
 
     @property
     def name(self) -> str:
+        """
+        The name of the sampler
+
+        :returns: 
+
+        """
         return self._name
 
     @property
@@ -517,23 +543,50 @@ class AuxiliarySampler(
 
     @property
     def true_values(self) -> np.ndarray:
+        """
+        The true or latent values
+
+        :returns: 
+
+        """
         return self._true_values
 
     @property
     def obs_values(self) -> np.ndarray:
+        """
+        The values obscured by measurement error. 
+
+        :returns: 
+
+        """
         return self._obs_values
 
     @property
     def selection(self) -> np.ndarray:
+        """
+        The selection booleans on the values
+
+        :returns: 
+
+        """
         return self._selector.selection
 
     @property
     def selector(self) -> SelectionProbabilty:
+        """
+        The selection probability object
+
+        :returns: 
+
+        """
         return self._selector
 
     @property
     def truth(self) -> Dict[str, float]:
-
+        """
+        A dictionary containing true paramters
+        used to simulate the distribution
+        """
         out = {}
 
         for k, v in self._parameter_storage.items():
@@ -546,14 +599,32 @@ class AuxiliarySampler(
 
     @property
     def uses_distance(self) -> bool:
+        """
+        If this uses distance
+
+        :returns: 
+
+        """
         return self._uses_distance
 
     @property
     def uses_sky_position(self) -> bool:
+        """
+        If this uses sky position
+
+        :returns: 
+
+        """
         return self._uses_sky_position
 
     @property
     def uses_luminosity(self) -> np.ndarray:
+        """
+        If this uses luminosity
+
+        :returns: 
+
+        """
         return self._luminosity
 
     @property
