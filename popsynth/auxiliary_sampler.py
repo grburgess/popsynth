@@ -17,9 +17,10 @@ log = setup_logger(__name__)
 
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
-class SecondaryContainer(object):
 
-    def __init__(self, name: str, true_values: ArrayLike, obs_values: ArrayLike, selection: ArrayLike) -> None:
+class SecondaryContainer(object):
+    def __init__(self, name: str, true_values: ArrayLike,
+                 obs_values: ArrayLike, selection: ArrayLike) -> None:
         """
         A container for secondary properties that adds dict
         and dictionary access
@@ -45,7 +46,7 @@ class SecondaryContainer(object):
     @property
     def name(self) -> str:
         return self._name
-        
+
     @property
     def true_values(self) -> ArrayLike:
         """
@@ -80,23 +81,21 @@ class SecondaryContainer(object):
 
         if key == "selection":
             return self._selection
-        
+
         elif key == "true_values":
             return self._true_values
 
         elif key == "obs_values":
             return self._obs_values
-        
+
         else:
 
             log.error("trying to access something that does not exist")
-            
+
             raise RuntimeError()
-            
 
 
 class SecondaryStorage(DotMap):
-
     def __init__(self):
         """
         A container for secondary samplers
@@ -116,31 +115,27 @@ class SecondaryStorage(DotMap):
         :returns: 
 
         """
-        
+
         self[secondary_values.name] = secondary_values
-        
+
     def __add__(self, other):
-        
+
         if self.empty():
             return other
 
         elif other.empty():
-            
+
             return self
-        
+
         else:
-            
+
             for k, v in other.items():
-                
+
                 self[k] = v
-                
+
             return self
-        
-        
 
 
-
-        
 class AuxiliaryParameter(Parameter):
     pass
 
@@ -217,7 +212,6 @@ class AuxiliarySampler(
         self._spatial_values = value
 
     def set_selection_probability(self, selector: SelectionProbabilty) -> None:
-
         """
         Set a selection probabilty for this sampler. 
 
@@ -226,9 +220,7 @@ class AuxiliarySampler(
         :returns: 
 
         """
-        if not isinstance(
-            selector, SelectionProbabilty
-        ):
+        if not isinstance(selector, SelectionProbabilty):
 
             log.error("The selector is not a valid selection probability")
 
@@ -257,7 +249,7 @@ class AuxiliarySampler(
         :returns: 
 
         """
-        
+
         # make sure we set the sampler as a secondary
         # this causes it to throw a flag in the main
         # loop if we try to add it again
@@ -400,8 +392,7 @@ class AuxiliarySampler(
         :rtype: :class:`SamplerDict`
         """
 
-
-        recursive_secondaries: SecondaryStorage = SecondaryStorage()  
+        recursive_secondaries: SecondaryStorage = SecondaryStorage()
 
         # now collect each property. This should keep recursing
         if self._has_secondary:
@@ -421,16 +412,14 @@ class AuxiliarySampler(
 
                         self._graph.add_edge(spatial_distribution.name, k)
 
-                recursive_secondaries += v.get_secondary_properties(graph, k,
-                    spatial_distribution)
+                recursive_secondaries += v.get_secondary_properties(
+                    graph, k, spatial_distribution)
 
         # add our own on
-        
-        recursive_secondaries.add_secondary(SecondaryContainer(self._name,
-                                                               self._true_values,
-                                                               self._obs_values,
-                                                               self._selector)
-                                            )
+
+        recursive_secondaries.add_secondary(
+            SecondaryContainer(self._name, self._true_values, self._obs_values,
+                               self._selector))
 
         return recursive_secondaries
 

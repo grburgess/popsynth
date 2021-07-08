@@ -991,12 +991,12 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             # append these values to a dict
 
-            auxiliary_quantities.add_secondary(SecondaryContainer(self._derived_luminosity_sampler.name,
-                                                                  self._derived_luminosity_sampler.true_values,
-                                                                  self._derived_luminosity_sampler.obs_values,
-                                                                  self._derived_luminosity_sampler.selector)
-                                               )
-
+            auxiliary_quantities.add_secondary(
+                SecondaryContainer(
+                    self._derived_luminosity_sampler.name,
+                    self._derived_luminosity_sampler.true_values,
+                    self._derived_luminosity_sampler.obs_values,
+                    self._derived_luminosity_sampler.selector))
 
             log.info("Getting luminosity from derived sampler")
 
@@ -1020,8 +1020,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 # its own secondaries
 
                 auxiliary_quantities += v2.get_secondary_properties()
-                
-#                properties = v2.get_secondary_properties()  # type: dict
+
+                #                properties = v2.get_secondary_properties()  # type: dict
 
                 # for k3, v3 in properties.items():
 
@@ -1076,9 +1076,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
             assert v.true_values is not None and len(v.true_values) == n
             assert v.obs_values is not None and len(v.obs_values) == n
 
-
             auxiliary_quantities += v.get_secondary_properties()
-            
+
             # # append these values to a dict
             # auxiliary_quantities[k] = {
             #     "true_values": v.true_values,
