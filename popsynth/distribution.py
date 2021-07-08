@@ -81,9 +81,8 @@ class Distribution(object,
         """
         
         out = {"parameter": [], "value": []}
-
         
-        for k, v in self..params.items():
+        for k, v in self.params.items():
 
             out["parameter"].append(k)
             out["value"].append(v)
