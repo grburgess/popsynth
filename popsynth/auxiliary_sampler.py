@@ -501,9 +501,9 @@ class AuxiliarySampler(
 
     @property
     def parents(self) -> List[str]:
-    """
-    The parents of this sampler
-    """    
+        """
+        The parents of this sampler
+        """    
         return self._parent_names
 
     @property
