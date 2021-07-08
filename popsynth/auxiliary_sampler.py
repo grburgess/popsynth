@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 from class_registry import AutoRegister
 from numpy.typing import ArrayLike
+from dotmap import DotMap
 
 from popsynth.distribution import SpatialContainer
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
@@ -16,7 +17,130 @@ log = setup_logger(__name__)
 
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
+class SecondaryContainer(object):
 
+    def __init__(self, name: str, true_values: ArrayLike, obs_values: ArrayLike, selection: ArrayLike) -> None:
+        """
+        A container for secondary properties that adds dict
+        and dictionary access
+
+        :param name: the name of the secondary
+        :type name: str
+        :param true_values: 
+        :type true_values: ArrayLike
+        :param obs_values: 
+        :type obs_values: ArrayLike
+        :param selection: 
+        :type selection: ArrayLike
+        :returns: 
+
+        """
+
+        self._true_values: ArrayLike = true_values
+        self._obs_values: ArrayLike = obs_values
+        self._selection: ArrayLike = selection
+
+        self._name: str = name
+
+    @property
+    def name(self) -> str:
+        return self._name
+        
+    @property
+    def true_values(self) -> ArrayLike:
+        """
+        The true (latent) values of the sampler
+
+        :returns: 
+
+        """
+        return self._true_values
+
+    @property
+    def obs_values(self) -> ArrayLike:
+        """
+        The observed values of the sampler
+
+        :returns: 
+
+        """
+        return self._obs_values
+
+    @property
+    def selection(self) -> ArrayLike:
+        """
+        The the slection of the values
+
+        :returns: 
+
+        """
+        return self._selection
+
+    def __getitem__(self, key):
+
+        if key == "selection":
+            return self._selection
+        
+        elif key == "true_values":
+            return self._true_values
+
+        elif key == "obs_values":
+            return self._obs_values
+        
+        else:
+
+            log.error("trying to access something that does not exist")
+            
+            raise RuntimeError()
+            
+
+
+class SecondaryStorage(DotMap):
+
+    def __init__(self):
+        """
+        A container for secondary samplers
+
+        :returns: 
+
+        """
+
+        super(SecondaryStorage, self).__init__()
+
+    def add_secondary(self, secondary_values: SecondaryContainer) -> None:
+        """
+        Add on a new secondary
+
+        :param secondary_values: 
+        :type secondary_values: SecondaryContainer
+        :returns: 
+
+        """
+        
+        self[secondary_values.name] = secondary_values
+        
+    def __add__(self, other):
+        
+        if self.empty():
+            return other
+
+        elif other.empty():
+            
+            return self
+        
+        else:
+            
+            for k, v in other.items():
+                
+                self[k] = v
+                
+            return self
+        
+        
+
+
+
+        
 class AuxiliaryParameter(Parameter):
     pass
 
@@ -94,9 +218,21 @@ class AuxiliarySampler(
 
     def set_selection_probability(self, selector: SelectionProbabilty) -> None:
 
-        assert isinstance(
+        """
+        Set a selection probabilty for this sampler. 
+
+        :param selector: A selection probability oobject
+        :type selector: SelectionProbabilty
+        :returns: 
+
+        """
+        if not isinstance(
             selector, SelectionProbabilty
-        ), "The selector is not a valid selection probability"
+        ):
+
+            log.error("The selector is not a valid selection probability")
+
+            raise AssertionError()
 
         self._selector = selector  # type: SelectionProbabilty
 
@@ -107,11 +243,21 @@ class AuxiliarySampler(
 
         self._selector.draw(len(self._obs_values))
 
-    def set_secondary_sampler(self, sampler) -> None:
+    def set_secondary_sampler(self, sampler: "AuxiliarySampler") -> None:
         """
-        Allows the setting of a secondary sampler from which to derive values.
-        """
+        Add a secondary sampler upon which this sampler will depend.
+        The sampled values can be accessed via an internal dictionary
+        with the samplers 'name'
 
+        self._secondary_sampler['name'].true_values
+        self._secondary_sampler['name'].obs_values
+
+        :param sampler: An auxiliary sampler
+        :type sampler: "AuxiliarySampler"
+        :returns: 
+
+        """
+        
         # make sure we set the sampler as a secondary
         # this causes it to throw a flag in the main
         # loop if we try to add it again
@@ -226,21 +372,27 @@ class AuxiliarySampler(
             v.reset()
 
     def make_secondary(self, parent_name: str) -> None:
+        """
 
+        sets this sampler as secondary for book keeping
+
+        :param parent_name: 
+        :type parent_name: str
+        :returns: 
+
+        """
         self._is_secondary = True  # type: bool
         self._parent_names.append(parent_name)
 
     def get_secondary_properties(
         self,
-        recursive_secondaries: Optional[Dict[str, ArrayLike]] = None,
         graph=None,
         primary=None,
         spatial_distribution=None,
-    ) -> SamplerDict:
+    ) -> SecondaryStorage:
         """
         Get properties of secondary samplers.
 
-        :param recursive_secondaries: Recursive dict of secondaries
         :param graph: Graph
         :param primary: Primary sampler
         :param spatial_distribution: Spatial Distribution
@@ -248,10 +400,8 @@ class AuxiliarySampler(
         :rtype: :class:`SamplerDict`
         """
 
-        # if a holder was not passed, create one
-        if recursive_secondaries is None:
 
-            recursive_secondaries = {}  # type: SamplerDict
+        recursive_secondaries: SecondaryStorage = SecondaryStorage()  
 
         # now collect each property. This should keep recursing
         if self._has_secondary:
@@ -271,16 +421,16 @@ class AuxiliarySampler(
 
                         self._graph.add_edge(spatial_distribution.name, k)
 
-                recursive_secondaries = v.get_secondary_properties(
-                    recursive_secondaries, graph, k,
-                    spatial_distribution)  # type: SamplerDict
+                recursive_secondaries += v.get_secondary_properties(graph, k,
+                    spatial_distribution)
 
         # add our own on
-        recursive_secondaries[self._name] = {
-            "true_values": self._true_values,
-            "obs_values": self._obs_values,
-            "selection": self._selector,
-        }
+        
+        recursive_secondaries.add_secondary(SecondaryContainer(self._name,
+                                                               self._true_values,
+                                                               self._obs_values,
+                                                               self._selector)
+                                            )
 
         return recursive_secondaries
 

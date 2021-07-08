@@ -12,7 +12,7 @@ from IPython.display import Markdown, Math, display
 
 # from numpy.typing import np.ndarray
 
-from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler
+from popsynth.auxiliary_sampler import AuxiliarySampler, DerivedLumAuxSampler, SecondaryContainer, SecondaryStorage
 from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.distributions.cosmological_distribution import CosmologicalDistribution
 from popsynth.population import Population
@@ -953,7 +953,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             name="total auxiliary selection")
         auxiliary_selection.select(n)
 
-        auxiliary_quantities: Dict[str, Dict] = {}
+        auxiliary_quantities: SecondaryStorage = SecondaryStorage()
 
         # this means the luminosity is not
         # simulated directy
@@ -990,11 +990,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     and len(self._derived_luminosity_sampler.obs_values) == n)
 
             # append these values to a dict
-            auxiliary_quantities[self._derived_luminosity_sampler.name] = {
-                "true_values": self._derived_luminosity_sampler.true_values,
-                "obs_values": self._derived_luminosity_sampler.obs_values,
-                "selection": self._derived_luminosity_sampler.selector,
-            }
+
+            auxiliary_quantities.add_secondary(SecondaryContainer(self._derived_luminosity_sampler.name,
+                                                                  self._derived_luminosity_sampler.true_values,
+                                                                  self._derived_luminosity_sampler.obs_values,
+                                                                  self._derived_luminosity_sampler.selector)
+                                               )
+
 
             log.info("Getting luminosity from derived sampler")
 
@@ -1017,12 +1019,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
 
-                properties = v2.get_secondary_properties()  # type: dict
+                auxiliary_quantities += v2.get_secondary_properties()
+                
+#                properties = v2.get_secondary_properties()  # type: dict
 
-                for k3, v3 in properties.items():
+                # for k3, v3 in properties.items():
 
-                    # now attach them
-                    auxiliary_quantities[k3] = v3
+                #     # now attach them
+                #     auxiliary_quantities[k3] = v3
 
                 # store the secondary truths
                 # this will _could_ be clobbered later
@@ -1072,12 +1076,15 @@ class PopulationSynth(object, metaclass=ABCMeta):
             assert v.true_values is not None and len(v.true_values) == n
             assert v.obs_values is not None and len(v.obs_values) == n
 
-            # append these values to a dict
-            auxiliary_quantities[k] = {
-                "true_values": v.true_values,
-                "obs_values": v.obs_values,
-                "selection": v.selector,
-            }  # type: dict
+
+            auxiliary_quantities += v.get_secondary_properties()
+            
+            # # append these values to a dict
+            # auxiliary_quantities[k] = {
+            #     "true_values": v.true_values,
+            #     "obs_values": v.obs_values,
+            #     "selection": v.selector,
+            # }  # type: dict
 
             # collect the secondary values
 
@@ -1086,12 +1093,12 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 # first we tell the sampler to go and retrieve all of
                 # its own secondaries
 
-                properties = v2.get_secondary_properties()  # type: dict
+                # properties = v2.get_secondary_properties()  # type: dict
 
-                for k3, v3 in properties.items():
+                # for k3, v3 in properties.items():
 
-                    # now attach them
-                    auxiliary_quantities[k3] = v3
+                #     # now attach them
+                #     auxiliary_quantities[k3] = v3
 
                 # store the secondary truths
 
