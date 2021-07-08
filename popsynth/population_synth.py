@@ -1273,28 +1273,35 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         if self._luminosity_distribution is not None:
 
-            out = {"parameter": [], "value": []}
+            display(Markdown("## Spatial Function"))
 
-            display(Markdown("## Luminosity Function"))
-            for k, v in self._luminosity_distribution.params.items():
-
-                out["parameter"].append(k)
-                out["value"].append(v)
-
-            display(Math(self._luminosity_distribution.form))
-            display(pd.DataFrame(out))
-        out = {"parameter": [], "value": []}
-
+            self._luminosity_distribution.display()
+            
+            
         display(Markdown("## Spatial Function"))
 
-        for k, v in self._spatial_distribution.params.items():
+        self._spatial_distribution.display()
 
-            out["parameter"].append(k)
-            out["value"].append(v)
 
-        display(Math(self._spatial_distribution.form))
-        display(pd.DataFrame(out))
+        
+    def __repr__(self):
 
+        if self._luminosity_distribution is not None:
+        
+            out = "Luminosity Function\n"
+
+            out += self._luminosity_distribution.__repr__()
+        
+        
+        out += "Spatial Function\n"
+
+        out += self._spatial_distribution.__repr__()
+
+        return out 
+        
+        
+
+        
     # def generate_stan_code(self, stan_gen, **kwargs):
 
     #     pass

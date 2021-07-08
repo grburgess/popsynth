@@ -5,6 +5,8 @@ from typing import Dict, Union
 import numpy as np
 from class_registry import AutoRegister
 from numpy.typing import ArrayLike
+from IPython.display import Markdown, Math, display
+import pandas as pd
 
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.logging import setup_logger
@@ -69,6 +71,39 @@ class Distribution(object,
 
         return out
 
+    def display(self):
+        """
+        use ipython pretty display to 
+        display the functions
+
+        :returns: 
+
+        """
+        
+        out = {"parameter": [], "value": []}
+
+        
+        for k, v in self..params.items():
+
+            out["parameter"].append(k)
+            out["value"].append(v)
+
+        display(Math(self._form))
+        display(pd.DataFrame(out))
+    
+    def __repr__(self):
+
+        
+        out = f"{self._name}\n"
+        out += f"{self._form}\n"
+        
+        
+        for k, v in self.params.items():
+            out +=f"{k}: {v}\n"
+
+        return out
+
+    
 
 @dataclass
 class SpatialContainer:
