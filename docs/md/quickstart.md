@@ -350,6 +350,10 @@ print(ps)
 ```
 
 ```python
+ps.display()
+```
+
+```python
 options = {"node_color": purple, "node_size": 3000, "width": 0.5}
 
 pos = nx.drawing.nx_agraph.graphviz_layout(ps.graph, prog="dot")

@@ -5,6 +5,10 @@ import numpy as np
 from class_registry import AutoRegister
 from numpy.typing import ArrayLike
 from dotmap import DotMap
+import pandas as pd
+from IPython.display import Markdown, Math, display
+
+
 
 from popsynth.distribution import SpatialContainer
 from popsynth.selection_probability import SelectionProbabilty, UnitySelection
@@ -209,13 +213,13 @@ class AuxiliarySampler(
 
         out = f"{self._name}\n"
         
-        out = f"observed: {self._is_observed}\n"
+        out += f"observed: {self._is_observed}\n"
         
-        for k, v in self.params.items():
+        for k, v in self._parameter_storage.items():
             out +=f"{k}: {v}\n"
 
         if self._is_secondary:
-            out += f"parents: {self._parent_names}"
+            out += f"parents: {self._parent_names}\n"
 
         if self._has_secondary:
 
