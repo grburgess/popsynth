@@ -386,6 +386,13 @@ class Population(object):
 
     @property
     def spatial_parameters(self):
+        """
+        spatial parameters
+
+        :returns: 
+
+        """
+        
         return self._spatial_params
 
     def __repr__(self):

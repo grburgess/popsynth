@@ -191,6 +191,40 @@ class AuxiliarySampler(
         self._uses_luminosity = uses_luminosity  # type: bool
         self._uses_sky_position = uses_sky_position  # type: bool
 
+
+    def display(self):
+
+        out = {"parameter": [], "value": []}
+        
+        for k, v in self._parameter_storage.items():
+
+            out["parameter"].append(k)
+            out["value"].append(v)
+
+
+        display(pd.DataFrame(out))
+
+
+    def __repr__(self):
+
+        out = f"{self._name}\n"
+        
+        out = f"observed: {self._is_observed}\n"
+        
+        for k, v in self.params.items():
+            out +=f"{k}: {v}\n"
+
+        if self._is_secondary:
+            out += f"parents: {self._parent_names}"
+
+        if self._has_secondary:
+
+            for k,v in self._secondary_samplers.items():
+
+                out += f"{k}\n"
+
+        return out
+        
     def set_luminosity(self, luminosity: ArrayLike) -> None:
         """
         Set the luminosity values.

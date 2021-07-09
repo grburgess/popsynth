@@ -1273,7 +1273,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         if self._luminosity_distribution is not None:
 
-            display(Markdown("## Spatial Function"))
+            display(Markdown("## Luminosity Function"))
 
             self._luminosity_distribution.display()
             
@@ -1282,9 +1282,14 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         self._spatial_distribution.display()
 
+        for k,v in self._auxiliary_observations.items():
+
+            display(Markdown(f"## {k}"))
+
+            v.display()
 
         
-    def __repr__(self):
+    def __repr__(self) -> str:
 
         if self._luminosity_distribution is not None:
         
@@ -1297,6 +1302,11 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         out += self._spatial_distribution.__repr__()
 
+        for k,v in self._auxiliary_observations.items():
+
+            out += v.__repr__()
+
+        
         return out 
         
         
