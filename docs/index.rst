@@ -34,6 +34,7 @@ selection functions.
 
     notebooks/installation.ipynb
     notebooks/quickstart.ipynb
+    notebooks/concept.ipynb
     notebooks/distributions.ipynb
     notebooks/custom.ipynb
     notebooks/selections.ipynb
