@@ -1270,30 +1270,88 @@ class PopulationSynth(object, metaclass=ABCMeta):
         Display the simulation parameters.
         """
 
-        if self._luminosity_distribution is not None:
 
-            out = {"parameter": [], "value": []}
+        if self._has_derived_luminosity:
 
             display(Markdown("## Luminosity Function"))
-            for k, v in self._luminosity_distribution.params.items():
 
-                out["parameter"].append(k)
-                out["value"].append(v)
+            self._derived_luminosity_sampler.display()
+            
+        
+        elif self._luminosity_distribution is not None:
 
-            display(Math(self._luminosity_distribution.form))
-            display(pd.DataFrame(out))
-        out = {"parameter": [], "value": []}
+            display(Markdown("## Luminosity Function"))
 
+            self._luminosity_distribution.display()
+            
+            
         display(Markdown("## Spatial Function"))
 
-        for k, v in self._spatial_distribution.params.items():
+        self._spatial_distribution.display()
 
-            out["parameter"].append(k)
-            out["value"].append(v)
+        names = []
 
-        display(Math(self._spatial_distribution.form))
-        display(pd.DataFrame(out))
+        if self._has_derived_luminosity:
 
+            for k,v in self._derived_luminosity_sampler.secondary_samplers.items():
+
+                names.append(k)
+
+                display(Markdown(f"## {k}"))
+                
+                v.display()
+
+        
+        for k,v in self._auxiliary_observations.items():
+
+            if k not in names:
+
+                display(Markdown(f"## {k}"))
+
+                v.display()
+
+        
+    def __repr__(self) -> str:
+
+        if self._has_derived_luminosity:
+
+            out = "Luminosity Function\n"
+
+            out += self._derived_luminosity_sampler.__repr__()
+        
+        elif self._luminosity_distribution is not None:
+        
+            out = "Luminosity Function\n"
+
+            out += self._luminosity_distribution.__repr__()
+        
+        
+        out += "Spatial Function\n"
+
+        out += self._spatial_distribution.__repr__()
+
+        names = [] 
+        
+        if self._has_derived_luminosity:
+
+            for k,v in self._derived_luminosity_sampler.secondary_samplers.items():
+
+                names.append(k)
+
+                out += v.__repr__()
+        
+        for k,v in self._auxiliary_observations.items():
+
+            if k not in names:
+
+                out += v.__repr__()
+
+        
+        return out 
+        
+        
+
+        
     # def generate_stan_code(self, stan_gen, **kwargs):
 
     #     pass

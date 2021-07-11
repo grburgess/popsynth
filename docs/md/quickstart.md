@@ -110,8 +110,15 @@ and a pareto distributed luminosity.
 homogeneous_pareto_synth = popsynth.populations.ParetoHomogeneousSphericalPopulation(
     Lambda=5, Lmin=1, alpha=2.0  # the density normalization  # lower bound on the LF
 )  # index of the LF
-homogeneous_pareto_synth.display()
+
+print(homogeneous_pareto_synth)
 ```
+
+```python
+homogeneous_pareto_synth.display()
+
+```
+
 
 If you have [networkx](https://networkx.org) and
 [graviz](https://graphviz.readthedocs.io/en/stable/), you can plot a
@@ -338,6 +345,12 @@ We can load this yaml file into a population synth. We use a saved file to demon
 my_file = popsynth.utils.package_data.get_path_of_data_file("pop.yml")
 
 ps = popsynth.PopulationSynth.from_file(my_file)
+
+print(ps)
+```
+
+```python
+ps.display()
 ```
 
 ```python

@@ -175,7 +175,7 @@ class DemoSampler2(popsynth.AuxiliarySampler):
         # we access the secondary sampler dictionary. In this
         # case "demo". This itself is a sampler with
         # <>.true_values as a parameter
-        secondary = self._secondary_samplers["demo"]
+        secondary = self._secondary_samplers['demo']
 
         # now we sample the demo2 latent values and add on the dependence of "demo"
 

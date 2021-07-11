@@ -5,6 +5,8 @@ from typing import Dict, Union
 import numpy as np
 from class_registry import AutoRegister
 from numpy.typing import ArrayLike
+from IPython.display import Markdown, Math, display
+import pandas as pd
 
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.logging import setup_logger
@@ -46,19 +48,38 @@ class Distribution(object,
 
     @property
     def name(self) -> str:
+        """
+        The name of the distribution
+
+        :returns: 
+
+        """
         return self._name
 
     @property
     def form(self) -> str:
+        """
+        The latex form of the 
+        distribution
+
+        :returns: 
+
+        """
         return self._form
 
     @property
     def params(self) -> Dict[str, float]:
+        """
+        The parameters of the distribution
+
+        """
         return self._parameter_storage
 
     @property
     def truth(self) -> Dict[str, float]:
-
+        """
+        value of the parameters used to simulate
+        """
         out = {}
 
         for k, v in self._parameter_storage.items():
@@ -69,6 +90,38 @@ class Distribution(object,
 
         return out
 
+    def display(self):
+        """
+        use ipython pretty display to 
+        display the functions
+
+        :returns: 
+
+        """
+        
+        out = {"parameter": [], "value": []}
+        
+        for k, v in self.params.items():
+
+            out["parameter"].append(k)
+            out["value"].append(v)
+
+        display(Math(self._form))
+        display(pd.DataFrame(out))
+    
+    def __repr__(self):
+
+        
+        out = f"{self._name}\n"
+        out += f"{self._form}\n"
+        
+        
+        for k, v in self.params.items():
+            out +=f"{k}: {v}\n"
+
+        return out
+
+    
 
 @dataclass
 class SpatialContainer:
@@ -125,7 +178,15 @@ class SpatialDistribution(Distribution):
 
     @abc.abstractmethod
     def dNdV(self, distance):
+        """
+        The differential number of objects
+        per volume element
 
+        :param distance: 
+        :type distance: 
+        :returns: 
+
+        """
         raise RuntimeError("Must be implemented in derived class")
         pass
 
@@ -140,35 +201,89 @@ class SpatialDistribution(Distribution):
 
     @abc.abstractmethod
     def transform(self, flux, distance):
+        """
+        The transform from luminosity to flux
+        for the 
+
+        :param flux: 
+        :type flux: 
+        :param distance: 
+        :type distance: 
+        :returns: 
+
+        """
         pass
 
     @property
     def theta(self) -> np.ndarray:
+        """
+        the polar coordinate of the objects
+
+        :returns: 
+
+        """
         return self._theta
 
     @property
     def phi(self) -> np.ndarray:
+        """
+        the longitudinal coordinate fo the objects
+
+        :returns: 
+
+        """
+        
+        
         return self._phi
 
     @property
     def dec(self) -> np.ndarray:
+        """
+        The declination of the objects
+
+        :returns: 
+
+        """
         return 90 - np.rad2deg(self._theta)
 
     @property
     def ra(self) -> np.ndarray:
+        """
+        the right acension of the objects
+
+        :returns: 
+
+        """
         return np.rad2deg(self._phi)
 
     @property
     def distances(self) -> np.ndarray:
+        """
+        the distances to the objects
+
+        :returns: 
+
+        """
         return self._distances
 
     @property
     def spatial_values(self):
+        """
+        All the spatial values of the objects
+        :returns: 
 
+        """
         return SpatialContainer(self._distances, self._theta, self._phi)
 
     def draw_sky_positions(self, size: int) -> None:
+        """
+        Draw teh sky positions of the objects
 
+        :param size: 
+        :type size: int
+        :returns: 
+
+        """
         self._theta, self._phi = sample_theta_phi(size)
 
     def draw_distance(self, size: int) -> None:
@@ -245,7 +360,7 @@ class LuminosityDistribution(Distribution):
     def phi(self, luminosity):
         """
         The functional form of the distribution.
-
+        not required for sampling
         :param luminosity: Luminosity
         """
 
@@ -253,4 +368,13 @@ class LuminosityDistribution(Distribution):
 
     @abc.abstractmethod
     def draw_luminosity(self, size):
+        """
+        function to draw the luminosity via an alternative method
+        must be implemented in child class
+
+        :param size: 
+        :type size: 
+        :returns: 
+
+        """
         pass
