@@ -56,7 +56,7 @@ class PowerLawAuxSampler(AuxiliarySampler):
     _auxiliary_sampler_name = "PowerLawAuxSampler"
 
     xmin = AuxiliaryParameter(default=1, vmin=0)
-    xmax = AuxiliaryParameter(default=-2, vmin=0)
+    xmax = AuxiliaryParameter(default=2, vmin=0)
     alpha = AuxiliaryParameter(default=1)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
