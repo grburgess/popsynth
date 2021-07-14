@@ -1,7 +1,15 @@
 import numpy as np
-from popsynth.aux_samplers.lognormal_aux_sampler import LogNormalAuxSampler, Log10NormalAuxSampler
+from popsynth.aux_samplers.lognormal_aux_sampler import (
+    LogNormalAuxSampler,
+    Log10NormalAuxSampler,
+)
 from popsynth.aux_samplers.normal_aux_sampler import NormalAuxSampler
 from popsynth.aux_samplers.trunc_normal_aux_sampler import TruncatedNormalAuxSampler
+from popsynth.aux_samplers.plaw_aux_sampler import (
+    ParetoAuxSampler,
+    PowerLawAuxSampler,
+    BrokenPowerLawAuxSampler,
+)
 
 from hypothesis import given, settings
 import hypothesis.strategies as st
@@ -35,7 +43,9 @@ def test_constructor():
 
 
 @given(
-    st.floats(min_value=0.01, ),
+    st.floats(
+        min_value=0.01,
+    ),
     st.floats(min_value=0.01, max_value=10.0),
     st.integers(min_value=2, max_value=1000),
 )
@@ -147,6 +157,113 @@ def test_truncnorm_sampler(mu, tau, size):
     sampler.tau = tau
     sampler.lower = -10
     sampler.upper = 10
+    sampler.sigma = 1
+
+    sampler.true_sampler(size)
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+
+@given(
+    st.floats(min_value=0.0, max_value=10),
+    st.floats(min_value=0.1, max_value=5.0),
+    st.integers(min_value=2, max_value=1000),
+)
+def test_pareto_sampler(xmin, alpha, size):
+
+    sampler = ParetoAuxSampler("test", observed=False)
+
+    sampler.xmin = xmin
+    sampler.alpha = alpha
+    sampler.sigma = 1
+
+    sampler.true_sampler(size)
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+    sampler = ParetoAuxSampler("test", observed=True)
+
+    sampler.xmin = xmin
+    sampler.alpha = alpha
+    sampler.sigma = 1
+
+    sampler.true_sampler(size)
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+
+@given(
+    st.floats(min_value=0.0, max_value=10),
+    st.floats(min_value=10, max_value=20),
+    st.floats(min_value=-5, max_value=5.0),
+    st.integers(min_value=2, max_value=1000),
+)
+def test_plaw_sampler(xmin, xmax, alpha, size):
+
+    sampler = PowerLawAuxSampler("test", observed=False)
+
+    sampler.xmin = xmin
+    sampler.xmax = xmax
+    sampler.alpha = alpha
+    sampler.sigma = 1
+
+    sampler.true_sampler(size)
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+    sampler = PowerLawAuxSampler("test", observed=True)
+
+    sampler.xmin = xmin
+    sampler.xmax = xmax
+    sampler.alpha = alpha
+    sampler.sigma = 1
+
+    sampler.true_sampler(size)
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+
+@given(
+    st.floats(min_value=0.0, max_value=10),
+    st.floats(min_value=10, max_value=20),
+    st.floats(min_value=-5, max_value=5.0),
+    st.floats(min_value=-5, max_value=5.0),
+    st.integers(min_value=2, max_value=1000),
+)
+def test_broken_plaw_sampler(xmin, xmax, alpha, beta, size):
+
+    sampler = BrokenPowerLawAuxSampler("test", observed=False)
+
+    sampler.xmin = xmin
+    sampler.xmax = xmax
+    sampler.xbreak = (xmin + xmax) / 2
+    sampler.alpha = alpha
+    sampler.beta = beta
+    sampler.sigma = 1
+
+    sampler.true_sampler(size)
+
+    sampler.observation_sampler(size)
+
+    assert len(sampler._true_values) == size
+
+    sampler = BrokenPowerLawAuxSampler("test", observed=True)
+
+    sampler.xmin = xmin
+    sampler.xmax = xmax
+    sampler.xbreak = (xmin + xmax) / 2
+    sampler.alpha = alpha
+    sampler.beta = beta
     sampler.sigma = 1
 
     sampler.true_sampler(size)
