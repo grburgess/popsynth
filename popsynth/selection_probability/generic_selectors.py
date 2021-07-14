@@ -6,12 +6,12 @@ from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.progress_bar import progress_bar
 
-from .selection_probability import SelectionParameter, SelectionProbabilty
+from .selection_probability import SelectionParameter, SelectionProbability
 
 log = setup_logger(__name__)
 
 
-class UnitySelection(SelectionProbabilty):
+class UnitySelection(SelectionProbability):
     _selection_name = "UnitySelection"
 
     def __init__(self, name="unity"):
@@ -27,7 +27,7 @@ class UnitySelection(SelectionProbabilty):
         self._selection = np.ones(size, dtype=int).astype(bool)
 
 
-class BernoulliSelection(SelectionProbabilty):
+class BernoulliSelection(SelectionProbability):
     _selection_name = "BernoulliSelection"
 
     probability = SelectionParameter(vmin=0, vmax=1, default=0.5)
@@ -46,8 +46,7 @@ class BernoulliSelection(SelectionProbabilty):
 
         if popsynth_config.show_progress:
 
-            self._selection = np.zeros(size, dtype=int).astype(
-                bool)  # type: np.ndarray
+            self._selection = np.zeros(size, dtype=int).astype(bool)  # type: np.ndarray
 
             for i in progress_bar(range(size), desc=f"Selecting {self.name}"):
 
@@ -58,11 +57,12 @@ class BernoulliSelection(SelectionProbabilty):
 
         else:
 
-            self._selection = stats.bernoulli.rvs(
-                self.probability, size=size).astype(bool)  # type: np.ndarray
+            self._selection = stats.bernoulli.rvs(self.probability, size=size).astype(
+                bool
+            )  # type: np.ndarray
 
 
-class BoxSelection(SelectionProbabilty):
+class BoxSelection(SelectionProbability):
     _selection_name = "BoxSelection"
 
     vmin = SelectionParameter()
@@ -127,7 +127,7 @@ class BoxSelection(SelectionProbabilty):
         self._selection = (values >= self.vmin) & (values <= self.vmax)
 
 
-class LowerBound(SelectionProbabilty):
+class LowerBound(SelectionProbability):
     _selection_name = "LowerBound"
 
     boundary = SelectionParameter()
@@ -190,7 +190,7 @@ class LowerBound(SelectionProbabilty):
         self._selection = values >= self.boundary
 
 
-class UpperBound(SelectionProbabilty):
+class UpperBound(SelectionProbability):
     _selection_name = "UpperBound"
 
     boundary = SelectionParameter()
@@ -253,7 +253,7 @@ class UpperBound(SelectionProbabilty):
         self._selection = values <= self.boundary
 
 
-class SoftSelection(SelectionProbabilty):
+class SoftSelection(SelectionProbability):
     _selection_name = "SoftSelection"
 
     boundary = SelectionParameter()
@@ -317,17 +317,17 @@ class SoftSelection(SelectionProbabilty):
             values = self._observed_flux
 
         if not use_log:
-            probs = sf.expit(self.strength *
-                             (values - self.boundary))  # type: np.ndarray
+            probs = sf.expit(
+                self.strength * (values - self.boundary)
+            )  # type: np.ndarray
 
         else:
 
-            probs = sf.expit(self.strength *
-                             (np.log10(values) -
-                              np.log10(self.boundary)))  # type: np.ndarray
+            probs = sf.expit(
+                self.strength * (np.log10(values) - np.log10(self.boundary))
+            )  # type: np.ndarray
 
-        self._selection = stats.bernoulli.rvs(probs,
-                                              size=len(values)).astype(bool)
+        self._selection = stats.bernoulli.rvs(probs, size=len(values)).astype(bool)
 
     __all__ = [
         "UnitySelection",

@@ -9,9 +9,8 @@ import pandas as pd
 from IPython.display import Markdown, Math, display
 
 
-
 from popsynth.distribution import SpatialContainer
-from popsynth.selection_probability import SelectionProbabilty, UnitySelection
+from popsynth.selection_probability import SelectionProbability, UnitySelection
 from popsynth.utils.cosmology import cosmology
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.meta import Parameter, ParameterMeta
@@ -21,22 +20,28 @@ log = setup_logger(__name__)
 
 SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
-class SecondaryContainer(object):
 
-    def __init__(self, name: str, true_values: ArrayLike, obs_values: ArrayLike, selection: ArrayLike) -> None:
+class SecondaryContainer(object):
+    def __init__(
+        self,
+        name: str,
+        true_values: ArrayLike,
+        obs_values: ArrayLike,
+        selection: ArrayLike,
+    ) -> None:
         """
         A container for secondary properties that adds dict
         and dictionary access
 
         :param name: the name of the secondary
         :type name: str
-        :param true_values: 
+        :param true_values:
         :type true_values: ArrayLike
-        :param obs_values: 
+        :param obs_values:
         :type obs_values: ArrayLike
-        :param selection: 
+        :param selection:
         :type selection: ArrayLike
-        :returns: 
+        :returns:
 
         """
 
@@ -49,13 +54,13 @@ class SecondaryContainer(object):
     @property
     def name(self) -> str:
         return self._name
-        
+
     @property
     def true_values(self) -> ArrayLike:
         """
         The true (latent) values of the sampler
 
-        :returns: 
+        :returns:
 
         """
         return self._true_values
@@ -65,7 +70,7 @@ class SecondaryContainer(object):
         """
         The observed values of the sampler
 
-        :returns: 
+        :returns:
 
         """
         return self._obs_values
@@ -75,7 +80,7 @@ class SecondaryContainer(object):
         """
         The the slection of the values
 
-        :returns: 
+        :returns:
 
         """
         return self._selection
@@ -84,28 +89,26 @@ class SecondaryContainer(object):
 
         if key == "selection":
             return self._selection
-        
+
         elif key == "true_values":
             return self._true_values
 
         elif key == "obs_values":
             return self._obs_values
-        
+
         else:
 
             log.error("trying to access something that does not exist")
-            
+
             raise RuntimeError()
-            
 
 
 class SecondaryStorage(DotMap):
-
     def __init__(self):
         """
         A container for secondary samplers
 
-        :returns: 
+        :returns:
 
         """
 
@@ -115,44 +118,39 @@ class SecondaryStorage(DotMap):
         """
         Add on a new secondary
 
-        :param secondary_values: 
+        :param secondary_values:
         :type secondary_values: SecondaryContainer
-        :returns: 
+        :returns:
 
         """
-        
+
         self[secondary_values.name] = secondary_values
-        
+
     def __add__(self, other):
-        
+
         if self.empty():
             return other
 
         elif other.empty():
-            
+
             return self
-        
+
         else:
-            
+
             for k, v in other.items():
-                
+
                 self[k] = v
-                
+
             return self
-        
-        
 
 
-
-        
 class AuxiliaryParameter(Parameter):
     pass
 
 
 class AuxiliarySampler(
-        object,
-        metaclass=AutoRegister(auxiliary_parameter_registry,
-                               base_type=ParameterMeta),
+    object,
+    metaclass=AutoRegister(auxiliary_parameter_registry, base_type=ParameterMeta),
 ):
     def __init__(
         self,
@@ -190,45 +188,42 @@ class AuxiliarySampler(
         self._parent_names = []
         self._has_secondary = False  # type: bool
         self._is_sampled = False  # type: bool
-        self._selector = UnitySelection()  # type: SelectionProbabilty
+        self._selector = UnitySelection()  # type: SelectionProbability
         self._uses_distance = uses_distance  # type: bool
         self._uses_luminosity = uses_luminosity  # type: bool
         self._uses_sky_position = uses_sky_position  # type: bool
 
-
     def display(self):
 
         out = {"parameter": [], "value": []}
-        
+
         for k, v in self._parameter_storage.items():
 
             out["parameter"].append(k)
             out["value"].append(v)
 
-
         display(pd.DataFrame(out))
-
 
     def __repr__(self):
 
         out = f"{self._name}\n"
-        
+
         out += f"observed: {self._is_observed}\n"
-        
+
         for k, v in self._parameter_storage.items():
-            out +=f"{k}: {v}\n"
+            out += f"{k}: {v}\n"
 
         if self._is_secondary:
             out += f"parents: {self._parent_names}\n"
 
         if self._has_secondary:
 
-            for k,v in self._secondary_samplers.items():
+            for k, v in self._secondary_samplers.items():
 
                 out += f"{k}\n"
 
         return out
-        
+
     def set_luminosity(self, luminosity: ArrayLike) -> None:
         """
         Set the luminosity values.
@@ -254,25 +249,22 @@ class AuxiliarySampler(
         self._dec = value.dec
         self._spatial_values = value
 
-    def set_selection_probability(self, selector: SelectionProbabilty) -> None:
-
+    def set_selection_probability(self, selector: SelectionProbability) -> None:
         """
-        Set a selection probabilty for this sampler. 
+        Set a selection probabilty for this sampler.
 
         :param selector: A selection probability oobject
-        :type selector: SelectionProbabilty
-        :returns: 
+        :type selector: SelectionProbability
+        :returns:
 
         """
-        if not isinstance(
-            selector, SelectionProbabilty
-        ):
+        if not isinstance(selector, SelectionProbability):
 
             log.error("The selector is not a valid selection probability")
 
             raise AssertionError()
 
-        self._selector = selector  # type: SelectionProbabilty
+        self._selector = selector  # type: SelectionProbability
 
     def _apply_selection(self) -> None:
         """
@@ -292,10 +284,10 @@ class AuxiliarySampler(
 
         :param sampler: An auxiliary sampler
         :type sampler: "AuxiliarySampler"
-        :returns: 
+        :returns:
 
         """
-        
+
         # make sure we set the sampler as a secondary
         # this causes it to throw a flag in the main
         # loop if we try to add it again
@@ -370,12 +362,12 @@ class AuxiliarySampler(
             self._selector.set_observed_value(self._obs_values)
 
             # check to make sure we sampled!
-            assert (self.true_values is not None
-                    and len(self.true_values) == size
-                    ), f"{self.name} likely has a bad true_sampler function"
-            assert (self.obs_values is not None
-                    and len(self.obs_values) == size
-                    ), f"{self.name} likely has a observation_sampler function"
+            assert (
+                self.true_values is not None and len(self.true_values) == size
+            ), f"{self.name} likely has a bad true_sampler function"
+            assert (
+                self.obs_values is not None and len(self.obs_values) == size
+            ), f"{self.name} likely has a observation_sampler function"
 
             # now apply the selection to yourself
             # if there is nothing coded, it will be
@@ -402,8 +394,7 @@ class AuxiliarySampler(
 
         else:
 
-            log.debug(
-                f"{self.name} is not reseting as it has not been sampled")
+            log.debug(f"{self.name} is not reseting as it has not been sampled")
 
         for k, v in self._secondary_samplers.items():
 
@@ -413,9 +404,9 @@ class AuxiliarySampler(
         """
         sets this sampler as secondary for book keeping
 
-        :param parent_name: 
+        :param parent_name:
         :type parent_name: str
-        :returns: 
+        :returns:
 
         """
         self._is_secondary = True  # type: bool
@@ -437,8 +428,7 @@ class AuxiliarySampler(
         :rtype: :class:`SamplerDict`
         """
 
-
-        recursive_secondaries: SecondaryStorage = SecondaryStorage()  
+        recursive_secondaries: SecondaryStorage = SecondaryStorage()
 
         # now collect each property. This should keep recursing
         if self._has_secondary:
@@ -458,16 +448,17 @@ class AuxiliarySampler(
 
                         self._graph.add_edge(spatial_distribution.name, k)
 
-                recursive_secondaries += v.get_secondary_properties(graph, k,
-                    spatial_distribution)
+                recursive_secondaries += v.get_secondary_properties(
+                    graph, k, spatial_distribution
+                )
 
         # add our own on
-        
-        recursive_secondaries.add_secondary(SecondaryContainer(self._name,
-                                                               self._true_values,
-                                                               self._obs_values,
-                                                               self._selector)
-                                            )
+
+        recursive_secondaries.add_secondary(
+            SecondaryContainer(
+                self._name, self._true_values, self._obs_values, self._selector
+            )
+        )
 
         return recursive_secondaries
 
@@ -492,7 +483,8 @@ class AuxiliarySampler(
 
             for k, v in self._secondary_samplers.items():
                 recursive_secondaries = v.get_secondary_objects(
-                    recursive_secondaries)  # type: SamplerDict
+                    recursive_secondaries
+                )  # type: SamplerDict
 
         # add our own on
 
@@ -532,7 +524,7 @@ class AuxiliarySampler(
 
         If another sampler depends on this
 
-        :returns: 
+        :returns:
 
         """
         return self._is_secondary
@@ -541,14 +533,14 @@ class AuxiliarySampler(
     def parents(self) -> List[str]:
         """
         The parents of this sampler
-        """    
+        """
         return self._parent_names
 
     @property
     def has_secondary(self) -> bool:
         """
         if this sampler has a secondary
-        :returns: 
+        :returns:
 
         """
         return self._has_secondary
@@ -558,11 +550,10 @@ class AuxiliarySampler(
         """
         if this sampler is observed
 
-        :returns: 
+        :returns:
 
         """
-        
-        
+
         return self._is_observed
 
     @property
@@ -570,7 +561,7 @@ class AuxiliarySampler(
         """
         The name of the sampler
 
-        :returns: 
+        :returns:
 
         """
         return self._name
@@ -584,7 +575,7 @@ class AuxiliarySampler(
         """
         The true or latent values
 
-        :returns: 
+        :returns:
 
         """
         return self._true_values
@@ -592,9 +583,9 @@ class AuxiliarySampler(
     @property
     def obs_values(self) -> np.ndarray:
         """
-        The values obscured by measurement error. 
+        The values obscured by measurement error.
 
-        :returns: 
+        :returns:
 
         """
         return self._obs_values
@@ -604,17 +595,17 @@ class AuxiliarySampler(
         """
         The selection booleans on the values
 
-        :returns: 
+        :returns:
 
         """
         return self._selector.selection
 
     @property
-    def selector(self) -> SelectionProbabilty:
+    def selector(self) -> SelectionProbability:
         """
         The selection probability object
 
-        :returns: 
+        :returns:
 
         """
         return self._selector
@@ -640,7 +631,7 @@ class AuxiliarySampler(
         """
         If this uses distance
 
-        :returns: 
+        :returns:
 
         """
         return self._uses_distance
@@ -650,7 +641,7 @@ class AuxiliarySampler(
         """
         If this uses sky position
 
-        :returns: 
+        :returns:
 
         """
         return self._uses_sky_position
@@ -660,7 +651,7 @@ class AuxiliarySampler(
         """
         If this uses luminosity
 
-        :returns: 
+        :returns:
 
         """
         return self._luminosity
@@ -684,10 +675,9 @@ class AuxiliarySampler(
 
 
 class NonObservedAuxSampler(AuxiliarySampler):
-    def __init__(self,
-                 name: str,
-                 uses_distance: bool = False,
-                 uses_luminosity: bool = False):
+    def __init__(
+        self, name: str, uses_distance: bool = False, uses_luminosity: bool = False
+    ):
 
         super(NonObservedAuxSampler, self).__init__(
             name=name,
@@ -708,9 +698,9 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         :type uses_distance: bool
         """
 
-        super(DerivedLumAuxSampler, self).__init__(name,
-                                                   observed=False,
-                                                   uses_distance=uses_distance)
+        super(DerivedLumAuxSampler, self).__init__(
+            name, observed=False, uses_distance=uses_distance
+        )
 
     @abc.abstractmethod
     def compute_luminosity(self):

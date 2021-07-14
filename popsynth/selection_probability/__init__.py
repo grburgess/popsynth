@@ -10,7 +10,7 @@ from .generic_selectors import (
 from .selection_probability import (
     DummySelection,
     SelectionParameter,
-    SelectionProbabilty,
+    SelectionProbability,
 )
 from .spatial_selection import SpatialSelection, GalacticPlaneSelection
 
@@ -22,7 +22,7 @@ __all__ = [
     "UpperBound",
     "SoftSelection",
     "UnitySelection",
-    "SelectionProbabilty",
+    "SelectionProbability",
     "SpatialSelection",
     "BoxSelection",
     "DummySelection",

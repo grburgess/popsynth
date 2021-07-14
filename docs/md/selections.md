@@ -112,7 +112,7 @@ First, we will look at simply creating a selection. For simplicity, we will look
 <!-- #endregion -->
 
 ```python
-class BernoulliSelection(popsynth.SelectionProbabilty):
+class BernoulliSelection(popsynth.SelectionProbability):
     
     # required to register class!
     _selection_name = "BernoulliSelection"
