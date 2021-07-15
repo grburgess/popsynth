@@ -23,7 +23,7 @@ date: "07 April 2021"
 
 # Summary
 
-Simulating a population survey of fluxes and redshifts (distances) from an
+Simulating a survey of fluxes and redshifts (distances) from an
 astrophysical population is a routine task. `popsynth` provides a
 generic, object-oriented framework to produce synthetic surveys from
 various distributions and luminosity functions, apply selection
