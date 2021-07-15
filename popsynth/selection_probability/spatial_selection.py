@@ -21,8 +21,7 @@ class SpatialSelection(SelectionProbability):
         self._spatial_distribution: SpatialDistribution = None
 
     def set_spatial_distribution(
-        self, spatial_distribtuion: SpatialDistribution
-    ) -> None:
+            self, spatial_distribtuion: SpatialDistribution) -> None:
         """
         Set the spatial distribution for the selection.
 

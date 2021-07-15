@@ -98,9 +98,9 @@ class Distribution(object,
         :returns: 
 
         """
-        
+
         out = {"parameter": [], "value": []}
-        
+
         for k, v in self.params.items():
 
             out["parameter"].append(k)
@@ -108,20 +108,17 @@ class Distribution(object,
 
         display(Math(self._form))
         display(pd.DataFrame(out))
-    
+
     def __repr__(self):
 
-        
         out = f"{self._name}\n"
         out += f"{self._form}\n"
-        
-        
+
         for k, v in self.params.items():
-            out +=f"{k}: {v}\n"
+            out += f"{k}: {v}\n"
 
         return out
 
-    
 
 @dataclass
 class SpatialContainer:
@@ -232,8 +229,7 @@ class SpatialDistribution(Distribution):
         :returns: 
 
         """
-        
-        
+
         return self._phi
 
     @property
