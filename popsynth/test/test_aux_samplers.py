@@ -171,6 +171,7 @@ def test_truncnorm_sampler(mu, tau, size):
     st.floats(min_value=0.1, max_value=5.0),
     st.integers(min_value=2, max_value=1000),
 )
+@settings(deadline=None)
 def test_pareto_sampler(xmin, alpha, size):
 
     sampler = ParetoAuxSampler("test", observed=False)
@@ -204,6 +205,7 @@ def test_pareto_sampler(xmin, alpha, size):
     st.floats(min_value=-5, max_value=5.0),
     st.integers(min_value=2, max_value=1000),
 )
+@settings(deadline=None)
 def test_plaw_sampler(xmin, xmax, alpha, size):
 
     sampler = PowerLawAuxSampler("test", observed=False)
@@ -240,6 +242,7 @@ def test_plaw_sampler(xmin, xmax, alpha, size):
     st.floats(min_value=-5, max_value=5.0),
     st.integers(min_value=2, max_value=1000),
 )
+@settings(deadline=None)
 def test_broken_plaw_sampler(xmin, xmax, alpha, beta, size):
 
     sampler = BrokenPowerLawAuxSampler("test", observed=False)
