@@ -1,10 +1,10 @@
 from astropy.coordinates import SkyCoord
 
 from popsynth.distribution import SpatialDistribution
-from .selection_probability import SelectionProbabilty, SelectionParameter
+from .selection_probability import SelectionProbability, SelectionParameter
 
 
-class SpatialSelection(SelectionProbabilty):
+class SpatialSelection(SelectionProbability):
 
     _selection_name = "SpatialSelection"
 
@@ -21,7 +21,8 @@ class SpatialSelection(SelectionProbabilty):
         self._spatial_distribution: SpatialDistribution = None
 
     def set_spatial_distribution(
-            self, spatial_distribtuion: SpatialDistribution) -> None:
+        self, spatial_distribtuion: SpatialDistribution
+    ) -> None:
         """
         Set the spatial distribution for the selection.
 
