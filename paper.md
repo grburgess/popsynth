@@ -10,8 +10,8 @@ authors:
     orcid: 0000-0003-3345-9515
     affiliation: "1"
   - name: Francesca Capel
-	orcid: 0000-0002-1153-2139
-	affiliation: "2"
+    orcid: 0000-0002-1153-2139
+    affiliation: "2"
 bibliography: paper.bib
 affiliations:
  - name: Max Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, 85748 Garching, Germany
