@@ -17,7 +17,7 @@ affiliations:
  - name: Max Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, 85748 Garching, Germany
    index: 1
  - name: Technical University of Munich, Boltzmannstrasse 2, 85748 Garching, Germany
-   index: 
+   index: 2
 date: "07 April 2021"
 ---
 
