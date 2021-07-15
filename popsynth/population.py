@@ -194,7 +194,7 @@ class Population(object):
         :returns: 
 
         """
-        
+
         return self._graph
 
     @property
@@ -392,7 +392,7 @@ class Population(object):
         :returns: 
 
         """
-        
+
         return self._spatial_params
 
     def __repr__(self):

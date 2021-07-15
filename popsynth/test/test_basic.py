@@ -66,7 +66,7 @@ def test_basic_population():
     population.display()
 
     print(homo_pareto_synth)
-    
+
     population.display_fluxes()
     population.display_flux_sphere()
 
