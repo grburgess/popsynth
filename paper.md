@@ -27,7 +27,7 @@ Simulating a survey of fluxes and redshifts (distances) from an
 astrophysical population is a routine task. `popsynth` provides a
 generic, object-oriented framework to produce synthetic surveys from
 various distributions and luminosity functions, apply selection
-functions the observed variables and store them in a portable (HDF5)
+functions to the observed variables and store them in a portable (HDF5)
 format. Population synthesis routines can be constructed either using
 classes or from a serializable YAML format allowing flexibility and
 portability. Users can not only sample the luminosity and distance of
