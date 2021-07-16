@@ -6,6 +6,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5109590.svg)](https://doi.org/10.5281/zenodo.5109590)
 ![PyPI](https://img.shields.io/pypi/v/popsynth)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/popsynth)
+ [![status](https://joss.theoj.org/papers/a52e4c2c355396e7946917996502aac0/status.svg)](https://joss.theoj.org/papers/a52e4c2c355396e7946917996502aac0)
 # popsynth
 
 ![alt text](https://raw.githubusercontent.com/grburgess/popsynth/master/external/logo.png)
