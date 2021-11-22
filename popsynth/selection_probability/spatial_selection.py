@@ -21,7 +21,8 @@ class SpatialSelection(SelectionProbability):
         self._spatial_distribution: SpatialDistribution = None
 
     def set_spatial_distribution(
-            self, spatial_distribtuion: SpatialDistribution) -> None:
+        self, spatial_distribtuion: SpatialDistribution
+    ) -> None:
         """
         Set the spatial distribution for the selection.
 
@@ -66,3 +67,28 @@ class GalacticPlaneSelection(SpatialSelection):
 
 
 __all__ = ["SpatialSelection", "GalacticPlaneSelection"]
+
+
+class DistanceSelection(SpatialSelection):
+
+    _selection_name = "DistanceSelection"
+
+    min_distance = SelectionParameter(vmin=0)
+    max_distance = SelectionParameter(vmin=0)
+
+    def __init__(self, name: str = "distance"):
+        """
+        Select distances
+
+        :param name: Name of the selection
+        :type name: str
+        :param min_distance: minimum distance to select
+        :param max_distance: maximum distance to select
+        """
+        super(DistanceSelection, self).__init__(name=name)
+
+    def draw(self, size: int):
+
+        self._selection = (
+            self._spatial_distribution.distances >= self.min_distance
+        ) & (self._spatial_distribution.distances <= self.max_distance)
