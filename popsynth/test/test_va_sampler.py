@@ -1,7 +1,6 @@
-import numpy as np
 from popsynth.aux_samplers.viewing_angle_sampler import ViewingAngleSampler
 
-from hypothesis import given, settings
+from hypothesis import given
 import hypothesis.strategies as st
 
 

@@ -19,6 +19,7 @@ class ColoredFormatter(logging.Formatter):
     """
     Colored log formatter.
     """
+
     def __init__(self,
                  *args,
                  colors: Optional[Dict[str, str]] = None,
@@ -39,6 +40,7 @@ class ColoredFormatter(logging.Formatter):
 
 
 class MyFilter(object):
+
     def __init__(self, level):
         self.__level = level
 
@@ -98,6 +100,7 @@ warning_filter = MyFilter(logging.WARNING)
 
 
 class LoggingState(object):
+
     def __init__(
         self,
         popsynth_usr_log_handler,

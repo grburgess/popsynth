@@ -7,6 +7,7 @@ import pytest
 
 import popsynth
 from popsynth import update_logging_level
+from popsynth.utils.cosmology import cosmology
 
 update_logging_level("DEBUG")
 
@@ -53,6 +54,51 @@ class DemoSampler2(popsynth.DerivedLumAuxSampler):
         secondary = self._secondary_samplers["demo"]
 
         return (10**(self._true_values + 54)) / secondary.true_values
+
+
+class DemoSampler3(popsynth.AuxiliarySampler):
+    _auxiliary_sampler_name = "DemoSampler3"
+    sigma = popsynth.auxiliary_sampler.AuxiliaryParameter(default=0.1, vmin=0)
+
+    def __init__(self):
+
+        super(DemoSampler3, self).__init__(
+            "demo3",
+            observed=True,
+            uses_distance=True,
+            uses_luminosity=True,
+        )
+
+    def true_sampler(self, size):
+
+        dl = cosmology.luminosity_distance(self._distance)
+
+        fluxes = self._luminosity / (4 * np.pi * dl**2)
+
+        self._true_values = fluxes
+
+    def observation_sampler(self, size):
+
+        log_fluxes = np.log(self._true_values)
+
+        log_obs_fluxes = log_fluxes + np.random.normal(
+            loc=0, scale=self.sigma, size=size)
+
+        self._obs_values = np.exp(log_obs_fluxes)
+
+
+class DemoSampler4(popsynth.AuxiliarySampler):
+    _auxiliary_sampler_name = "DemoSampler4"
+
+    def __init__(self):
+
+        super(DemoSampler4, self).__init__("demo4", observed=False)
+
+    def true_sampler(self, size):
+
+        secondary = self._secondary_samplers["demo3"]
+
+        self._true_values = secondary.obs_values + 10
 
 
 _spatial_dict = [
@@ -122,6 +168,7 @@ _lognormal_params = dict(mu=1.0, tau=1.0)
 
 
 class Popbuilder(object):
+
     def __init__(self, pop_class, **params):
 
         self.pop_gen = pop_class(**params)
@@ -129,6 +176,9 @@ class Popbuilder(object):
         self.d1 = DemoSampler()
         self.d2 = DemoSampler2()
         self.d2.set_secondary_sampler(self.d1)
+        self.d3 = DemoSampler3()
+        self.d4 = DemoSampler4()
+        self.d4.set_secondary_sampler(self.d3)
 
         b = popsynth.BernoulliSelection()
         b.probability = 0.5
@@ -569,3 +619,19 @@ def test_non_transient():
         pb.test_it()
 
         assert pb.pop_gen.spatial_distribution._is_rate == False
+
+
+def test_lumi_and_dist_secondary_sampler():
+
+    for pop, param in zip(_cosmo_dict, _cosmo_params):
+
+        param = copy.deepcopy(param)
+
+        param["is_rate"] = False
+
+        pb = Popbuilder(pop, **param)
+
+        pb.pop_gen.add_auxiliary_sampler(pb.d2)
+        pb.pop_gen.add_observed_quantity(pb.d4)
+
+        pb.test_it()

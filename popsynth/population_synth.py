@@ -33,6 +33,7 @@ log = setup_logger(__name__)
 
 
 class PopulationSynth(object, metaclass=ABCMeta):
+
     def __init__(
         self,
         spatial_distribution: SpatialDistribution,
@@ -1068,6 +1069,20 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             v.set_luminosity(luminosities)
             v.set_spatial_values(self._spatial_distribution.spatial_values)
+
+            # also set luminosities and distances to secondaries
+            # as needed
+
+            for k2, v2 in v.secondary_samplers.items():
+
+                if v2.uses_luminosity:
+
+                    v2.set_luminosity(luminosities)
+
+                if v2.uses_distance:
+
+                    v2.set_spatial_values(
+                        self._spatial_distribution.spatial_values)
 
             # sample the true and obs
             # values which are held internally

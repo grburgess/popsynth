@@ -8,6 +8,7 @@ from popsynth.population_synth import PopulationSynth
 
 
 class DummySDistribution(SpatialDistribution):
+
     def __init__(self, seed=1234, form=None, truth={}):
 
         # the latex formula for the ditribution
@@ -35,6 +36,7 @@ class DummySDistribution(SpatialDistribution):
 
 
 class DummyLDistribution(LuminosityDistribution):
+
     def __init__(self, seed=1234, name="dummy"):
 
         # the latex formula for the ditribution
@@ -56,6 +58,7 @@ class DummyLDistribution(LuminosityDistribution):
 
 
 class MyPopulation(PopulationSynth):
+
     def __init__(self, r_max=5, seed=1234):
 
         # instantiate the distributions
@@ -72,6 +75,7 @@ class MyPopulation(PopulationSynth):
 
 
 class MyFlatPopulation(PopulationSynth):
+
     def __init__(self, r_max=5, seed=1234):
 
         # instantiate the distributions
@@ -89,6 +93,7 @@ class MyFlatPopulation(PopulationSynth):
 
 
 class MyDeltaPopulation(PopulationSynth):
+
     def __init__(self, r_max=5, seed=1234):
 
         # instantiate the distributions

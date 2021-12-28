@@ -68,7 +68,7 @@ ax.set_xlabel(r"L [erg $\mathrm{s}^{-1}$]")
 We now move to the redshift distribution. Following the paper, we parametrize this as a negative power law in $z$. for the purpose of this example, we assume that Bl Lac blazars emit with a steady state. This means that we need to set the `is_rate` parameter to `False` when defining the `ZPowerCosmoDistribution` cosmological distribution. What we mean when we do this is that our local number density, `Lambda` is not per unit time. We also want to survey the whole sky, so we integrate over $4\pi$ sr in the value that we pass to the `Lambda`. 
 
 ```python
-zpow = ZPowerCosmoDistribution()
+zpow = ZPowerCosmoDistribution(is_rate=False)
 zpow.Lambda = 9000 # Gpc^-3 sr 
 zpow.delta = -6
 

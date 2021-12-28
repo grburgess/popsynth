@@ -24,6 +24,7 @@ Ogamma0 = cosmo.Ogamma0
 
 @jitclass(spec)
 class Cosmology(object):
+
     def __init__(
         self,
         Om: float = popsynth_config["cosmology"]["Om"],

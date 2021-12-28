@@ -21,6 +21,7 @@ SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
 
 class SecondaryContainer(object):
+
     def __init__(
         self,
         name: str,
@@ -103,6 +104,7 @@ class SecondaryContainer(object):
 
 
 class SecondaryStorage(DotMap):
+
     def __init__(self):
         """
         A container for secondary samplers
@@ -152,6 +154,7 @@ class AuxiliarySampler(
         metaclass=AutoRegister(auxiliary_parameter_registry,
                                base_type=ParameterMeta),
 ):
+
     def __init__(
         self,
         name: str,
@@ -652,7 +655,7 @@ class AuxiliarySampler(
         :returns:
 
         """
-        return self._luminosity
+        return self._uses_luminosity
 
     @property
     def luminosity_distance(self):
@@ -673,6 +676,7 @@ class AuxiliarySampler(
 
 
 class NonObservedAuxSampler(AuxiliarySampler):
+
     def __init__(self,
                  name: str,
                  uses_distance: bool = False,
@@ -687,6 +691,7 @@ class NonObservedAuxSampler(AuxiliarySampler):
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
+
     def __init__(self, name: str, uses_distance: bool = False):
         """
         Base class for generating luminosity from other properties.
