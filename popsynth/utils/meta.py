@@ -6,6 +6,7 @@ log = setup_logger(__name__)
 
 
 class Parameter(object):
+
     def __init__(
         self,
         default: Optional[float] = None,
@@ -121,6 +122,7 @@ class Parameter(object):
 
 
 class ParameterMeta(type):
+
     def __new__(mcls, name, bases, attrs, **kwargs):
 
         cls = super().__new__(mcls, name, bases, attrs, **kwargs)

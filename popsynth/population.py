@@ -30,6 +30,7 @@ dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
 
 
 class Population(object):
+
     def __init__(
         self,
         luminosities: ArrayLike,

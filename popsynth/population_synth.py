@@ -33,6 +33,7 @@ log = setup_logger(__name__)
 
 
 class PopulationSynth(object, metaclass=ABCMeta):
+
     def __init__(
         self,
         spatial_distribution: SpatialDistribution,

@@ -6,6 +6,7 @@ import hypothesis.strategies as st
 
 
 class FunctionGen(object):
+
     def __init__(self, xmax):
 
         self.xmax = xmax
@@ -22,7 +23,9 @@ class FunctionGen(object):
 
 
 class LinearFuncGen(FunctionGen):
+
     def __init__(self, alpha, beta, xmax):
+
         def func(x):
 
             return alpha + beta * x
