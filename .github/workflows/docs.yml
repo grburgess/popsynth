@@ -121,6 +121,15 @@ jobs:
           brew install c-blosc
           brew install hdf5
 
+          brew install sphinx-doc pandoc
+
+          pip3 install wheel
+          pip3 install mock recommonmark
+          pip3 install sphinx_rtd_theme
+          pip3 install -U sphinx nbsphinx sphinx-gallery
+
+
+
           python3 setup.py develop
 
           rm -rf docs/md/*
