@@ -113,7 +113,7 @@ jobs:
           pip install black
           pip install --upgrade numpy ipython jupyter ipyvolume scipy h5py matplotlib numba
           pip install jupytext jupyterthemes pygraphviz
-
+          pip install -r docs/requirements.txt
 
       - name: Install package
         run: |
