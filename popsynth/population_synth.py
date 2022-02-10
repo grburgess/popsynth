@@ -1279,13 +1279,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         log.info(f"Detected {len(known_distances)} distances")
 
-        try:
+        if global_selection.n_selected > 0:
 
             log.info(
                 f"Detected {global_selection.n_selected} objects out to a distance of {max(known_distances):.2f}"
             )
 
-        except:
+        else:
 
             log.warning("No Objects detected")
 
