@@ -863,7 +863,7 @@ class Population(object):
                 bottom=min([self._fluxes.min(), self._flux_selected.min()])
             )
 
-        except AttributeError:
+        except ValueError:
 
             ax.set_ylim(bottom=self._fluxes.min())
 
