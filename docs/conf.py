@@ -68,27 +68,24 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'rtds_action',
     'sphinx_gallery.load_style',
 ]
 
+
 napoleon_google_docstring = True
-napoleon_use_param = False
+napoleon_use_param = True
+napoleon_include_private_with_doc = True
+napoleon_include_init_with_doc = True
 
-# # The name of your GitHub repository
-rtds_action_github_repo = "grburgess/popsynth"
+autodoc_default_options = {
+    "members": "var1, var2",
+    "member-order": "bysource",
+    "special-members": "__init__",
+    "undoc-members": True,
+    "exclude-members": "__weakref__",
+}
 
-# The path where the artifact should be extracted
-# Note: this is relative to the conf.py file!
-rtds_action_path = "notebooks"
 
-# The "prefix" used in the `upload-artifact` step of the action
-rtds_action_artifact_prefix = "notebooks-for-"
-
-# A GitHub personal access token is required, more info below
-rtds_action_github_token = os.environ["GITHUB_TOKEN"]
-
-rtds_action_error_if_missing = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

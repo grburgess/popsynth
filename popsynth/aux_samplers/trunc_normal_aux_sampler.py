@@ -44,12 +44,12 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size):
 
-        l = (self.lower - self.mu) / self.tau
-        u = (self.upper - self.mu) / self.tau
+        lower = (self.lower - self.mu) / self.tau
+        upper = (self.upper - self.mu) / self.tau
 
         self._true_values = stats.truncnorm.rvs(
-            l,
-            u,
+            lower,
+            upper,
             loc=self.mu,
             scale=self.tau,
             size=size,
