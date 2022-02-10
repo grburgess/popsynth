@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.distributions.spherical_distribution &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="stylesheet" href="../../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> popsynth
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.distributions.spherical_distribution</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.distributions.spherical_distribution</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.distribution</span> <span class="kn">import</span> <span class="n">DistributionParameter</span><span class="p">,</span> <span class="n">SpatialDistribution</span>
+
+
+<div class="viewcode-block" id="SphericalDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SphericalDistribution">[docs]</a><span class="k">class</span> <span class="nc">SphericalDistribution</span><span class="p">(</span><span class="n">SpatialDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;SphericalDistribution&quot;</span>
+
+<div class="viewcode-block" id="SphericalDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SphericalDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sphere&quot;</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A generic spherical distribution. Can be inherited to</span>
+<span class="sd">        form more complex spherical distributions</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param form: Mathematical description of distribution</span>
+<span class="sd">        :type form: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SphericalDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SphericalDistribution.differential_volume"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SphericalDistribution.differential_volume">[docs]</a>    <span class="k">def</span> <span class="nf">differential_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span></div>
+
+<div class="viewcode-block" id="SphericalDistribution.transform"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SphericalDistribution.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">L</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConstantSphericalDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ConstantSphericalDistribution">[docs]</a><span class="k">class</span> <span class="nc">ConstantSphericalDistribution</span><span class="p">(</span><span class="n">SphericalDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;ConstantSphericalDistribution&quot;</span>
+
+    <span class="n">Lambda</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConstantSphericalDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ConstantSphericalDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cons_sphere&quot;</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A spherical distribution with constant density.</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param form: Mathematical description of distribution</span>
+<span class="sd">        :type form: str</span>
+<span class="sd">        :param Lambda: Density per unit volume</span>
+<span class="sd">        :type Lambda: :class:`DistributionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">form</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\Lambda&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConstantSphericalDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConstantSphericalDistribution.dNdV"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ConstantSphericalDistribution.dNdV">[docs]</a>    <span class="k">def</span> <span class="nf">dNdV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lambda</span></div></div>
+
+
+<div class="viewcode-block" id="ZPowerSphericalDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ZPowerSphericalDistribution">[docs]</a><span class="k">class</span> <span class="nc">ZPowerSphericalDistribution</span><span class="p">(</span><span class="n">ConstantSphericalDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;ZPowerSphericalDistribution&quot;</span>
+
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ZPowerSphericalDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ZPowerSphericalDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zpow_sphere&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A spherical distribution with a power law density profile.</span>
+
+<span class="sd">        ``Lambda`` (1+r)^``delta``</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param form: Mathematical description of distribution</span>
+<span class="sd">        :type form: str</span>
+<span class="sd">        :param delta: Index of power law distribution</span>
+<span class="sd">        :type delta: :class:`DistributionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spatial_form</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\Lambda (1+r)^{\delta}&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZPowerSphericalDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">spatial_form</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ZPowerSphericalDistribution.dNdV"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ZPowerSphericalDistribution.dNdV">[docs]</a>    <span class="k">def</span> <span class="nf">dNdV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lambda</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">distance</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

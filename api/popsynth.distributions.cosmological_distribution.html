@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.distributions.cosmological_distribution module &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="popsynth.distributions.delta_distribution module" href="popsynth.distributions.delta_distribution.html" />
+    <link rel="prev" title="popsynth.distributions.bpl_distribution module" href="popsynth.distributions.bpl_distribution.html" />
+  <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> popsynth
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="API.html">API</a> &raquo;</li>
+          <li><a href="popsynth.html">popsynth package</a> &raquo;</li>
+          <li><a href="popsynth.distributions.html">popsynth.distributions package</a> &raquo;</li>
+      <li>popsynth.distributions.cosmological_distribution module</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-popsynth.distributions.cosmological_distribution">
+<span id="popsynth-distributions-cosmological-distribution-module"></span><h1>popsynth.distributions.cosmological_distribution module<a class="headerlink" href="#module-popsynth.distributions.cosmological_distribution" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.CosmologicalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.cosmological_distribution.</span></span><span class="sig-name descname"><span class="pre">CosmologicalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.CosmologicalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.SpatialDistribution</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.CosmologicalDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.CosmologicalDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Base class for cosmological spatial distributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>form</strong> (<em>str</em>) – Mathematical description of distribution</p></li>
+<li><p><strong>truth</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – True values of parameters</p></li>
+<li><p><strong>is_rate</strong> (<em>bool</em>) – <cite>True</cite> if modelling a population of transient events,
+<cite>False</cite> if modelling a population of steady-state objects.
+Affects the <code class="docutils literal notranslate"><span class="pre">time_adjustment</span></code> method used in cosmo calculations.
+Default is <cite>True</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.CosmologicalDistribution.differential_volume">
+<span class="sig-name descname"><span class="pre">differential_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.differential_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.CosmologicalDistribution.differential_volume" title="Permalink to this definition"></a></dt>
+<dd><p>Differential comoving volume in Gpc^3 sr^-1.</p>
+<p>dV/dzdOmega</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z</strong> – Redshift</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The differential comoving volume in
+Gpc^-3 sr^-1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.CosmologicalDistribution.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.CosmologicalDistribution.transform" title="Permalink to this definition"></a></dt>
+<dd><p>Transformation from luminosity to energy flux.</p>
+<p>L / 4 pi dL^2</p>
+<p>dL is in cm. Therefore for L in erg s^-1 returns
+flux in erg cm^-2 s^-1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> – Luminosity</p></li>
+<li><p><strong>z</strong> – Redshift</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Flux</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.CosmologicalDistribution.time_adjustment">
+<span class="sig-name descname"><span class="pre">time_adjustment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.time_adjustment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.CosmologicalDistribution.time_adjustment" title="Permalink to this definition"></a></dt>
+<dd><p>Time adjustment factor to handle both
+transient and steady-state populations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z</strong> – Redshift</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Appropriate factor depending on <code class="docutils literal notranslate"><span class="pre">is_rate</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.cosmological_distribution.</span></span><span class="sig-name descname"><span class="pre">SFRDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sfr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#SFRDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.distributions.html#popsynth.distributions.cosmological_distribution.CosmologicalDistribution" title="popsynth.distributions.cosmological_distribution.CosmologicalDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distributions.cosmological_distribution.CosmologicalDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution.r0">
+<span class="sig-name descname"><span class="pre">r0</span></span><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution.r0" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution.a">
+<span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution.a" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution.rise">
+<span class="sig-name descname"><span class="pre">rise</span></span><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution.rise" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution.decay">
+<span class="sig-name descname"><span class="pre">decay</span></span><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution.decay" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution.peak">
+<span class="sig-name descname"><span class="pre">peak</span></span><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution.peak" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sfr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#SFRDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A star-formation like distribution of the form
+presented in Cole et al. 2001.</p>
+<p><code class="docutils literal notranslate"><span class="pre">r0``(``a``+``rise``z)/(1</span> <span class="pre">+</span> <span class="pre">(z/``peak</span></code>)^``decay``)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>is_rate</strong> (<em>bool</em>) – <cite>True</cite> if modelling a population of transient events,
+<cite>False</cite> if modelling a population of steady-state objects.
+Affects the <code class="docutils literal notranslate"><span class="pre">time_adjustment</span></code> method used in cosmo calculations.
+Default is <cite>True</cite>.</p></li>
+<li><p><strong>r0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – The local density in units of Gpc^-3</p></li>
+<li><p><strong>a</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Offset at z=0</p></li>
+<li><p><strong>rise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Rise at low z</p></li>
+<li><p><strong>decay</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Decay at high z</p></li>
+<li><p><strong>peak</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Peak of z distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.SFRDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#SFRDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.SFRDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.cosmological_distribution.</span></span><span class="sig-name descname"><span class="pre">ZPowerCosmoDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'zpow_cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#ZPowerCosmoDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.distributions.html#popsynth.distributions.cosmological_distribution.CosmologicalDistribution" title="popsynth.distributions.cosmological_distribution.CosmologicalDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distributions.cosmological_distribution.CosmologicalDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.Lambda">
+<span class="sig-name descname"><span class="pre">Lambda</span></span><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.Lambda" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.delta">
+<span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.delta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'zpow_cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#ZPowerCosmoDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A cosmological distribution where the density
+evolves as a power law.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Lambda</span></code> (1+z)^``delta``</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>is_rate</strong> (<em>bool</em>) – <cite>True</cite> if modelling a population of transient events,
+<cite>False</cite> if modelling a population of steady-state objects.
+Affects the <code class="docutils literal notranslate"><span class="pre">time_adjustment</span></code> method used in cosmo calculations.
+Default is <cite>True</cite>.</p></li>
+<li><p><strong>Lambda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – The local density in units of Gpc^-3</p></li>
+<li><p><strong>delta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – The index of the power law</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#ZPowerCosmoDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.cosmological_distribution.ZPowerCosmoDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="popsynth.distributions.bpl_distribution.html" class="btn btn-neutral float-left" title="popsynth.distributions.bpl_distribution module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="popsynth.distributions.delta_distribution.html" class="btn btn-neutral float-right" title="popsynth.distributions.delta_distribution module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

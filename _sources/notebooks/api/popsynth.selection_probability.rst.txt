@@ -1,0 +1,45 @@
+popsynth.selection\_probability package
+=======================================
+
+Submodules
+----------
+
+popsynth.selection\_probability.flux\_selectors module
+------------------------------------------------------
+
+.. automodule:: popsynth.selection_probability.flux_selectors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.selection\_probability.generic\_selectors module
+---------------------------------------------------------
+
+.. automodule:: popsynth.selection_probability.generic_selectors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.selection\_probability.selection\_probability module
+-------------------------------------------------------------
+
+.. automodule:: popsynth.selection_probability.selection_probability
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.selection\_probability.spatial\_selection module
+---------------------------------------------------------
+
+.. automodule:: popsynth.selection_probability.spatial_selection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: popsynth.selection_probability
+   :members:
+   :undoc-members:
+   :show-inheritance:

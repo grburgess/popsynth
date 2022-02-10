@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.populations.schechter_populations &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="stylesheet" href="../../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> popsynth
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.populations.schechter_populations</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.populations.schechter_populations</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">popsynth.distributions.schechter_distribution</span> <span class="kn">import</span> <span class="n">SchechterDistribution</span>
+<span class="kn">from</span> <span class="nn">popsynth.populations.spatial_populations</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SFRPopulation</span><span class="p">,</span>
+    <span class="n">SphericalPopulation</span><span class="p">,</span>
+    <span class="n">ZPowerCosmoPopulation</span><span class="p">,</span>
+    <span class="n">ZPowerSphericalPopulation</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="SchechterHomogeneousSphericalPopulation"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterHomogeneousSphericalPopulation">[docs]</a><span class="k">class</span> <span class="nc">SchechterHomogeneousSphericalPopulation</span><span class="p">(</span><span class="n">SphericalPopulation</span><span class="p">):</span>
+<div class="viewcode-block" id="SchechterHomogeneousSphericalPopulation.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterHomogeneousSphericalPopulation.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">Lambda</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">Lmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">r_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A population built on the :class:`ConstantSphericalDistribution`</span>
+<span class="sd">        spatial distribution and the :class:`SchechterDistribution`</span>
+<span class="sd">        luminosity distribution.</span>
+
+<span class="sd">        :param Lambda: Density per unit volume</span>
+<span class="sd">        :type Lambda: float</span>
+<span class="sd">        :param Lmin: Minimum value of the luminosity</span>
+<span class="sd">        :type Lmin: float</span>
+<span class="sd">        :param alpha: Index of the luminosity distribution</span>
+<span class="sd">        :type alpha: float</span>
+<span class="sd">        :param r_max: Maximum distance</span>
+<span class="sd">        :type r_max: float</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">luminosity_distribution</span> <span class="o">=</span> <span class="n">SchechterDistribution</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">Lmin</span> <span class="o">=</span> <span class="n">Lmin</span>
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SchechterHomogeneousSphericalPopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">Lambda</span><span class="o">=</span><span class="n">Lambda</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="n">r_max</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">luminosity_distribution</span><span class="o">=</span><span class="n">luminosity_distribution</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SchechterZPowerSphericalPopulation"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterZPowerSphericalPopulation">[docs]</a><span class="k">class</span> <span class="nc">SchechterZPowerSphericalPopulation</span><span class="p">(</span><span class="n">ZPowerSphericalPopulation</span><span class="p">):</span>
+<div class="viewcode-block" id="SchechterZPowerSphericalPopulation.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterZPowerSphericalPopulation.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">Lambda</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">Lmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">r_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A population built on the :class:`ZPowerSphericalDistribution`</span>
+<span class="sd">        spatial distribution and the :class:`SchechterDistribution`</span>
+<span class="sd">        luminosity distribution.</span>
+
+<span class="sd">        :param Lambda: Density per unit volume</span>
+<span class="sd">        :type Lambda: float</span>
+<span class="sd">        :param delta: Index of the spatial distribution</span>
+<span class="sd">        :type delta: float</span>
+<span class="sd">        :param Lmin: Minimum value of the luminosity</span>
+<span class="sd">        :type Lmin: float</span>
+<span class="sd">        :param alpha: Index of the luminosity distribution</span>
+<span class="sd">        :type alpha: float</span>
+<span class="sd">        :param r_max: Maximum distance</span>
+<span class="sd">        :type r_max: float</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">luminosity_distribution</span> <span class="o">=</span> <span class="n">SchechterDistribution</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">Lmin</span> <span class="o">=</span> <span class="n">Lmin</span>
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SchechterZPowerSphericalPopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">Lambda</span><span class="o">=</span><span class="n">Lambda</span><span class="p">,</span>
+            <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="n">r_max</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">luminosity_distribution</span><span class="o">=</span><span class="n">luminosity_distribution</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SchechterZPowerCosmoPopulation"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterZPowerCosmoPopulation">[docs]</a><span class="k">class</span> <span class="nc">SchechterZPowerCosmoPopulation</span><span class="p">(</span><span class="n">ZPowerCosmoPopulation</span><span class="p">):</span>
+<div class="viewcode-block" id="SchechterZPowerCosmoPopulation.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterZPowerCosmoPopulation.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">Lambda</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">Lmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">r_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">is_rate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A population built on the :class:`ZPowerCosmoDistribution`</span>
+<span class="sd">        spatial distribution and the :class:`SchechterDistribution`</span>
+<span class="sd">        luminosity distribution.</span>
+
+<span class="sd">        :param Lambda: Density in units of Gpc^-3</span>
+<span class="sd">        :type Lambda: float</span>
+<span class="sd">        :param delta: Index of the spatial distribution</span>
+<span class="sd">        :type delta: float</span>
+<span class="sd">        :param Lmin: Minimum value of the luminosity</span>
+<span class="sd">        :type Lmin: float</span>
+<span class="sd">        :param alpha: Index of the luminosity distribution</span>
+<span class="sd">        :type alpha: float</span>
+<span class="sd">        :param r_max: Maximum redshift</span>
+<span class="sd">        :type r_max: float</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param is_rate: `True` if modelling a population of transient events,</span>
+<span class="sd">            `False` if modelling a population of steady-state objects.</span>
+<span class="sd">            Affects the ``time_adjustment`` method used in cosmo calculations.</span>
+<span class="sd">            Default is `True`.</span>
+<span class="sd">        :type is_rate: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">luminosity_distribution</span> <span class="o">=</span> <span class="n">SchechterDistribution</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">Lmin</span> <span class="o">=</span> <span class="n">Lmin</span>
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SchechterZPowerCosmoPopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">Lambda</span><span class="o">=</span><span class="n">Lambda</span><span class="p">,</span>
+            <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="n">r_max</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">luminosity_distribution</span><span class="o">=</span><span class="n">luminosity_distribution</span><span class="p">,</span>
+            <span class="n">is_rate</span><span class="o">=</span><span class="n">is_rate</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SchechterSFRPopulation"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterSFRPopulation">[docs]</a><span class="k">class</span> <span class="nc">SchechterSFRPopulation</span><span class="p">(</span><span class="n">SFRPopulation</span><span class="p">):</span>
+<div class="viewcode-block" id="SchechterSFRPopulation.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.populations.html#popsynth.populations.SchechterSFRPopulation.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">r0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">rise</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">decay</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">peak</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">Lmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">r_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">is_rate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A population built on the :class:`SFRDistribution`</span>
+<span class="sd">        spatial distribution and the :class:`SchechterDistribution`</span>
+<span class="sd">        luminosity distribution.</span>
+
+<span class="sd">        :param r0: Local density in units of Gpc^-3</span>
+<span class="sd">        :type r0: float</span>
+<span class="sd">        :param a: Offset at z=0</span>
+<span class="sd">        :type a: float</span>
+<span class="sd">        :param rise: Rise at low z</span>
+<span class="sd">        :type rise: float</span>
+<span class="sd">        :param decay: Decay at high z</span>
+<span class="sd">        :type decay: float</span>
+<span class="sd">        :param peak: Peak of z distribution</span>
+<span class="sd">        :type peak: float</span>
+<span class="sd">        :param Lmin: Minimum value of the luminosity</span>
+<span class="sd">        :type Lmin: float</span>
+<span class="sd">        :param alpha: Index of the luminosity distribution</span>
+<span class="sd">        :type alpha: float</span>
+<span class="sd">        :param r_max: Maximum redshift</span>
+<span class="sd">        :type r_max: float</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param is_rate: `True` if modelling a population of transient events,</span>
+<span class="sd">            `False` if modelling a population of steady-state objects.</span>
+<span class="sd">            Affects the ``time_adjustment`` method used in cosmo calculations.</span>
+<span class="sd">            Default is `True`.</span>
+<span class="sd">        :type is_rate: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">luminosity_distribution</span> <span class="o">=</span> <span class="n">SchechterDistribution</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">Lmin</span> <span class="o">=</span> <span class="n">Lmin</span>
+        <span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SchechterSFRPopulation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">r0</span><span class="o">=</span><span class="n">r0</span><span class="p">,</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
+            <span class="n">rise</span><span class="o">=</span><span class="n">rise</span><span class="p">,</span>
+            <span class="n">decay</span><span class="o">=</span><span class="n">decay</span><span class="p">,</span>
+            <span class="n">peak</span><span class="o">=</span><span class="n">peak</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="n">r_max</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">luminosity_distribution</span><span class="o">=</span><span class="n">luminosity_distribution</span><span class="p">,</span>
+            <span class="n">is_rate</span><span class="o">=</span><span class="n">is_rate</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

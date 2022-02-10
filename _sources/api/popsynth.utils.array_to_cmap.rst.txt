@@ -1,0 +1,7 @@
+popsynth.utils.array_to_cmap module
+===================================
+
+.. automodule:: popsynth.utils.array_to_cmap
+    :members:
+    :undoc-members:
+    :show-inheritance:

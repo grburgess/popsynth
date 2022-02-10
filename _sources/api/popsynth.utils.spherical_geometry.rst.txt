@@ -1,0 +1,7 @@
+popsynth.utils.spherical_geometry module
+========================================
+
+.. automodule:: popsynth.utils.spherical_geometry
+    :members:
+    :undoc-members:
+    :show-inheritance:

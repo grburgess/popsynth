@@ -1,0 +1,7 @@
+popsynth.selection_probability.selection_probability module
+===========================================================
+
+.. automodule:: popsynth.selection_probability.selection_probability
+    :members:
+    :undoc-members:
+    :show-inheritance:

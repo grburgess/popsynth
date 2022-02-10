@@ -1,0 +1,7 @@
+popsynth.distributions.cosmological_distribution module
+=======================================================
+
+.. automodule:: popsynth.distributions.cosmological_distribution
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+popsynth.populations.pareto_populations module
+==============================================
+
+.. automodule:: popsynth.populations.pareto_populations
+    :members:
+    :undoc-members:
+    :show-inheritance:

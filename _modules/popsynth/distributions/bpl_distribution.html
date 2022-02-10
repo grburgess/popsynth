@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.distributions.bpl_distribution &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="stylesheet" href="../../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> popsynth
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.distributions.bpl_distribution</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.distributions.bpl_distribution</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.distribution</span> <span class="kn">import</span> <span class="n">DistributionParameter</span><span class="p">,</span> <span class="n">LuminosityDistribution</span>
+
+
+<div class="viewcode-block" id="BPLDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.BPLDistribution">[docs]</a><span class="k">class</span> <span class="nc">BPLDistribution</span><span class="p">(</span><span class="n">LuminosityDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;BPLDistribution&quot;</span>
+
+    <span class="n">Lmin</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+    <span class="n">Lbreak</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+    <span class="n">Lmax</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BPLDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.BPLDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bpl&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A broken power law luminosity distribution.</span>
+
+<span class="sd">        L ~ L^``alpha`` for L &lt;= ``Lbreak``</span>
+<span class="sd">        L ~ L^``beta`` for L &gt; ``Lbreak``</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param Lmin: Minimum value of the luminosity</span>
+<span class="sd">        :type Lmin: :class:`DistributionParameter`</span>
+<span class="sd">        :param alpha: Index of the lower power law</span>
+<span class="sd">        :type alpha: :class:`DistributionParameter`</span>
+<span class="sd">        :param Lbreak: Luminosity of the power law break</span>
+<span class="sd">        :type Lbreak: :class:`DistributionParameter`</span>
+<span class="sd">        :param beta: Index of the upper power law</span>
+<span class="sd">        :type beta: :class:`DistributionParameter`</span>
+<span class="sd">        :param Lmax: Maximum value of the luminosity</span>
+<span class="sd">        :type Lmax: :class:`DistributionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lf_form</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\begin</span><span class="si">{cases}</span><span class="s2"> C L^{\alpha} &amp; \mbox{if } L&quot;</span>
+        <span class="n">lf_form</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;\leq L_\mathrm</span><span class="si">{break}</span><span class="s2">,</span><span class="se">\\</span><span class="s2"> C L^{\beta} &quot;</span>
+        <span class="n">lf_form</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;L_\mathrm</span><span class="si">{break}</span><span class="s2">^{\alpha - \beta}&quot;</span>
+        <span class="n">lf_form</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; &amp; \mbox{if } L &gt; L_\mathrm</span><span class="si">{break}</span><span class="s2">. \end</span><span class="si">{cases}</span><span class="s2">&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BPLDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">lf_form</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BPLDistribution.phi"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.BPLDistribution.phi">[docs]</a>    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">bpl</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lbreak</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BPLDistribution.draw_luminosity"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.BPLDistribution.draw_luminosity">[docs]</a>    <span class="k">def</span> <span class="nf">draw_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">sample_bpl</span><span class="p">(</span>
+            <span class="n">u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lbreak</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="integrate_pl"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.integrate_pl">[docs]</a><span class="k">def</span> <span class="nf">integrate_pl</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Integrate a broken power law between bounds.</span>
+
+<span class="sd">    :param x0: Lower bound</span>
+<span class="sd">    :param x1: Break point</span>
+<span class="sd">    :param x2: Upper bound</span>
+<span class="sd">    :param a1: Lower power law index</span>
+<span class="sd">    :param a2: Upper power low index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># compute the integral of each piece analytically</span>
+    <span class="n">int_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a1</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">a1</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">a1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">int_2</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a1</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span>
+        <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">a2</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="o">/</span> <span class="p">(</span><span class="n">a2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># compute the total integral</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">int_1</span> <span class="o">+</span> <span class="n">int_2</span>
+
+    <span class="c1"># compute the weights of each piece of the function</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="n">int_1</span> <span class="o">/</span> <span class="n">total</span>
+    <span class="n">w2</span> <span class="o">=</span> <span class="n">int_2</span> <span class="o">/</span> <span class="n">total</span>
+
+    <span class="k">return</span> <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">total</span></div>
+
+
+<div class="viewcode-block" id="bpl"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.bpl">[docs]</a><span class="k">def</span> <span class="nf">bpl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Broken power law between bounds.</span>
+
+<span class="sd">    :param x: The domain of the function</span>
+<span class="sd">    :param x0: Lower bound</span>
+<span class="sd">    :param x1: Break point</span>
+<span class="sd">    :param x2: Upper bound</span>
+<span class="sd">    :param a1: Lower power law index</span>
+<span class="sd">    :param a2: Upper power low index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># creatre a holder for the values</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># get the total integral to compute the normalization</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">integrate_pl</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">C</span>
+
+    <span class="c1"># create an index to select each piece of the function</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">x1</span>
+
+    <span class="c1"># compute the lower power law</span>
+    <span class="n">out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">a1</span><span class="p">)</span>
+
+    <span class="c1"># compute the upper power law</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">],</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a1</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span> <span class="o">*</span> <span class="n">norm</span></div>
+
+
+<div class="viewcode-block" id="sample_bpl"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.sample_bpl">[docs]</a><span class="k">def</span> <span class="nf">sample_bpl</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample from a broken power law</span>
+<span class="sd">    between bounds.</span>
+
+<span class="sd">    :param u: Uniform random number on {0,1}</span>
+<span class="sd">    :param x0: Lower bound</span>
+<span class="sd">    :param x1: Break point</span>
+<span class="sd">    :param x2: Upper bound</span>
+<span class="sd">    :param a1: Lower power law index</span>
+<span class="sd">    :param a2: Upper power low index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># compute the weights with our integral function</span>
+    <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate_pl</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
+
+    <span class="c1"># create a holder array for our output</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+    <span class="c1"># compute the bernoulli trials for lower piece of the function</span>
+    <span class="c1"># *if we wanted to do the upper part... we just reverse our index*</span>
+    <span class="c1"># We also compute these to bools for numpy array selection</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">bernoulli</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+
+    <span class="c1"># inverse transform sample the lower part for the &quot;successes&quot;</span>
+    <span class="n">out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+        <span class="n">u</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a1</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">a1</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">a1</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">a1</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># inverse transform sample the upper part for the &quot;failures&quot;</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+        <span class="n">u</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">a2</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">a2</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.distribution &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <link rel="stylesheet" href="../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> popsynth
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.distribution</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.distribution</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">class_registry</span> <span class="kn">import</span> <span class="n">AutoRegister</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.utils.configuration</span> <span class="kn">import</span> <span class="n">popsynth_config</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.logging</span> <span class="kn">import</span> <span class="n">setup_logger</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.meta</span> <span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">ParameterMeta</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.progress_bar</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.registry</span> <span class="kn">import</span> <span class="n">distribution_registry</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.rejection_sample</span> <span class="kn">import</span> <span class="n">rejection_sample</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.spherical_geometry</span> <span class="kn">import</span> <span class="n">sample_theta_phi</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DistributionParameter"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.DistributionParameter">[docs]</a><span class="k">class</span> <span class="nc">DistributionParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Distribution"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.Distribution">[docs]</a><span class="k">class</span> <span class="nc">Distribution</span><span class="p">(</span>
+    <span class="nb">object</span><span class="p">,</span>
+    <span class="n">metaclass</span><span class="o">=</span><span class="n">AutoRegister</span><span class="p">(</span><span class="n">distribution_registry</span><span class="p">,</span> <span class="n">base_type</span><span class="o">=</span><span class="n">ParameterMeta</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;Distribution&quot;</span>
+
+<div class="viewcode-block" id="Distribution.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.Distribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">form</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A distribution base class.</span>
+
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param form: the LaTeX form</span>
+<span class="sd">        :type form: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="n">seed</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># type: str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">=</span> <span class="n">form</span>  <span class="c1"># type: str</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The name of the distribution</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">form</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The latex form of the</span>
+<span class="sd">        distribution</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The parameters of the distribution</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">truth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        value of the parameters used to simulate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+<div class="viewcode-block" id="Distribution.display"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.Distribution.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        use ipython pretty display to</span>
+<span class="sd">        display the functions</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parameter&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;parameter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="p">))</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">out</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_form</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="SpatialContainer"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialContainer">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">SpatialContainer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for 3D spatial values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">distance</span><span class="p">:</span> <span class="n">ArrayLike</span>
+    <span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span>
+    <span class="n">phi</span><span class="p">:</span> <span class="n">ArrayLike</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">90</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpatialDistribution"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution">[docs]</a><span class="k">class</span> <span class="nc">SpatialDistribution</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;SpatialDistribution&quot;</span>
+
+    <span class="n">r_max</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpatialDistribution.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">form</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A base class for spatial distributions,</span>
+<span class="sd">        such as redshift distributions.</span>
+
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param form: the LaTeX form</span>
+<span class="sd">        :type form: Union[str, None]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpatialDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpatialDistribution.differential_volume"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.differential_volume">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">differential_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The differential volume</span>
+
+<span class="sd">        :param distance: Distance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Must be implemented in derived class&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpatialDistribution.dNdV"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.dNdV">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">dNdV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The differential number of objects</span>
+<span class="sd">        per volume element</span>
+
+<span class="sd">        :param distance:</span>
+<span class="sd">        :type distance:</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Must be implemented in derived class&quot;</span><span class="p">)</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SpatialDistribution.time_adjustment"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.time_adjustment">[docs]</a>    <span class="k">def</span> <span class="nf">time_adjustment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The time adjustment</span>
+
+<span class="sd">        :param distance: Distance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="mf">1.0</span></div>
+
+<div class="viewcode-block" id="SpatialDistribution.transform"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.transform">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The transform from luminosity to flux</span>
+<span class="sd">        for the</span>
+
+<span class="sd">        :param flux:</span>
+<span class="sd">        :type flux:</span>
+<span class="sd">        :param distance:</span>
+<span class="sd">        :type distance:</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">theta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the polar coordinate of the objects</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the longitudinal coordinate fo the objects</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The declination of the objects</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">90</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the right acension of the objects</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the distances to the objects</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spatial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All the spatial values of the objects</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">SpatialContainer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpatialDistribution.draw_sky_positions"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.draw_sky_positions">[docs]</a>    <span class="k">def</span> <span class="nf">draw_sky_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw teh sky positions of the objects</span>
+
+<span class="sd">        :param size:</span>
+<span class="sd">        :type size: int</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="n">sample_theta_phi</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpatialDistribution.draw_distance"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.draw_distance">[docs]</a>    <span class="k">def</span> <span class="nf">draw_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the distances from the specified dN/dr model.</span>
+
+<span class="sd">        :param size: Number of distances to sample</span>
+<span class="sd">        :type size: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># create a callback for the sampler</span>
+        <span class="n">dNdr</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dNdV</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">differential_volume</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_adjustment</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># find the maximum point</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+            <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_max</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+        <span class="p">)</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dNdr</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>  <span class="c1"># type: float</span>
+
+        <span class="c1"># rejection sampling the distribution</span>
+        <span class="n">r_out</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># slow</span>
+
+        <span class="k">if</span> <span class="n">popsynth_config</span><span class="o">.</span><span class="n">show_progress</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">progress_bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Drawing distances&quot;</span><span class="p">):</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">while</span> <span class="n">flag</span><span class="p">:</span>
+
+                    <span class="c1"># get am rvs from 0 to the max of the function</span>
+
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">ymax</span><span class="p">)</span>  <span class="c1"># type: float</span>
+
+                    <span class="c1"># get an rvs from 0 to the maximum distance</span>
+
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r_max</span><span class="p">)</span>  <span class="c1"># type: float</span>
+
+                    <span class="c1"># compare them</span>
+
+                    <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">dNdr</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                        <span class="n">r_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">r_out</span> <span class="o">=</span> <span class="n">rejection_sample</span><span class="p">(</span>
+                <span class="n">size</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_max</span><span class="p">,</span> <span class="n">dNdr</span>
+            <span class="p">)</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r_out</span><span class="p">)</span>  <span class="c1"># type: ArrayLike</span></div></div>
+
+
+<div class="viewcode-block" id="LuminosityDistribution"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution">[docs]</a><span class="k">class</span> <span class="nc">LuminosityDistribution</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;LuminosityDistribtuion&quot;</span>
+
+<div class="viewcode-block" id="LuminosityDistribution.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">form</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A base class for luminosity distributions.</span>
+
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param form: the LaTeX form</span>
+<span class="sd">        :type form: Union[str, None]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">LuminosityDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="LuminosityDistribution.phi"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution.phi">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">luminosity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The functional form of the distribution.</span>
+<span class="sd">        not required for sampling</span>
+<span class="sd">        :param luminosity: Luminosity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Must be implemented in derived class&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LuminosityDistribution.draw_luminosity"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution.draw_luminosity">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">draw_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function to draw the luminosity via an alternative method</span>
+<span class="sd">        must be implemented in child class</span>
+
+<span class="sd">        :param size:</span>
+<span class="sd">        :type size:</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

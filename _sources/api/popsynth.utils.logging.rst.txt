@@ -1,0 +1,7 @@
+popsynth.utils.logging module
+=============================
+
+.. automodule:: popsynth.utils.logging
+    :members:
+    :undoc-members:
+    :show-inheritance:

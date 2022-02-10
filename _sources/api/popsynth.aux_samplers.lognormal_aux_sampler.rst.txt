@@ -1,0 +1,7 @@
+popsynth.aux_samplers.lognormal_aux_sampler module
+==================================================
+
+.. automodule:: popsynth.aux_samplers.lognormal_aux_sampler
+    :members:
+    :undoc-members:
+    :show-inheritance:

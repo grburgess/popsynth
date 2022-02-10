@@ -1,0 +1,7 @@
+popsynth.distributions.flatland_distribution module
+===================================================
+
+.. automodule:: popsynth.distributions.flatland_distribution
+    :members:
+    :undoc-members:
+    :show-inheritance:

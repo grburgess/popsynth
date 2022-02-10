@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.distributions.spiral_galaxy_distribution &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="stylesheet" href="../../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> popsynth
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.distributions.spiral_galaxy_distribution</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.distributions.spiral_galaxy_distribution</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">random</span> <span class="k">as</span> <span class="n">rd</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.distribution</span> <span class="kn">import</span> <span class="n">DistributionParameter</span>
+<span class="kn">from</span> <span class="nn">popsynth.distributions.spherical_distribution</span> <span class="kn">import</span> <span class="n">SphericalDistribution</span>
+
+
+<div class="viewcode-block" id="SpiralGalaxyDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SpiralGalaxyDistribution">[docs]</a><span class="k">class</span> <span class="nc">SpiralGalaxyDistribution</span><span class="p">(</span><span class="n">SphericalDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;SpiralGalaxyDistribution&quot;</span>
+
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+    <span class="n">R1</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+    <span class="n">R0</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SpiralGalaxyDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SpiralGalaxyDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;spiral_galaxy&quot;</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A spiral galaxy spatial distribution.</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param form: Mathematical description of distribution</span>
+<span class="sd">        :type form: str</span>
+<span class="sd">        :param rho: Local density</span>
+<span class="sd">        :type rho: :class:`DistributionParameter`</span>
+<span class="sd">        :param a: Shape parameter</span>
+<span class="sd">        :type a: :class:`DistributionParameter`</span>
+<span class="sd">        :param b: Shape parameter</span>
+<span class="sd">        :type b: :class:`DistributionParameter`</span>
+<span class="sd">        :param R1: Scale parameter</span>
+<span class="sd">        :type R1: :class:`DistributionParameter`</span>
+<span class="sd">        :param R0: Scale parameter</span>
+<span class="sd">        :type R0: :class:`DistributionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">spatial_form</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\rho \Big(\frac{r + R_1}{R_0+R_1}\Big)^a &quot;</span>
+        <span class="n">spatial_form</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;\exp\Big[-b \frac{r-R_0}{R_0 + R_1}\Big]&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpiralGalaxyDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiralGalaxyDistribution.dNdV"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SpiralGalaxyDistribution.dNdV">[docs]</a>    <span class="k">def</span> <span class="nf">dNdV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rho</span>
+            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R1</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">R0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R1</span><span class="p">))</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpiralGalaxyDistribution.draw_sky_positions"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SpiralGalaxyDistribution.draw_sky_positions">[docs]</a>    <span class="k">def</span> <span class="nf">draw_sky_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Based on Wainscoat 1992 and</span>
+<span class="sd">        Faucher-Giguere 2007.</span>
+
+<span class="sd">        Code thanks to Mortiz Pleintinger.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Parameters for possun [-8.5,0,0], from Wainscoat 1992</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.25</span><span class="p">,</span> <span class="mf">4.25</span><span class="p">,</span> <span class="mf">4.89</span><span class="p">,</span> <span class="mf">4.89</span><span class="p">])</span>
+        <span class="n">r0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.48</span><span class="p">,</span> <span class="mf">3.48</span><span class="p">,</span> <span class="mf">4.90</span><span class="p">,</span> <span class="mf">4.90</span><span class="p">])</span>
+        <span class="n">theta0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.141</span><span class="p">,</span> <span class="mf">2.525</span><span class="p">,</span> <span class="mf">5.666</span><span class="p">])</span>  <span class="c1"># Wainscoat 1992</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># kpc</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="n">ks</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">r0s</span> <span class="o">=</span> <span class="n">r0</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">theta0s</span> <span class="o">=</span> <span class="n">theta0</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="n">tet</span> <span class="o">=</span> <span class="n">ks</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">/</span> <span class="n">r0s</span><span class="p">)</span> <span class="o">+</span> <span class="n">theta0s</span>
+
+        <span class="n">winklcor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="n">corrtet</span> <span class="o">=</span> <span class="n">winklcor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+            <span class="o">-</span><span class="mf">0.35</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span>
+        <span class="p">)</span>  <span class="c1"># Faucher-Giguere 2007</span>
+
+        <span class="n">spiraltheta</span> <span class="o">=</span> <span class="n">tet</span> <span class="o">+</span> <span class="n">corrtet</span>  <span class="c1"># Faucher-Giguere 2007</span>
+
+        <span class="n">zpos</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">exponential</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="n">zpos</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.07</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span>
+        <span class="p">)</span>
+
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">zpos</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">zpos</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">spiraltheta</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="n">phi</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

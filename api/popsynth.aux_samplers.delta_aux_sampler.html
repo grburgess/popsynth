@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.aux_samplers.delta_aux_sampler module &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="popsynth.aux_samplers.lognormal_aux_sampler module" href="popsynth.aux_samplers.lognormal_aux_sampler.html" />
+    <link rel="prev" title="popsynth.aux_samplers package" href="popsynth.aux_samplers.html" />
+  <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> popsynth
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="API.html">API</a> &raquo;</li>
+          <li><a href="popsynth.html">popsynth package</a> &raquo;</li>
+          <li><a href="popsynth.aux_samplers.html">popsynth.aux_samplers package</a> &raquo;</li>
+      <li>popsynth.aux_samplers.delta_aux_sampler module</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-popsynth.aux_samplers.delta_aux_sampler">
+<span id="popsynth-aux-samplers-delta-aux-sampler-module"></span><h1>popsynth.aux_samplers.delta_aux_sampler module<a class="headerlink" href="#module-popsynth.aux_samplers.delta_aux_sampler" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.delta_aux_sampler.</span></span><span class="sig-name descname"><span class="pre">DeltaAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.xp">
+<span class="sig-name descname"><span class="pre">xp</span></span><a class="headerlink" href="#popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.xp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A delta-function sampler for which the true value
+is fixed at <code class="docutils literal notranslate"><span class="pre">xp</span></code>. Assumes property is observed by default,
+in which case the observed value is sampled from
+the true value with some normally-distributed error, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>xp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Value at which delta function is located</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.delta_aux_sampler.DeltaAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="popsynth.aux_samplers.html" class="btn btn-neutral float-left" title="popsynth.aux_samplers package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="popsynth.aux_samplers.lognormal_aux_sampler.html" class="btn btn-neutral float-right" title="popsynth.aux_samplers.lognormal_aux_sampler module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

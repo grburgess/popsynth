@@ -1,0 +1,23 @@
+popsynth.aux_samplers package
+=============================
+
+Submodules
+----------
+
+.. toctree::
+
+   popsynth.aux_samplers.delta_aux_sampler
+   popsynth.aux_samplers.lognormal_aux_sampler
+   popsynth.aux_samplers.normal_aux_sampler
+   popsynth.aux_samplers.plaw_aux_sampler
+   popsynth.aux_samplers.sky_sampler
+   popsynth.aux_samplers.trunc_normal_aux_sampler
+   popsynth.aux_samplers.viewing_angle_sampler
+
+Module contents
+---------------
+
+.. automodule:: popsynth.aux_samplers
+    :members:
+    :undoc-members:
+    :show-inheritance:

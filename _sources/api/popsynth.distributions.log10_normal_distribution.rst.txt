@@ -1,0 +1,7 @@
+popsynth.distributions.log10_normal_distribution module
+=======================================================
+
+.. automodule:: popsynth.distributions.log10_normal_distribution
+    :members:
+    :undoc-members:
+    :show-inheritance:

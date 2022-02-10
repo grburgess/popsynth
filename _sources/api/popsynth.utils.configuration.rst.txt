@@ -1,0 +1,7 @@
+popsynth.utils.configuration module
+===================================
+
+.. automodule:: popsynth.utils.configuration
+    :members:
+    :undoc-members:
+    :show-inheritance:

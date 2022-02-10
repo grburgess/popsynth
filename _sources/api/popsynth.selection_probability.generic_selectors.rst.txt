@@ -1,0 +1,7 @@
+popsynth.selection_probability.generic_selectors module
+=======================================================
+
+.. automodule:: popsynth.selection_probability.generic_selectors
+    :members:
+    :undoc-members:
+    :show-inheritance:

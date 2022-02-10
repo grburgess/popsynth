@@ -1,0 +1,7 @@
+popsynth.auxiliary_sampler module
+=================================
+
+.. automodule:: popsynth.auxiliary_sampler
+    :members:
+    :undoc-members:
+    :show-inheritance:

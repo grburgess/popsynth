@@ -1,0 +1,7 @@
+popsynth.distributions.spiral_galaxy_distribution module
+========================================================
+
+.. automodule:: popsynth.distributions.spiral_galaxy_distribution
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+popsynth.populations.bpl_population module
+==========================================
+
+.. automodule:: popsynth.populations.bpl_population
+    :members:
+    :undoc-members:
+    :show-inheritance:

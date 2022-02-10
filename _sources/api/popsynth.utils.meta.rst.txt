@@ -1,0 +1,7 @@
+popsynth.utils.meta module
+==========================
+
+.. automodule:: popsynth.utils.meta
+    :members:
+    :undoc-members:
+    :show-inheritance:

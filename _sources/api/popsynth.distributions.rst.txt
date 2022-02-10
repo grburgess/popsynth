@@ -1,0 +1,26 @@
+popsynth.distributions package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+
+   popsynth.distributions.bpl_distribution
+   popsynth.distributions.cosmological_distribution
+   popsynth.distributions.delta_distribution
+   popsynth.distributions.flatland_distribution
+   popsynth.distributions.log10_normal_distribution
+   popsynth.distributions.log_normal_distribution
+   popsynth.distributions.pareto_distribution
+   popsynth.distributions.schechter_distribution
+   popsynth.distributions.spherical_distribution
+   popsynth.distributions.spiral_galaxy_distribution
+
+Module contents
+---------------
+
+.. automodule:: popsynth.distributions
+    :members:
+    :undoc-members:
+    :show-inheritance:

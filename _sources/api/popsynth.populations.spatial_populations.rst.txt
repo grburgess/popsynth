@@ -1,0 +1,7 @@
+popsynth.populations.spatial_populations module
+===============================================
+
+.. automodule:: popsynth.populations.spatial_populations
+    :members:
+    :undoc-members:
+    :show-inheritance:

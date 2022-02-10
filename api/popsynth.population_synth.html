@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.population_synth module &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../notebooks/short_grbs.html" />
+    <link rel="prev" title="popsynth.population module" href="popsynth.population.html" />
+  <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> popsynth
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="API.html">API</a> &raquo;</li>
+          <li><a href="popsynth.html">popsynth package</a> &raquo;</li>
+      <li>popsynth.population_synth module</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-popsynth.population_synth">
+<span id="popsynth-population-synth-module"></span><h1>popsynth.population_synth module<a class="headerlink" href="#module-popsynth.population_synth" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.population_synth.</span></span><span class="sig-name descname"><span class="pre">PopulationSynth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spatial_distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><span class="pre">popsynth.distribution.SpatialDistribution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">luminosity_distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><span class="pre">popsynth.distribution.LuminosityDistribution</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spatial_distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><span class="pre">popsynth.distribution.SpatialDistribution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">luminosity_distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><span class="pre">popsynth.distribution.LuminosityDistribution</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Basic and generic population synth. One specifies the spatial and luminosity distribution OR
+derived luminosity distribution and everything is setup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spatial_distribution</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SpatialDistribution</span></code>) – The spatial distribution to sample locations from</p></li>
+<li><p><strong>luminosity_distribution</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LuminosityDistribution</span></code>) – The optional luminosity distribution</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.clean">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.clean" title="Permalink to this definition"></a></dt>
+<dd><p>Clean the auxiliary samplers, selections, etc
+from the population synth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reset</strong> (<em>bool</em>) – If <cite>True</cite>, reset any attached distributions and samplers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.write_to">
+<span class="sig-name descname"><span class="pre">write_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.write_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.write_to" title="Permalink to this definition"></a></dt>
+<dd><p>Write the population synth to a YAML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – the file name of the output YAML</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the population synth to a dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Popsynth dict</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.population_synth.PopulationSynth" title="popsynth.population_synth.PopulationSynth"><span class="pre">popsynth.population_synth.PopulationSynth</span></a></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Build a PopulationSynth object from a dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – the dictionary from which to build</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Popsynth object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.population_synth.PopulationSynth" title="popsynth.population_synth.PopulationSynth"><code class="xref py py-class docutils literal notranslate"><span class="pre">PopulationSynth</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.population_synth.PopulationSynth" title="popsynth.population_synth.PopulationSynth"><span class="pre">popsynth.population_synth.PopulationSynth</span></a></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.from_file" title="Permalink to this definition"></a></dt>
+<dd><p>read the population in from a yaml file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> – the file name of the population synth</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.spatial_distribution">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spatial_distribution</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><span class="pre">popsynth.distribution.SpatialDistribution</span></a></em><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.spatial_distribution" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.luminosity_distribution">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">luminosity_distribution</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><span class="pre">popsynth.distribution.LuminosityDistribution</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.luminosity_distribution" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.add_model_space">
+<span class="sig-name descname"><span class="pre">add_model_space</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.add_model_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.add_model_space" title="Permalink to this definition"></a></dt>
+<dd><p>Add a model space for stan generated quantities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Name that Stan will use</p></li>
+<li><p><strong>start</strong> – Start of the grid</p></li>
+<li><p><strong>stop</strong> – Stop of the grid</p></li>
+<li><p><strong>log</strong> – Use log10 or not</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.add_auxiliary_sampler">
+<span class="sig-name descname"><span class="pre">add_auxiliary_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxiliary_sampler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.DerivedLumAuxSampler" title="popsynth.auxiliary_sampler.DerivedLumAuxSampler"><span class="pre">popsynth.auxiliary_sampler.DerivedLumAuxSampler</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.add_auxiliary_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.add_auxiliary_sampler" title="Permalink to this definition"></a></dt>
+<dd><p>Add an auxiliary sampler or derived luminosity sampler to the population
+synth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>auxiliary_sampler</strong> (<em>Union</em><em>[</em><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.DerivedLumAuxSampler" title="popsynth.DerivedLumAuxSampler"><em>DerivedLumAuxSampler</em></a><em>, </em><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.AuxiliarySampler" title="popsynth.AuxiliarySampler"><em>AuxiliarySampler</em></a><em>]</em>) – The auxiliary_sampler</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.add_observed_quantity">
+<span class="sig-name descname"><span class="pre">add_observed_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxiliary_sampler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.DerivedLumAuxSampler" title="popsynth.auxiliary_sampler.DerivedLumAuxSampler"><span class="pre">popsynth.auxiliary_sampler.DerivedLumAuxSampler</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.add_observed_quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.add_observed_quantity" title="Permalink to this definition"></a></dt>
+<dd><p>Add an auxiliary sampler or derived luminosity sampler to the population
+synth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>auxiliary_sampler</strong> (<em>Union</em><em>[</em><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.DerivedLumAuxSampler" title="popsynth.DerivedLumAuxSampler"><em>DerivedLumAuxSampler</em></a><em>, </em><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.AuxiliarySampler" title="popsynth.AuxiliarySampler"><em>AuxiliarySampler</em></a><em>]</em>) – The auxiliary_sampler</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.set_distance_selection">
+<span class="sig-name descname"><span class="pre">set_distance_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.set_distance_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.set_distance_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Set the selection type for the distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>selector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionProbability</span></code>) – The selector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.set_flux_selection">
+<span class="sig-name descname"><span class="pre">set_flux_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.set_flux_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.set_flux_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Set the selection type for the flux</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>selector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionProbability</span></code>) – The selector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.add_spatial_selector">
+<span class="sig-name descname"><span class="pre">add_spatial_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spatial_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.add_spatial_selector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.add_spatial_selector" title="Permalink to this definition"></a></dt>
+<dd><p>Add a spatial selector into the mix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spatial_selector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionProbability</span></code>) – The spatial selector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.draw_log10_fobs">
+<span class="sig-name descname"><span class="pre">draw_log10_fobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.draw_log10_fobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.draw_log10_fobs" title="Permalink to this definition"></a></dt>
+<dd><p>Draw the log10 of the the fluxes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.draw_log_fobs">
+<span class="sig-name descname"><span class="pre">draw_log_fobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.draw_log_fobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.draw_log_fobs" title="Permalink to this definition"></a></dt>
+<dd><p>Draw the log10 of the the fluxes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.draw_survey">
+<span class="sig-name descname"><span class="pre">draw_survey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flux_sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log10_flux_draw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.population.Population" title="popsynth.population.Population"><span class="pre">popsynth.population.Population</span></a></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.draw_survey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.draw_survey" title="Permalink to this definition"></a></dt>
+<dd><p>Draw the total survey and return a <code class="xref py py-class docutils literal notranslate"><span class="pre">Population</span></code> object.</p>
+<p>This will sample all attached distributions and apply selection functions.</p>
+<p>If a value of flux_sigma is given, the log10 observed fluxes are sampled with
+measurement error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flux_sigma</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>) – The homoskedastic sigma for the flux in log10 space</p></li>
+<li><p><strong>log10_flux_draw</strong> (<em>bool</em>) – if <cite>True</cite>, fluxes are drawn in log space</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Population object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Population</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.display" title="Permalink to this definition"></a></dt>
+<dd><p>Display the simulation parameters.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth.graph">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">graph</span></span><a class="headerlink" href="#popsynth.population_synth.PopulationSynth.graph" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.population_synth.PopulationSynth._build_graph">
+<span class="sig-name descname"><span class="pre">_build_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/population_synth.html#PopulationSynth._build_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.population_synth.PopulationSynth._build_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Builds the graph for all the samplers.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="popsynth.population.html" class="btn btn-neutral float-left" title="popsynth.population module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notebooks/short_grbs.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+popsynth.utils.package_data module
+==================================
+
+.. automodule:: popsynth.utils.package_data
+    :members:
+    :undoc-members:
+    :show-inheritance:

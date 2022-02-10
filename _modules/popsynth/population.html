@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.population &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <link rel="stylesheet" href="../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> popsynth
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.population</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.population</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">ipyvolume</span> <span class="k">as</span> <span class="nn">ipv</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pythreejs</span>
+<span class="kn">from</span> <span class="nn">betagen</span> <span class="kn">import</span> <span class="n">betagen</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.auxiliary_sampler</span> <span class="kn">import</span> <span class="n">SecondaryStorage</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.array_to_cmap</span> <span class="kn">import</span> <span class="n">array_to_cmap</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.hdf5_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">clean_graph_dict</span><span class="p">,</span>
+    <span class="n">fill_graph_dict</span><span class="p">,</span>
+    <span class="n">recursively_load_dict_contents_from_group</span><span class="p">,</span>
+    <span class="n">recursively_save_dict_contents_to_group</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.logging</span> <span class="kn">import</span> <span class="n">setup_logger</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.spherical_geometry</span> <span class="kn">import</span> <span class="n">xyz</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">wine</span> <span class="o">=</span> <span class="s2">&quot;#8F2727&quot;</span>
+<span class="n">dark</span><span class="p">,</span> <span class="n">dark_highlight</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">mid_highlight</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="n">light_highlight</span> <span class="o">=</span> <span class="n">betagen</span><span class="p">(</span><span class="n">wine</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Population"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population">[docs]</a><span class="k">class</span> <span class="nc">Population</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Population.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">luminosities</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">distances</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">known_distances</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">known_distance_idx</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">unknown_distance_idx</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">fluxes</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">flux_obs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">selection</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">flux_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">r_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">n_model</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">lf_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">spatial_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">model_spaces</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">spatial_form</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lf_form</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">auxiliary_quantities</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SecondaryStorage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">truth</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">graph</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">phi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">pop_synth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A population container for all the properties of the population.</span>
+
+<span class="sd">        :param luminosities: The luminosities</span>
+<span class="sd">        :type luminosities: ArrayLike</span>
+<span class="sd">        :param distances: The distances</span>
+<span class="sd">        :type distances: ArrayLike</span>
+<span class="sd">        :param known_distances: The known distances</span>
+<span class="sd">        :type known_distances: ArrayLike</span>
+<span class="sd">        :param known_distance_idx: The index of the known distances</span>
+<span class="sd">        :type known_distance_idx: ArrayLike</span>
+<span class="sd">        :param unknown_distance_idx: The index of the unknown distances</span>
+<span class="sd">        :type unknown_distance_idx: ArrayLike</span>
+<span class="sd">        :param fluxes: The latent fluxes</span>
+<span class="sd">        :type fluxes: ArrayLike</span>
+<span class="sd">        :param flux_obs: The observed fluxes</span>
+<span class="sd">        :type flux_obs: ArrayLike</span>
+<span class="sd">        :param selection: The selection vector</span>
+<span class="sd">        :type selection: ArrayLike</span>
+<span class="sd">        :param flux_sigma: The uncertainty on the observed flux</span>
+<span class="sd">        :type flux_sigma: float</span>
+<span class="sd">        :param r_max: The maximum distance of the survey</span>
+<span class="sd">        :type r_max: float</span>
+<span class="sd">        :param n_model: Number of models</span>
+<span class="sd">        :type n_model: int</span>
+<span class="sd">        :param lf_params: Luminosity function parameters</span>
+<span class="sd">        :type lf_params: Dict[str, Any]</span>
+<span class="sd">        :param spatial_params: Spatial distribution parameters</span>
+<span class="sd">        :type spatial_params: Optional[Dict[str, Any]]</span>
+<span class="sd">        :param model_spaces: Model spaces</span>
+<span class="sd">        :type model_spaces: ArrayLike</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the population</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param spatial_form: Form of the spatial distribution</span>
+<span class="sd">        :type spatial_form: Optional[Dict[str, Any]]</span>
+<span class="sd">        :param lf_form: Form of the luminosity function</span>
+<span class="sd">        :type lf_form: Optional[Dict[str, Any]]</span>
+<span class="sd">        :param auxiliary_quantities: Dict of auxiliary quantities</span>
+<span class="sd">        :type auxiliary_quantities: Optional[Dict[str, Any]]</span>
+<span class="sd">        :param truth: Dict of true values</span>
+<span class="sd">        :type truth: Dict[str, float]</span>
+<span class="sd">        :param graph: Graph of generative model</span>
+<span class="sd">        :type graph: Optional[Dict[str, Any]]</span>
+<span class="sd">        :param theta: Theta</span>
+<span class="sd">        :type theta:</span>
+<span class="sd">        :param phi: Phi</span>
+<span class="sd">        :type phi:</span>
+<span class="sd">        :param pop_synth: Population synth</span>
+<span class="sd">        :type pop_synth: Optional[Dict[str, Any]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span> <span class="o">=</span> <span class="n">luminosities</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">=</span> <span class="n">distances</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span> <span class="o">=</span> <span class="n">known_distances</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span> <span class="o">=</span> <span class="n">known_distance_idx</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span> <span class="o">=</span> <span class="n">unknown_distance_idx</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">theta</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="n">phi</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">known_distances</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">unknown_distance_idx</span><span class="p">)</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="n">selection</span>
+        <span class="p">),</span> <span class="s2">&quot;the distances are not the correct size&quot;</span>
+
+        <span class="c1"># latent fluxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span> <span class="o">=</span> <span class="n">fluxes</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="c1"># observed fluxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span> <span class="o">=</span> <span class="n">flux_obs</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">selection</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span> <span class="o">=</span> <span class="n">flux_sigma</span>  <span class="c1"># type: float</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span> <span class="o">=</span> <span class="n">r_max</span>  <span class="c1"># type: float</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="n">seed</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span> <span class="o">=</span> <span class="n">n_model</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># type: str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_form</span> <span class="o">=</span> <span class="n">spatial_form</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lf_form</span> <span class="o">=</span> <span class="n">lf_form</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span> <span class="o">=</span> <span class="n">flux_obs</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_selected</span> <span class="o">=</span> <span class="n">luminosities</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_hidden</span> <span class="o">=</span> <span class="n">flux_obs</span><span class="p">[</span><span class="o">~</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="o">~</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_hidden</span> <span class="o">=</span> <span class="n">luminosities</span><span class="p">[</span><span class="o">~</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span> <span class="o">=</span> <span class="n">lf_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_params</span> <span class="o">=</span> <span class="n">spatial_params</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_spaces</span> <span class="o">=</span> <span class="n">model_spaces</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_truth</span> <span class="o">=</span> <span class="n">truth</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">graph</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_objects</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">)</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_non_detections</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_objects</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span>
+        <span class="p">)</span>  <span class="c1"># type: int</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pop_synth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pop_synth</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_detection</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;THERE ARE NO DETECTED OBJECTS IN THE POPULATION&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_detection</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">auxiliary_quantities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">auxiliary_quantities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;true_values&quot;</span><span class="p">])</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_obs&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">])</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_selected&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">][</span><span class="n">selection</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_quantities</span> <span class="o">=</span> <span class="n">auxiliary_quantities</span>
+
+        <span class="k">if</span> <span class="n">model_spaces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model_spaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_model</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The networkx graph of the population</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pop_synth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dictionary population synth used to create this population</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_synth</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">truth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The simulated truth parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truth</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">flux_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The simulated flux sigma</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">theta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The polar angle of the objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The phi angle of the objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The declination of the objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">90</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The right ascension of the objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">luminosities_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The true luminosities of the objects. These are always latent</span>
+<span class="sd">        as one cannot directly observe them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The distances to the objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">known_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The observed distances</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The selection vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fluxes_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The latent fluxes of the objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fluxes_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All of the observed fluxes, i.e.,</span>
+<span class="sd">        scattered with error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected_fluxes_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The selected obs fluxes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected_fluxes_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The selected latent fluxes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The selected distances. Note, this is different than</span>
+<span class="sd">        the KNOWN distances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hidden_fluxes_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The observed fluxes that are hidden by the selection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_hidden</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hidden_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The distances that are hidden by the selection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hidden_fluxes_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The latent fluxes that are hidden by the selection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hard_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hard_cut</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">distance_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_probability</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">luminosity_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The number of objects in the population</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_objects</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_detections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The number of DETECTED objects in the population</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_non_detections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The number of NON-DETECTED objects in the population</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_non_detections</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_detections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the population has detections</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_detection</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spatial_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        spatial parameters</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_params</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;total number of objects: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_detections</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_non_detections</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> number of detections: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_detections</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> number of non-detections: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_non_detections</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+<div class="viewcode-block" id="Population.to_stan_data"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.to_stan_data">[docs]</a>    <span class="k">def</span> <span class="nf">to_stan_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create Stan input</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># create a dict for Stan</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span><span class="p">,</span>
+            <span class="n">Nz</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">),</span>
+            <span class="n">Nnz</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span><span class="p">),</span>
+            <span class="n">z_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="n">known_z_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">,</span>
+            <span class="n">z_idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
+            <span class="n">z_nidx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
+            <span class="n">r_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="n">known_r_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">,</span>
+            <span class="n">r_idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
+            <span class="n">r_nidx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
+            <span class="n">log_flux_obs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">),</span>
+            <span class="n">flux_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
+            <span class="n">flux_sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span><span class="p">,</span>
+            <span class="n">z_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">,</span>
+            <span class="n">N_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># now append the model spaces</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_spaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">output</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_quantities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">output</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_obs&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">):</span>
+
+                <span class="n">output</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="Population.writeto"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.writeto">[docs]</a>    <span class="k">def</span> <span class="nf">writeto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write population to an HDF5 file</span>
+
+<span class="sd">        :param file_name: Name of the file</span>
+<span class="sd">        :type file_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeto</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population.addto"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.addto">[docs]</a>    <span class="k">def</span> <span class="nf">addto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write population to a group in an existing</span>
+<span class="sd">        HDF5 file.</span>
+
+<span class="sd">        :param file_name: Name of the file</span>
+<span class="sd">        :type file_name: str</span>
+<span class="sd">        :param group_name: Name of the group</span>
+<span class="sd">        :type group_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="n">g</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeto</span><span class="p">(</span><span class="n">g</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population._writeto"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population._writeto">[docs]</a>    <span class="k">def</span> <span class="nf">_writeto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to an HDF5 file or group.</span>
+
+<span class="sd">        :param f: h5py file or group handle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">spatial_grp</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;spatial_params&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">spatial_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">]),</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">lum_grp</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;lf_params&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">lum_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">]),</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+
+            <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;lf_form&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">string_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lf_form</span><span class="p">)</span>
+
+            <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;has_lf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;has_lf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">string_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;spatial_form&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">string_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_form</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;flux_sigma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;n_model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;r_max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span><span class="p">)</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span>
+            <span class="s2">&quot;luminosities&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span>
+        <span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;distances&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span>
+            <span class="s2">&quot;known_distances&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span>
+        <span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span>
+            <span class="s2">&quot;known_distance_idx&quot;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span><span class="p">,</span>
+            <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span>
+            <span class="s2">&quot;unknown_distance_idx&quot;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span><span class="p">,</span>
+            <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;fluxes&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;flux_obs&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;selection&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+
+        <span class="n">aux_grp</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;auxiliary_quantities&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_quantities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">q_grp</span> <span class="o">=</span> <span class="n">aux_grp</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">q_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span>
+                <span class="s2">&quot;true_values&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;true_values&quot;</span><span class="p">],</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span>
+            <span class="p">)</span>
+            <span class="n">q_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span>
+                <span class="s2">&quot;obs_values&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">],</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">model_grp</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;model_spaces&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_spaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">model_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+
+        <span class="c1"># now store the truths</span>
+        <span class="n">recursively_save_dict_contents_to_group</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;truth&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truth</span><span class="p">)</span>
+
+        <span class="n">recursively_save_dict_contents_to_group</span><span class="p">(</span>
+            <span class="n">f</span><span class="p">,</span> <span class="s2">&quot;graph&quot;</span><span class="p">,</span> <span class="n">fill_graph_dict</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">to_dict_of_dicts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">))</span>
+        <span class="p">)</span>
+
+        <span class="c1"># now store the popsynth</span>
+        <span class="n">recursively_save_dict_contents_to_group</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;popsynth&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_synth</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population.from_file"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load a population from a file.</span>
+
+<span class="sd">        :param file_name: Name of the file</span>
+<span class="sd">        :type file_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_loadfrom</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population.from_group"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.from_group">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_group</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load a population from a group</span>
+<span class="sd">        in a file.</span>
+
+<span class="sd">        :param file_name: Name of the file</span>
+<span class="sd">        :type file_name: str</span>
+<span class="sd">        :param group_name: Name of the group</span>
+<span class="sd">        :type group_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="n">g</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_loadfrom</span><span class="p">(</span><span class="n">g</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population._loadfrom"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population._loadfrom">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_loadfrom</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load from and HDF5 file or group.</span>
+
+<span class="sd">        :param f: h5py file or group handle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">spatial_params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;spatial_params&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="n">spatial_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;spatial_params&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># we must double check that there are LF params</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;has_lf&quot;</span><span class="p">]:</span>
+                <span class="n">lf_params</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;lf_params&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+                    <span class="n">lf_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;lf_params&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">lf_form</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;lf_form&quot;</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">lf_params</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">lf_form</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+
+            <span class="n">lf_params</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">lf_form</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">flux_sigma</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;flux_sigma&quot;</span><span class="p">]</span>
+        <span class="n">n_model</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;n_model&quot;</span><span class="p">]</span>
+        <span class="n">r_max</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;r_max&quot;</span><span class="p">]</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">])</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+
+        <span class="n">spatial_form</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;spatial_form&quot;</span><span class="p">])</span>
+
+        <span class="n">luminosities</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;luminosities&quot;</span><span class="p">][()]</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;distances&quot;</span><span class="p">][()]</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">][()]</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">][()]</span>
+
+        <span class="c1"># right now this is just for older pops</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">known_distances</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;known_distances&quot;</span><span class="p">][()]</span>
+            <span class="n">known_distance_idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;known_distance_idx&quot;</span><span class="p">][()])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">unknown_distance_idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;unknown_distance_idx&quot;</span><span class="p">][()])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+
+            <span class="n">known_distances</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">known_distance_idx</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">unknown_distance_idx</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">fluxes</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;fluxes&quot;</span><span class="p">][()]</span>
+        <span class="n">flux_obs</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;flux_obs&quot;</span><span class="p">][()]</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">][()]</span>
+
+        <span class="n">model_spaces</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;model_spaces&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="n">model_spaces</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;model_spaces&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">][()]</span>
+
+        <span class="n">auxiliary_quantities</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;auxiliary_quantities&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="n">auxiliary_quantities</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;true_values&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;auxiliary_quantities&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;true_values&quot;</span><span class="p">][()],</span>
+                <span class="s2">&quot;obs_values&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;auxiliary_quantities&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;obs_values&quot;</span><span class="p">][()],</span>
+            <span class="p">}</span>
+
+        <span class="n">truth</span> <span class="o">=</span> <span class="n">recursively_load_dict_contents_from_group</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;truth&quot;</span><span class="p">)</span>
+
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_dict_of_dicts</span><span class="p">(</span>
+            <span class="n">clean_graph_dict</span><span class="p">(</span>
+                <span class="n">recursively_load_dict_contents_from_group</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;graph&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">pop_synth</span> <span class="o">=</span> <span class="n">recursively_load_dict_contents_from_group</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;popsynth&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">luminosities</span><span class="o">=</span><span class="n">luminosities</span><span class="p">,</span>
+            <span class="n">distances</span><span class="o">=</span><span class="n">distances</span><span class="p">,</span>
+            <span class="n">known_distances</span><span class="o">=</span><span class="n">known_distances</span><span class="p">,</span>
+            <span class="n">known_distance_idx</span><span class="o">=</span><span class="n">known_distance_idx</span><span class="p">,</span>
+            <span class="n">unknown_distance_idx</span><span class="o">=</span><span class="n">unknown_distance_idx</span><span class="p">,</span>
+            <span class="n">fluxes</span><span class="o">=</span><span class="n">fluxes</span><span class="p">,</span>
+            <span class="n">flux_obs</span><span class="o">=</span><span class="n">flux_obs</span><span class="p">,</span>
+            <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+            <span class="n">flux_sigma</span><span class="o">=</span><span class="n">flux_sigma</span><span class="p">,</span>
+            <span class="n">n_model</span><span class="o">=</span><span class="n">n_model</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="n">r_max</span><span class="p">,</span>
+            <span class="n">lf_params</span><span class="o">=</span><span class="n">lf_params</span><span class="p">,</span>
+            <span class="n">spatial_params</span><span class="o">=</span><span class="n">spatial_params</span><span class="p">,</span>
+            <span class="n">model_spaces</span><span class="o">=</span><span class="n">model_spaces</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">spatial_form</span><span class="o">=</span><span class="n">spatial_form</span><span class="p">,</span>
+            <span class="n">lf_form</span><span class="o">=</span><span class="n">lf_form</span><span class="p">,</span>
+            <span class="n">auxiliary_quantities</span><span class="o">=</span><span class="n">auxiliary_quantities</span><span class="p">,</span>
+            <span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span>
+            <span class="n">graph</span><span class="o">=</span><span class="n">graph</span><span class="p">,</span>
+            <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
+            <span class="n">pop_synth</span><span class="o">=</span><span class="n">pop_synth</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population.to_sub_population"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.to_sub_population">[docs]</a>    <span class="k">def</span> <span class="nf">to_sub_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Population&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a population that is down selected from either the</span>
+<span class="sd">        observed or unobserved population</span>
+
+<span class="sd">        :param observed: Extract the observed or unobserved object</span>
+<span class="sd">        :type observed: bool</span>
+<span class="sd">        :returns: A new population object</span>
+<span class="sd">        :rtype: :class:`Population`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">observed</span><span class="p">:</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">selection</span> <span class="o">=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_quantities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">new_aux</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_quantities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">new_aux</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;true_values&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;true_values&quot;</span><span class="p">][</span><span class="n">selection</span><span class="p">],</span>
+                    <span class="s2">&quot;obs_values&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">][</span><span class="n">selection</span><span class="p">],</span>
+                <span class="p">}</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">new_aux</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">itr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">known_distances</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">known_distance_idx</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">unknown_distance_idx</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">selection</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">s</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">:</span>
+
+                    <span class="n">known_distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">known_distance_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">itr</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">unknown_distance_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">itr</span><span class="p">)</span>
+
+                <span class="n">itr</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">Population</span><span class="p">(</span>
+            <span class="n">luminosities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">distances</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">known_distances</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">known_distances</span><span class="p">),</span>
+            <span class="n">known_distance_idx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">known_distance_idx</span><span class="p">),</span>
+            <span class="n">unknown_distance_idx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">unknown_distance_idx</span><span class="p">),</span>
+            <span class="n">fluxes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">flux_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">selection</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">),</span>
+            <span class="n">flux_sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span><span class="p">,</span>
+            <span class="n">n_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">,</span>
+            <span class="n">lf_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span><span class="p">,</span>
+            <span class="n">spatial_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_params</span><span class="p">,</span>
+            <span class="n">model_spaces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_spaces</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+            <span class="n">spatial_form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_form</span><span class="p">,</span>
+            <span class="n">lf_form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lf_form</span><span class="p">,</span>
+            <span class="n">auxiliary_quantities</span><span class="o">=</span><span class="n">new_aux</span><span class="p">,</span>
+            <span class="n">truth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truth</span><span class="p">,</span>
+            <span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span>
+            <span class="n">theta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">phi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population.display"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the simulation parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;### </span><span class="si">%s</span><span class="s2"> simulation</span><span class="se">\n</span><span class="s2">Detected </span><span class="si">%d</span><span class="s2"> out of </span><span class="si">%d</span><span class="s2"> objects&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">),</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parameter&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+            <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="s2">&quot;## Luminosity Function&quot;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;parameter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lf_form</span><span class="p">))</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parameter&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="s2">&quot;## Spatial Function&quot;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;parameter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_form</span><span class="p">))</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">out</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Population.display_true_fluxes"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_true_fluxes">[docs]</a>    <span class="k">def</span> <span class="nf">display_true_fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flux_color</span><span class="o">=</span><span class="n">dark</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the fluxes.</span>
+
+<span class="sd">        :param ax: Axis on which to plot</span>
+<span class="sd">        :param flux_color: Color of fluxes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">flux_color</span><span class="p">,</span>
+            <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;True flux&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1">#        ax.axhline(self._boundary, color=&quot;grey&quot;, zorder=-5000, ls=&quot;--&quot;)</span>
+
+        <span class="c1"># ax.set_xscale(&#39;log&#39;)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span>
+                <span class="n">bottom</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="o">.</span><span class="n">min</span><span class="p">()])</span>
+            <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;flux&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Population.display_obs_fluxes"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_obs_fluxes">[docs]</a>    <span class="k">def</span> <span class="nf">display_obs_fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flux_color</span><span class="o">=</span><span class="n">dark</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the observed fluxes.</span>
+
+<span class="sd">        :param ax: Axis on which to plot</span>
+<span class="sd">        :param flux_color: Color of fluxes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># do not try to plot if there is nothing</span>
+        <span class="c1"># to plot</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_detection</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There are no detections to display&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+
+                <span class="k">return</span> <span class="n">fig</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">flux_color</span><span class="p">,</span>
+            <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Detected flux&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1">#        ax.axhline(self._boundary, color=&quot;grey&quot;, zorder=-5000, ls=&quot;--&quot;)</span>
+        <span class="c1"># ax.set_xscale(&#39;log&#39;)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="o">.</span><span class="n">min</span><span class="p">()]))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;flux&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+<div class="viewcode-block" id="Population.display_fluxes"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_fluxes">[docs]</a>    <span class="k">def</span> <span class="nf">display_fluxes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">true_color</span><span class="o">=</span><span class="n">light</span><span class="p">,</span>
+        <span class="n">obs_color</span><span class="o">=</span><span class="n">dark</span><span class="p">,</span>
+        <span class="n">arrow_color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+        <span class="n">with_arrows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the fluxes.</span>
+
+<span class="sd">        :param ax: Axis on which to plot</span>
+<span class="sd">        :param true_color: Color of true values</span>
+<span class="sd">        :param obs_color: Color of obs values</span>
+<span class="sd">        :param arrow_color: Color of arrows</span>
+<span class="sd">        :param with_arrows: If `True`, display arrows</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_true_fluxes</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">flux_color</span><span class="o">=</span><span class="n">true_color</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_detection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_obs_fluxes</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">flux_color</span><span class="o">=</span><span class="n">obs_color</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">with_arrows</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_detection</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="p">):</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="n">z</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">start</span>
+                <span class="n">dx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">dy</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">-</span> <span class="n">start</span>
+
+                <span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span>
+                    <span class="n">y</span><span class="p">,</span>
+                    <span class="n">dx</span><span class="p">,</span>
+                    <span class="n">dy</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">arrow_color</span><span class="p">,</span>
+                    <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                    <span class="n">head_length</span><span class="o">=</span><span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">),</span>
+                    <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+<div class="viewcode-block" id="Population.display_luminosities"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_luminosities">[docs]</a>    <span class="k">def</span> <span class="nf">display_luminosities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">true_color</span><span class="o">=</span><span class="n">light</span><span class="p">,</span>
+        <span class="n">obs_color</span><span class="o">=</span><span class="n">dark</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the luminosities</span>
+
+<span class="sd">        :param ax: Axis on which to plot</span>
+<span class="sd">        :param true_color: Color of true values</span>
+<span class="sd">        :param obs_color: Color of obs values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_selected</span><span class="p">,</span>
+            <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">obs_color</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_hidden</span><span class="p">,</span>
+            <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">true_color</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+    <span class="k">def</span> <span class="nf">_display_sphere</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fluxes</span><span class="p">,</span>
+        <span class="n">distances</span><span class="p">,</span>
+        <span class="n">theta</span><span class="p">,</span>
+        <span class="n">phi</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;magma&quot;</span><span class="p">,</span>
+        <span class="n">distance_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There are no detections to display&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ipv</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+        <span class="n">ipv</span><span class="o">.</span><span class="n">pylab</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">box_off</span><span class="p">()</span>
+        <span class="n">ipv</span><span class="o">.</span><span class="n">pylab</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">axes_off</span><span class="p">()</span>
+        <span class="n">ipv</span><span class="o">.</span><span class="n">pylab</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_style_dark</span><span class="p">()</span>
+        <span class="n">ipv</span><span class="o">.</span><span class="n">pylab</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">background_color</span><span class="p">(</span><span class="n">background_color</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">distance_transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">distance_transform</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">distances</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">_create_sphere_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="n">array_to_cmap</span><span class="p">(</span><span class="n">fluxes</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">ipv</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">r_value</span> <span class="o">=</span> <span class="n">fig</span>
+
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+
+            <span class="n">ipv</span><span class="o">.</span><span class="n">xyzlim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">pythreejs</span><span class="o">.</span><span class="n">OrbitControls</span><span class="p">(</span><span class="n">controlling</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">camera</span><span class="p">)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">control</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">autoRotate</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">render_continuous</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># control.autoRotate = True</span>
+            <span class="c1"># toggle_rotate = widgets.ToggleButton(description=&quot;Rotate&quot;)</span>
+            <span class="c1"># widgets.jslink((control, &quot;autoRotate&quot;), (toggle_rotate, &quot;value&quot;))</span>
+            <span class="c1"># r_value = toggle_rotate</span>
+
+        <span class="k">return</span> <span class="n">fig</span>
+
+<div class="viewcode-block" id="Population.display_obs_fluxes_sphere"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_obs_fluxes_sphere">[docs]</a>    <span class="k">def</span> <span class="nf">display_obs_fluxes_sphere</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;magma&quot;</span><span class="p">,</span>
+        <span class="n">distance_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_sphere</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+            <span class="n">distance_transform</span><span class="o">=</span><span class="n">distance_transform</span><span class="p">,</span>
+            <span class="n">background_color</span><span class="o">=</span><span class="n">background_color</span><span class="p">,</span>
+            <span class="n">use_log</span><span class="o">=</span><span class="n">use_log</span><span class="p">,</span>
+            <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">ipv</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+<div class="viewcode-block" id="Population.display_hidden_fluxes_sphere"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_hidden_fluxes_sphere">[docs]</a>    <span class="k">def</span> <span class="nf">display_hidden_fluxes_sphere</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;magma&quot;</span><span class="p">,</span>
+        <span class="n">distance_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_sphere</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flux_hidden</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span><span class="p">,</span>
+            <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+            <span class="n">distance_transform</span><span class="o">=</span><span class="n">distance_transform</span><span class="p">,</span>
+            <span class="n">background_color</span><span class="o">=</span><span class="n">background_color</span><span class="p">,</span>
+            <span class="n">use_log</span><span class="o">=</span><span class="n">use_log</span><span class="p">,</span>
+            <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">ipv</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+<div class="viewcode-block" id="Population.display_flux_sphere"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_flux_sphere">[docs]</a>    <span class="k">def</span> <span class="nf">display_flux_sphere</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seen_cmap</span><span class="o">=</span><span class="s2">&quot;Reds&quot;</span><span class="p">,</span>
+        <span class="n">unseen_cmap</span><span class="o">=</span><span class="s2">&quot;Blues&quot;</span><span class="p">,</span>
+        <span class="n">distance_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_obs_fluxes_sphere</span><span class="p">(</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">seen_cmap</span><span class="p">,</span>
+            <span class="n">distance_transform</span><span class="o">=</span><span class="n">distance_transform</span><span class="p">,</span>
+            <span class="n">use_log</span><span class="o">=</span><span class="n">use_log</span><span class="p">,</span>
+            <span class="n">background_color</span><span class="o">=</span><span class="n">background_color</span><span class="p">,</span>
+            <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_hidden_fluxes_sphere</span><span class="p">(</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">unseen_cmap</span><span class="p">,</span>
+            <span class="n">distance_transform</span><span class="o">=</span><span class="n">distance_transform</span><span class="p">,</span>
+            <span class="n">use_log</span><span class="o">=</span><span class="n">use_log</span><span class="p">,</span>
+            <span class="n">background_color</span><span class="o">=</span><span class="n">background_color</span><span class="p">,</span>
+            <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
+            <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+<div class="viewcode-block" id="Population.display_distances"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display_distances">[docs]</a>    <span class="k">def</span> <span class="nf">display_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the distances</span>
+
+<span class="sd">        :param ax: Axis on which to plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">,</span>
+            <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+            <span class="n">fc</span><span class="o">=</span><span class="n">dark</span><span class="p">,</span>
+            <span class="n">ec</span><span class="o">=</span><span class="n">dark_highlight</span><span class="p">,</span>
+            <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Total Pop.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+            <span class="c1">#            facecolor=blue,</span>
+            <span class="c1">#            edgecolor=blue_highlight,</span>
+            <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Obs. Pop.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span></div></div>
+        <span class="c1"># sns.despine(offset=5, trim=True);</span>
+
+
+<span class="k">def</span> <span class="nf">_create_sphere_variables</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+
+    <span class="c1"># u = np.linspace(0, 2 * np.pi, 100)</span>
+    <span class="c1"># v = np.linspace(0, np.pi, 100)</span>
+    <span class="c1"># x2 = R * np.outer(np.cos(u), np.sin(v))</span>
+    <span class="c1"># y2 = R * np.outer(np.sin(u), np.sin(v))</span>
+    <span class="c1"># z2 = R * np.outer(np.ones(np.size(u)), np.cos(v))</span>
+
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

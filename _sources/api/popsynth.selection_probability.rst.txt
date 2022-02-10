@@ -1,0 +1,20 @@
+popsynth.selection_probability package
+======================================
+
+Submodules
+----------
+
+.. toctree::
+
+   popsynth.selection_probability.flux_selectors
+   popsynth.selection_probability.generic_selectors
+   popsynth.selection_probability.selection_probability
+   popsynth.selection_probability.spatial_selection
+
+Module contents
+---------------
+
+.. automodule:: popsynth.selection_probability
+    :members:
+    :undoc-members:
+    :show-inheritance:

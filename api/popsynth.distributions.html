@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.distributions package &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="popsynth.distributions.bpl_distribution module" href="popsynth.distributions.bpl_distribution.html" />
+    <link rel="prev" title="popsynth.aux_samplers.viewing_angle_sampler module" href="popsynth.aux_samplers.viewing_angle_sampler.html" />
+  <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> popsynth
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="API.html">API</a> &raquo;</li>
+          <li><a href="popsynth.html">popsynth package</a> &raquo;</li>
+      <li>popsynth.distributions package</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="popsynth-distributions-package">
+<h1>popsynth.distributions package<a class="headerlink" href="#popsynth-distributions-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.bpl_distribution.html">popsynth.distributions.bpl_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.cosmological_distribution.html">popsynth.distributions.cosmological_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.delta_distribution.html">popsynth.distributions.delta_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.flatland_distribution.html">popsynth.distributions.flatland_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.log10_normal_distribution.html">popsynth.distributions.log10_normal_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.log_normal_distribution.html">popsynth.distributions.log_normal_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.pareto_distribution.html">popsynth.distributions.pareto_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.schechter_distribution.html">popsynth.distributions.schechter_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.spherical_distribution.html">popsynth.distributions.spherical_distribution module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.distributions.spiral_galaxy_distribution.html">popsynth.distributions.spiral_galaxy_distribution module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-popsynth.distributions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-popsynth.distributions" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.SphericalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">SphericalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sphere'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#SphericalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SphericalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.SpatialDistribution</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SphericalDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sphere'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#SphericalDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SphericalDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A generic spherical distribution. Can be inherited to
+form more complex spherical distributions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>form</strong> (<em>str</em>) – Mathematical description of distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SphericalDistribution.differential_volume">
+<span class="sig-name descname"><span class="pre">differential_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#SphericalDistribution.differential_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SphericalDistribution.differential_volume" title="Permalink to this definition"></a></dt>
+<dd><p>The differential volume</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – Distance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SphericalDistribution.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#SphericalDistribution.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SphericalDistribution.transform" title="Permalink to this definition"></a></dt>
+<dd><p>The transform from luminosity to flux
+for the</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flux</strong> – </p></li>
+<li><p><strong>distance</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.CosmologicalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">CosmologicalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.CosmologicalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.SpatialDistribution</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.CosmologicalDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.CosmologicalDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Base class for cosmological spatial distributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>form</strong> (<em>str</em>) – Mathematical description of distribution</p></li>
+<li><p><strong>truth</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – True values of parameters</p></li>
+<li><p><strong>is_rate</strong> (<em>bool</em>) – <cite>True</cite> if modelling a population of transient events,
+<cite>False</cite> if modelling a population of steady-state objects.
+Affects the <code class="docutils literal notranslate"><span class="pre">time_adjustment</span></code> method used in cosmo calculations.
+Default is <cite>True</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.CosmologicalDistribution.differential_volume">
+<span class="sig-name descname"><span class="pre">differential_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.differential_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.CosmologicalDistribution.differential_volume" title="Permalink to this definition"></a></dt>
+<dd><p>Differential comoving volume in Gpc^3 sr^-1.</p>
+<p>dV/dzdOmega</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z</strong> – Redshift</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The differential comoving volume in
+Gpc^-3 sr^-1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.CosmologicalDistribution.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.CosmologicalDistribution.transform" title="Permalink to this definition"></a></dt>
+<dd><p>Transformation from luminosity to energy flux.</p>
+<p>L / 4 pi dL^2</p>
+<p>dL is in cm. Therefore for L in erg s^-1 returns
+flux in erg cm^-2 s^-1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> – Luminosity</p></li>
+<li><p><strong>z</strong> – Redshift</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Flux</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.CosmologicalDistribution.time_adjustment">
+<span class="sig-name descname"><span class="pre">time_adjustment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#CosmologicalDistribution.time_adjustment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.CosmologicalDistribution.time_adjustment" title="Permalink to this definition"></a></dt>
+<dd><p>Time adjustment factor to handle both
+transient and steady-state populations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z</strong> – Redshift</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Appropriate factor depending on <code class="docutils literal notranslate"><span class="pre">is_rate</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">SFRDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sfr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#SFRDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SFRDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.distributions.html#popsynth.distributions.cosmological_distribution.CosmologicalDistribution" title="popsynth.distributions.cosmological_distribution.CosmologicalDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distributions.cosmological_distribution.CosmologicalDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution.r0">
+<span class="sig-name descname"><span class="pre">r0</span></span><a class="headerlink" href="#popsynth.distributions.SFRDistribution.r0" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution.a">
+<span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#popsynth.distributions.SFRDistribution.a" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution.rise">
+<span class="sig-name descname"><span class="pre">rise</span></span><a class="headerlink" href="#popsynth.distributions.SFRDistribution.rise" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution.decay">
+<span class="sig-name descname"><span class="pre">decay</span></span><a class="headerlink" href="#popsynth.distributions.SFRDistribution.decay" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution.peak">
+<span class="sig-name descname"><span class="pre">peak</span></span><a class="headerlink" href="#popsynth.distributions.SFRDistribution.peak" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sfr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#SFRDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SFRDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A star-formation like distribution of the form
+presented in Cole et al. 2001.</p>
+<p><code class="docutils literal notranslate"><span class="pre">r0``(``a``+``rise``z)/(1</span> <span class="pre">+</span> <span class="pre">(z/``peak</span></code>)^``decay``)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>is_rate</strong> (<em>bool</em>) – <cite>True</cite> if modelling a population of transient events,
+<cite>False</cite> if modelling a population of steady-state objects.
+Affects the <code class="docutils literal notranslate"><span class="pre">time_adjustment</span></code> method used in cosmo calculations.
+Default is <cite>True</cite>.</p></li>
+<li><p><strong>r0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – The local density in units of Gpc^-3</p></li>
+<li><p><strong>a</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Offset at z=0</p></li>
+<li><p><strong>rise</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Rise at low z</p></li>
+<li><p><strong>decay</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Decay at high z</p></li>
+<li><p><strong>peak</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Peak of z distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SFRDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#SFRDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SFRDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerCosmoDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">ZPowerCosmoDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'zpow_cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#ZPowerCosmoDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ZPowerCosmoDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.distributions.html#popsynth.distributions.cosmological_distribution.CosmologicalDistribution" title="popsynth.distributions.cosmological_distribution.CosmologicalDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distributions.cosmological_distribution.CosmologicalDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerCosmoDistribution.Lambda">
+<span class="sig-name descname"><span class="pre">Lambda</span></span><a class="headerlink" href="#popsynth.distributions.ZPowerCosmoDistribution.Lambda" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerCosmoDistribution.delta">
+<span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#popsynth.distributions.ZPowerCosmoDistribution.delta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerCosmoDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'zpow_cosmo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#ZPowerCosmoDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ZPowerCosmoDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A cosmological distribution where the density
+evolves as a power law.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Lambda</span></code> (1+z)^``delta``</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>is_rate</strong> (<em>bool</em>) – <cite>True</cite> if modelling a population of transient events,
+<cite>False</cite> if modelling a population of steady-state objects.
+Affects the <code class="docutils literal notranslate"><span class="pre">time_adjustment</span></code> method used in cosmo calculations.
+Default is <cite>True</cite>.</p></li>
+<li><p><strong>Lambda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – The local density in units of Gpc^-3</p></li>
+<li><p><strong>delta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – The index of the power law</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerCosmoDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/cosmological_distribution.html#ZPowerCosmoDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ZPowerCosmoDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.ParetoDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">ParetoDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pareto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/pareto_distribution.html#ParetoDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ParetoDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.LuminosityDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.ParetoDistribution.Lmin">
+<span class="sig-name descname"><span class="pre">Lmin</span></span><a class="headerlink" href="#popsynth.distributions.ParetoDistribution.Lmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.ParetoDistribution.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#popsynth.distributions.ParetoDistribution.alpha" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ParetoDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pareto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/pareto_distribution.html#ParetoDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ParetoDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A Pareto luminosity function.</p>
+<p><code class="docutils literal notranslate"><span class="pre">alpha``*``Lmin``^``alpha</span></code> / L^(<a href="#id1"><span class="problematic" id="id2">``</span></a>alpha``+1)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>Lmin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Minimum value of the luminosity</p></li>
+<li><p><strong>alpha</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Index of the pareto distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ParetoDistribution.phi">
+<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/pareto_distribution.html#ParetoDistribution.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ParetoDistribution.phi" title="Permalink to this definition"></a></dt>
+<dd><p>The functional form of the distribution.
+not required for sampling
+:param luminosity: Luminosity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ParetoDistribution.draw_luminosity">
+<span class="sig-name descname"><span class="pre">draw_luminosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/pareto_distribution.html#ParetoDistribution.draw_luminosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ParetoDistribution.draw_luminosity" title="Permalink to this definition"></a></dt>
+<dd><p>function to draw the luminosity via an alternative method
+must be implemented in child class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.Log10NormalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">Log10NormalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log10norm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log10_normal_distribution.html#Log10NormalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.Log10NormalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.LuminosityDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.Log10NormalDistribution.mu">
+<span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#popsynth.distributions.Log10NormalDistribution.mu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.Log10NormalDistribution.tau">
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#popsynth.distributions.Log10NormalDistribution.tau" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.Log10NormalDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log10norm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log10_normal_distribution.html#Log10NormalDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.Log10NormalDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A log10-normal luminosity function</p>
+<p>Log10Normal(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">tau</span></code>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>mu</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Mean of the log10 normal</p></li>
+<li><p><strong>tau</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Standard deviation of the log10 normal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.Log10NormalDistribution.phi">
+<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log10_normal_distribution.html#Log10NormalDistribution.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.Log10NormalDistribution.phi" title="Permalink to this definition"></a></dt>
+<dd><p>The functional form of the distribution.
+not required for sampling
+:param luminosity: Luminosity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.Log10NormalDistribution.draw_luminosity">
+<span class="sig-name descname"><span class="pre">draw_luminosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log10_normal_distribution.html#Log10NormalDistribution.draw_luminosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.Log10NormalDistribution.draw_luminosity" title="Permalink to this definition"></a></dt>
+<dd><p>function to draw the luminosity via an alternative method
+must be implemented in child class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.LogNormalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">LogNormalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lognorm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log_normal_distribution.html#LogNormalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.LogNormalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.LuminosityDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.LogNormalDistribution.mu">
+<span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#popsynth.distributions.LogNormalDistribution.mu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.LogNormalDistribution.tau">
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#popsynth.distributions.LogNormalDistribution.tau" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.LogNormalDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lognorm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log_normal_distribution.html#LogNormalDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.LogNormalDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A log-normal luminosity distribution.</p>
+<p>LogNormal(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">tau</span></code>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>mu</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Mean of the log normal</p></li>
+<li><p><strong>tau</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Standard deviation of the log normal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.LogNormalDistribution.phi">
+<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log_normal_distribution.html#LogNormalDistribution.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.LogNormalDistribution.phi" title="Permalink to this definition"></a></dt>
+<dd><p>The functional form of the distribution.
+not required for sampling
+:param luminosity: Luminosity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.LogNormalDistribution.draw_luminosity">
+<span class="sig-name descname"><span class="pre">draw_luminosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/log_normal_distribution.html#LogNormalDistribution.draw_luminosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.LogNormalDistribution.draw_luminosity" title="Permalink to this definition"></a></dt>
+<dd><p>function to draw the luminosity via an alternative method
+must be implemented in child class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.SchechterDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">SchechterDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'schechter'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/schechter_distribution.html#SchechterDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SchechterDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.LuminosityDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SchechterDistribution.Lmin">
+<span class="sig-name descname"><span class="pre">Lmin</span></span><a class="headerlink" href="#popsynth.distributions.SchechterDistribution.Lmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SchechterDistribution.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#popsynth.distributions.SchechterDistribution.alpha" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SchechterDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'schechter'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/schechter_distribution.html#SchechterDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SchechterDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A Schechter luminosity function as in
+Schechter, Astrophysical Journal, Vol. 203,
+p. 297-306 (1976).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>Lmin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Minimum value of the luminosity</p></li>
+<li><p><strong>alpha</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Index of the distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SchechterDistribution.phi">
+<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/schechter_distribution.html#SchechterDistribution.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SchechterDistribution.phi" title="Permalink to this definition"></a></dt>
+<dd><p>The functional form of the distribution.
+not required for sampling
+:param luminosity: Luminosity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SchechterDistribution.draw_luminosity">
+<span class="sig-name descname"><span class="pre">draw_luminosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/schechter_distribution.html#SchechterDistribution.draw_luminosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SchechterDistribution.draw_luminosity" title="Permalink to this definition"></a></dt>
+<dd><p>function to draw the luminosity via an alternative method
+must be implemented in child class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">BPLDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bpl'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/bpl_distribution.html#BPLDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.BPLDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.LuminosityDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.Lmin">
+<span class="sig-name descname"><span class="pre">Lmin</span></span><a class="headerlink" href="#popsynth.distributions.BPLDistribution.Lmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#popsynth.distributions.BPLDistribution.alpha" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.Lbreak">
+<span class="sig-name descname"><span class="pre">Lbreak</span></span><a class="headerlink" href="#popsynth.distributions.BPLDistribution.Lbreak" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.beta">
+<span class="sig-name descname"><span class="pre">beta</span></span><a class="headerlink" href="#popsynth.distributions.BPLDistribution.beta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.Lmax">
+<span class="sig-name descname"><span class="pre">Lmax</span></span><a class="headerlink" href="#popsynth.distributions.BPLDistribution.Lmax" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bpl'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/bpl_distribution.html#BPLDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.BPLDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A broken power law luminosity distribution.</p>
+<p>L ~ L^``alpha`` for L &lt;= <code class="docutils literal notranslate"><span class="pre">Lbreak</span></code>
+L ~ L^``beta`` for L &gt; <code class="docutils literal notranslate"><span class="pre">Lbreak</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>Lmin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Minimum value of the luminosity</p></li>
+<li><p><strong>alpha</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Index of the lower power law</p></li>
+<li><p><strong>Lbreak</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Luminosity of the power law break</p></li>
+<li><p><strong>beta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Index of the upper power law</p></li>
+<li><p><strong>Lmax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Maximum value of the luminosity</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.phi">
+<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/bpl_distribution.html#BPLDistribution.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.BPLDistribution.phi" title="Permalink to this definition"></a></dt>
+<dd><p>The functional form of the distribution.
+not required for sampling
+:param luminosity: Luminosity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.BPLDistribution.draw_luminosity">
+<span class="sig-name descname"><span class="pre">draw_luminosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/bpl_distribution.html#BPLDistribution.draw_luminosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.BPLDistribution.draw_luminosity" title="Permalink to this definition"></a></dt>
+<dd><p>function to draw the luminosity via an alternative method
+must be implemented in child class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.ConstantSphericalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">ConstantSphericalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cons_sphere'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#ConstantSphericalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ConstantSphericalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.distributions.html#popsynth.distributions.spherical_distribution.SphericalDistribution" title="popsynth.distributions.spherical_distribution.SphericalDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distributions.spherical_distribution.SphericalDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.ConstantSphericalDistribution.Lambda">
+<span class="sig-name descname"><span class="pre">Lambda</span></span><a class="headerlink" href="#popsynth.distributions.ConstantSphericalDistribution.Lambda" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ConstantSphericalDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cons_sphere'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#ConstantSphericalDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ConstantSphericalDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A spherical distribution with constant density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>form</strong> (<em>str</em>) – Mathematical description of distribution</p></li>
+<li><p><strong>Lambda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Density per unit volume</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ConstantSphericalDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#ConstantSphericalDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ConstantSphericalDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerSphericalDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">ZPowerSphericalDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'zpow_sphere'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#ZPowerSphericalDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ZPowerSphericalDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.distributions.html#popsynth.distributions.spherical_distribution.ConstantSphericalDistribution" title="popsynth.distributions.spherical_distribution.ConstantSphericalDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distributions.spherical_distribution.ConstantSphericalDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerSphericalDistribution.delta">
+<span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#popsynth.distributions.ZPowerSphericalDistribution.delta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerSphericalDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'zpow_sphere'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#ZPowerSphericalDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ZPowerSphericalDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A spherical distribution with a power law density profile.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Lambda</span></code> (1+r)^``delta``</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>form</strong> (<em>str</em>) – Mathematical description of distribution</p></li>
+<li><p><strong>delta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Index of power law distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.ZPowerSphericalDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spherical_distribution.html#ZPowerSphericalDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.ZPowerSphericalDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.DeltaDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">DeltaDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'delta'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/delta_distribution.html#DeltaDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.DeltaDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution" title="popsynth.distribution.LuminosityDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.LuminosityDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.DeltaDistribution.Lp">
+<span class="sig-name descname"><span class="pre">Lp</span></span><a class="headerlink" href="#popsynth.distributions.DeltaDistribution.Lp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.DeltaDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'delta'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/delta_distribution.html#DeltaDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.DeltaDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A delta function luminosity distribution,
+centred on <code class="docutils literal notranslate"><span class="pre">Lp</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>Lp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – The central value</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.DeltaDistribution.phi">
+<span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/delta_distribution.html#DeltaDistribution.phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.DeltaDistribution.phi" title="Permalink to this definition"></a></dt>
+<dd><p>The functional form of the distribution.
+not required for sampling
+:param luminosity: Luminosity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.DeltaDistribution.draw_luminosity">
+<span class="sig-name descname"><span class="pre">draw_luminosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/delta_distribution.html#DeltaDistribution.draw_luminosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.DeltaDistribution.draw_luminosity" title="Permalink to this definition"></a></dt>
+<dd><p>function to draw the luminosity via an alternative method
+must be implemented in child class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.FlatlandDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">FlatlandDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'flatland'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/flatland_distribution.html#FlatlandDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.FlatlandDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distribution.SpatialDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.FlatlandDistribution.Lambda">
+<span class="sig-name descname"><span class="pre">Lambda</span></span><a class="headerlink" href="#popsynth.distributions.FlatlandDistribution.Lambda" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.FlatlandDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'flatland'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/flatland_distribution.html#FlatlandDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.FlatlandDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A flat spatial distribution with only length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>form</strong> (<em>str</em>) – Mathematical description of distribution</p></li>
+<li><p><strong>Lambda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Length</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.FlatlandDistribution.differential_volume">
+<span class="sig-name descname"><span class="pre">differential_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/flatland_distribution.html#FlatlandDistribution.differential_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.FlatlandDistribution.differential_volume" title="Permalink to this definition"></a></dt>
+<dd><p>The differential volume</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – Distance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.FlatlandDistribution.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/flatland_distribution.html#FlatlandDistribution.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.FlatlandDistribution.transform" title="Permalink to this definition"></a></dt>
+<dd><p>The transform from luminosity to flux
+for the</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flux</strong> – </p></li>
+<li><p><strong>distance</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.FlatlandDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/flatland_distribution.html#FlatlandDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.FlatlandDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.distributions.</span></span><span class="sig-name descname"><span class="pre">SpiralGalaxyDistribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'spiral_galaxy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spiral_galaxy_distribution.html#SpiralGalaxyDistribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.distributions.html#popsynth.distributions.spherical_distribution.SphericalDistribution" title="popsynth.distributions.spherical_distribution.SphericalDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.distributions.spherical_distribution.SphericalDistribution</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.rho">
+<span class="sig-name descname"><span class="pre">rho</span></span><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.rho" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.a">
+<span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.a" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.b">
+<span class="sig-name descname"><span class="pre">b</span></span><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.b" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.R1">
+<span class="sig-name descname"><span class="pre">R1</span></span><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.R1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.R0">
+<span class="sig-name descname"><span class="pre">R0</span></span><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.R0" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1234</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'spiral_galaxy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spiral_galaxy_distribution.html#SpiralGalaxyDistribution.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A spiral galaxy spatial distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em>) – Random seed</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the distribution</p></li>
+<li><p><strong>form</strong> (<em>str</em>) – Mathematical description of distribution</p></li>
+<li><p><strong>rho</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Local density</p></li>
+<li><p><strong>a</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Shape parameter</p></li>
+<li><p><strong>b</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Shape parameter</p></li>
+<li><p><strong>R1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Scale parameter</p></li>
+<li><p><strong>R0</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionParameter</span></code>) – Scale parameter</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.dNdV">
+<span class="sig-name descname"><span class="pre">dNdV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spiral_galaxy_distribution.html#SpiralGalaxyDistribution.dNdV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.dNdV" title="Permalink to this definition"></a></dt>
+<dd><p>The differential number of objects
+per volume element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.distributions.SpiralGalaxyDistribution.draw_sky_positions">
+<span class="sig-name descname"><span class="pre">draw_sky_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/distributions/spiral_galaxy_distribution.html#SpiralGalaxyDistribution.draw_sky_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.distributions.SpiralGalaxyDistribution.draw_sky_positions" title="Permalink to this definition"></a></dt>
+<dd><p>Based on Wainscoat 1992 and
+Faucher-Giguere 2007.</p>
+<p>Code thanks to Mortiz Pleintinger.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="popsynth.aux_samplers.viewing_angle_sampler.html" class="btn btn-neutral float-left" title="popsynth.aux_samplers.viewing_angle_sampler module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="popsynth.distributions.bpl_distribution.html" class="btn btn-neutral float-right" title="popsynth.distributions.bpl_distribution module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

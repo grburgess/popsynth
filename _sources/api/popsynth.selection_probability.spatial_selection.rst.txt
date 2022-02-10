@@ -1,0 +1,7 @@
+popsynth.selection_probability.spatial_selection module
+=======================================================
+
+.. automodule:: popsynth.selection_probability.spatial_selection
+    :members:
+    :undoc-members:
+    :show-inheritance:

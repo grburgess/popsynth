@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.auxiliary_sampler &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <link rel="stylesheet" href="../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> popsynth
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.auxiliary_sampler</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.auxiliary_sampler</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">class_registry</span> <span class="kn">import</span> <span class="n">AutoRegister</span>
+<span class="kn">from</span> <span class="nn">dotmap</span> <span class="kn">import</span> <span class="n">DotMap</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.distribution</span> <span class="kn">import</span> <span class="n">SpatialContainer</span>
+<span class="kn">from</span> <span class="nn">popsynth.selection_probability</span> <span class="kn">import</span> <span class="n">SelectionProbability</span><span class="p">,</span> <span class="n">UnitySelection</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.cosmology</span> <span class="kn">import</span> <span class="n">cosmology</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.logging</span> <span class="kn">import</span> <span class="n">setup_logger</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.meta</span> <span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">ParameterMeta</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.registry</span> <span class="kn">import</span> <span class="n">auxiliary_parameter_registry</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">SamplerDict</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="SecondaryContainer"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.SecondaryContainer">[docs]</a><span class="k">class</span> <span class="nc">SecondaryContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SecondaryContainer.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.SecondaryContainer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">true_values</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">obs_values</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">selection</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A container for secondary properties that adds dict</span>
+<span class="sd">        and dictionary access</span>
+
+<span class="sd">        :param name: the name of the secondary</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param true_values:</span>
+<span class="sd">        :type true_values: ArrayLike</span>
+<span class="sd">        :param obs_values:</span>
+<span class="sd">        :type obs_values: ArrayLike</span>
+<span class="sd">        :param selection:</span>
+<span class="sd">        :type selection: ArrayLike</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">true_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">obs_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">selection</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">true_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The true (latent) values of the sampler</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">obs_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The observed values of the sampler</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The the slection of the values</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;selection&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
+
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;true_values&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span>
+
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;obs_values&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;trying to access something that does not exist&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SecondaryStorage"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.SecondaryStorage">[docs]</a><span class="k">class</span> <span class="nc">SecondaryStorage</span><span class="p">(</span><span class="n">DotMap</span><span class="p">):</span>
+<div class="viewcode-block" id="SecondaryStorage.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.SecondaryStorage.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A container for secondary samplers</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SecondaryStorage</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SecondaryStorage.add_secondary"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.SecondaryStorage.add_secondary">[docs]</a>    <span class="k">def</span> <span class="nf">add_secondary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">secondary_values</span><span class="p">:</span> <span class="n">SecondaryContainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add on a new secondary</span>
+
+<span class="sd">        :param secondary_values:</span>
+<span class="sd">        :type secondary_values: SecondaryContainer</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="n">secondary_values</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">secondary_values</span></div>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">other</span>
+
+        <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="AuxiliaryParameter"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliaryParameter">[docs]</a><span class="k">class</span> <span class="nc">AuxiliaryParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="AuxiliarySampler"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler">[docs]</a><span class="k">class</span> <span class="nc">AuxiliarySampler</span><span class="p">(</span>
+    <span class="nb">object</span><span class="p">,</span>
+    <span class="n">metaclass</span><span class="o">=</span><span class="n">AutoRegister</span><span class="p">(</span>
+        <span class="n">auxiliary_parameter_registry</span><span class="p">,</span> <span class="n">base_type</span><span class="o">=</span><span class="n">ParameterMeta</span>
+    <span class="p">),</span>
+<span class="p">):</span>
+<div class="viewcode-block" id="AuxiliarySampler.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">observed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">uses_distance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">uses_luminosity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">uses_sky_position</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Base class for auxiliary samplers.</span>
+
+<span class="sd">        :param name: Name of the sampler</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param observed: `True` if the property is observed,</span>
+<span class="sd">            `False` if it is latent. Defaults to `True`</span>
+<span class="sd">        :type observed: bool</span>
+<span class="sd">        :param uses_distance: `True` if sampler uses distance values</span>
+<span class="sd">        :type uses_distance: bool</span>
+<span class="sd">        :param uses_luminosity: `True` if sampler uses luminosities</span>
+<span class="sd">        :type uses_luminosity: bool</span>
+<span class="sd">        :param uses_sky_position: `True` if sampler uses sky positions</span>
+<span class="sd">        :type uses_sky_position: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, float]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># type: str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obs_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_obs&quot;</span> <span class="o">%</span> <span class="n">name</span>  <span class="c1"># type: str</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_observed</span> <span class="o">=</span> <span class="n">observed</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: SamplerDict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_secondary</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_sampled</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span> <span class="o">=</span> <span class="n">UnitySelection</span><span class="p">()</span>  <span class="c1"># type: SelectionProbability</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uses_distance</span> <span class="o">=</span> <span class="n">uses_distance</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uses_luminosity</span> <span class="o">=</span> <span class="n">uses_luminosity</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uses_sky_position</span> <span class="o">=</span> <span class="n">uses_sky_position</span>  <span class="c1"># type: bool</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.display"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parameter&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;parameter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">out</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;observed: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_observed</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;parents: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent_names</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_secondary</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+<div class="viewcode-block" id="AuxiliarySampler.set_luminosity"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.set_luminosity">[docs]</a>    <span class="k">def</span> <span class="nf">set_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">luminosity</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the luminosity values.</span>
+
+<span class="sd">        :param luminosity: Luminosity</span>
+<span class="sd">        :type luminosity: ArrayLike</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity</span> <span class="o">=</span> <span class="n">luminosity</span>  <span class="c1"># type:ArrayLike</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.set_spatial_values"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.set_spatial_values">[docs]</a>    <span class="k">def</span> <span class="nf">set_spatial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">SpatialContainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the spatial values.</span>
+
+<span class="sd">        :param value: Spatial values</span>
+<span class="sd">        :type value: :class:`SpatialContainer`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">distance</span>  <span class="c1"># type:ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">theta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">phi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ra</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">ra</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dec</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">dec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_values</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.set_selection_probability"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.set_selection_probability">[docs]</a>    <span class="k">def</span> <span class="nf">set_selection_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">:</span> <span class="n">SelectionProbability</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set a selection probabilty for this sampler.</span>
+
+<span class="sd">        :param selector: A selection probability oobject</span>
+<span class="sd">        :type selector: SelectionProbability</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">SelectionProbability</span><span class="p">):</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;The selector is not a valid selection probability&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span> <span class="o">=</span> <span class="n">selector</span>  <span class="c1"># type: SelectionProbability</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler._apply_selection"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler._apply_selection">[docs]</a>    <span class="k">def</span> <span class="nf">_apply_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default selection if none is specfied in child class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.set_secondary_sampler"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.set_secondary_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">set_secondary_sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampler</span><span class="p">:</span> <span class="s2">&quot;AuxiliarySampler&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a secondary sampler upon which this sampler will depend.</span>
+<span class="sd">        The sampled values can be accessed via an internal dictionary</span>
+<span class="sd">        with the samplers &#39;name&#39;</span>
+
+<span class="sd">        self._secondary_sampler[&#39;name&#39;].true_values</span>
+<span class="sd">        self._secondary_sampler[&#39;name&#39;].obs_values</span>
+
+<span class="sd">        :param sampler: An auxiliary sampler</span>
+<span class="sd">        :type sampler: &quot;AuxiliarySampler&quot;</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># make sure we set the sampler as a secondary</span>
+        <span class="c1"># this causes it to throw a flag in the main</span>
+        <span class="c1"># loop if we try to add it again</span>
+
+        <span class="n">sampler</span><span class="o">.</span><span class="n">make_secondary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># attach the sampler to this class</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span><span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sampler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_secondary</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># type: bool</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.draw"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the primary and secondary samplers. This is the main call.</span>
+
+<span class="sd">        :param size: The number of samples to draw</span>
+<span class="sd">        :type size: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># do not resample!</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_sampled</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sampling: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_secondary</span><span class="p">:</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is sampling its secondary quantities&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="o">.</span><span class="n">set_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="o">.</span><span class="n">set_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_luminosity</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;tried to set luminosity, but could not&quot;</span><span class="p">)</span>
+
+                <span class="k">pass</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">is_secondary</span><span class="p">:</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Tried to sample a non-secondary, this is a bug&quot;</span><span class="p">)</span>
+
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+                <span class="c1"># we do not allow for the secondary</span>
+                <span class="c1"># quantities to derive a luminosity</span>
+                <span class="c1"># as it should be the last thing dervied</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> will have it spatial values set&quot;</span><span class="p">)</span>
+
+                <span class="n">v</span><span class="o">.</span><span class="n">set_spatial_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_values</span><span class="p">)</span>
+
+                <span class="n">v</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+            <span class="c1"># Now, it is assumed that if this sampler depends on the previous samplers,</span>
+            <span class="c1"># then those properties have been drawn</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">true_sampler</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_observed</span><span class="p">:</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is sampling the observed values&quot;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">observation_sampler</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span>  <span class="c1"># type: ArrayLike</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="o">.</span><span class="n">set_observed_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span><span class="p">)</span>
+
+            <span class="c1"># check to make sure we sampled!</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">true_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">true_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">size</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> likely has a bad true_sampler function&quot;</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">obs_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obs_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">size</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> likely has a observation_sampler function&quot;</span>
+
+            <span class="c1"># now apply the selection to yourself</span>
+            <span class="c1"># if there is nothing coded, it will be</span>
+            <span class="c1"># list of all true</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_sampled</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_selection</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.reset"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset all the selections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_sampled</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Auxiliary sampler: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is being reset&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_sampled</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ArrayLike</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ArrayLike</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not reseting as it has not been sampled&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">v</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.make_secondary"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.make_secondary">[docs]</a>    <span class="k">def</span> <span class="nf">make_secondary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets this sampler as secondary for book keeping</span>
+
+<span class="sd">        :param parent_name:</span>
+<span class="sd">        :type parent_name: str</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parent_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.get_secondary_properties"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.get_secondary_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_secondary_properties</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">graph</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">primary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">spatial_distribution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SecondaryStorage</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get properties of secondary samplers.</span>
+
+<span class="sd">        :param graph: Graph</span>
+<span class="sd">        :param primary: Primary sampler</span>
+<span class="sd">        :param spatial_distribution: Spatial Distribution</span>
+<span class="sd">        :returns: Dict of samplers</span>
+<span class="sd">        :rtype: :class:`SamplerDict`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">recursive_secondaries</span><span class="p">:</span> <span class="n">SecondaryStorage</span> <span class="o">=</span> <span class="n">SecondaryStorage</span><span class="p">()</span>
+
+        <span class="c1"># now collect each property. This should keep recursing</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_secondary</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="k">if</span> <span class="n">graph</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">primary</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">observed</span><span class="p">:</span>
+                        <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">obs_name</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">obs_name</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">uses_distance</span><span class="p">:</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">spatial_distribution</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+                <span class="n">recursive_secondaries</span> <span class="o">+=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_secondary_properties</span><span class="p">(</span>
+                    <span class="n">graph</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">spatial_distribution</span>
+                <span class="p">)</span>
+
+        <span class="c1"># add our own on</span>
+
+        <span class="n">recursive_secondaries</span><span class="o">.</span><span class="n">add_secondary</span><span class="p">(</span>
+            <span class="n">SecondaryContainer</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">recursive_secondaries</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.get_secondary_objects"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.get_secondary_objects">[docs]</a>    <span class="k">def</span> <span class="nf">get_secondary_objects</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">recursive_secondaries</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get secondary objects.</span>
+
+<span class="sd">        :param recursive_secondaries: Recursive dict of secondaries</span>
+<span class="sd">        :returns: Dict of objects</span>
+<span class="sd">        :rtype: Dict[str, Any]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if a holder was not passed, create one</span>
+        <span class="k">if</span> <span class="n">recursive_secondaries</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">recursive_secondaries</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: SamplerDict</span>
+
+        <span class="c1"># now collect each property. This should keep recursing</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_secondary</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">recursive_secondaries</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_secondary_objects</span><span class="p">(</span>
+                    <span class="n">recursive_secondaries</span>
+                <span class="p">)</span>  <span class="c1"># type: SamplerDict</span>
+
+        <span class="c1"># add our own on</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_sampler_name</span>
+        <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;observed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed</span>
+
+        <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">truth</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">tmp</span><span class="p">[</span><span class="n">k2</span><span class="p">]</span> <span class="o">=</span> <span class="n">v2</span>
+
+        <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;secondary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="n">selection</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">selection</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">_selection_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">parameters</span>
+
+        <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selection</span>
+
+        <span class="n">recursive_secondaries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+
+        <span class="k">return</span> <span class="n">recursive_secondaries</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">secondary_samplers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SamplerDict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Secondary samplers.</span>
+<span class="sd">        :returns: Dict of secondary samplers</span>
+<span class="sd">        :rtype: :class:`SamplerDict`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_samplers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_secondary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        If another sampler depends on this</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The parents of this sampler</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_names</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_secondary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        if this sampler has a secondary</span>
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_secondary</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        if this sampler is observed</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_observed</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The name of the sampler</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">obs_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obs_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">true_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The true or latent values</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">obs_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The values obscured by measurement error.</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obs_values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The selection booleans on the values</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="o">.</span><span class="n">selection</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SelectionProbability</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The selection probability object</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">truth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A dictionary containing true paramters</span>
+<span class="sd">        used to simulate the distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uses_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If this uses distance</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uses_distance</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uses_sky_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If this uses sky position</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uses_sky_position</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uses_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If this uses luminosity</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uses_luminosity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">luminosity_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        luminosity distance if needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AuxiliarySampler.true_sampler"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.true_sampler">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">true_sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AuxiliarySampler.observation_sampler"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.AuxiliarySampler.observation_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">observation_sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_true_values</span></div></div>
+
+
+<div class="viewcode-block" id="NonObservedAuxSampler"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.NonObservedAuxSampler">[docs]</a><span class="k">class</span> <span class="nc">NonObservedAuxSampler</span><span class="p">(</span><span class="n">AuxiliarySampler</span><span class="p">):</span>
+<div class="viewcode-block" id="NonObservedAuxSampler.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.NonObservedAuxSampler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">uses_distance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">uses_luminosity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">NonObservedAuxSampler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">uses_distance</span><span class="o">=</span><span class="n">uses_distance</span><span class="p">,</span>
+            <span class="n">uses_luminosity</span><span class="o">=</span><span class="n">uses_luminosity</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DerivedLumAuxSampler"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.DerivedLumAuxSampler">[docs]</a><span class="k">class</span> <span class="nc">DerivedLumAuxSampler</span><span class="p">(</span><span class="n">AuxiliarySampler</span><span class="p">):</span>
+<div class="viewcode-block" id="DerivedLumAuxSampler.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.DerivedLumAuxSampler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uses_distance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Base class for generating luminosity from other properties.</span>
+
+<span class="sd">        :param name: Name of the sampler</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param uses_distance: `True` if sampler uses distance values</span>
+<span class="sd">        :type uses_distance: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">DerivedLumAuxSampler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">uses_distance</span><span class="o">=</span><span class="n">uses_distance</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="DerivedLumAuxSampler.compute_luminosity"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.DerivedLumAuxSampler.compute_luminosity">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">compute_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Must be implemented in derived class&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+popsynth.selection_probability.flux_selectors module
+====================================================
+
+.. automodule:: popsynth.selection_probability.flux_selectors
+    :members:
+    :undoc-members:
+    :show-inheritance:

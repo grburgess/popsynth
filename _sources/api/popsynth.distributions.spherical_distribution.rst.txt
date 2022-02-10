@@ -1,0 +1,7 @@
+popsynth.distributions.spherical_distribution module
+====================================================
+
+.. automodule:: popsynth.distributions.spherical_distribution
+    :members:
+    :undoc-members:
+    :show-inheritance:

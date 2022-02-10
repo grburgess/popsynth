@@ -1,0 +1,7 @@
+popsynth.utils.rejection_sample module
+======================================
+
+.. automodule:: popsynth.utils.rejection_sample
+    :members:
+    :undoc-members:
+    :show-inheritance:

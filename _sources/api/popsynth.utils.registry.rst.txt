@@ -1,0 +1,7 @@
+popsynth.utils.registry module
+==============================
+
+.. automodule:: popsynth.utils.registry
+    :members:
+    :undoc-members:
+    :show-inheritance:

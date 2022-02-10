@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.aux_samplers package &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="popsynth.aux_samplers.delta_aux_sampler module" href="popsynth.aux_samplers.delta_aux_sampler.html" />
+    <link rel="prev" title="popsynth package" href="popsynth.html" />
+  <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> popsynth
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="API.html">API</a> &raquo;</li>
+          <li><a href="popsynth.html">popsynth package</a> &raquo;</li>
+      <li>popsynth.aux_samplers package</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="popsynth-aux-samplers-package">
+<h1>popsynth.aux_samplers package<a class="headerlink" href="#popsynth-aux-samplers-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.aux_samplers.delta_aux_sampler.html">popsynth.aux_samplers.delta_aux_sampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.aux_samplers.lognormal_aux_sampler.html">popsynth.aux_samplers.lognormal_aux_sampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.aux_samplers.normal_aux_sampler.html">popsynth.aux_samplers.normal_aux_sampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.aux_samplers.plaw_aux_sampler.html">popsynth.aux_samplers.plaw_aux_sampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.aux_samplers.sky_sampler.html">popsynth.aux_samplers.sky_sampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.aux_samplers.trunc_normal_aux_sampler.html">popsynth.aux_samplers.trunc_normal_aux_sampler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.aux_samplers.viewing_angle_sampler.html">popsynth.aux_samplers.viewing_angle_sampler module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-popsynth.aux_samplers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-popsynth.aux_samplers" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.DeltaAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">DeltaAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.DeltaAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.DeltaAuxSampler.xp">
+<span class="sig-name descname"><span class="pre">xp</span></span><a class="headerlink" href="#popsynth.aux_samplers.DeltaAuxSampler.xp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.DeltaAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.DeltaAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.DeltaAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.DeltaAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A delta-function sampler for which the true value
+is fixed at <code class="docutils literal notranslate"><span class="pre">xp</span></code>. Assumes property is observed by default,
+in which case the observed value is sampled from
+the true value with some normally-distributed error, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>xp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Value at which delta function is located</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.DeltaAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.DeltaAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.DeltaAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/delta_aux_sampler.html#DeltaAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.DeltaAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ViewingAngleSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">ViewingAngleSampler</span></span><a class="reference internal" href="../_modules/popsynth/aux_samplers/viewing_angle_sampler.html#ViewingAngleSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.ViewingAngleSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.NonObservedAuxSampler" title="popsynth.auxiliary_sampler.NonObservedAuxSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.NonObservedAuxSampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ViewingAngleSampler.max_angle">
+<span class="sig-name descname"><span class="pre">max_angle</span></span><a class="headerlink" href="#popsynth.aux_samplers.ViewingAngleSampler.max_angle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ViewingAngleSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/viewing_angle_sampler.html#ViewingAngleSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.ViewingAngleSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A viewing angle sampler that samples
+from 0 to <code class="docutils literal notranslate"><span class="pre">max_angle</span></code>. Unlike other samplers,
+it assumes that this is NOT an observed property</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>max_angle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – The maximum angle to which to
+sample in degrees</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ViewingAngleSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/aux_samplers/viewing_angle_sampler.html#ViewingAngleSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.ViewingAngleSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd><p>Sample the viewing angle by inverse CDF</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> (<em>int</em>) – Number of samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.LogNormalAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">LogNormalAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#LogNormalAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.LogNormalAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.LogNormalAuxSampler.mu">
+<span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#popsynth.aux_samplers.LogNormalAuxSampler.mu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.LogNormalAuxSampler.tau">
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#popsynth.aux_samplers.LogNormalAuxSampler.tau" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.LogNormalAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.LogNormalAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.LogNormalAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#LogNormalAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.LogNormalAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A Log normal sampler,
+where property ~ e^N(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>mu</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Mean of the lognormal</p></li>
+<li><p><strong>tau</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of the lognormal</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.LogNormalAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#LogNormalAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.LogNormalAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.LogNormalAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#LogNormalAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.LogNormalAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.Log10NormalAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">Log10NormalAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#Log10NormalAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.Log10NormalAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.Log10NormalAuxSampler.mu">
+<span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#popsynth.aux_samplers.Log10NormalAuxSampler.mu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.Log10NormalAuxSampler.tau">
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#popsynth.aux_samplers.Log10NormalAuxSampler.tau" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.Log10NormalAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.Log10NormalAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.Log10NormalAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#Log10NormalAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.Log10NormalAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A Log10 normal sampler,
+where property ~ 10^N(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>mu</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Mean of the log10normal</p></li>
+<li><p><strong>tau</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of the log10normal</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.Log10NormalAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#Log10NormalAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.Log10NormalAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.Log10NormalAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/lognormal_aux_sampler.html#Log10NormalAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.Log10NormalAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.NormalAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">NormalAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/normal_aux_sampler.html#NormalAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.NormalAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.NormalAuxSampler.mu">
+<span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#popsynth.aux_samplers.NormalAuxSampler.mu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.NormalAuxSampler.tau">
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#popsynth.aux_samplers.NormalAuxSampler.tau" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.NormalAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.NormalAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.NormalAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/normal_aux_sampler.html#NormalAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.NormalAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A normal distribution sampler,
+where property ~ N(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>mu</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Mean of the normal</p></li>
+<li><p><strong>tau</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of the normal</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.NormalAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/normal_aux_sampler.html#NormalAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.NormalAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.NormalAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/normal_aux_sampler.html#NormalAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.NormalAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">TruncatedNormalAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/trunc_normal_aux_sampler.html#TruncatedNormalAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.mu">
+<span class="sig-name descname"><span class="pre">mu</span></span><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.mu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.tau">
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.tau" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.lower">
+<span class="sig-name descname"><span class="pre">lower</span></span><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.lower" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.upper">
+<span class="sig-name descname"><span class="pre">upper</span></span><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.upper" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/trunc_normal_aux_sampler.html#TruncatedNormalAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A truncated normal sampler,
+where property ~ N(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code>), between
+<code class="docutils literal notranslate"><span class="pre">lower</span></code> and <code class="docutils literal notranslate"><span class="pre">upper</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>mu</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Mean of the normal</p></li>
+<li><p><strong>tau</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of the normal</p></li>
+<li><p><strong>lower</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Lower bound of the truncation</p></li>
+<li><p><strong>upper</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Upper bound of the truncation</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/trunc_normal_aux_sampler.html#TruncatedNormalAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.TruncatedNormalAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/trunc_normal_aux_sampler.html#TruncatedNormalAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.TruncatedNormalAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ParetoAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">ParetoAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#ParetoAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.ParetoAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ParetoAuxSampler.xmin">
+<span class="sig-name descname"><span class="pre">xmin</span></span><a class="headerlink" href="#popsynth.aux_samplers.ParetoAuxSampler.xmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ParetoAuxSampler.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#popsynth.aux_samplers.ParetoAuxSampler.alpha" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ParetoAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.ParetoAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ParetoAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#ParetoAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.ParetoAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A pareto distribution sampler,
+where property ~ 1 / x^(<code class="docutils literal notranslate"><span class="pre">alpha</span></code> + 1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>xmin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Minimum value of the pareto</p></li>
+<li><p><strong>alpha</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Index of the pareto</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ParetoAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#ParetoAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.ParetoAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.ParetoAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#ParetoAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.ParetoAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">PowerLawAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#PowerLawAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler.xmin">
+<span class="sig-name descname"><span class="pre">xmin</span></span><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler.xmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler.xmax">
+<span class="sig-name descname"><span class="pre">xmax</span></span><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler.xmax" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler.alpha" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler.sigma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#PowerLawAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A bounded power law distribution sampler,
+where property ~ x^``alpha``.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>xmin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Minimum value of the power law</p></li>
+<li><p><strong>xmax</strong> (:class:<a href="#id1"><span class="problematic" id="id2">``</span></a>AuxiliaryParameter) – Maximum value of the power law</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#PowerLawAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.PowerLawAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#PowerLawAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.PowerLawAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.aux_samplers.</span></span><span class="sig-name descname"><span class="pre">BrokenPowerLawAuxSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#BrokenPowerLawAuxSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.auxiliary_sampler.AuxiliarySampler" title="popsynth.auxiliary_sampler.AuxiliarySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.auxiliary_sampler.AuxiliarySampler</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.xmin">
+<span class="sig-name descname"><span class="pre">xmin</span></span><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.xmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.alpha" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.xbreak">
+<span class="sig-name descname"><span class="pre">xbreak</span></span><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.xbreak" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.beta">
+<span class="sig-name descname"><span class="pre">beta</span></span><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.beta" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.xmax">
+<span class="sig-name descname"><span class="pre">xmax</span></span><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.xmax" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#BrokenPowerLawAuxSampler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A broken power law distribution sampler,
+where property ~ x^``alpha`` for x &lt; <code class="docutils literal notranslate"><span class="pre">xbreak</span></code>,
+and property ~ x^``beta`` for x &gt; <code class="docutils literal notranslate"><span class="pre">xbreak</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the property</p></li>
+<li><p><strong>observed</strong> (<em>bool</em>) – <cite>True</cite> if the property is observed,
+<cite>False</cite> if it is latent. Defaults to <cite>True</cite></p></li>
+<li><p><strong>xmin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Minimum value of the broken power law</p></li>
+<li><p><strong>xmax</strong> (:class:<a href="#id3"><span class="problematic" id="id4">``</span></a>AuxiliaryParameter) – Maximum value of the broken power law</p></li>
+<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AuxiliaryParameter</span></code>) – Standard deviation of normal distribution
+from which observed values are sampled, if <code class="docutils literal notranslate"><span class="pre">observed</span></code>
+is <cite>True</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.true_sampler">
+<span class="sig-name descname"><span class="pre">true_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#BrokenPowerLawAuxSampler.true_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.true_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.aux_samplers.BrokenPowerLawAuxSampler.observation_sampler">
+<span class="sig-name descname"><span class="pre">observation_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/aux_samplers/plaw_aux_sampler.html#BrokenPowerLawAuxSampler.observation_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.aux_samplers.BrokenPowerLawAuxSampler.observation_sampler" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="popsynth.html" class="btn btn-neutral float-left" title="popsynth package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="popsynth.aux_samplers.delta_aux_sampler.html" class="btn btn-neutral float-right" title="popsynth.aux_samplers.delta_aux_sampler module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

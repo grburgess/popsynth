@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.utils.logging &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="stylesheet" href="../../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> popsynth
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.utils.logging</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.utils.logging</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">logging.handlers</span> <span class="k">as</span> <span class="nn">handlers</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">colorama</span>
+<span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">Back</span><span class="p">,</span> <span class="n">Fore</span><span class="p">,</span> <span class="n">Style</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.utils.configuration</span> <span class="kn">import</span> <span class="n">popsynth_config</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.package_data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_path_of_log_dir</span><span class="p">,</span>
+    <span class="n">get_path_of_log_file</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">colorama</span><span class="o">.</span><span class="n">deinit</span><span class="p">()</span>
+<span class="n">colorama</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># set up the console logging</span>
+
+
+<div class="viewcode-block" id="ColoredFormatter"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.ColoredFormatter">[docs]</a><span class="k">class</span> <span class="nc">ColoredFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Colored log formatter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ColoredFormatter.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.ColoredFormatter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">colors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the formatter with specified format strings.&quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="n">colors</span> <span class="k">if</span> <span class="n">colors</span> <span class="k">else</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="ColoredFormatter.format"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.ColoredFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Format the specified record as text.&quot;&quot;&quot;</span>
+
+        <span class="n">record</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">levelname</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">reset</span> <span class="o">=</span> <span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="MyFilter"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.MyFilter">[docs]</a><span class="k">class</span> <span class="nc">MyFilter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="MyFilter.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.MyFilter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__level</span> <span class="o">=</span> <span class="n">level</span></div>
+
+<div class="viewcode-block" id="MyFilter.filter"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.MyFilter.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logRecord</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">logRecord</span><span class="o">.</span><span class="n">levelno</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__level</span></div></div>
+
+
+<span class="c1"># now create the developer handler that rotates every day and keeps</span>
+<span class="c1"># 10 days worth of backup</span>
+<span class="n">popsynth_dev_log_handler</span> <span class="o">=</span> <span class="n">handlers</span><span class="o">.</span><span class="n">TimedRotatingFileHandler</span><span class="p">(</span>
+    <span class="n">get_path_of_log_file</span><span class="p">(</span><span class="s2">&quot;dev.log&quot;</span><span class="p">),</span> <span class="n">when</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">backupCount</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="c1"># lots of info written out</span>
+
+<span class="n">_dev_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> | </span><span class="si">%(name)s</span><span class="s2"> | </span><span class="si">%(levelname)s</span><span class="s2">| </span><span class="si">%(funcName)s</span><span class="s2"> | </span><span class="si">%(lineno)d</span><span class="s2"> | </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">popsynth_dev_log_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">_dev_formatter</span><span class="p">)</span>
+<span class="n">popsynth_dev_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="c1"># now set up the usr log which will save the info</span>
+
+<span class="n">popsynth_usr_log_handler</span> <span class="o">=</span> <span class="n">handlers</span><span class="o">.</span><span class="n">TimedRotatingFileHandler</span><span class="p">(</span>
+    <span class="n">get_path_of_log_file</span><span class="p">(</span><span class="s2">&quot;usr.log&quot;</span><span class="p">),</span> <span class="n">when</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">backupCount</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+
+<span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">popsynth_config</span><span class="p">[</span><span class="s2">&quot;logging&quot;</span><span class="p">][</span><span class="s2">&quot;file&quot;</span><span class="p">][</span><span class="s2">&quot;level&quot;</span><span class="p">])</span>
+
+<span class="c1"># lots of info written out</span>
+<span class="n">_usr_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> | </span><span class="si">%(levelname)s</span><span class="s2"> | </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+<span class="p">)</span>
+
+<span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">_usr_formatter</span><span class="p">)</span>
+
+<span class="c1"># now set up the console logger</span>
+
+<span class="n">_console_formatter</span> <span class="o">=</span> <span class="n">ColoredFormatter</span><span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">{color}</span><span class="s2"> </span><span class="si">{levelname:8}</span><span class="s2"> </span><span class="si">{reset}</span><span class="s2">| </span><span class="si">{color}</span><span class="s2"> </span><span class="si">{message}</span><span class="s2"> </span><span class="si">{reset}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span>
+    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span>
+    <span class="n">colors</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;DEBUG&quot;</span><span class="p">:</span> <span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span>
+        <span class="s2">&quot;INFO&quot;</span><span class="p">:</span> <span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span> <span class="o">+</span> <span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span>
+        <span class="s2">&quot;WARNING&quot;</span><span class="p">:</span> <span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span> <span class="o">+</span> <span class="n">Style</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span>
+        <span class="s2">&quot;ERROR&quot;</span><span class="p">:</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RED</span> <span class="o">+</span> <span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span>
+        <span class="s2">&quot;CRITICAL&quot;</span><span class="p">:</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RED</span> <span class="o">+</span> <span class="n">Back</span><span class="o">.</span><span class="n">WHITE</span> <span class="o">+</span> <span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">popsynth_console_log_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+<span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">_console_formatter</span><span class="p">)</span>
+<span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span>
+    <span class="n">popsynth_config</span><span class="p">[</span><span class="s2">&quot;logging&quot;</span><span class="p">][</span><span class="s2">&quot;console&quot;</span><span class="p">][</span><span class="s2">&quot;level&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">warning_filter</span> <span class="o">=</span> <span class="n">MyFilter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LoggingState"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.LoggingState">[docs]</a><span class="k">class</span> <span class="nc">LoggingState</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="LoggingState.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.LoggingState.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">popsynth_usr_log_handler</span><span class="p">,</span>
+        <span class="n">popsynth_console_log_handler</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A container to store the state of the logs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># attach the log handlers</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_usr_log_handler</span> <span class="o">=</span> <span class="n">popsynth_usr_log_handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler</span> <span class="o">=</span> <span class="n">popsynth_console_log_handler</span>
+
+        <span class="c1"># store their current states</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_usr_log_handler_state</span> <span class="o">=</span> <span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler_state</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">level</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_store_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_usr_log_handler_state</span> <span class="o">=</span> <span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler_state</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">level</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="LoggingState.restore_last_state"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.LoggingState.restore_last_state">[docs]</a>    <span class="k">def</span> <span class="nf">restore_last_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_usr_log_handler_state</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler_state</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="LoggingState.silence_logs"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.LoggingState.silence_logs">[docs]</a>    <span class="k">def</span> <span class="nf">silence_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># store the state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_state</span><span class="p">()</span>
+
+        <span class="c1"># silence the logs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LoggingState.loud_logs"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.LoggingState.loud_logs">[docs]</a>    <span class="k">def</span> <span class="nf">loud_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># store the state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_state</span><span class="p">()</span>
+
+        <span class="c1"># silence the logs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LoggingState.debug_logs"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.LoggingState.debug_logs">[docs]</a>    <span class="k">def</span> <span class="nf">debug_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># store the state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_state</span><span class="p">()</span>
+
+        <span class="c1"># silence the logs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span></div></div>
+
+
+<span class="n">_log_state</span> <span class="o">=</span> <span class="n">LoggingState</span><span class="p">(</span>
+    <span class="n">popsynth_usr_log_handler</span><span class="p">,</span>
+    <span class="n">popsynth_console_log_handler</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="silence_warnings"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.silence_warnings">[docs]</a><span class="k">def</span> <span class="nf">silence_warnings</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Supress warning messages in console and file usr logs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">warning_filter</span><span class="p">)</span>
+    <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">warning_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="activate_warnings"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.activate_warnings">[docs]</a><span class="k">def</span> <span class="nf">activate_warnings</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Supress warning messages in console and file usr logs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">removeFilter</span><span class="p">(</span><span class="n">warning_filter</span><span class="p">)</span>
+    <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">removeFilter</span><span class="p">(</span><span class="n">warning_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="update_logging_level"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.update_logging_level">[docs]</a><span class="k">def</span> <span class="nf">update_logging_level</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
+
+    <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="silence_logs"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.silence_logs">[docs]</a><span class="k">def</span> <span class="nf">silence_logs</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turn off all logging.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># handle dev logs independently</span>
+    <span class="n">popsynth_dev_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">)</span>
+
+    <span class="n">_log_state</span><span class="o">.</span><span class="n">silence_logs</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="show_progress_bars"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.show_progress_bars">[docs]</a><span class="k">def</span> <span class="nf">show_progress_bars</span><span class="p">():</span>
+
+    <span class="n">popsynth_config</span><span class="o">.</span><span class="n">show_progress</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="silence_progress_bars"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.silence_progress_bars">[docs]</a><span class="k">def</span> <span class="nf">silence_progress_bars</span><span class="p">():</span>
+
+    <span class="n">popsynth_config</span><span class="o">.</span><span class="n">show_progress</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="quiet_mode"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.quiet_mode">[docs]</a><span class="k">def</span> <span class="nf">quiet_mode</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turn off all logging and progress bars.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">silence_progress_bars</span><span class="p">()</span>
+
+    <span class="c1"># save state and silence</span>
+    <span class="n">silence_logs</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="loud_mode"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.loud_mode">[docs]</a><span class="k">def</span> <span class="nf">loud_mode</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turn on all progress bars and logging.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">show_progress_bars</span><span class="p">()</span>
+
+    <span class="c1"># save state and make loud</span>
+    <span class="n">_log_state</span><span class="o">.</span><span class="n">loud_logs</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="activate_logs"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.activate_logs">[docs]</a><span class="k">def</span> <span class="nf">activate_logs</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Re-activate silenced logs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># handle dev logs independently</span>
+    <span class="n">popsynth_dev_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="n">_log_state</span><span class="o">.</span><span class="n">restore_last_state</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="debug_mode"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.debug_mode">[docs]</a><span class="k">def</span> <span class="nf">debug_mode</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Activate debug in the console.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># store state and switch console to debug</span>
+    <span class="n">_log_state</span><span class="o">.</span><span class="n">debug_logs</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="silence_console_log"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.silence_console_log">[docs]</a><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">silence_console_log</span><span class="p">():</span>
+
+    <span class="n">current_console_logging_level</span> <span class="o">=</span> <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">level</span>
+    <span class="n">current_usr_logging_level</span> <span class="o">=</span> <span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">level</span>
+
+    <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+    <span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+
+        <span class="n">popsynth_console_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">current_console_logging_level</span><span class="p">)</span>
+        <span class="n">popsynth_usr_log_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">current_usr_logging_level</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setup_logger"><a class="viewcode-back" href="../../../notebooks/api/popsynth.utils.html#popsynth.utils.logging.setup_logger">[docs]</a><span class="k">def</span> <span class="nf">setup_logger</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up a new logger.</span>
+
+<span class="sd">    :param name: Name of the logger</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># A logger with name name will be created</span>
+    <span class="c1"># and then add it to the print stream</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># this must be set to allow debug messages through</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="c1"># add the handlers</span>
+
+    <span class="k">if</span> <span class="n">popsynth_config</span><span class="p">[</span><span class="s2">&quot;logging&quot;</span><span class="p">][</span><span class="s2">&quot;debug&quot;</span><span class="p">]:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">popsynth_dev_log_handler</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">popsynth_config</span><span class="p">[</span><span class="s2">&quot;logging&quot;</span><span class="p">][</span><span class="s2">&quot;console&quot;</span><span class="p">][</span><span class="s2">&quot;on&quot;</span><span class="p">]:</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">popsynth_console_log_handler</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">popsynth_config</span><span class="p">[</span><span class="s2">&quot;logging&quot;</span><span class="p">][</span><span class="s2">&quot;file&quot;</span><span class="p">][</span><span class="s2">&quot;on&quot;</span><span class="p">]:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">popsynth_usr_log_handler</span><span class="p">)</span>
+
+    <span class="c1"># we do not want to duplicate teh messages in the parents</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">log</span></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

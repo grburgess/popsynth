@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.distributions.cosmological_distribution &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="stylesheet" href="../../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> popsynth
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.distributions.cosmological_distribution</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.distributions.cosmological_distribution</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">numba</span> <span class="k">as</span> <span class="nn">nb</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.distribution</span> <span class="kn">import</span> <span class="n">DistributionParameter</span><span class="p">,</span> <span class="n">SpatialDistribution</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.cosmology</span> <span class="kn">import</span> <span class="n">cosmology</span>
+
+
+<div class="viewcode-block" id="CosmologicalDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.CosmologicalDistribution">[docs]</a><span class="k">class</span> <span class="nc">CosmologicalDistribution</span><span class="p">(</span><span class="n">SpatialDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;CosmologicalDistribution&quot;</span>
+
+<div class="viewcode-block" id="CosmologicalDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.CosmologicalDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cosmo&quot;</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">truth</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">is_rate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Base class for cosmological spatial distributions.</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param form: Mathematical description of distribution</span>
+<span class="sd">        :type form: str</span>
+<span class="sd">        :param truth: True values of parameters</span>
+<span class="sd">        :type truth: dict[str, Any]</span>
+<span class="sd">        :param is_rate: `True` if modelling a population of transient events,</span>
+<span class="sd">            `False` if modelling a population of steady-state objects.</span>
+<span class="sd">            Affects the ``time_adjustment`` method used in cosmo calculations.</span>
+<span class="sd">            Default is `True`.</span>
+<span class="sd">        :type is_rate: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CosmologicalDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_rate</span> <span class="o">=</span> <span class="n">is_rate</span></div>
+
+<div class="viewcode-block" id="CosmologicalDistribution.differential_volume"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.CosmologicalDistribution.differential_volume">[docs]</a>    <span class="k">def</span> <span class="nf">differential_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Differential comoving volume in Gpc^3 sr^-1.</span>
+
+<span class="sd">        dV/dzdOmega</span>
+
+<span class="sd">        :param z: Redshift</span>
+<span class="sd">        :returns: The differential comoving volume in</span>
+<span class="sd">            Gpc^-3 sr^-1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">differential_comoving_volume</span><span class="p">(</span><span class="n">z</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CosmologicalDistribution.transform"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.CosmologicalDistribution.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transformation from luminosity to energy flux.</span>
+
+<span class="sd">        L / 4 pi dL^2</span>
+
+<span class="sd">        dL is in cm. Therefore for L in erg s^-1 returns</span>
+<span class="sd">        flux in erg cm^-2 s^-1.</span>
+
+<span class="sd">        :param L: Luminosity</span>
+<span class="sd">        :param z: Redshift</span>
+<span class="sd">        :returns: Flux</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">L</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CosmologicalDistribution.time_adjustment"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.CosmologicalDistribution.time_adjustment">[docs]</a>    <span class="k">def</span> <span class="nf">time_adjustment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Time adjustment factor to handle both</span>
+<span class="sd">        transient and steady-state populations.</span>
+
+<span class="sd">        :param z: Redshift</span>
+<span class="sd">        :returns: Appropriate factor depending on ``is_rate``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rate</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">z</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="mf">1.0</span></div></div>
+
+
+<div class="viewcode-block" id="SFRDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SFRDistribution">[docs]</a><span class="k">class</span> <span class="nc">SFRDistribution</span><span class="p">(</span><span class="n">CosmologicalDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;SFRDistribution&quot;</span>
+
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">rise</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+    <span class="n">decay</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+    <span class="n">peak</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SFRDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SFRDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sfr&quot;</span><span class="p">,</span> <span class="n">is_rate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A star-formation like distribution of the form</span>
+<span class="sd">        presented in Cole et al. 2001.</span>
+
+<span class="sd">        ``r0``(``a``+``rise``z)/(1 + (z/``peak``)^``decay``)</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param is_rate: `True` if modelling a population of transient events,</span>
+<span class="sd">            `False` if modelling a population of steady-state objects.</span>
+<span class="sd">            Affects the ``time_adjustment`` method used in cosmo calculations.</span>
+<span class="sd">            Default is `True`.</span>
+<span class="sd">        :type is_rate: bool</span>
+<span class="sd">        :param r0: The local density in units of Gpc^-3</span>
+<span class="sd">        :type r0: :class:`DistributionParameter`</span>
+<span class="sd">        :param a: Offset at z=0</span>
+<span class="sd">        :type a: :class:`DistributionParameter`</span>
+<span class="sd">        :param rise: Rise at low z</span>
+<span class="sd">        :type rise: :class:`DistributionParameter`</span>
+<span class="sd">        :param decay: Decay at high z</span>
+<span class="sd">        :type decay: :class:`DistributionParameter`</span>
+<span class="sd">        :param peak: Peak of z distribution</span>
+<span class="sd">        :type peak: :class:`DistributionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spatial_form</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\rho_0 \frac{a+r \cdot z}{1+ \left(z/p\right)^d}&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SFRDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">spatial_form</span><span class="p">,</span>
+            <span class="n">is_rate</span><span class="o">=</span><span class="n">is_rate</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SFRDistribution.dNdV"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.SFRDistribution.dNdV">[docs]</a>    <span class="k">def</span> <span class="nf">dNdV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_sfr_dndv</span><span class="p">(</span>
+            <span class="n">z</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rise</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decay</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peak</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_sfr_dndv</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">rise</span><span class="p">,</span> <span class="n">decay</span><span class="p">,</span> <span class="n">peak</span><span class="p">):</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">rise</span> <span class="o">*</span> <span class="n">z</span>
+    <span class="n">bottom</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">z</span> <span class="o">/</span> <span class="n">peak</span><span class="p">,</span> <span class="n">decay</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">r0</span> <span class="o">*</span> <span class="n">top</span> <span class="o">/</span> <span class="n">bottom</span>
+
+
+<div class="viewcode-block" id="ZPowerCosmoDistribution"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ZPowerCosmoDistribution">[docs]</a><span class="k">class</span> <span class="nc">ZPowerCosmoDistribution</span><span class="p">(</span><span class="n">CosmologicalDistribution</span><span class="p">):</span>
+    <span class="n">_distribution_name</span> <span class="o">=</span> <span class="s2">&quot;ZPowerCosmoDistribution&quot;</span>
+
+    <span class="n">Lambda</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">DistributionParameter</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ZPowerCosmoDistribution.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ZPowerCosmoDistribution.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zpow_cosmo&quot;</span><span class="p">,</span>
+        <span class="n">is_rate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A cosmological distribution where the density</span>
+<span class="sd">        evolves as a power law.</span>
+
+<span class="sd">        ``Lambda`` (1+z)^``delta``</span>
+
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        :param name: Name of the distribution</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param is_rate: `True` if modelling a population of transient events,</span>
+<span class="sd">            `False` if modelling a population of steady-state objects.</span>
+<span class="sd">            Affects the ``time_adjustment`` method used in cosmo calculations.</span>
+<span class="sd">            Default is `True`.</span>
+<span class="sd">        :type is_rate: bool</span>
+<span class="sd">        :param Lambda: The local density in units of Gpc^-3</span>
+<span class="sd">        :type Lambda: :class:`DistributionParameter`</span>
+<span class="sd">        :param delta: The index of the power law</span>
+<span class="sd">        :type delta: :class:`DistributionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spatial_form</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\Lambda (z+1)^{\delta}&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZPowerCosmoDistribution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="n">spatial_form</span><span class="p">,</span>
+            <span class="n">is_rate</span><span class="o">=</span><span class="n">is_rate</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ZPowerCosmoDistribution.dNdV"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.ZPowerCosmoDistribution.dNdV">[docs]</a>    <span class="k">def</span> <span class="nf">dNdV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">_zp_dndv</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lambda</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span></div></div>
+
+
+<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_zp_dndv</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">delta</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Lambda</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+
+
+<span class="c1"># class MergerDistribution(CosmologicalDistribution):</span>
+<span class="c1"># _distribution_name = &quot;MergerDistribution&quot;</span>
+<span class="c1">#     def __init__(self, r0, td, sigma, r_max=10, seed=1234, name=&quot;merger&quot;):</span>
+
+<span class="c1">#         spatial_form = r&quot;\rho_0 \frac{1+r \cdot z}{1+ \left(z/p\right)^d}&quot;</span>
+
+<span class="c1">#         super(MergerDistribution, self).__init__(</span>
+<span class="c1">#             r_max=r_max, seed=seed, name=name, form=spatial_form</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         self._td = td</span>
+<span class="c1">#         self._sigma = sigma</span>
+
+<span class="c1">#     def _sfr(self, z):</span>
+
+<span class="c1">#         top = 0.01 + 0.12 * z</span>
+<span class="c1">#         bottom = 1.0 + np.power(z / 3.23, 4.66)</span>
+<span class="c1">#         return top / bottom</span>
+
+<span class="c1">#     def _delay_time(self, tau):</span>
+<span class="c1">#         return np.exp(</span>
+<span class="c1">#             -((np.log(tau) - np.log(self._td)) ** 2) / (2 * self._sigma ** 2)</span>
+<span class="c1">#         ) / (np.sqrt(2 * np.pi) * self._sigma)</span>
+
+<span class="c1">#     def dNdV(self, z):</span>
+
+<span class="c1">#         integrand = lambda x: self._sfr(x) * self._delay_time(</span>
+<span class="c1">#             cosmo.lookback_time(x).value</span>
+<span class="c1">#         )</span>
+<span class="c1">#         out = []</span>
+
+<span class="c1">#         try:</span>
+<span class="c1">#             return self.r0 * integrate.quad(integrand, z, np.infty)[0]</span>
+
+<span class="c1">#         except:</span>
+<span class="c1">#             for zz in z:</span>
+
+<span class="c1">#                 out.append(integrate.quad(integrand, zz, np.infty)[0])</span>
+
+<span class="c1">#             return self.r0 * np.array(out)</span>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

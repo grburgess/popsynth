@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.selection_probability package &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="popsynth.selection_probability.flux_selectors module" href="popsynth.selection_probability.flux_selectors.html" />
+    <link rel="prev" title="popsynth.populations.spatial_populations module" href="popsynth.populations.spatial_populations.html" />
+  <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> popsynth
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="API.html">API</a> &raquo;</li>
+          <li><a href="popsynth.html">popsynth package</a> &raquo;</li>
+      <li>popsynth.selection_probability package</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="popsynth-selection-probability-package">
+<h1>popsynth.selection_probability package<a class="headerlink" href="#popsynth-selection-probability-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.selection_probability.flux_selectors.html">popsynth.selection_probability.flux_selectors module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.selection_probability.generic_selectors.html">popsynth.selection_probability.generic_selectors module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.selection_probability.selection_probability.html">popsynth.selection_probability.selection_probability module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="popsynth.selection_probability.spatial_selection.html">popsynth.selection_probability.spatial_selection module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-popsynth.selection_probability">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-popsynth.selection_probability" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.HardFluxSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">HardFluxSelection</span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/flux_selectors.html#HardFluxSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.HardFluxSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.generic_selectors.LowerBound" title="popsynth.selection_probability.generic_selectors.LowerBound"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.generic_selectors.LowerBound</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.HardFluxSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/flux_selectors.html#HardFluxSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.HardFluxSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A hard selection on the observed flux.</p>
+<p>Based on <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.LowerBound" title="popsynth.selection_probability.LowerBound"><code class="xref py py-class docutils literal notranslate"><span class="pre">LowerBound</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.HardFluxSelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/flux_selectors.html#HardFluxSelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.HardFluxSelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftFluxSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">SoftFluxSelection</span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/flux_selectors.html#SoftFluxSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SoftFluxSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.generic_selectors.SoftSelection" title="popsynth.selection_probability.generic_selectors.SoftSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.generic_selectors.SoftSelection</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftFluxSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/flux_selectors.html#SoftFluxSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SoftFluxSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A soft selection on the observed flux.</p>
+<p>Based on <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SoftSelection" title="popsynth.selection_probability.SoftSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SoftSelection</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftFluxSelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/flux_selectors.html#SoftFluxSelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SoftFluxSelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BernoulliSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">BernoulliSelection</span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#BernoulliSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.BernoulliSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BernoulliSelection.probability">
+<span class="sig-name descname"><span class="pre">probability</span></span><a class="headerlink" href="#popsynth.selection_probability.BernoulliSelection.probability" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BernoulliSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#BernoulliSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.BernoulliSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A Bernoulli selection with <code class="docutils literal notranslate"><span class="pre">probability</span></code> as a parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Probability for each Bernoulli trial</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BernoulliSelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#BernoulliSelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.BernoulliSelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.LowerBound">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">LowerBound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Hard</span> <span class="pre">selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#LowerBound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.LowerBound" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.LowerBound.boundary">
+<span class="sig-name descname"><span class="pre">boundary</span></span><a class="headerlink" href="#popsynth.selection_probability.LowerBound.boundary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.LowerBound.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Hard</span> <span class="pre">selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#LowerBound.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.LowerBound.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A hard, lower bound selection on obs_value, distance,
+luminosity or flux.</p>
+<p>Selects values &gt;= <code class="docutils literal notranslate"><span class="pre">boundary</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the selection</p></li>
+<li><p><strong>use_obs_value</strong> (<em>bool</em>) – If <cite>True</cite>, make selection on
+observed_value. <cite>False</cite> by default.</p></li>
+<li><p><strong>use_distance</strong> (<em>bool</em>) – If <cite>True</cite> make selection on distance.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_luminosity</strong> (<em>bool</em>) – If <cite>True</cite> make selection on luminosity.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_flux</strong> (<em>bool</em>) – If <cite>True</cite> make selection on flux. <cite>False</cite> by default.</p></li>
+<li><p><strong>boundary</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Value of the selection boundary</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.LowerBound.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#LowerBound.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.LowerBound.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.UpperBound">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">UpperBound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Hard</span> <span class="pre">selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#UpperBound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.UpperBound" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.UpperBound.boundary">
+<span class="sig-name descname"><span class="pre">boundary</span></span><a class="headerlink" href="#popsynth.selection_probability.UpperBound.boundary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.UpperBound.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Hard</span> <span class="pre">selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#UpperBound.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.UpperBound.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A hard, upper bound selection on obs_value, distance,
+luminosity or flux.</p>
+<p>Selects values &lt;= <code class="docutils literal notranslate"><span class="pre">boundary</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the selection</p></li>
+<li><p><strong>use_obs_value</strong> (<em>bool</em>) – If <cite>True</cite>, make selection on
+observed_value. <cite>False</cite> by default.</p></li>
+<li><p><strong>use_distance</strong> (<em>bool</em>) – If <cite>True</cite> make selection on distance.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_luminosity</strong> (<em>bool</em>) – If <cite>True</cite> make selection on luminosity.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_flux</strong> (<em>bool</em>) – If <cite>True</cite> make selection on flux. <cite>False</cite> by default.</p></li>
+<li><p><strong>boundary</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Value of the selection boundary</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.UpperBound.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#UpperBound.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.UpperBound.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">SoftSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Soft</span> <span class="pre">Selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#SoftSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SoftSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftSelection.boundary">
+<span class="sig-name descname"><span class="pre">boundary</span></span><a class="headerlink" href="#popsynth.selection_probability.SoftSelection.boundary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftSelection.strength">
+<span class="sig-name descname"><span class="pre">strength</span></span><a class="headerlink" href="#popsynth.selection_probability.SoftSelection.strength" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Soft</span> <span class="pre">Selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#SoftSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SoftSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A soft selection using an inverse logit function either on the
+log or linear value of the observed_value, distance,
+luminosity or flux.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the selection</p></li>
+<li><p><strong>use_obs_value</strong> (<em>bool</em>) – If <cite>True</cite>, make selection on
+observed_value. <cite>False</cite> by default.</p></li>
+<li><p><strong>use_distance</strong> (<em>bool</em>) – If <cite>True</cite> make selection on distance.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_luminosity</strong> (<em>bool</em>) – If <cite>True</cite> make selection on luminosity.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_flux</strong> (<em>bool</em>) – If <cite>True</cite> make selection on flux. <cite>False</cite> by default.</p></li>
+<li><p><strong>boundary</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Center of the inverse logit</p></li>
+<li><p><strong>strength</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Width of the logit</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SoftSelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#SoftSelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SoftSelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.UnitySelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">UnitySelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unity'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#UnitySelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.UnitySelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.UnitySelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unity'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#UnitySelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.UnitySelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A selection that returns all selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the selection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.UnitySelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#UnitySelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.UnitySelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">SelectionProbability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Base class for selections on a population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the selection</p></li>
+<li><p><strong>use_obs_value</strong> (<em>bool</em>) – If <cite>True</cite>, make selection on
+observed_value. <cite>False</cite> by default.</p></li>
+<li><p><strong>use_distance</strong> (<em>bool</em>) – If <cite>True</cite> make selection on distance.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_luminosity</strong> (<em>bool</em>) – If <cite>True</cite> make selection on luminosity.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_flux</strong> (<em>bool</em>) – If <cite>True</cite> make selection on flux. <cite>False</cite> by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.set_luminosity">
+<span class="sig-name descname"><span class="pre">set_luminosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.set_luminosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.set_luminosity" title="Permalink to this definition"></a></dt>
+<dd><p>Set the luminosity of the selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.set_distance">
+<span class="sig-name descname"><span class="pre">set_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.set_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.set_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Set the distance of the selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.set_observed_flux">
+<span class="sig-name descname"><span class="pre">set_observed_flux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observed_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.set_observed_flux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.set_observed_flux" title="Permalink to this definition"></a></dt>
+<dd><p>Set the observed flux of the selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.set_observed_value">
+<span class="sig-name descname"><span class="pre">set_observed_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observed_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.set_observed_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.set_observed_value" title="Permalink to this definition"></a></dt>
+<dd><p>Set the observed value of the selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.draw">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the selector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.select">
+<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionProbability.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.select" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.parameters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.parameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.selection">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selection</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.selection" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.n_selected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_selected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.n_selected" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.n_non_selected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_non_selected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.n_non_selected" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.n_objects">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_objects</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.n_objects" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.selection_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selection_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.selection_index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.non_selection_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_selection_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.non_selection_index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionProbability.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#popsynth.selection_probability.SelectionProbability.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SpatialSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">SpatialSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#SpatialSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SpatialSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SpatialSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#SpatialSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SpatialSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A generic spatial selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the selection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SpatialSelection.set_spatial_distribution">
+<span class="sig-name descname"><span class="pre">set_spatial_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spatial_distribtuion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution" title="popsynth.distribution.SpatialDistribution"><span class="pre">popsynth.distribution.SpatialDistribution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#SpatialSelection.set_spatial_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SpatialSelection.set_spatial_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>Set the spatial distribution for the selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spatial_distribution</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SpatialDistribution</span></code>) – The spatial_distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BoxSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">BoxSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'box</span> <span class="pre">selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#BoxSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.BoxSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BoxSelection.vmin">
+<span class="sig-name descname"><span class="pre">vmin</span></span><a class="headerlink" href="#popsynth.selection_probability.BoxSelection.vmin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BoxSelection.vmax">
+<span class="sig-name descname"><span class="pre">vmax</span></span><a class="headerlink" href="#popsynth.selection_probability.BoxSelection.vmax" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BoxSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'box</span> <span class="pre">selection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_obs_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_luminosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flux</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#BoxSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.BoxSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A box selection on observed_value, distance,
+luminosity or flux.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the selection</p></li>
+<li><p><strong>use_obs_value</strong> (<em>bool</em>) – If <cite>True</cite>, make selection on
+observed_value. <cite>False</cite> by default.</p></li>
+<li><p><strong>use_distance</strong> (<em>bool</em>) – If <cite>True</cite> make selection on distance.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_luminosity</strong> (<em>bool</em>) – If <cite>True</cite> make selection on luminosity.
+<cite>False</cite> by default.</p></li>
+<li><p><strong>use_flux</strong> (<em>bool</em>) – If <cite>True</cite> make selection on flux. <cite>False</cite> by default.</p></li>
+<li><p><strong>vmin</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Minimum value of selection</p></li>
+<li><p><strong>vmax</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Maximum value of selection</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.BoxSelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/generic_selectors.html#BoxSelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.BoxSelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DummySelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">DummySelection</span></span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#DummySelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.DummySelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.selection_probability.SelectionProbability" title="popsynth.selection_probability.selection_probability.SelectionProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.selection_probability.SelectionProbability</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DummySelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#DummySelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.DummySelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A Dummy selection for testing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DummySelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#DummySelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.DummySelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.SelectionParameter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">SelectionParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/selection_probability.html#SelectionParameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.SelectionParameter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.utils.html#popsynth.utils.meta.Parameter" title="popsynth.utils.meta.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.utils.meta.Parameter</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.GalacticPlaneSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">GalacticPlaneSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'galactic</span> <span class="pre">plane</span> <span class="pre">selector'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#GalacticPlaneSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.GalacticPlaneSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.spatial_selection.SpatialSelection" title="popsynth.selection_probability.spatial_selection.SpatialSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.spatial_selection.SpatialSelection</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.GalacticPlaneSelection.b_limit">
+<span class="sig-name descname"><span class="pre">b_limit</span></span><a class="headerlink" href="#popsynth.selection_probability.GalacticPlaneSelection.b_limit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.GalacticPlaneSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'galactic</span> <span class="pre">plane</span> <span class="pre">selector'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#GalacticPlaneSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.GalacticPlaneSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A selection that excludes objects near the galactic plane.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the selection</p></li>
+<li><p><strong>b_limit</strong> (<a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SelectionParameter" title="popsynth.selection_probability.SelectionParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionParameter</span></code></a>) – Limit around Galactic plane to exclude in
+Galactic latitude and in units of degrees</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.GalacticPlaneSelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#GalacticPlaneSelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.GalacticPlaneSelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DistanceSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.selection_probability.</span></span><span class="sig-name descname"><span class="pre">DistanceSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'distance'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#DistanceSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.DistanceSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.spatial_selection.SpatialSelection" title="popsynth.selection_probability.spatial_selection.SpatialSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">popsynth.selection_probability.spatial_selection.SpatialSelection</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DistanceSelection.min_distance">
+<span class="sig-name descname"><span class="pre">min_distance</span></span><a class="headerlink" href="#popsynth.selection_probability.DistanceSelection.min_distance" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DistanceSelection.max_distance">
+<span class="sig-name descname"><span class="pre">max_distance</span></span><a class="headerlink" href="#popsynth.selection_probability.DistanceSelection.max_distance" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DistanceSelection.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'distance'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#DistanceSelection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.DistanceSelection.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Select distances</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the selection</p></li>
+<li><p><strong>min_distance</strong> – minimum distance to select</p></li>
+<li><p><strong>max_distance</strong> – maximum distance to select</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="popsynth.selection_probability.DistanceSelection.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/selection_probability/spatial_selection.html#DistanceSelection.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.selection_probability.DistanceSelection.draw" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="popsynth.populations.spatial_populations.html" class="btn btn-neutral float-left" title="popsynth.populations.spatial_populations module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="popsynth.selection_probability.flux_selectors.html" class="btn btn-neutral float-right" title="popsynth.selection_probability.flux_selectors module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+popsynth.utils.cosmology module
+===============================
+
+.. automodule:: popsynth.utils.cosmology
+    :members:
+    :undoc-members:
+    :show-inheritance:

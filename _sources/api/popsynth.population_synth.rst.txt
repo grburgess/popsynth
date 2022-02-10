@@ -1,0 +1,7 @@
+popsynth.population_synth module
+================================
+
+.. automodule:: popsynth.population_synth
+    :members:
+    :undoc-members:
+    :show-inheritance:

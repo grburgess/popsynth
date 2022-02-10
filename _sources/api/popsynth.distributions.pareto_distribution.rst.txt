@@ -1,0 +1,7 @@
+popsynth.distributions.pareto_distribution module
+=================================================
+
+.. automodule:: popsynth.distributions.pareto_distribution
+    :members:
+    :undoc-members:
+    :show-inheritance:

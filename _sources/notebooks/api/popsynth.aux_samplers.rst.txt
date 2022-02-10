@@ -1,0 +1,69 @@
+popsynth.aux\_samplers package
+==============================
+
+Submodules
+----------
+
+popsynth.aux\_samplers.delta\_aux\_sampler module
+-------------------------------------------------
+
+.. automodule:: popsynth.aux_samplers.delta_aux_sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.aux\_samplers.lognormal\_aux\_sampler module
+-----------------------------------------------------
+
+.. automodule:: popsynth.aux_samplers.lognormal_aux_sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.aux\_samplers.normal\_aux\_sampler module
+--------------------------------------------------
+
+.. automodule:: popsynth.aux_samplers.normal_aux_sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.aux\_samplers.plaw\_aux\_sampler module
+------------------------------------------------
+
+.. automodule:: popsynth.aux_samplers.plaw_aux_sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.aux\_samplers.sky\_sampler module
+------------------------------------------
+
+.. automodule:: popsynth.aux_samplers.sky_sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.aux\_samplers.trunc\_normal\_aux\_sampler module
+---------------------------------------------------------
+
+.. automodule:: popsynth.aux_samplers.trunc_normal_aux_sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+popsynth.aux\_samplers.viewing\_angle\_sampler module
+-----------------------------------------------------
+
+.. automodule:: popsynth.aux_samplers.viewing_angle_sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: popsynth.aux_samplers
+   :members:
+   :undoc-members:
+   :show-inheritance:

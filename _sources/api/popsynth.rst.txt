@@ -1,0 +1,31 @@
+popsynth package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    popsynth.aux_samplers
+    popsynth.distributions
+    popsynth.populations
+    popsynth.selection_probability
+    popsynth.utils
+
+Submodules
+----------
+
+.. toctree::
+
+   popsynth.auxiliary_sampler
+   popsynth.distribution
+   popsynth.population
+   popsynth.population_synth
+
+Module contents
+---------------
+
+.. automodule:: popsynth
+    :members:
+    :undoc-members:
+    :show-inheritance:

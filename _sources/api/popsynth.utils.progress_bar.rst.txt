@@ -1,0 +1,7 @@
+popsynth.utils.progress_bar module
+==================================
+
+.. automodule:: popsynth.utils.progress_bar
+    :members:
+    :undoc-members:
+    :show-inheritance:

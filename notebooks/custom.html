@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="selections.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="distributions.html" />
+  <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> popsynth
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>&lt;no title&gt;</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<dl>
+<dt>{</dt><dd><dl>
+<dt>“cells”: [</dt><dd><dl>
+<dt>{</dt><dd><p>“cell_type”: “markdown”,
+“id”: “fa665e13”,
+“metadata”: {},
+“source”: [</p>
+<blockquote>
+<div><p>“# Custom distributions and populationsn”,
+“n”,
+“Custom populations can be created either by piecing together existing populations (spatial and luminosity populations) or building them from scratch with distributions.n”,
+“n”,
+“<strong>popsynth</strong> comes loaded with many combinations of typical population distributions. However, we demonstrate here how to create your own.”</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “markdown”,
+“id”: “01ad937d”,
+“metadata”: {},
+“source”: [</p>
+<blockquote>
+<div><p>“## Creating distributionsn”,
+“n”,
+“The population samplers rely on distributions. Each population has an internal spatial and luminosity distribution. For example, lets look at a simple spatial distribution:n”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “code”,
+“execution_count”: 1,
+“id”: “064ce678”,
+“metadata”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“execution”: {</dt><dd><p>“iopub.execute_input”: “2022-02-10T11:06:32.948342Z”,
+“iopub.status.busy”: “2022-02-10T11:06:32.941648Z”,
+“iopub.status.idle”: “2022-02-10T11:06:36.020774Z”,
+“shell.execute_reply”: “2022-02-10T11:06:36.019736Z”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>},
+“outputs”: [],
+“source”: [</p>
+<blockquote>
+<div><p>“%matplotlib inlinen”,
+“n”,
+“import numpy as npn”,
+“import matplotlib.pyplot as pltn”,
+“from jupyterthemes import jtplotn”,
+“n”,
+“jtplot.style(context=&quot;notebook&quot;, fscale=1, grid=False)n”,
+“purple = &quot;#B833FF&quot;n”,
+“yellow = &quot;#F6EF5B&quot;n”,
+“n”,
+“n”,
+“import popsynthn”,
+“n”,
+“popsynth.update_logging_level(&quot;INFO&quot;)n”,
+“import warningsn”,
+“n”,
+“warnings.simplefilter(&quot;ignore&quot;)”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “code”,
+“execution_count”: 2,
+“id”: “0eccf119”,
+“metadata”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“execution”: {</dt><dd><p>“iopub.execute_input”: “2022-02-10T11:06:36.026811Z”,
+“iopub.status.busy”: “2022-02-10T11:06:36.026350Z”,
+“iopub.status.idle”: “2022-02-10T11:06:36.028431Z”,
+“shell.execute_reply”: “2022-02-10T11:06:36.028036Z”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>},
+“outputs”: [],
+“source”: [</p>
+<blockquote>
+<div><p>“from popsynth.distribution import SpatialDistributionn”,
+“n”,
+“n”,
+“class MySphericalDistribution(SpatialDistribution):n”,
+“n”,
+”    # we need this property to register the classn”,
+“n”,
+”    _distribution_name = &quot;MySphericalDistribution&quot;n”,
+“n”,
+”    def __init__(n”,
+”        self,n”,
+”        seed=1234,n”,
+”        form=None,n”,
+”    ):n”,
+“n”,
+”        # the latex formula for the ditributionn”,
+”        form = r&quot;4 \pi r2&quot;n”,
+“n”,
+”        # we do not need a &quot;truth&quot; dict here becausen”,
+”        # there are no parametersn”,
+“n”,
+”        super(MySphericalDistribution, self).__init__(n”,
+”            seed=seed,n”,
+”            name=&quot;sphere&quot;,n”,
+”            form=form,n”,
+”        )n”,
+“n”,
+”    def differential_volume(self, r):n”,
+“n”,
+”        # the differential volume of a spheren”,
+”        return 4 * np.pi * r * rn”,
+“n”,
+”    def transform(self, L, r):n”,
+“n”,
+”        # luminosity to fluxn”,
+”        return L / (4.0 * np.pi * r * r)n”,
+“n”,
+”    def dNdV(self, r):n”,
+“n”,
+”        # define some crazy change in the number/volume for funn”,
+“n”,
+”        return 10.0 / (r + 1) ** 2”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “markdown”,
+“id”: “79b56c9a”,
+“metadata”: {},
+“source”: [</p>
+<blockquote>
+<div><p>“We simply define the differential volume and how luminosity is transformed to flux in the metric. Here, we have a simple sphere out to some <em>r_max</em>. We can of course subclass this object and add a normalization.n”,
+“n”,
+“n”,
+“Now we define a luminosity distribution.”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “code”,
+“execution_count”: 3,
+“id”: “67a73822”,
+“metadata”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“execution”: {</dt><dd><p>“iopub.execute_input”: “2022-02-10T11:06:36.035346Z”,
+“iopub.status.busy”: “2022-02-10T11:06:36.034312Z”,
+“iopub.status.idle”: “2022-02-10T11:06:36.035872Z”,
+“shell.execute_reply”: “2022-02-10T11:06:36.036234Z”</p>
+</dd>
+</dl>
+<p>},
+“lines_to_next_cell”: 2</p>
+</div></blockquote>
+<p>},
+“outputs”: [],
+“source”: [</p>
+<blockquote>
+<div><p>“from popsynth.distribution import LuminosityDistribution, DistributionParametern”,
+“n”,
+“n”,
+“class MyParetoDistribution(LuminosityDistribution):n”,
+”    _distribution_name = &quot;MyParetoDistribution&quot;n”,
+“n”,
+”    Lmin = DistributionParameter(default=1, vmin=0)n”,
+”    alpha = DistributionParameter(default=2)n”,
+“n”,
+”    def __init__(self, seed=1234, name=&quot;pareto&quot;):n”,
+“n”,
+”        # the latex formula for the ditributionn”,
+”        lf_form = r&quot;\frac{\alpha L_{\rm min}^{\alpha}}{L^{\alpha+1}}&quot;n”,
+“n”,
+”        super(MyParetoDistribution, self).__init__(n”,
+”            seed=seed,n”,
+”            name=&quot;pareto&quot;,n”,
+”            form=lf_form,n”,
+”        )n”,
+“n”,
+”    def phi(self, L):n”,
+“n”,
+”        # the actual function, only for plottingn”,
+“n”,
+”        out = np.zeros_like(L)n”,
+“n”,
+”        idx = L &gt;= self.Lminn”,
+“n”,
+”        out[idx] = self.alpha * self.Lmin ** self.alpha / L[idx] ** (self.alpha + 1)n”,
+“n”,
+”        return outn”,
+“n”,
+”    def draw_luminosity(self, size=1):n”,
+”        # how to sample the latent parametersn”,
+”        return (np.random.pareto(self.alpha, size) + 1) * self.Lmin”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “markdown”,
+“id”: “185f544c”,
+“metadata”: {},
+“source”: [</p>
+<blockquote>
+<div><p>“&lt;div class=&quot;alert alert-info&quot;&gt;n”,
+“n”,
+“<strong>Note:</strong> If you want to create a cosmological distribution, inherit from from ComologicalDistribution class!n”,
+“n”,
+“&lt;/div&gt;n”,
+“n”,
+“## Creating a population synthesizern”,
+“n”,
+“Now that we have defined our distributions, we can create a population synthesizer that encapsulated them”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “code”,
+“execution_count”: 4,
+“id”: “3e82425d”,
+“metadata”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“execution”: {</dt><dd><p>“iopub.execute_input”: “2022-02-10T11:06:36.041749Z”,
+“iopub.status.busy”: “2022-02-10T11:06:36.040739Z”,
+“iopub.status.idle”: “2022-02-10T11:06:36.042265Z”,
+“shell.execute_reply”: “2022-02-10T11:06:36.042620Z”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>},
+“outputs”: [],
+“source”: [</p>
+<blockquote>
+<div><p>“from popsynth.population_synth import PopulationSynthn”,
+“n”,
+“n”,
+“class MyPopulation(PopulationSynth):n”,
+”    def __init__(self, Lmin, alpha, r_max=5, seed=1234):n”,
+“n”,
+”        # instantiate the distributionsn”,
+”        luminosity_distribution = MyParetoDistribution(seed=seed)n”,
+“n”,
+”        luminosity_distribution.alpha = alphan”,
+”        luminosity_distribution.Lmin = Lminn”,
+“n”,
+”        spatial_distribution = MySphericalDistribution(seed=seed)n”,
+”        spatial_distribution.r_max = r_maxn”,
+“n”,
+”        # pass to the super classn”,
+”        super(MyPopulation, self).__init__(n”,
+”            spatial_distribution=spatial_distribution,n”,
+”            luminosity_distribution=luminosity_distribution,n”,
+”            seed=seed,n”,
+”        )”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “code”,
+“execution_count”: 5,
+“id”: “5063a7c9”,
+“metadata”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“execution”: {</dt><dd><p>“iopub.execute_input”: “2022-02-10T11:06:36.047555Z”,
+“iopub.status.busy”: “2022-02-10T11:06:36.047052Z”,
+“iopub.status.idle”: “2022-02-10T11:06:36.097749Z”,
+“shell.execute_reply”: “2022-02-10T11:06:36.097300Z”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>},
+“outputs”: [</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“name”: “stdout”,
+“output_type”: “stream”,
+“text”: [</p>
+<blockquote>
+<div><p>“u001b[32mu001b[1m INFO     u001b[0m| u001b[32mu001b[1m The volume integral is 768.219980 u001b[0mn”</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><dl>
+<dt>“data”: {</dt><dd><dl class="simple">
+<dt>“application/vnd.jupyter.widget-view+json”: {</dt><dd><p>“model_id”: “3ea18e5d6147408e835e4211a6de7128”,
+“version_major”: 2,
+“version_minor”: 0</p>
+</dd>
+</dl>
+<p>},
+“text/plain”: [</p>
+<blockquote>
+<div><p>“Drawing distances:   0%|          | 0/741 [00:00&lt;?, ?it/s]”</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>},
+“metadata”: {},
+“output_type”: “display_data”</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“name”: “stdout”,
+“output_type”: “stream”,
+“text”: [</p>
+<blockquote>
+<div><p>“u001b[32mu001b[1m INFO     u001b[0m| u001b[32mu001b[1m Expecting 741 total objects u001b[0mn”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“name”: “stdout”,
+“output_type”: “stream”,
+“text”: [</p>
+<blockquote>
+<div><p>“u001b[32mu001b[1m INFO     u001b[0m| u001b[32mu001b[1m applying selection to fluxes u001b[0mn”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“name”: “stdout”,
+“output_type”: “stream”,
+“text”: [</p>
+<blockquote>
+<div><p>“u001b[32mu001b[1m INFO     u001b[0m| u001b[32mu001b[1m Detected 258 distances u001b[0mn”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“name”: “stdout”,
+“output_type”: “stream”,
+“text”: [</p>
+<blockquote>
+<div><p>“u001b[32mu001b[1m INFO     u001b[0m| u001b[32mu001b[1m Detected 258 objects out to a distance of 9.92 u001b[0mn”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>],
+“source”: [</p>
+<blockquote>
+<div><p>“my_pop_gen = MyPopulation(Lmin=1, alpha=1, r_max=10)n”,
+“n”,
+“flux_selector = popsynth.HardFluxSelection()n”,
+“flux_selector.boundary = 1e-2n”,
+“n”,
+“my_pop_gen.set_flux_selection(flux_selector)n”,
+“n”,
+“population = my_pop_gen.draw_survey()”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“cell_type”: “code”,
+“execution_count”: 6,
+“id”: “a34fb654”,
+“metadata”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“execution”: {</dt><dd><p>“iopub.execute_input”: “2022-02-10T11:06:36.222486Z”,
+“iopub.status.busy”: “2022-02-10T11:06:36.099500Z”,
+“iopub.status.idle”: “2022-02-10T11:06:36.253960Z”,
+“shell.execute_reply”: “2022-02-10T11:06:36.245943Z”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>},
+“outputs”: [</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><dl>
+<dt>“data”: {</dt><dd><dl class="simple">
+<dt>“application/vnd.jupyter.widget-view+json”: {</dt><dd><p>“model_id”: “7ffd201e79d84684b212d31b0cd9c2f1”,
+“version_major”: 2,
+“version_minor”: 0</p>
+</dd>
+</dl>
+<p>},
+“text/plain”: [</p>
+<blockquote>
+<div><p>“VBox(children=(Figure(camera=PerspectiveCamera(fov=46.0, position=(0.0, 0.0, 2.0), projectionMatrix=(1.0, 0.0,…”</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>},
+“metadata”: {},
+“output_type”: “display_data”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>],
+“source”: [</p>
+<blockquote>
+<div><p>“fig = population.display_obs_fluxes_sphere(cmap=&quot;magma&quot;, background_color=&quot;black&quot; ,s=50)”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>],
+“metadata”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“jupytext”: {</dt><dd><p>“formats”: “ipynb,md”</p>
+</dd>
+</dl>
+<p>},
+“kernelspec”: {</p>
+<blockquote>
+<div><p>“display_name”: “Python 3”,
+“language”: “python”,
+“name”: “python3”</p>
+</div></blockquote>
+<p>},
+“language_info”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“codemirror_mode”: {</dt><dd><p>“name”: “ipython”,
+“version”: 3</p>
+</dd>
+</dl>
+<p>},
+“file_extension”: “.py”,
+“mimetype”: “text/x-python”,
+“name”: “python”,
+“nbconvert_exporter”: “python”,
+“pygments_lexer”: “ipython3”,
+“version”: “3.9.10”</p>
+</div></blockquote>
+<p>},
+“widgets”: {</p>
+<blockquote>
+<div><dl>
+<dt>“application/vnd.jupyter.widget-state+json”: {</dt><dd><dl>
+<dt>“state”: {</dt><dd><dl>
+<dt>“17f4b61a69844466b4e8ee6c8c9964f2”: {</dt><dd><p>“model_module”: “&#64;jupyter-widgets/base”,
+“model_module_version”: “1.2.0”,
+“model_name”: “LayoutModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/base”,
+“_model_module_version”: “1.2.0”,
+“_model_name”: “LayoutModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “LayoutView”,
+“align_content”: null,
+“align_items”: null,
+“align_self”: null,
+“border”: null,
+“bottom”: null,
+“display”: null,
+“flex”: null,
+“flex_flow”: null,
+“grid_area”: null,
+“grid_auto_columns”: null,
+“grid_auto_flow”: null,
+“grid_auto_rows”: null,
+“grid_column”: null,
+“grid_gap”: null,
+“grid_row”: null,
+“grid_template_areas”: null,
+“grid_template_columns”: null,
+“grid_template_rows”: null,
+“height”: null,
+“justify_content”: null,
+“justify_items”: null,
+“left”: null,
+“margin”: null,
+“max_height”: null,
+“max_width”: null,
+“min_height”: null,
+“min_width”: null,
+“object_fit”: null,
+“object_position”: null,
+“order”: null,
+“overflow”: null,
+“overflow_x”: null,
+“overflow_y”: null,
+“padding”: null,
+“right”: null,
+“top”: null,
+“visibility”: null,
+“width”: null</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>},
+“32bb1f34ae7b49c782dded8afb670401”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “HTMLModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_dom_classes”: [],
+“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “HTMLModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/controls”,
+“_view_module_version”: “1.5.0”,
+“_view_name”: “HTMLView”,
+“description”: “”,
+“description_tooltip”: null,
+“layout”: “IPY_MODEL_d78ea9c9d8d141bc898f3496b4663690”,
+“placeholder”: “​“,
+“style”: “IPY_MODEL_cda7c5cbcb964289af539b6ec681667f”,
+“value”: “Drawing distances: 100%”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“3ea18e5d6147408e835e4211a6de7128”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “HBoxModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_dom_classes”: [],
+“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “HBoxModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/controls”,
+“_view_module_version”: “1.5.0”,
+“_view_name”: “HBoxView”,
+“box_style”: “”,
+“children”: [</p>
+<blockquote>
+<div><p>“IPY_MODEL_32bb1f34ae7b49c782dded8afb670401”,
+“IPY_MODEL_6beccf9c6dd446269186183455993172”,
+“IPY_MODEL_d353e0e8f23241229fa461982abdb542”</p>
+</div></blockquote>
+<p>],
+“layout”: “IPY_MODEL_c2cce963df77495e9787baa4b83f97e1”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“48d341e8707b4f94b590a3768c756dca”: {</p>
+<blockquote>
+<div><p>“model_module”: “jupyter-threejs”,
+“model_module_version”: “^2.1.0”,
+“model_name”: “PerspectiveCameraModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “jupyter-threejs”,
+“_model_module_version”: “^2.1.0”,
+“_model_name”: “PerspectiveCameraModel”,
+“_view_count”: null,
+“_view_module”: null,
+“_view_module_version”: “”,
+“_view_name”: null,
+“aspect”: 1.0,
+“castShadow”: false,
+“children”: [],
+“far”: 2000.0,
+“focus”: 10.0,
+“fov”: 46.0,
+“frustumCulled”: true,
+“matrix”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“matrixAutoUpdate”: true,
+“matrixWorld”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“matrixWorldInverse”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“matrixWorldNeedsUpdate”: false,
+“modelViewMatrix”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“name”: “”,
+“near”: 0.1,
+“normalMatrix”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“position”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+2.0</p>
+</div></blockquote>
+<p>],
+“projectionMatrix”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“quaternion”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“receiveShadow”: false,
+“renderOrder”: 0,
+“rotation”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0,
+“XYZ”</p>
+</div></blockquote>
+<p>],
+“scale”: [</p>
+<blockquote>
+<div><p>1.0,
+1.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“type”: “PerspectiveCamera”,
+“up”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0</p>
+</div></blockquote>
+<p>],
+“visible”: true,
+“zoom”: 1.0</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“4e63959e5af24047bf000c7420ed3b13”: {</p>
+<blockquote>
+<div><p>“model_module”: “ipyvolume”,
+“model_module_version”: “~0.5.2”,
+“model_name”: “FigureModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_dom_classes”: [],
+“_model_module”: “ipyvolume”,
+“_model_module_version”: “~0.5.2”,
+“_model_name”: “FigureModel”,
+“_view_count”: null,
+“_view_module”: “ipyvolume”,
+“_view_module_version”: “~0.5.2”,
+“_view_name”: “FigureView”,
+“ambient_coefficient”: 0.5,
+“animation”: 1000.0,
+“animation_exponent”: 1.0,
+“camera”: “IPY_MODEL_48d341e8707b4f94b590a3768c756dca”,
+“camera_center”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0</p>
+</div></blockquote>
+<p>],
+“camera_control”: “trackball”,
+“camera_fov”: 45.0,
+“capture_fps”: null,
+“cube_resolution”: 512,
+“diffuse_coefficient”: 0.8,
+“displayscale”: 1.0,
+“downscale”: 1,
+“eye_separation”: 6.4,
+“height”: 500,
+“layout”: “IPY_MODEL_5a9685f057c343b88bb610586e96804f”,
+“matrix_projection”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0</p>
+</div></blockquote>
+<p>],
+“matrix_world”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0,
+0.0</p>
+</div></blockquote>
+<p>],
+“meshes”: [],
+“mouse_mode”: “normal”,
+“panorama_mode”: “no”,
+“render_continuous”: true,
+“scatters”: [</p>
+<blockquote>
+<div><p>“IPY_MODEL_79e4c915a6a747b4982c54ef721241f7”</p>
+</div></blockquote>
+<p>],
+“scene”: “IPY_MODEL_4f3a68b4d57342358a2ce4814167cbfc”,
+“selection_mode”: “replace”,
+“selector”: “lasso”,
+“show”: “Volume”,
+“specular_coefficient”: 0.5,
+“specular_exponent”: 5.0,
+“stereo”: false,
+“style”: {</p>
+<blockquote>
+<div><dl>
+<dt>“axes”: {</dt><dd><p>“color”: “white”,
+“label”: {</p>
+<blockquote>
+<div><p>“color”: “white”</p>
+</div></blockquote>
+<p>},
+“ticklabel”: {</p>
+<blockquote>
+<div><p>“color”: “white”</p>
+</div></blockquote>
+<p>},
+“visible”: false</p>
+</dd>
+</dl>
+<p>},
+“background-color”: “black”,
+“box”: {</p>
+<blockquote>
+<div><p>“visible”: false</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“volumes”: [],
+“width”: 400,
+“xlabel”: “x”,
+“xlim”: [</p>
+<blockquote>
+<div><p>-10.0,
+10.0</p>
+</div></blockquote>
+<p>],
+“ylabel”: “y”,
+“ylim”: [</p>
+<blockquote>
+<div><p>-10.0,
+10.0</p>
+</div></blockquote>
+<p>],
+“zlabel”: “z”,
+“zlim”: [</p>
+<blockquote>
+<div><p>-10.0,
+10.0</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“4f3a68b4d57342358a2ce4814167cbfc”: {</p>
+<blockquote>
+<div><p>“model_module”: “jupyter-threejs”,
+“model_module_version”: “^2.1.0”,
+“model_name”: “SceneModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “jupyter-threejs”,
+“_model_module_version”: “^2.1.0”,
+“_model_name”: “SceneModel”,
+“_view_count”: null,
+“_view_module”: null,
+“_view_module_version”: “”,
+“_view_name”: null,
+“autoUpdate”: true,
+“background”: null,
+“castShadow”: false,
+“children”: [],
+“fog”: null,
+“frustumCulled”: true,
+“matrix”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“matrixAutoUpdate”: true,
+“matrixWorld”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“matrixWorldNeedsUpdate”: false,
+“modelViewMatrix”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“name”: “”,
+“normalMatrix”: [</p>
+<blockquote>
+<div><p>1.0,
+0.0,
+0.0,
+0.0,
+1.0,
+0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“overrideMaterial”: null,
+“position”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0</p>
+</div></blockquote>
+<p>],
+“quaternion”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“receiveShadow”: false,
+“renderOrder”: 0,
+“rotation”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0,
+“XYZ”</p>
+</div></blockquote>
+<p>],
+“scale”: [</p>
+<blockquote>
+<div><p>1.0,
+1.0,
+1.0</p>
+</div></blockquote>
+<p>],
+“type”: “Scene”,
+“up”: [</p>
+<blockquote>
+<div><p>0.0,
+1.0,
+0.0</p>
+</div></blockquote>
+<p>],
+“visible”: true</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“5337ad60b9544a23bd695460582c04be”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/base”,
+“model_module_version”: “1.2.0”,
+“model_name”: “LayoutModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/base”,
+“_model_module_version”: “1.2.0”,
+“_model_name”: “LayoutModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “LayoutView”,
+“align_content”: null,
+“align_items”: null,
+“align_self”: null,
+“border”: null,
+“bottom”: null,
+“display”: null,
+“flex”: null,
+“flex_flow”: null,
+“grid_area”: null,
+“grid_auto_columns”: null,
+“grid_auto_flow”: null,
+“grid_auto_rows”: null,
+“grid_column”: null,
+“grid_gap”: null,
+“grid_row”: null,
+“grid_template_areas”: null,
+“grid_template_columns”: null,
+“grid_template_rows”: null,
+“height”: null,
+“justify_content”: null,
+“justify_items”: null,
+“left”: null,
+“margin”: null,
+“max_height”: null,
+“max_width”: null,
+“min_height”: null,
+“min_width”: null,
+“object_fit”: null,
+“object_position”: null,
+“order”: null,
+“overflow”: null,
+“overflow_x”: null,
+“overflow_y”: null,
+“padding”: null,
+“right”: null,
+“top”: null,
+“visibility”: null,
+“width”: null</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“5a9685f057c343b88bb610586e96804f”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/base”,
+“model_module_version”: “1.2.0”,
+“model_name”: “LayoutModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/base”,
+“_model_module_version”: “1.2.0”,
+“_model_name”: “LayoutModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “LayoutView”,
+“align_content”: null,
+“align_items”: null,
+“align_self”: null,
+“border”: null,
+“bottom”: null,
+“display”: null,
+“flex”: null,
+“flex_flow”: null,
+“grid_area”: null,
+“grid_auto_columns”: null,
+“grid_auto_flow”: null,
+“grid_auto_rows”: null,
+“grid_column”: null,
+“grid_gap”: null,
+“grid_row”: null,
+“grid_template_areas”: null,
+“grid_template_columns”: null,
+“grid_template_rows”: null,
+“height”: null,
+“justify_content”: null,
+“justify_items”: null,
+“left”: null,
+“margin”: null,
+“max_height”: null,
+“max_width”: null,
+“min_height”: null,
+“min_width”: null,
+“object_fit”: null,
+“object_position”: null,
+“order”: null,
+“overflow”: null,
+“overflow_x”: null,
+“overflow_y”: null,
+“padding”: null,
+“right”: null,
+“top”: null,
+“visibility”: null,
+“width”: null</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“5d41feba1de84762ba6a9ada7ee6560f”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/base”,
+“model_module_version”: “1.2.0”,
+“model_name”: “LayoutModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/base”,
+“_model_module_version”: “1.2.0”,
+“_model_name”: “LayoutModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “LayoutView”,
+“align_content”: null,
+“align_items”: null,
+“align_self”: null,
+“border”: null,
+“bottom”: null,
+“display”: null,
+“flex”: null,
+“flex_flow”: null,
+“grid_area”: null,
+“grid_auto_columns”: null,
+“grid_auto_flow”: null,
+“grid_auto_rows”: null,
+“grid_column”: null,
+“grid_gap”: null,
+“grid_row”: null,
+“grid_template_areas”: null,
+“grid_template_columns”: null,
+“grid_template_rows”: null,
+“height”: null,
+“justify_content”: null,
+“justify_items”: null,
+“left”: null,
+“margin”: null,
+“max_height”: null,
+“max_width”: null,
+“min_height”: null,
+“min_width”: null,
+“object_fit”: null,
+“object_position”: null,
+“order”: null,
+“overflow”: null,
+“overflow_x”: null,
+“overflow_y”: null,
+“padding”: null,
+“right”: null,
+“top”: null,
+“visibility”: null,
+“width”: null</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“6beccf9c6dd446269186183455993172”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “FloatProgressModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_dom_classes”: [],
+“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “FloatProgressModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/controls”,
+“_view_module_version”: “1.5.0”,
+“_view_name”: “ProgressView”,
+“bar_style”: “success”,
+“description”: “”,
+“description_tooltip”: null,
+“layout”: “IPY_MODEL_17f4b61a69844466b4e8ee6c8c9964f2”,
+“max”: 741.0,
+“min”: 0.0,
+“orientation”: “horizontal”,
+“style”: “IPY_MODEL_cb977ab1bd2d482ca638116c2dbeb7da”,
+“value”: 741.0</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“79e4c915a6a747b4982c54ef721241f7”: {</p>
+<blockquote>
+<div><dl>
+<dt>“buffers”: [</dt><dd><dl>
+<dt>{</dt><dd><p>“data”: “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”,
+“encoding”: “base64”,
+“path”: [</p>
+<blockquote>
+<div><p>“color”,
+0,
+“data”</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“data”: “SYvGvmg0kcC9avHAc8K5P7pcTD+Iqdo/LDauvxK3EkBheSbAhejzP8yNi8CiRE++hxy8PxLhnD7XknjAZU6kP1jii0AqjsE+U5frP6gCEb4WEt1AELLBP+KCOb+xG6u/EDR2PuhdPMAPCRbAYPVPQJK7GEDg6ug/GohDQOjO7b84n6g92Xktv4cVckAuQpM/QLrcv9Odmr+TCSnACFBEP0ZYaL+ZnqQ91LAnvyG94r7Ehdm/Ru0YwJ5ABr3ucRzAUV+Mv6cmG0BNiKe/abF+P9vXlr0YxopAjuYyv2Mrh747N48/wLCJQPyvwD4pj3M/KVapPz76vEAkVPK+TvfgP9yG6j1fk4a/tAo1wC94PkCB0cQ/RIJAPyvci78R8mc+R5m9vTb5Az85ifi/Jp0NQKgOuj+UkiTAVxGCv7JUt8DAK8S/ADFAwDccST/IkRLAwK8BwCXrnL80972/DPUjQGkKV8CI8l2+13TJP2SpT8AOZQK//ee0PxjVTj8lj41AiFceQFEZMcBq07O/B3PqvgOUpT8C/bnAOIL3P3JC4j+0bKa+mUOeP2WMUrzoA9q/d+aQPgjw1r51brE/pkq+P7QxYsCkCoe+elVrwFEMYMCIKKC/CETWv5MdoL8Ywhk+13DevdsSMj80pYa/j5fFP5eOJ8APkMu+tLLUPmL/iD999y6/XJ4EPpiLE76/CoC/flBFv4eArkA4p5K+w4iIvwZylD9iDSjANLwhv7Fgib+luU8/4Hujvt55JMCkSDu+plbJv2wmlsDWpU4/BcpYQCyFCMD47I2/bJyTvfnSg79EEJa/ugr2v6cmykA8ogBAWuiOQFmxWb+W7tI/DnyDvyq/N7/dI58/e2dvQDvSDr/Wg4G/FnI8P+wLIkAAk3o+KbiXv+k6M76uo4u+DOwxv2MlMsB70tM+lIYkwJKrCUApACW/lCOnvh3kUMBns3zADTUuwFNdHD5m+sRAkGU7P6OMG0Chf5ZAdkPlvqW+yj/nXMjAgGBdQIYwTsA57Jo+G/Lxvx2sbD9yQuu+QsdXwMtkBb/dlGlALHGHP6K/3D1ZXns/A/CsPdPoQT8Q3TjA33NLPsV8kb9jgMo/D7juvyzxI0A0Xh3AotKMP03IrcCBDvlA2CYQwNrbeL2PF56/6TdLQMzSncBMAXbAuKolwPtDk7/BNBO+BxD8viYcHT/QEYvAV0tZvt3+E0BAQAg+jya4P1E4uL/+L+Q/Id9sv12Tjr9zqbe9wPeDP+z82r+CJ4+/MZqyv6MKK0AFvfg9WfuEv6u8bsCG5j3A7jKTv90CwD9pIPU/02iMPjSmST8uDbE+4+/nvj+WqL84wZg+ald6P6LIsr+tCpa/e+KHvchP4T+W5VJA”,
+“encoding”: “base64”,
+“path”: [</p>
+<blockquote>
+<div><p>“x”,
+0,
+“data”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“data”: “6+mLv0gUkb9/n65AwtyPP1d2zz56I1LARt2IP5tJfkBplRJAcdDevDucsMBm9KW/zGeRvlmU5L5WEZi/ExywPqzvMUBCwEpAbYj/P+4Fhj8+BhRA2dZTQAuTXr89eLxALWNYQBaWe0D/6U+/ZW2rQPS/IsCKfyq/pCwXwIdqM79PxdG+5iQ0wNTS4sAOxrBAnalCPkQncUDi3Mu/TpHHv3sufcDCNsm/d9eyvhbsgL4X3ZTAszwHP/51Or5Gcg4/I1Wavaqlir+Oga1AtjDtvxj4IL/99BVAVVa6QGT6Hz8lMZS/kRr2P1cI3z2vnVe/n+bxP6F2BMDP04M+Ylafv8+U/L6o7rDAjaMVP0WInb9IYDy/UTtLwBYdkD7zKuG/mbJsvyoj774rrLE9NaJNPzdE0L5gfIFA7kjUP+n/cD8eCbXAQsfbP8LiqD+dOFG/mfdlQL2kxL6J20lAX4J0v+avnL+V8iY+tuoIP7ZUqD825Kk/fTv2P/ySIsCydYvAejIdv/wkn8CpFN2/jpTxvz4jyj+phjJAhdybP8aF3j7tWP4/MeGHv/8XiT9pXf+/B9KEP2I9ecAPbx5ADYvuP+wVBkDCOaU/g384vnKhqz9lveM/AekgQFJCMED9RjBAB3xIv6Jcmj7RFGw/IPJRQHTloL3XLZG/qTPHvzuz3b5MUKY/+W+jvrb3Jj/pJl8+fyuYPrBUg8CGVYm/4p68vy5j7b7d8yjA6hUHQOzrdkCXvgk/gaZTwL0zr8CNvwG/GGYGwJzLPr+KS5PAuo54PvzB97+SQPS/bZ12P3Iueb39RAPAr4dfv9ZVKj5bql9ASZ0OvwWYVcAPShe+e8gFPsHRkMAzG8C+XRMYQOVG0j8i6og8CMdnQHWFtD+FGcvAMXyjvzg6NsDyTty+dUuGv1GEHsAHXpw/zS67v+wF/r9G52m/BF6Dv1p0bEC/FmhAAsJGP6l0Vr93IVi/1ClIP8ppCL4qWk3AC4evPjb97T5Via4/813nv0TpI79SmXU9nLrsvm9Txz+ap62/RUPaP7Co4cANCDdABemWQKelmUCX6wLAw98AQNeltT8AclFApvR0P7rA5782Va6/2FwBQSDXk7+nHNPAfPySvii4a0CJXak/8Th7vyZmNb/q5eS/44GDwBWxqT9o7R+/l0hDQHAfc8D7b6M/IVPzP4aCOL6ufOU/GZSev2S4qL9IjifAUIVLv80xeb+WAcK+/fxtPg9ytL8Do7k/dD/QPx4AMT5/F7q/J7qVv+xVWECn/Ao/nCf6QA+M6L/YXAZB6GKYwAEsxb4gQdi+96CcvqNoMr4k5Nk/Nw+5PybPxz9XCYDAk+B5wONunkAbQ2NAZmyIP6NQgz/yvLTA”,
+“encoding”: “base64”,
+“path”: [</p>
+<blockquote>
+<div><p>“y”,
+0,
+“data”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“data”: “4k+3vyjO7L+oLFvAJ4stv+8tSr/V/XfAeVMdQC+2gUDgKpBA1CWvPgfzvUDSgqI/IqRoPk9Jxr1lJ4lAyrYxvnqAFUBBNnS/HcuSvgz1cz5O1bDAk6bJvntg6EAPoYNA9lccPzIJp0CjKWjA4iCKwOi/ob9wSmG/xuzRPwpKDcAQ8Ry9xmgrvy1CO0Ca5WDA7psfvtipuMANQJY/pDRxP0b3O0CUP6q9NTMvQD9UmL5UR7m/ay4LQJjlrz+bBVJABLEHQANngj6AwJPAPbf3vzOcgr+jtLzAaLMywOBeA8DS9FG/5Cg/wD60AkCRNrm7WoOtv8Vn0r/C2qg++XWOv1yUgMAn29Y/K/aov82McD86p8c+tsh5P9vUFL26OkQ/7wKHP8z3HD/4+iBAM6nuvvdnEMD7V4FA3hfYv4QEAMGHGbe+yAFkv0KF1j2i2XQ/EtQDQJQuRkBy0sM/1FPWPz+rzsDtaBS/y8+jPq5Uyz9JBi9A1DOGwPivVL/vZ9vAvnIlP+52EcDyBO6/bcjYPr1PC8DPFiQ/PDkDP4+yvb9Agr7AyQ0MQDb5ur/yqr2/IySvPn/Qqr+NlfC/Pp15wEyBpEC0Pw5AFvPUv5SovL9qIV7AhIdfQF1kkkDUMCk/nIr5PK57NcC4IDLA6yTcvblUk8D/v2ZAkPqYP2KirL/4f4G/MfIxvsq/9r25pxU/5ZWWwFqyvcAVB6m+KW6Sv1M1nL5c8Jk/oQm5PnXu/D+R2QFAymkrwBkPPMBOmjS+cdnvP76P0D+b33u9tsfHP8JDgUBVVve/MQFvwPcYlb4BL50+mjn3P0UjZr/N2hVAwzlaQJa7Cr9erOa/Qm0DQJE7VcBpuq9Aii+GPzeDnj+D7AXA7KOqviuDFb0lcrg/D/6Dv0LP3T1ZeSfAC/CYvwgtrMDb8/C/e4qUwFyhzL8UxMy/YiKxvtt8Yr9/J2q/RpMNQK/3AMCabNlAKBxoPw+CJb9CMahAxYf4P4AGCj+25ovAJQOGv0KIh8DjA5c+FNimPufJTMB9MTY/ieMXQA681L+OKGPArKJPwMbBq0BqWtpADztTwBqHjbyIvmZATWVMvn1Rsb8lXuu/OdaZPz7CIUDCDSK/XO+uv+1jRMDcUGW/muw+v7czdL9CpeE/nMlMQDE5n79nxZm/c+tHwMqanb9IScS+2mndv9lxnsDT0c+/IRIpPxQAGEBrVdE7G7jLP+j3VcCbEvu/zyivvrVOrj8k/ug/tO7dPgzaBMA89i6/X9iRvh2Ckr/TXAe/zD8xwPHp77+Mtg5ARSaAwCKY5L73ElbAshnQPbplMT92+yTAoa6tPnWrpb/bV8+/UTumP88CnUAOMfc/iHcyP814HT9N6sw/”,
+“encoding”: “base64”,
+“path”: [</p>
+<blockquote>
+<div><p>“z”,
+0,
+“data”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>],
+“model_module”: “ipyvolume”,
+“model_module_version”: “~0.5.2”,
+“model_name”: “ScatterModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “ipyvolume”,
+“_model_module_version”: “~0.5.2”,
+“_model_name”: “ScatterModel”,
+“_view_count”: null,
+“_view_module”: “ipyvolume”,
+“_view_module_version”: “~0.5.2”,
+“_view_name”: “ScatterView”,
+“color”: [</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“dtype”: “float32”,
+“shape”: [</p>
+<blockquote>
+<div><p>258,
+4</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>],
+“color_selected”: “white”,
+“connected”: false,
+“geo”: “sphere”,
+“line_material”: “IPY_MODEL_e9f471beeb7641ec94f1f1a1855d85fe”,
+“material”: “IPY_MODEL_cfb0af8bf8ed47a8b0b12ce5e4e40fa1”,
+“selected”: null,
+“sequence_index”: 0,
+“size”: 2,
+“size_selected”: 2.6,
+“texture”: null,
+“visible”: true,
+“vx”: null,
+“vy”: null,
+“vz”: null,
+“x”: [</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“dtype”: “float32”,
+“shape”: [</p>
+<blockquote>
+<div><p>258</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>],
+“y”: [</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“dtype”: “float32”,
+“shape”: [</p>
+<blockquote>
+<div><p>258</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>],
+“z”: [</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“dtype”: “float32”,
+“shape”: [</p>
+<blockquote>
+<div><p>258</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“7ffd201e79d84684b212d31b0cd9c2f1”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “VBoxModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_dom_classes”: [],
+“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “VBoxModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/controls”,
+“_view_module_version”: “1.5.0”,
+“_view_name”: “VBoxView”,
+“box_style”: “”,
+“children”: [</p>
+<blockquote>
+<div><p>“IPY_MODEL_4e63959e5af24047bf000c7420ed3b13”</p>
+</div></blockquote>
+<p>],
+“layout”: “IPY_MODEL_5d41feba1de84762ba6a9ada7ee6560f”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“c2cce963df77495e9787baa4b83f97e1”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/base”,
+“model_module_version”: “1.2.0”,
+“model_name”: “LayoutModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/base”,
+“_model_module_version”: “1.2.0”,
+“_model_name”: “LayoutModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “LayoutView”,
+“align_content”: null,
+“align_items”: null,
+“align_self”: null,
+“border”: null,
+“bottom”: null,
+“display”: null,
+“flex”: null,
+“flex_flow”: null,
+“grid_area”: null,
+“grid_auto_columns”: null,
+“grid_auto_flow”: null,
+“grid_auto_rows”: null,
+“grid_column”: null,
+“grid_gap”: null,
+“grid_row”: null,
+“grid_template_areas”: null,
+“grid_template_columns”: null,
+“grid_template_rows”: null,
+“height”: null,
+“justify_content”: null,
+“justify_items”: null,
+“left”: null,
+“margin”: null,
+“max_height”: null,
+“max_width”: null,
+“min_height”: null,
+“min_width”: null,
+“object_fit”: null,
+“object_position”: null,
+“order”: null,
+“overflow”: null,
+“overflow_x”: null,
+“overflow_y”: null,
+“padding”: null,
+“right”: null,
+“top”: null,
+“visibility”: null,
+“width”: null</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“cb977ab1bd2d482ca638116c2dbeb7da”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “ProgressStyleModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “ProgressStyleModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “StyleView”,
+“bar_color”: “#B833FF”,
+“description_width”: “”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“cc99276b65064c97b30c6668a3074243”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “DescriptionStyleModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “DescriptionStyleModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “StyleView”,
+“description_width”: “”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“cda7c5cbcb964289af539b6ec681667f”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “DescriptionStyleModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “DescriptionStyleModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “StyleView”,
+“description_width”: “”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“cfb0af8bf8ed47a8b0b12ce5e4e40fa1”: {</p>
+<blockquote>
+<div><p>“model_module”: “jupyter-threejs”,
+“model_module_version”: “^2.1.0”,
+“model_name”: “ShaderMaterialModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “jupyter-threejs”,
+“_model_module_version”: “^2.1.0”,
+“_model_name”: “ShaderMaterialModel”,
+“_view_count”: null,
+“_view_module”: null,
+“_view_module_version”: “”,
+“_view_name”: null,
+“alphaTest”: 0.0,
+“blendDst”: “OneMinusSrcAlphaFactor”,
+“blendDstAlpha”: 0.0,
+“blendEquation”: “AddEquation”,
+“blendEquationAlpha”: 0.0,
+“blendSrc”: “SrcAlphaFactor”,
+“blendSrcAlpha”: 0.0,
+“blending”: “NormalBlending”,
+“clipIntersection”: false,
+“clipShadows”: false,
+“clipping”: false,
+“clippingPlanes”: [],
+“colorWrite”: true,
+“defines”: null,
+“depthFunc”: “LessEqualDepth”,
+“depthTest”: true,
+“depthWrite”: true,
+“dithering”: false,
+“extensions”: {},
+“flatShading”: false,
+“fog”: false,
+“fragmentShader”: “”,
+“lights”: false,
+“linewidth”: 1.0,
+“morphNormals”: false,
+“morphTargets”: false,
+“name”: “”,
+“opacity”: 1.0,
+“overdraw”: 0.0,
+“polygonOffset”: false,
+“polygonOffsetFactor”: 0.0,
+“polygonOffsetUnits”: 0.0,
+“precision”: null,
+“premultipliedAlpha”: false,
+“shadowSide”: null,
+“side”: “FrontSide”,
+“skinning”: false,
+“transparent”: false,
+“type”: “ShaderMaterial”,
+“uniforms”: {},
+“uniformsNeedUpdate”: false,
+“vertexColors”: “NoColors”,
+“vertexShader”: “”,
+“visible”: true,
+“wireframe”: false,
+“wireframeLinewidth”: 1.0</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“d353e0e8f23241229fa461982abdb542”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/controls”,
+“model_module_version”: “1.5.0”,
+“model_name”: “HTMLModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_dom_classes”: [],
+“_model_module”: “&#64;jupyter-widgets/controls”,
+“_model_module_version”: “1.5.0”,
+“_model_name”: “HTMLModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/controls”,
+“_view_module_version”: “1.5.0”,
+“_view_name”: “HTMLView”,
+“description”: “”,
+“description_tooltip”: null,
+“layout”: “IPY_MODEL_5337ad60b9544a23bd695460582c04be”,
+“placeholder”: “​“,
+“style”: “IPY_MODEL_cc99276b65064c97b30c6668a3074243”,
+“value”: ” 741/741 [00:00&amp;lt;00:00, 25520.42it/s]”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“d78ea9c9d8d141bc898f3496b4663690”: {</p>
+<blockquote>
+<div><p>“model_module”: “&#64;jupyter-widgets/base”,
+“model_module_version”: “1.2.0”,
+“model_name”: “LayoutModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “&#64;jupyter-widgets/base”,
+“_model_module_version”: “1.2.0”,
+“_model_name”: “LayoutModel”,
+“_view_count”: null,
+“_view_module”: “&#64;jupyter-widgets/base”,
+“_view_module_version”: “1.2.0”,
+“_view_name”: “LayoutView”,
+“align_content”: null,
+“align_items”: null,
+“align_self”: null,
+“border”: null,
+“bottom”: null,
+“display”: null,
+“flex”: null,
+“flex_flow”: null,
+“grid_area”: null,
+“grid_auto_columns”: null,
+“grid_auto_flow”: null,
+“grid_auto_rows”: null,
+“grid_column”: null,
+“grid_gap”: null,
+“grid_row”: null,
+“grid_template_areas”: null,
+“grid_template_columns”: null,
+“grid_template_rows”: null,
+“height”: null,
+“justify_content”: null,
+“justify_items”: null,
+“left”: null,
+“margin”: null,
+“max_height”: null,
+“max_width”: null,
+“min_height”: null,
+“min_width”: null,
+“object_fit”: null,
+“object_position”: null,
+“order”: null,
+“overflow”: null,
+“overflow_x”: null,
+“overflow_y”: null,
+“padding”: null,
+“right”: null,
+“top”: null,
+“visibility”: null,
+“width”: null</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“e9f471beeb7641ec94f1f1a1855d85fe”: {</p>
+<blockquote>
+<div><p>“model_module”: “jupyter-threejs”,
+“model_module_version”: “^2.1.0”,
+“model_name”: “ShaderMaterialModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “jupyter-threejs”,
+“_model_module_version”: “^2.1.0”,
+“_model_name”: “ShaderMaterialModel”,
+“_view_count”: null,
+“_view_module”: null,
+“_view_module_version”: “”,
+“_view_name”: null,
+“alphaTest”: 0.0,
+“blendDst”: “OneMinusSrcAlphaFactor”,
+“blendDstAlpha”: 0.0,
+“blendEquation”: “AddEquation”,
+“blendEquationAlpha”: 0.0,
+“blendSrc”: “SrcAlphaFactor”,
+“blendSrcAlpha”: 0.0,
+“blending”: “NormalBlending”,
+“clipIntersection”: false,
+“clipShadows”: false,
+“clipping”: false,
+“clippingPlanes”: [],
+“colorWrite”: true,
+“defines”: null,
+“depthFunc”: “LessEqualDepth”,
+“depthTest”: true,
+“depthWrite”: true,
+“dithering”: false,
+“extensions”: {},
+“flatShading”: false,
+“fog”: false,
+“fragmentShader”: “”,
+“lights”: false,
+“linewidth”: 1.0,
+“morphNormals”: false,
+“morphTargets”: false,
+“name”: “”,
+“opacity”: 1.0,
+“overdraw”: 0.0,
+“polygonOffset”: false,
+“polygonOffsetFactor”: 0.0,
+“polygonOffsetUnits”: 0.0,
+“precision”: null,
+“premultipliedAlpha”: false,
+“shadowSide”: null,
+“side”: “FrontSide”,
+“skinning”: false,
+“transparent”: false,
+“type”: “ShaderMaterial”,
+“uniforms”: {},
+“uniformsNeedUpdate”: false,
+“vertexColors”: “NoColors”,
+“vertexShader”: “”,
+“visible”: true,
+“wireframe”: false,
+“wireframeLinewidth”: 1.0</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“eda61b225a0c4efdb5f1f17defdab81c”: {</p>
+<blockquote>
+<div><p>“model_module”: “jupyter-threejs”,
+“model_module_version”: “^2.1.0”,
+“model_name”: “OrbitControlsModel”,
+“state”: {</p>
+<blockquote>
+<div><p>“_model_module”: “jupyter-threejs”,
+“_model_module_version”: “^2.1.0”,
+“_model_name”: “OrbitControlsModel”,
+“_view_count”: null,
+“_view_module”: null,
+“_view_module_version”: “”,
+“_view_name”: null,
+“autoRotate”: true,
+“autoRotateSpeed”: 2.0,
+“controlling”: “IPY_MODEL_48d341e8707b4f94b590a3768c756dca”,
+“dampingFactor”: 0.25,
+“enableDamping”: false,
+“enableKeys”: true,
+“enablePan”: true,
+“enableRotate”: true,
+“enableZoom”: true,
+“enabled”: true,
+“keyPanSpeed”: 7.0,
+“maxAzimuthAngle”: “inf”,
+“maxDistance”: “inf”,
+“maxPolarAngle”: 3.141592653589793,
+“maxZoom”: “inf”,
+“minAzimuthAngle”: “-inf”,
+“minDistance”: 0.0,
+“minPolarAngle”: 0.0,
+“minZoom”: 0.0,
+“panSpeed”: 1.0,
+“rotateSpeed”: 1.0,
+“screenSpacePanning”: true,
+“target”: [</p>
+<blockquote>
+<div><p>0.0,
+0.0,
+0.0</p>
+</div></blockquote>
+<p>],
+“zoomSpeed”: 1.0</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>},
+“version_major”: 2,
+“version_minor”: 0</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“nbformat”: 4,
+“nbformat_minor”: 5</p>
+</dd>
+</dl>
+<p>}</p>
+
+
+           </div>
+          </div>
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="distributions.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="selections.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

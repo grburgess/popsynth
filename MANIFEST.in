@@ -1,3 +1,0 @@
-include versioneer.py
-include popsynth/_version.py
-graft popsynth/data

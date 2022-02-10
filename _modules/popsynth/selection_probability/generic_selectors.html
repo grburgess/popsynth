@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.selection_probability.generic_selectors &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="stylesheet" href="../../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> popsynth
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.selection_probability.generic_selectors</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.selection_probability.generic_selectors</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">sf</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.utils.configuration</span> <span class="kn">import</span> <span class="n">popsynth_config</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.logging</span> <span class="kn">import</span> <span class="n">setup_logger</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.progress_bar</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+
+<span class="kn">from</span> <span class="nn">.selection_probability</span> <span class="kn">import</span> <span class="n">SelectionParameter</span><span class="p">,</span> <span class="n">SelectionProbability</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="UnitySelection"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.UnitySelection">[docs]</a><span class="k">class</span> <span class="nc">UnitySelection</span><span class="p">(</span><span class="n">SelectionProbability</span><span class="p">):</span>
+    <span class="n">_selection_name</span> <span class="o">=</span> <span class="s2">&quot;UnitySelection&quot;</span>
+
+<div class="viewcode-block" id="UnitySelection.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.UnitySelection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unity&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A selection that returns all selected.</span>
+
+<span class="sd">        :param name: Name of the selection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">UnitySelection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UnitySelection.draw"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.UnitySelection.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BernoulliSelection"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.BernoulliSelection">[docs]</a><span class="k">class</span> <span class="nc">BernoulliSelection</span><span class="p">(</span><span class="n">SelectionProbability</span><span class="p">):</span>
+    <span class="n">_selection_name</span> <span class="o">=</span> <span class="s2">&quot;BernoulliSelection&quot;</span>
+
+    <span class="n">probability</span> <span class="o">=</span> <span class="n">SelectionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BernoulliSelection.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.BernoulliSelection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A Bernoulli selection with ``probability`` as a parameter.</span>
+
+<span class="sd">        :param probability: Probability for each Bernoulli trial</span>
+<span class="sd">        :type probability: :class:`SelectionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BernoulliSelection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bernoulli&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BernoulliSelection.draw"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.BernoulliSelection.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">popsynth_config</span><span class="o">.</span><span class="n">show_progress</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                <span class="nb">bool</span>
+            <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">progress_bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Selecting </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+
+                <span class="c1"># see if we detect the distance</span>
+                <span class="k">if</span> <span class="n">stats</span><span class="o">.</span><span class="n">bernoulli</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probability</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">bernoulli</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                <span class="nb">bool</span>
+            <span class="p">)</span>  <span class="c1"># type: np.ndarray</span></div></div>
+
+
+<div class="viewcode-block" id="BoxSelection"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.BoxSelection">[docs]</a><span class="k">class</span> <span class="nc">BoxSelection</span><span class="p">(</span><span class="n">SelectionProbability</span><span class="p">):</span>
+    <span class="n">_selection_name</span> <span class="o">=</span> <span class="s2">&quot;BoxSelection&quot;</span>
+
+    <span class="n">vmin</span> <span class="o">=</span> <span class="n">SelectionParameter</span><span class="p">()</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">SelectionParameter</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BoxSelection.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.BoxSelection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;box selection&quot;</span><span class="p">,</span>
+        <span class="n">use_obs_value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_distance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_luminosity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A box selection on observed_value, distance,</span>
+<span class="sd">        luminosity or flux.</span>
+
+<span class="sd">        :param name: Name of the selection</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param use_obs_value: If `True`, make selection on</span>
+<span class="sd">            observed_value. `False` by default.</span>
+<span class="sd">        :type use_obs_value: bool</span>
+<span class="sd">        :param use_distance: If `True` make selection on distance.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_distance: bool</span>
+<span class="sd">        :param use_luminosity: If `True` make selection on luminosity.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_luminosity: bool</span>
+<span class="sd">        :param use_flux: If `True` make selection on flux. `False` by default.</span>
+<span class="sd">        :type use_flux: bool</span>
+<span class="sd">        :param vmin: Minimum value of selection</span>
+<span class="sd">        :type vmin: :class:`SelectionParameter`</span>
+<span class="sd">        :param vmax: Maximum value of selection</span>
+<span class="sd">        :type vmax: :class:`SelectionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BoxSelection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">use_distance</span><span class="o">=</span><span class="n">use_distance</span><span class="p">,</span>
+            <span class="n">use_luminosity</span><span class="o">=</span><span class="n">use_luminosity</span><span class="p">,</span>
+            <span class="n">use_obs_value</span><span class="o">=</span><span class="n">use_obs_value</span><span class="p">,</span>
+            <span class="n">use_flux</span><span class="o">=</span><span class="n">use_flux</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BoxSelection.draw"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.BoxSelection.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_distance</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_obs_value</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_luminosity</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_flux</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_flux</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LowerBound"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.LowerBound">[docs]</a><span class="k">class</span> <span class="nc">LowerBound</span><span class="p">(</span><span class="n">SelectionProbability</span><span class="p">):</span>
+    <span class="n">_selection_name</span> <span class="o">=</span> <span class="s2">&quot;LowerBound&quot;</span>
+
+    <span class="n">boundary</span> <span class="o">=</span> <span class="n">SelectionParameter</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LowerBound.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.LowerBound.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Hard selection&quot;</span><span class="p">,</span>
+        <span class="n">use_obs_value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_distance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_luminosity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A hard, lower bound selection on obs_value, distance,</span>
+<span class="sd">        luminosity or flux.</span>
+
+<span class="sd">        Selects values &gt;= ``boundary``.</span>
+
+<span class="sd">        :param name: Name of the selection</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param use_obs_value: If `True`, make selection on</span>
+<span class="sd">            observed_value. `False` by default.</span>
+<span class="sd">        :type use_obs_value: bool</span>
+<span class="sd">        :param use_distance: If `True` make selection on distance.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_distance: bool</span>
+<span class="sd">        :param use_luminosity: If `True` make selection on luminosity.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_luminosity: bool</span>
+<span class="sd">        :param use_flux: If `True` make selection on flux. `False` by default.</span>
+<span class="sd">        :type use_flux: bool</span>
+<span class="sd">        :param boundary: Value of the selection boundary</span>
+<span class="sd">        :type boundary: :class:`SelectionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LowerBound</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">use_distance</span><span class="o">=</span><span class="n">use_distance</span><span class="p">,</span>
+            <span class="n">use_luminosity</span><span class="o">=</span><span class="n">use_luminosity</span><span class="p">,</span>
+            <span class="n">use_obs_value</span><span class="o">=</span><span class="n">use_obs_value</span><span class="p">,</span>
+            <span class="n">use_flux</span><span class="o">=</span><span class="n">use_flux</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowerBound.draw"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.LowerBound.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_distance</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_obs_value</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_luminosity</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_flux</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_flux</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span></div></div>
+
+
+<div class="viewcode-block" id="UpperBound"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.UpperBound">[docs]</a><span class="k">class</span> <span class="nc">UpperBound</span><span class="p">(</span><span class="n">SelectionProbability</span><span class="p">):</span>
+    <span class="n">_selection_name</span> <span class="o">=</span> <span class="s2">&quot;UpperBound&quot;</span>
+
+    <span class="n">boundary</span> <span class="o">=</span> <span class="n">SelectionParameter</span><span class="p">()</span>
+
+<div class="viewcode-block" id="UpperBound.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.UpperBound.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Hard selection&quot;</span><span class="p">,</span>
+        <span class="n">use_obs_value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_distance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_luminosity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A hard, upper bound selection on obs_value, distance,</span>
+<span class="sd">        luminosity or flux.</span>
+
+<span class="sd">        Selects values &lt;= ``boundary``.</span>
+
+<span class="sd">        :param name: Name of the selection</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param use_obs_value: If `True`, make selection on</span>
+<span class="sd">            observed_value. `False` by default.</span>
+<span class="sd">        :type use_obs_value: bool</span>
+<span class="sd">        :param use_distance: If `True` make selection on distance.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_distance: bool</span>
+<span class="sd">        :param use_luminosity: If `True` make selection on luminosity.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_luminosity: bool</span>
+<span class="sd">        :param use_flux: If `True` make selection on flux. `False` by default.</span>
+<span class="sd">        :type use_flux: bool</span>
+<span class="sd">        :param boundary: Value of the selection boundary</span>
+<span class="sd">        :type boundary: :class:`SelectionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">UpperBound</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">use_distance</span><span class="o">=</span><span class="n">use_distance</span><span class="p">,</span>
+            <span class="n">use_luminosity</span><span class="o">=</span><span class="n">use_luminosity</span><span class="p">,</span>
+            <span class="n">use_obs_value</span><span class="o">=</span><span class="n">use_obs_value</span><span class="p">,</span>
+            <span class="n">use_flux</span><span class="o">=</span><span class="n">use_flux</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="UpperBound.draw"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.UpperBound.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_distance</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_obs_value</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_luminosity</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_flux</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_flux</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">values</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span></div></div>
+
+
+<div class="viewcode-block" id="SoftSelection"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SoftSelection">[docs]</a><span class="k">class</span> <span class="nc">SoftSelection</span><span class="p">(</span><span class="n">SelectionProbability</span><span class="p">):</span>
+    <span class="n">_selection_name</span> <span class="o">=</span> <span class="s2">&quot;SoftSelection&quot;</span>
+
+    <span class="n">boundary</span> <span class="o">=</span> <span class="n">SelectionParameter</span><span class="p">()</span>
+    <span class="n">strength</span> <span class="o">=</span> <span class="n">SelectionParameter</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SoftSelection.__init__"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SoftSelection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Soft Selection&quot;</span><span class="p">,</span>
+        <span class="n">use_obs_value</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_distance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_luminosity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_flux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A soft selection using an inverse logit function either on the</span>
+<span class="sd">        log or linear value of the observed_value, distance,</span>
+<span class="sd">        luminosity or flux.</span>
+
+<span class="sd">        :param name: Name of the selection</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param use_obs_value: If `True`, make selection on</span>
+<span class="sd">            observed_value. `False` by default.</span>
+<span class="sd">        :type use_obs_value: bool</span>
+<span class="sd">        :param use_distance: If `True` make selection on distance.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_distance: bool</span>
+<span class="sd">        :param use_luminosity: If `True` make selection on luminosity.</span>
+<span class="sd">            `False` by default.</span>
+<span class="sd">        :type use_luminosity: bool</span>
+<span class="sd">        :param use_flux: If `True` make selection on flux. `False` by default.</span>
+<span class="sd">        :type use_flux: bool</span>
+<span class="sd">        :param boundary: Center of the inverse logit</span>
+<span class="sd">        :type boundary: :class:`SelectionParameter`</span>
+<span class="sd">        :param strength: Width of the logit</span>
+<span class="sd">        :type strength: :class:`SelectionParameter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SoftSelection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">use_distance</span><span class="o">=</span><span class="n">use_distance</span><span class="p">,</span>
+            <span class="n">use_luminosity</span><span class="o">=</span><span class="n">use_luminosity</span><span class="p">,</span>
+            <span class="n">use_obs_value</span><span class="o">=</span><span class="n">use_obs_value</span><span class="p">,</span>
+            <span class="n">use_flux</span><span class="o">=</span><span class="n">use_flux</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SoftSelection.draw"><a class="viewcode-back" href="../../../notebooks/api/popsynth.selection_probability.html#popsynth.selection_probability.SoftSelection.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">use_log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_distance</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_obs_value</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_luminosity</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_flux</span><span class="p">:</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_flux</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_log</span><span class="p">:</span>
+            <span class="n">probs</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">expit</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">*</span> <span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">probs</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">expit</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="p">))</span>
+            <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">bernoulli</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+            <span class="nb">bool</span>
+        <span class="p">)</span></div>
+
+    <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;UnitySelection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BernoulliSelection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BoxSelection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;UpperBound&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;UpperBound&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SoftSelection&quot;</span><span class="p">,</span>
+    <span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+popsynth.utils package
+======================
+
+Submodules
+----------
+
+.. toctree::
+
+   popsynth.utils.array_to_cmap
+   popsynth.utils.configuration
+   popsynth.utils.cosmology
+   popsynth.utils.hdf5_utils
+   popsynth.utils.logging
+   popsynth.utils.meta
+   popsynth.utils.package_data
+   popsynth.utils.progress_bar
+   popsynth.utils.registry
+   popsynth.utils.rejection_sample
+   popsynth.utils.spherical_geometry
+
+Module contents
+---------------
+
+.. automodule:: popsynth.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:

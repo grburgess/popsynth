@@ -1,0 +1,21 @@
+popsynth.populations package
+============================
+
+Submodules
+----------
+
+.. toctree::
+
+   popsynth.populations.bpl_population
+   popsynth.populations.lognormal_population
+   popsynth.populations.pareto_populations
+   popsynth.populations.schechter_populations
+   popsynth.populations.spatial_populations
+
+Module contents
+---------------
+
+.. automodule:: popsynth.populations
+    :members:
+    :undoc-members:
+    :show-inheritance:

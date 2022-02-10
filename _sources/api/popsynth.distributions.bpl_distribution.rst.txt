@@ -1,0 +1,7 @@
+popsynth.distributions.bpl_distribution module
+==============================================
+
+.. automodule:: popsynth.distributions.bpl_distribution
+    :members:
+    :undoc-members:
+    :show-inheritance:

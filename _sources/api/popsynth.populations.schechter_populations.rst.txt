@@ -1,0 +1,7 @@
+popsynth.populations.schechter_populations module
+=================================================
+
+.. automodule:: popsynth.populations.schechter_populations
+    :members:
+    :undoc-members:
+    :show-inheritance:

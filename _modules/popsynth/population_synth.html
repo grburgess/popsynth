@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>popsynth.population_synth &mdash; popsynth  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <link rel="stylesheet" href="../../_static/pygments/default.css" type="text/css" id="pygments-style">
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css">
+   
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> popsynth
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/API.html#popsynth">popsynth</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">popsynth</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+  <!--
+  <div class="admonition note">
+    <p><a href="https://github.com/lukelbd">ProPlot author here</a>: Due to my day job as a graduate student, certain <a href="https://github.com/lukelbd/proplot/pulls?q=is%3Aopen+is%3Apr">feature additions</a> may be delayed to the summer of 2020. In the meantime, if you are interested in contributing to ProPlot, please see the <a href="https://proplot.readthedocs.io/en/latest/contributions.html">contribution guide</a>. Any amount of help is welcome!
+    </p>
+  </div>
+  -->
+  <li id="lightdark-li">
+    <label for="lightdark-checkbox" id="lightdark-label">
+      <input type="checkbox" id="lightdark-checkbox"/>
+      <div class="btn-neutral"></div>
+    </label>
+  </li>
+  
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>popsynth.population_synth</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  <script type="text/javascript" src=../../_static/custom.js></script>
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for popsynth.population_synth</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy.integrate</span> <span class="k">as</span> <span class="nn">integrate</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">display</span>
+
+<span class="kn">from</span> <span class="nn">popsynth.auxiliary_sampler</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AuxiliarySampler</span><span class="p">,</span>
+    <span class="n">DerivedLumAuxSampler</span><span class="p">,</span>
+    <span class="n">SecondaryContainer</span><span class="p">,</span>
+    <span class="n">SecondaryStorage</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">popsynth.distribution</span> <span class="kn">import</span> <span class="n">LuminosityDistribution</span><span class="p">,</span> <span class="n">SpatialDistribution</span>
+<span class="kn">from</span> <span class="nn">popsynth.distributions.cosmological_distribution</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CosmologicalDistribution</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">popsynth.population</span> <span class="kn">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">popsynth.selection_probability</span> <span class="kn">import</span> <span class="n">SelectionProbability</span><span class="p">,</span> <span class="n">UnitySelection</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.logging</span> <span class="kn">import</span> <span class="n">setup_logger</span>
+<span class="kn">from</span> <span class="nn">popsynth.utils.registry</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">auxiliary_parameter_registry</span><span class="p">,</span>
+    <span class="n">distribution_registry</span><span class="p">,</span>
+    <span class="n">selection_registry</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># from numpy.typing import np.ndarray</span>
+
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PopulationSynth"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth">[docs]</a><span class="k">class</span> <span class="nc">PopulationSynth</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+<div class="viewcode-block" id="PopulationSynth.__init__"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">spatial_distribution</span><span class="p">:</span> <span class="n">SpatialDistribution</span><span class="p">,</span>
+        <span class="n">luminosity_distribution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LuminosityDistribution</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Basic and generic population synth. One specifies the spatial and luminosity distribution OR</span>
+<span class="sd">        derived luminosity distribution and everything is setup.</span>
+
+<span class="sd">        :param spatial_distribution: The spatial distribution to sample locations from</span>
+<span class="sd">        :type spatial_distribution: :class:`SpatialDistribution`</span>
+<span class="sd">        :param luminosity_distribution: The optional luminosity distribution</span>
+<span class="sd">        :type luminosity_distribution: :class:`LuminosityDistribution`</span>
+<span class="sd">        :param seed: Random seed</span>
+<span class="sd">        :type seed: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span> <span class="o">=</span> <span class="mi">500</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>  <span class="c1"># type: int</span>
+
+        <span class="c1"># this is a container for things passed to</span>
+        <span class="c1"># stan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_spaces</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: dict</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AuxiliarySampler</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>  <span class="c1"># type: nx.Digraph</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spatial_distribution</span><span class="p">,</span> <span class="n">SpatialDistribution</span><span class="p">):</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;the spatial_distribution is the wrong type&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spatial_distribution</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># type: str</span>
+
+        <span class="k">if</span> <span class="n">luminosity_distribution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">luminosity_distribution</span><span class="p">,</span> <span class="n">LuminosityDistribution</span><span class="p">):</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;the luminosity_distribution is the wrong type&quot;</span><span class="p">)</span>
+
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">spatial_distribution</span>
+        <span class="p">)</span>  <span class="c1"># type: SpatialDistribution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">luminosity_distribution</span>
+        <span class="p">)</span>  <span class="c1"># type: Union[LuminosityDistribution, None]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># type: bool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="kc">None</span>
+        <span class="p">)</span>  <span class="c1"># type: Union[DerivedLumAuxSampler, None]</span>
+
+        <span class="c1"># set the selections be fully seen unless it is set by the user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="p">:</span> <span class="n">SelectionProbability</span> <span class="o">=</span> <span class="n">UnitySelection</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unity distance selector&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="p">:</span> <span class="n">SelectionProbability</span> <span class="o">=</span> <span class="n">UnitySelection</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unity flux selector&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># check to see if the selectors are set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector_set</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SelectionProbability</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: dict</span>
+
+        <span class="c1"># keep a list of parameters here for checking</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+        <span class="c1"># add the sky sampler</span>
+
+<div class="viewcode-block" id="PopulationSynth.clean"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clean the auxiliary samplers, selections, etc</span>
+<span class="sd">        from the population synth</span>
+
+<span class="sd">        :param reset: If `True`, reset any attached distributions and samplers</span>
+<span class="sd">        :type reset: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">v</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;removing all registered Auxiliary Samplers&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector_set</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector_set</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;removing flux selector&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span> <span class="o">=</span> <span class="n">UnitySelection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;unity flux selector&quot;</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;removing distance selector&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span> <span class="o">=</span> <span class="n">UnitySelection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;unity distance selector&quot;</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;removing spatial selector&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.write_to"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.write_to">[docs]</a>    <span class="k">def</span> <span class="nf">write_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the population synth to a YAML file.</span>
+
+<span class="sd">        :param file_name: the file name of the output YAML</span>
+<span class="sd">        :type file_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+                <span class="n">stream</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+                <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">Dumper</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeDumper</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.to_dict"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the population synth to a dictionary</span>
+
+<span class="sd">        :returns: Popsynth dict</span>
+<span class="sd">        :rtype: Dict[str, Any]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">output</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span>
+
+        <span class="c1"># store the spatial distribution</span>
+
+        <span class="n">spatial_distribution</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">spatial_distribution</span><span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">_distribution_name</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">truth</span>
+
+        <span class="c1"># store is_rate if cosmological distribution</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="p">,</span> <span class="n">CosmologicalDistribution</span><span class="p">):</span>
+
+            <span class="n">spatial_distribution</span><span class="p">[</span>
+                <span class="s2">&quot;is_rate&quot;</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">_is_rate</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;spatial distribution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spatial_distribution</span>
+
+        <span class="c1"># if there is a luminosity distribution</span>
+        <span class="c1"># then get it and store it</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">luminosity_distribution</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">luminosity_distribution</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">_distribution_name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">truth</span>
+
+            <span class="n">output</span><span class="p">[</span><span class="s2">&quot;luminosity distribution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">luminosity_distribution</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector_set</span><span class="p">:</span>
+
+            <span class="n">flux_selection</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">flux_selection</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="o">.</span><span class="n">_selection_name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="o">.</span><span class="n">parameters</span>
+
+            <span class="n">output</span><span class="p">[</span><span class="s2">&quot;flux selection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flux_selection</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector_set</span><span class="p">:</span>
+
+            <span class="n">distance_selection</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">distance_selection</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="o">.</span><span class="n">_selection_name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="o">.</span><span class="n">parameters</span>
+
+            <span class="n">output</span><span class="p">[</span><span class="s2">&quot;distance selection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance_selection</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">spatial_selection</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">spatial_selection</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">_selection_name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">parameters</span>
+
+            <span class="n">output</span><span class="p">[</span><span class="s2">&quot;spatial selection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spatial_selection</span>
+
+        <span class="n">aux_samplers</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">_auxiliary_sampler_name</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;observed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">observed</span>
+
+            <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">truth</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">tmp</span><span class="p">[</span><span class="n">k2</span><span class="p">]</span> <span class="o">=</span> <span class="n">v2</span>
+
+            <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;secondary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+            <span class="n">selection</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">selection</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">_selection_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">parameters</span>
+
+            <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selection</span>
+
+            <span class="n">aux_samplers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">has_secondary</span><span class="p">:</span>
+
+                <span class="n">aux_samplers</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_secondary_objects</span><span class="p">(</span><span class="n">aux_samplers</span><span class="p">)</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;auxiliary samplers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux_samplers</span>
+
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.from_dict"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;PopulationSynth&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a PopulationSynth object from a dictionary</span>
+
+<span class="sd">        :param input: the dictionary from which to build</span>
+<span class="sd">        :type input: Dict[str, Any]</span>
+<span class="sd">        :returns: Popsynth object</span>
+<span class="sd">        :rtype: :class:`PopulationSynth`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="s2">&quot;luminosity distribution&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+
+            <span class="c1"># try:</span>
+
+            <span class="c1"># load the name and parameters</span>
+
+            <span class="n">tmp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;luminosity distribution&quot;</span><span class="p">]</span>
+
+            <span class="n">ld_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># create the instance</span>
+
+            <span class="n">luminosity_distribution</span><span class="p">:</span> <span class="n">LuminosityDistribution</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">distribution_registry</span><span class="p">[</span><span class="n">ld_name</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="c1"># now set the values of the parameters</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;setting parameters for </span><span class="si">{</span><span class="n">ld_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">[</span><span class="n">ld_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to set </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">luminosity_distribution</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">luminosity_distribution</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+                        <span class="k">break</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">luminosity_distribution</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># try</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;spatial distribution&quot;</span><span class="p">]</span>
+
+        <span class="n">sd_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">spatial_distribution</span><span class="p">:</span> <span class="n">SpatialDistribution</span> <span class="o">=</span> <span class="n">distribution_registry</span><span class="p">[</span>
+            <span class="n">sd_name</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">[</span><span class="n">sd_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to set </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spatial_distribution</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">spatial_distribution</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+                    <span class="k">break</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spatial_distribution</span><span class="p">,</span> <span class="n">CosmologicalDistribution</span><span class="p">):</span>
+
+            <span class="n">spatial_distribution</span><span class="o">.</span><span class="n">_is_rate</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;is_rate&quot;</span><span class="p">]</span>
+
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span>
+
+        <span class="c1"># create the poopulation synth</span>
+
+        <span class="n">pop_synth</span><span class="p">:</span> <span class="n">PopulationSynth</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">spatial_distribution</span><span class="p">,</span>
+            <span class="n">luminosity_distribution</span><span class="o">=</span><span class="n">luminosity_distribution</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># if there is a flux selection</span>
+        <span class="c1"># then add it on</span>
+
+        <span class="k">if</span> <span class="s2">&quot;flux selection&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+
+            <span class="n">tmp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;flux selection&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">fs_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># extract the parameters</span>
+
+                <span class="n">params</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">fs_name</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;flux selection parameters </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># make sure they are all floats</span>
+
+                <span class="n">fs</span> <span class="o">=</span> <span class="n">selection_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fs_name</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to set </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fs</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+
+                        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+                            <span class="k">break</span>
+
+                <span class="c1"># oh yes we are doing that</span>
+                <span class="n">fs</span><span class="o">.</span><span class="n">_use_flux</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">pop_synth</span><span class="o">.</span><span class="n">set_flux_selection</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;distance selection&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+
+            <span class="n">tmp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;distance selection&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">ds_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;adding distance selection </span><span class="si">{</span><span class="n">ds_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># extract the parameters</span>
+
+                <span class="n">params</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">ds_name</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;distance selection parameters </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># make sure they are all floats</span>
+
+                <span class="n">ds</span> <span class="o">=</span> <span class="n">selection_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ds_name</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to set </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+
+                        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+                            <span class="k">break</span>
+
+                <span class="n">ds</span><span class="o">.</span><span class="n">_use_distance</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">pop_synth</span><span class="o">.</span><span class="n">set_distance_selection</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;spatial selection&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+
+            <span class="n">tmp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;spatial selection&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">ss_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;adding distance selection </span><span class="si">{</span><span class="n">ss_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># extract the parameters</span>
+
+                <span class="n">params</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">ss_name</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;spatial selection parameters </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="n">ss</span> <span class="o">=</span> <span class="n">selection_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ss_name</span><span class="p">)</span>
+
+                <span class="c1"># make sure they are all floats</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to set </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ss</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+
+                        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+                            <span class="k">break</span>
+
+                <span class="n">pop_synth</span><span class="o">.</span><span class="n">add_spatial_selector</span><span class="p">(</span><span class="n">ss</span><span class="p">)</span>
+
+        <span class="c1"># Now collect the auxiliary samplers</span>
+
+        <span class="c1"># we will gather them so that we can sort out dependencies</span>
+        <span class="n">aux_samplers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AuxiliarySampler</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">secondary_samplers</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">&quot;auxiliary samplers&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">obj_name</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;auxiliary samplers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="c1"># first we extract the required info</span>
+
+                <span class="n">sampler_name</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+                <span class="n">is_observed</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;observed&quot;</span><span class="p">)</span>
+
+                <span class="c1"># now we extract the selection</span>
+                <span class="c1"># and secondary if they are there</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;starting to scan </span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="n">sampler_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="s2">&quot;selection&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                    <span class="n">selection</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;selection&quot;</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="s2">&quot;secondary&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;auxiliary sampler </span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s2"> has secondaries&quot;</span><span class="p">)</span>
+
+                    <span class="n">secondary</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;secondary&quot;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">secondary</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+
+                        <span class="n">secondary</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">secondary</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">secondary</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">secondary</span><span class="p">))</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;secondaries are </span><span class="si">{</span><span class="n">secondary</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">secondary</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="s2">&quot;init variables&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                    <span class="n">init_variables</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;init variables&quot;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">init_variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+                        <span class="n">init_variables</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">init_variables</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="c1"># since we have popped everything</span>
+                <span class="c1"># all that is left should be parameters</span>
+
+                <span class="n">params</span> <span class="o">=</span> <span class="n">v</span>
+
+                <span class="c1"># now build the object</span>
+
+                <span class="k">try</span><span class="p">:</span>
+
+                    <span class="n">tmp</span><span class="p">:</span> <span class="n">AuxiliarySampler</span> <span class="o">=</span> <span class="n">auxiliary_parameter_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="n">sampler_name</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">obj_name</span><span class="p">,</span>
+                        <span class="n">observed</span><span class="o">=</span><span class="n">is_observed</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">init_variables</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+
+                    <span class="c1"># try without name</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+
+                        <span class="n">tmp</span><span class="p">:</span> <span class="n">AuxiliarySampler</span> <span class="o">=</span> <span class="n">auxiliary_parameter_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                            <span class="n">sampler_name</span><span class="p">,</span>
+                            <span class="c1"># name=obj_name,</span>
+                            <span class="n">observed</span><span class="o">=</span><span class="n">is_observed</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">init_variables</span><span class="p">,</span>
+                        <span class="p">)</span>
+
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+
+                        <span class="k">try</span><span class="p">:</span>
+
+                            <span class="n">tmp</span><span class="p">:</span> <span class="n">AuxiliarySampler</span> <span class="o">=</span> <span class="n">auxiliary_parameter_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                <span class="n">sampler_name</span><span class="p">,</span>
+                                <span class="n">name</span><span class="o">=</span><span class="n">obj_name</span><span class="p">,</span>
+                                <span class="c1"># observed=is_observed,</span>
+                                <span class="o">**</span><span class="n">init_variables</span><span class="p">,</span>
+                            <span class="p">)</span>
+
+                        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+
+                            <span class="n">tmp</span><span class="p">:</span> <span class="n">AuxiliarySampler</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">auxiliary_parameter_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                    <span class="n">sampler_name</span><span class="p">,</span> <span class="o">**</span><span class="n">init_variables</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+
+                            <span class="c1"># we will do a dirty trick</span>
+                            <span class="n">tmp</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">obj_name</span>
+                            <span class="n">tmp</span><span class="o">.</span><span class="n">_is_observed</span> <span class="o">=</span> <span class="n">is_observed</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;setting parameters for </span><span class="si">{</span><span class="n">sampler_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># now set the parameters</span>
+
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trying to set </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+
+                        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+                            <span class="k">break</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tmp</span><span class="o">.</span><span class="n">truth</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">sel_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;adding selection </span><span class="si">{</span><span class="n">sel_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="c1"># extract the parameters</span>
+
+                    <span class="n">params</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="n">sel_name</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+                        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;selection parameters </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="c1"># make sure they are all floats</span>
+
+                    <span class="n">selector</span> <span class="o">=</span> <span class="n">selection_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sel_name</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">selector</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+                    <span class="n">selector</span><span class="o">.</span><span class="n">_use_obs_value</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">set_selection_probability</span><span class="p">(</span><span class="n">selector</span><span class="p">)</span>
+
+                <span class="c1"># now we store this sampler</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s2"> built&quot;</span><span class="p">)</span>
+
+                <span class="n">aux_samplers</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+
+                <span class="c1"># if there is a secondary sampler,</span>
+                <span class="c1"># we need to make a mapping</span>
+
+                <span class="k">if</span> <span class="n">secondary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s2"> is adding </span><span class="si">{</span><span class="n">secondary</span><span class="si">}</span><span class="s2"> as secondaries&quot;</span>
+                    <span class="p">)</span>
+
+                    <span class="n">secondary_samplers</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">secondary</span>
+
+        <span class="c1"># Now we have collected all of the auxiliary samplers</span>
+        <span class="c1"># we need to assign those which are secondary</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;have </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">aux_samplers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> as aux samplers&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">primary</span><span class="p">,</span> <span class="n">secondaries</span> <span class="ow">in</span> <span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">for</span> <span class="n">secondary</span> <span class="ow">in</span> <span class="n">secondaries</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">secondary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="k">break</span>
+
+                <span class="c1"># assign it</span>
+                <span class="n">aux_samplers</span><span class="p">[</span><span class="n">primary</span><span class="p">]</span><span class="o">.</span><span class="n">set_secondary_sampler</span><span class="p">(</span>
+                    <span class="n">aux_samplers</span><span class="p">[</span><span class="n">secondary</span><span class="p">]</span>
+                <span class="p">)</span>
+
+        <span class="c1"># now we need to pop all the secondaries from the main</span>
+        <span class="c1"># list so that we do not double add</span>
+
+        <span class="k">for</span> <span class="n">secondaries</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+
+            <span class="k">for</span> <span class="n">secondary</span> <span class="ow">in</span> <span class="n">secondaries</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">secondary</span> <span class="ow">in</span> <span class="n">aux_samplers</span><span class="p">:</span>
+
+                    <span class="n">aux_samplers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">secondary</span><span class="p">)</span>
+
+        <span class="c1"># now we add the observed quantites on</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">aux_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">pop_synth</span><span class="o">.</span><span class="n">add_observed_quantity</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pop_synth</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.from_file"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PopulationSynth&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        read the population in from a yaml file</span>
+
+<span class="sd">        :param file_name: the file name of the population synth</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="nb">input</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeLoader</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spatial_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SpatialDistribution</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">luminosity_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">LuminosityDistribution</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span>
+
+<div class="viewcode-block" id="PopulationSynth.add_model_space"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.add_model_space">[docs]</a>    <span class="k">def</span> <span class="nf">add_model_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a model space for stan generated quantities</span>
+
+<span class="sd">        :param name: Name that Stan will use</span>
+<span class="sd">        :param start: Start of the grid</span>
+<span class="sd">        :param stop: Stop of the grid</span>
+<span class="sd">        :param log: Use log10 or not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
+            <span class="n">space</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">stop</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">space</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_spaces</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">space</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.add_auxiliary_sampler"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.add_auxiliary_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">add_auxiliary_sampler</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">auxiliary_sampler</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DerivedLumAuxSampler</span><span class="p">,</span> <span class="n">AuxiliarySampler</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an auxiliary sampler or derived luminosity sampler to the population</span>
+<span class="sd">        synth.</span>
+
+<span class="sd">        :param auxiliary_sampler: The auxiliary_sampler</span>
+<span class="sd">        :type auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_observed_quantity</span><span class="p">(</span><span class="n">auxiliary_sampler</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.add_observed_quantity"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.add_observed_quantity">[docs]</a>    <span class="k">def</span> <span class="nf">add_observed_quantity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">auxiliary_sampler</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DerivedLumAuxSampler</span><span class="p">,</span> <span class="n">AuxiliarySampler</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an auxiliary sampler or derived luminosity sampler to the population</span>
+<span class="sd">        synth</span>
+
+<span class="sd">        :param auxiliary_sampler: The auxiliary_sampler</span>
+<span class="sd">        :type auxiliary_sampler: Union[DerivedLumAuxSampler, AuxiliarySampler]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">auxiliary_sampler</span><span class="p">,</span> <span class="n">DerivedLumAuxSampler</span><span class="p">):</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;registering derived luminosity sampler: </span><span class="si">{</span><span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span> <span class="o">=</span> <span class="n">auxiliary_sampler</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">auxiliary_sampler</span><span class="p">,</span> <span class="n">AuxiliarySampler</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">is_secondary</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is already set as a secondary sampler!&quot;</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;and registered to </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">parents</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="p">:</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is already registered!&quot;</span><span class="p">)</span>
+
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;registering auxilary sampler: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="p">[</span>
+                <span class="n">auxiliary_sampler</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="n">auxiliary_sampler</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;This not an auxiliary sampler&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.set_distance_selection"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.set_distance_selection">[docs]</a>    <span class="k">def</span> <span class="nf">set_distance_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">:</span> <span class="n">SelectionProbability</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the selection type for the distance.</span>
+
+<span class="sd">        :param selector: The selector</span>
+<span class="sd">        :type selector: :class:`SelectionProbability`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">SelectionProbability</span><span class="p">):</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">selector</span><span class="si">}</span><span class="s2"> is not a Selection probability&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span> <span class="o">=</span> <span class="n">selector</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector_set</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.set_flux_selection"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.set_flux_selection">[docs]</a>    <span class="k">def</span> <span class="nf">set_flux_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">:</span> <span class="n">SelectionProbability</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the selection type for the flux</span>
+
+<span class="sd">        :param selector: The selector</span>
+<span class="sd">        :type selector: :class:`SelectionProbability`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">SelectionProbability</span><span class="p">):</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">selector</span><span class="si">}</span><span class="s2"> is not a Selection probability&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span> <span class="o">=</span> <span class="n">selector</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector_set</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.add_spatial_selector"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.add_spatial_selector">[docs]</a>    <span class="k">def</span> <span class="nf">add_spatial_selector</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spatial_selector</span><span class="p">:</span> <span class="n">SelectionProbability</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a spatial selector into the mix</span>
+
+<span class="sd">        :param spatial_selector: The spatial selector</span>
+<span class="sd">        :type spatial_selector: :class:`SelectionProbability`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spatial_selector</span><span class="p">,</span> <span class="n">SelectionProbability</span><span class="p">):</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spatial_selector</span><span class="si">}</span><span class="s2"> is not a Selection probability&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span> <span class="o">=</span> <span class="n">spatial_selector</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+<div class="viewcode-block" id="PopulationSynth.draw_log10_fobs"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.draw_log10_fobs">[docs]</a>    <span class="k">def</span> <span class="nf">draw_log10_fobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f_sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the log10 of the the fluxes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">log10_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># sample from the log distribution to keep positive fluxes</span>
+        <span class="n">log10_fobs</span> <span class="o">=</span> <span class="n">log10_f</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">f_sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">log10_fobs</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.draw_log_fobs"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.draw_log_fobs">[docs]</a>    <span class="k">def</span> <span class="nf">draw_log_fobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f_sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the log10 of the the fluxes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">log_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># sample from the log distribution to keep positive fluxes</span>
+        <span class="n">log_fobs</span> <span class="o">=</span> <span class="n">log_f</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">f_sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">log_fobs</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.draw_survey"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.draw_survey">[docs]</a>    <span class="k">def</span> <span class="nf">draw_survey</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">flux_sigma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">log10_flux_draw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Population</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the total survey and return a :class:`Population` object.</span>
+
+<span class="sd">        This will sample all attached distributions and apply selection functions.</span>
+
+<span class="sd">        If a value of flux_sigma is given, the log10 observed fluxes are sampled with</span>
+<span class="sd">        measurement error.</span>
+
+<span class="sd">        :param flux_sigma: The homoskedastic sigma for the flux in log10 space</span>
+<span class="sd">        :type flux_sigma: Optional[float]</span>
+<span class="sd">        :param log10_flux_draw: if `True`, fluxes are drawn in log space</span>
+<span class="sd">        :type log10_flux_draw: bool</span>
+<span class="sd">        :return: a Population object</span>
+<span class="sd">        :rtype: :class:`Population`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># this stores all the &quot;true&quot; population values from all the samplers</span>
+        <span class="n">truth</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># type: dict</span>
+
+        <span class="c1"># store the spatial distributVion truths</span>
+        <span class="n">truth</span><span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">name</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">truth</span>
+
+        <span class="c1"># set the random seed</span>
+
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span><span class="p">)</span>
+
+        <span class="c1"># create a callback of the integrand</span>
+        <span class="n">dNdr</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">dNdV</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">differential_volume</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">time_adjustment</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># integrate the population to determine the true number of</span>
+        <span class="c1"># objects</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">dNdr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">r_max</span><span class="p">)[</span>
+            <span class="mi">0</span>
+        <span class="p">]</span>  <span class="c1"># type: float</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The volume integral is </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">N</span><span class="p">)</span>
+
+        <span class="c1"># this should be poisson distributed</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># type: np.int64</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">draw_distance</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="c1"># now draw the sky positions</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">draw_sky_positions</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">distances</span>  <span class="c1"># type: np.ndarray</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Expecting </span><span class="si">%d</span><span class="s2"> total objects&quot;</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="c1"># first check if the auxilliary samplers</span>
+        <span class="c1"># compute the luminosities</span>
+
+        <span class="c1"># setup the global selection</span>
+
+        <span class="n">global_selection</span><span class="p">:</span> <span class="n">SelectionProbability</span> <span class="o">=</span> <span class="n">UnitySelection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="p">)</span>
+        <span class="n">global_selection</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="c1"># now we set up the selection that _may_ come</span>
+        <span class="c1"># from the auxilliary samplers</span>
+
+        <span class="n">auxiliary_selection</span><span class="p">:</span> <span class="n">SelectionProbability</span> <span class="o">=</span> <span class="n">UnitySelection</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;total auxiliary selection&quot;</span>
+        <span class="p">)</span>
+        <span class="n">auxiliary_selection</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">auxiliary_quantities</span><span class="p">:</span> <span class="n">SecondaryStorage</span> <span class="o">=</span> <span class="n">SecondaryStorage</span><span class="p">()</span>
+
+        <span class="c1"># this means the luminosity is not</span>
+        <span class="c1"># simulated directy</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">luminosity_distribution</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span><span class="p">:</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No luminosity distribution was specified&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;and no derived luminosity auxiliary sampler was added&quot;</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;using a derived luminosity sampler&quot;</span><span class="p">)</span>
+            <span class="c1"># pbar.set_description(desc=&#39;Getting derived luminosities&#39;)</span>
+            <span class="c1"># set the distance to the auxilary sampler</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">set_spatial_values</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">spatial_values</span>
+            <span class="p">)</span>
+
+            <span class="c1"># sample the true and obs</span>
+            <span class="c1"># values which are held internally</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;derived luminosity sampled&quot;</span><span class="p">)</span>
+
+            <span class="c1"># check to make sure we sampled!</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">true_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">true_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span>
+            <span class="p">)</span>
+
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">obs_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">obs_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span>
+            <span class="p">)</span>
+
+            <span class="c1"># append these values to a dict</span>
+
+            <span class="n">auxiliary_quantities</span><span class="o">.</span><span class="n">add_secondary</span><span class="p">(</span>
+                <span class="n">SecondaryContainer</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">true_values</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">obs_values</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Getting luminosity from derived sampler&quot;</span><span class="p">)</span>
+
+            <span class="n">luminosities</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">compute_luminosity</span><span class="p">()</span>
+            <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+            <span class="c1"># collect anything that was sampled here</span>
+
+            <span class="c1"># store the truth from the derived lum sampler</span>
+
+            <span class="n">truth</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">truth</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;sampling &quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">k2</span><span class="p">,</span>
+                <span class="n">v2</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="c1"># first we tell the sampler to go and retrieve all of</span>
+                <span class="c1"># its own secondaries</span>
+
+                <span class="n">auxiliary_quantities</span> <span class="o">+=</span> <span class="n">v2</span><span class="o">.</span><span class="n">get_secondary_properties</span><span class="p">()</span>
+
+                <span class="c1">#                properties = v2.get_secondary_properties()  # type: dict</span>
+
+                <span class="c1"># for k3, v3 in properties.items():</span>
+
+                <span class="c1">#     # now attach them</span>
+                <span class="c1">#     auxiliary_quantities[k3] = v3</span>
+
+                <span class="c1"># store the secondary truths</span>
+                <span class="c1"># this will _could_ be clobbered later</span>
+                <span class="c1"># but that is ok</span>
+
+                <span class="n">truth</span><span class="p">[</span><span class="n">v2</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">truth</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">luminosities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">draw_luminosity</span><span class="p">(</span>
+                <span class="n">size</span><span class="o">=</span><span class="n">n</span>
+            <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+            <span class="c1"># store the truths from the luminosity distribution</span>
+            <span class="n">truth</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">truth</span>
+
+        <span class="c1"># transform the fluxes</span>
+        <span class="n">fluxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+            <span class="n">luminosities</span><span class="p">,</span> <span class="n">distances</span>
+        <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+        <span class="c1"># now sample any auxilary quantities</span>
+        <span class="c1"># if needed</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">is_secondary</span>
+            <span class="p">),</span> <span class="s2">&quot;This is a secondary sampler. You cannot sample it in the main sampler&quot;</span>
+
+            <span class="c1"># set the luminosities and distances to</span>
+            <span class="c1"># auxilary sampler just in case</span>
+            <span class="c1"># they are needed</span>
+
+            <span class="n">v</span><span class="o">.</span><span class="n">set_luminosity</span><span class="p">(</span><span class="n">luminosities</span><span class="p">)</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">set_spatial_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">spatial_values</span><span class="p">)</span>
+
+            <span class="c1"># also set luminosities and distances to secondaries</span>
+            <span class="c1"># as needed</span>
+
+            <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="k">if</span> <span class="n">v2</span><span class="o">.</span><span class="n">uses_luminosity</span><span class="p">:</span>
+
+                    <span class="n">v2</span><span class="o">.</span><span class="n">set_luminosity</span><span class="p">(</span><span class="n">luminosities</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">v2</span><span class="o">.</span><span class="n">uses_distance</span><span class="p">:</span>
+
+                    <span class="n">v2</span><span class="o">.</span><span class="n">set_spatial_values</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">spatial_values</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># sample the true and obs</span>
+            <span class="c1"># values which are held internally</span>
+            <span class="c1"># this will also invoke secondary samplers</span>
+
+            <span class="n">v</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+            <span class="c1"># store the auxilliary truths</span>
+            <span class="n">truth</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">truth</span>
+
+            <span class="c1"># check to make sure we sampled!</span>
+            <span class="k">assert</span> <span class="n">v</span><span class="o">.</span><span class="n">true_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">true_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span>
+            <span class="k">assert</span> <span class="n">v</span><span class="o">.</span><span class="n">obs_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">obs_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span>
+
+            <span class="n">auxiliary_quantities</span> <span class="o">+=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_secondary_properties</span><span class="p">()</span>
+
+            <span class="c1"># # append these values to a dict</span>
+            <span class="c1"># auxiliary_quantities[k] = {</span>
+            <span class="c1">#     &quot;true_values&quot;: v.true_values,</span>
+            <span class="c1">#     &quot;obs_values&quot;: v.obs_values,</span>
+            <span class="c1">#     &quot;selection&quot;: v.selector,</span>
+            <span class="c1"># }  # type: dict</span>
+
+            <span class="c1"># collect the secondary values</span>
+
+            <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="c1"># first we tell the sampler to go and retrieve all of</span>
+                <span class="c1"># its own secondaries</span>
+
+                <span class="c1"># properties = v2.get_secondary_properties()  # type: dict</span>
+
+                <span class="c1"># for k3, v3 in properties.items():</span>
+
+                <span class="c1">#     # now attach them</span>
+                <span class="c1">#     auxiliary_quantities[k3] = v3</span>
+
+                <span class="c1"># store the secondary truths</span>
+
+                <span class="n">truth</span><span class="p">[</span><span class="n">v2</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">truth</span>
+
+        <span class="c1"># pbar.update()</span>
+
+        <span class="c1"># now draw all the observed fluxes</span>
+        <span class="c1"># this is homoskedastic for now</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="p">,</span> <span class="n">UnitySelection</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">flux_sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;assuming that fluxes will be jittered&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">log10_flux_draw</span><span class="p">:</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;making a log10 flux draw&quot;</span><span class="p">)</span>
+
+                    <span class="n">log10_fluxes_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_log10_fobs</span><span class="p">(</span>
+                        <span class="n">fluxes</span><span class="p">,</span> <span class="n">flux_sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span>
+                    <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+                    <span class="n">flux_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">log10_fluxes_obs</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;making a logflux draw&quot;</span><span class="p">)</span>
+
+                    <span class="n">log10_fluxes_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_log_fobs</span><span class="p">(</span>
+                        <span class="n">fluxes</span><span class="p">,</span> <span class="n">flux_sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span>
+                    <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+                    <span class="n">flux_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log10_fluxes_obs</span><span class="p">)</span>
+
+                <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">alltrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">log10_fluxes_obs</span><span class="p">))</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;observed fluxes are latent fluxes&quot;</span><span class="p">)</span>
+
+                <span class="n">flux_obs</span> <span class="o">=</span> <span class="n">fluxes</span>
+                <span class="n">log10_fluxes_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span>
+                <span class="n">flux_sigma</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># this is a dummy</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;observed fluxes are latent fluxes&quot;</span><span class="p">)</span>
+
+            <span class="n">flux_obs</span> <span class="o">=</span> <span class="n">fluxes</span>
+            <span class="n">log10_fluxes_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span>
+            <span class="n">flux_sigma</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># this is a dummy</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;applying selection to fluxes&quot;</span><span class="p">)</span>
+
+        <span class="c1"># pass the values the plux selector and draw the selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="o">.</span><span class="n">set_observed_flux</span><span class="p">(</span><span class="n">flux_obs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="c1">#       selection = self._flux_selector.selection</span>
+
+        <span class="c1"># now apply the selection from the auxilary samplers</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">auxiliary_quantities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="c1"># unity selections don&#39;t add anything</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">],</span> <span class="n">UnitySelection</span><span class="p">):</span>
+
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;skipping </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> selection because it is unity&quot;</span><span class="p">)</span>
+
+                <span class="k">continue</span>
+
+            <span class="n">auxiliary_selection</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Applying selection from </span><span class="si">%s</span><span class="s2"> which selected </span><span class="si">%d</span><span class="s2"> of </span><span class="si">%d</span><span class="s2"> objects&quot;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">n_selected</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">n_objects</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Before auxiliary selection there were </span><span class="si">%d</span><span class="s2"> objects selected&quot;</span>
+                <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span><span class="o">.</span><span class="n">n_selected</span>
+            <span class="p">)</span>
+
+        <span class="c1"># now we can add the values onto the global</span>
+        <span class="c1"># selection</span>
+        <span class="c1"># not in the future we will depreciate the</span>
+        <span class="c1"># no selection feature</span>
+
+        <span class="n">global_selection</span> <span class="o">+=</span> <span class="n">auxiliary_selection</span>
+
+        <span class="n">global_selection</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selector</span>
+
+        <span class="c1"># now scan the spatial selector</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">set_spatial_distribution</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Appling selection from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> which selected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">n_selected</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span><span class="o">.</span><span class="n">n_objects</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">global_selection</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_selector</span>
+
+        <span class="k">if</span> <span class="n">global_selection</span><span class="o">.</span><span class="n">n_selected</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;NO HIDDEN OBJECTS&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">global_selection</span><span class="o">.</span><span class="n">n_selected</span><span class="p">)</span>
+
+        <span class="n">known_distances</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">global_selection</span><span class="o">.</span><span class="n">selection</span><span class="p">][</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="o">.</span><span class="n">selection</span>
+        <span class="p">]</span>
+        <span class="n">known_distance_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="o">.</span><span class="n">selection_index</span>
+        <span class="n">unknown_distance_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selector</span><span class="o">.</span><span class="n">non_selection_index</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">known_distances</span><span class="p">)</span><span class="si">}</span><span class="s2"> distances&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">global_selection</span><span class="o">.</span><span class="n">n_selected</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">global_selection</span><span class="o">.</span><span class="n">n_selected</span><span class="si">}</span><span class="s2"> objects out to a distance of </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">known_distances</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No Objects detected&quot;</span><span class="p">)</span>
+
+        <span class="c1"># just to make sure we do not do anything nutty</span>
+        <span class="n">lf_params</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">lf_form</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">lf_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">params</span>
+            <span class="n">lf_form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">form</span>
+
+        <span class="c1"># if distance_probability is None:</span>
+        <span class="c1">#     distance_probability = 1.0</span>
+
+        <span class="k">return</span> <span class="n">Population</span><span class="p">(</span>
+            <span class="n">luminosities</span><span class="o">=</span><span class="n">luminosities</span><span class="p">,</span>
+            <span class="n">distances</span><span class="o">=</span><span class="n">distances</span><span class="p">,</span>
+            <span class="n">known_distances</span><span class="o">=</span><span class="n">known_distances</span><span class="p">,</span>
+            <span class="n">known_distance_idx</span><span class="o">=</span><span class="n">known_distance_idx</span><span class="p">,</span>
+            <span class="n">unknown_distance_idx</span><span class="o">=</span><span class="n">unknown_distance_idx</span><span class="p">,</span>
+            <span class="n">fluxes</span><span class="o">=</span><span class="n">fluxes</span><span class="p">,</span>
+            <span class="n">flux_obs</span><span class="o">=</span><span class="n">flux_obs</span><span class="p">,</span>
+            <span class="n">selection</span><span class="o">=</span><span class="n">global_selection</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span>
+            <span class="n">flux_sigma</span><span class="o">=</span><span class="n">flux_sigma</span><span class="p">,</span>
+            <span class="n">r_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">r_max</span><span class="p">,</span>
+            <span class="n">n_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span><span class="p">,</span>
+            <span class="n">lf_params</span><span class="o">=</span><span class="n">lf_params</span><span class="p">,</span>
+            <span class="n">spatial_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">model_spaces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_spaces</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+            <span class="n">spatial_form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">form</span><span class="p">,</span>
+            <span class="n">lf_form</span><span class="o">=</span><span class="n">lf_form</span><span class="p">,</span>
+            <span class="n">auxiliary_quantities</span><span class="o">=</span><span class="n">auxiliary_quantities</span><span class="p">,</span>
+            <span class="n">truth</span><span class="o">=</span><span class="n">truth</span><span class="p">,</span>
+            <span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span>
+            <span class="n">theta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span>
+            <span class="n">pop_synth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PopulationSynth.display"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the simulation parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span><span class="p">:</span>
+
+            <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="s2">&quot;## Luminosity Function&quot;</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="s2">&quot;## Luminosity Function&quot;</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+        <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="s2">&quot;## Spatial Function&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">k</span><span class="p">,</span>
+                <span class="n">v</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+                <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;## </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+
+                <span class="n">v</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+
+                <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;## </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+
+                <span class="n">v</span><span class="o">.</span><span class="n">display</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span><span class="p">:</span>
+
+            <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;Luminosity Function</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+            <span class="n">out</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;Luminosity Function</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+            <span class="n">out</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+        <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;Spatial Function</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">out</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">k</span><span class="p">,</span>
+                <span class="n">v</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+                <span class="n">out</span> <span class="o">+=</span> <span class="n">v</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+
+                <span class="n">out</span> <span class="o">+=</span> <span class="n">v</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="c1"># def generate_stan_code(self, stan_gen, **kwargs):</span>
+
+    <span class="c1">#     pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_graph</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span>
+
+<div class="viewcode-block" id="PopulationSynth._build_graph"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth._build_graph">[docs]</a>    <span class="k">def</span> <span class="nf">_build_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the graph for all the samplers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># first check out the luminosity sampler</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;obs_flux&quot;</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;obs_flux&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_derived_luminosity</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;obs_flux&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">uses_distance</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">k2</span><span class="p">,</span>
+                <span class="n">v2</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">k2</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="c1"># pass the graph and the primary</span>
+
+                <span class="n">_</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">get_secondary_properties</span><span class="p">(</span>
+                    <span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span>
+                    <span class="n">primary</span><span class="o">=</span><span class="n">k2</span><span class="p">,</span>
+                    <span class="n">spatial_distribution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;obs_flux&quot;</span><span class="p">)</span>
+        <span class="c1"># now do the same fro everything else</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_observations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">is_secondary</span>
+            <span class="p">),</span> <span class="s2">&quot;This is a secondary sampler. You cannot sample it in the main sampler&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">observed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">obs_name</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">obs_name</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">uses_distance</span><span class="p">:</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="c1"># first we tell the sampler to go and retrieve all of</span>
+                <span class="c1"># its own secondaries</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">v2</span><span class="o">.</span><span class="n">uses_distance</span><span class="p">:</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">k2</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">v2</span><span class="o">.</span><span class="n">observed</span><span class="p">:</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">v2</span><span class="o">.</span><span class="n">obs_name</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="n">v2</span><span class="o">.</span><span class="n">obs_name</span><span class="p">)</span>
+
+                <span class="n">_</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">get_secondary_properties</span><span class="p">(</span>
+                    <span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span>
+                    <span class="n">primary</span><span class="o">=</span><span class="n">k2</span><span class="p">,</span>
+                    <span class="n">spatial_distribution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="p">,</span>
+                <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, J. Michael Burgess.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
