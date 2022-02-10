@@ -37,17 +37,7 @@ jobs:
           name: notebooks-for-${{ github.sha }}
           path: docs/notebooks
 
-      - name: Sleep for 5 minutes
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '1m'
-          
-      - name: Trigger RTDs build
-        uses: dfm/rtds-action@v1
-        with:
-          webhook_url: ${{ secrets.RTDS_WEBHOOK_URL }}
-          webhook_token: ${{ secrets.RTDS_WEBHOOK_TOKEN }}
-          commit_ref: ${{ github.ref }}
+
   api_doc:
     name: "Create the API stubs"
     runs-on: macos-latest
