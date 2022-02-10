@@ -630,7 +630,7 @@ def test_non_transient():
 
         pb.test_it()
 
-        assert pb.pop_gen.spatial_distribution._is_rate == False
+        assert not pb.pop_gen.spatial_distribution._is_rate
 
 
 def test_lumi_and_dist_secondary_sampler():

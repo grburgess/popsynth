@@ -624,7 +624,8 @@ class Population(object):
 
                 lf_params = None
                 lf_form = None
-        except:
+
+        except AttributeError:
 
             lf_params = None
             lf_form = None
@@ -648,7 +649,7 @@ class Population(object):
             known_distance_idx = (f["known_distance_idx"][()]).astype(int)
             unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
 
-        except:
+        except AttributeError:
 
             known_distances = None
             known_distance_idx = None
@@ -862,7 +863,7 @@ class Population(object):
                 bottom=min([self._fluxes.min(), self._flux_selected.min()])
             )
 
-        except:
+        except AttributeError:
 
             ax.set_ylim(bottom=self._fluxes.min())
 
