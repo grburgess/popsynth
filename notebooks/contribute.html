@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; popsynth  documentation</title>
+  <title>Contributing &mdash; popsynth  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
@@ -18,11 +18,14 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="API" href="../api/API.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="aux.html" />
+    <link rel="prev" title="Auxiliary Samplers" href="aux.html" />
   <link rel="stylesheet" href="../_static/pygments/default.css" type="text/css" id="pygments-style">
   <link rel="stylesheet" href="../_static/custom.css" type="text/css">
    
@@ -45,9 +48,29 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concept.html">Core Concept</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributions.html">Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom distributions and populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">Selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aux.html">Auxiliary Samplers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Bug-reports">Bug reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Code-and-more-distributions">Code and more distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Documentation">Documentation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../api/API.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/API.html#popsynth">popsynth</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="short_grbs.html">Short GRBS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bl_lacs.html">BL Lac blazars</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stellar_mass.html">Stellar Mass-Luminosity Bias</a></li>
+<li class="toctree-l1"><a class="reference internal" href="milkyway.html">Fun with the Milky Way</a></li>
 </ul>
 
         </div>
@@ -77,7 +100,7 @@
   </li>
   
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>&lt;no title&gt;</li>
+      <li>Contributing</li>
 
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -113,92 +136,29 @@
     text-align: unset;
 }
 </style>
-<dl>
-<dt>{</dt><dd><dl>
-<dt>“cells”: [</dt><dd><dl>
-<dt>{</dt><dd><p>“cell_type”: “markdown”,
-“id”: “26cdfc0e”,
-“metadata”: {},
-“source”: [</p>
-<blockquote>
-<div><p>“# Contributing n”,
-“n”,
-“Contributions to <code class="docutils literal notranslate"><span class="pre">`popsynth`</span></code> are always welcome. They can come in the form of:n”,
-“n”,
-“## Bug reportsn”,
-“n”,
-“Please use the [Github issue tracking system for anyn”,
-“bugs](https://github.com/grburgess/popsynth/issues), for questions,n”,
-“and or feature requests.n”,
-“n”,
-“## Code and more distributionsn”,
-“n”,
-“While it is easy to create custom distributions in your local setup,n”,
-“if you would like to add them to popsynth directly, go ahead. Pleasen”,
-“include tests to ensure that your contributions are compatible withn”,
-“the code and can be maintained in the long term.n”,
-“n”,
-“## Documentationn”,
-“n”,
-“Additions or examples, tutorials, or better explanations are alwaysn”,
-“welcome. To ensure that the documentation builds with the currentn”,
-“version of the software, I am usingn”,
-“[jupytext](https://jupytext.readthedocs.io/en/latest/) to write then”,
-“documentation in Markdown. These are automatically converted to andn”,
-“executed as jupyter notebooks when changes are pushed to Github.n”,
-“n”</p>
-</div></blockquote>
-<p>]</p>
-</dd>
-</dl>
-<p>}</p>
-</dd>
-</dl>
-<p>],
-“metadata”: {</p>
-<blockquote>
-<div><dl class="simple">
-<dt>“jupytext”: {</dt><dd><p>“formats”: “ipynb,md”</p>
-</dd>
-</dl>
-<p>},
-“kernelspec”: {</p>
-<blockquote>
-<div><p>“display_name”: “Python 3”,
-“language”: “python”,
-“name”: “python3”</p>
-</div></blockquote>
-<p>},
-“language_info”: {</p>
-<blockquote>
-<div><dl class="simple">
-<dt>“codemirror_mode”: {</dt><dd><p>“name”: “ipython”,
-“version”: 3</p>
-</dd>
-</dl>
-<p>},
-“file_extension”: “.py”,
-“mimetype”: “text/x-python”,
-“name”: “python”,
-“nbconvert_exporter”: “python”,
-“pygments_lexer”: “ipython3”,
-“version”: “3.9.10”</p>
-</div></blockquote>
-<p>}</p>
-</div></blockquote>
-<p>},
-“nbformat”: 4,
-“nbformat_minor”: 5</p>
-</dd>
-</dl>
-<p>}</p>
+<section id="Contributing">
+<h1>Contributing<a class="headerlink" href="#Contributing" title="Permalink to this headline"></a></h1>
+<p>Contributions to <code class="docutils literal notranslate"><span class="pre">popsynth</span></code> are always welcome. They can come in the form of:</p>
+<section id="Bug-reports">
+<h2>Bug reports<a class="headerlink" href="#Bug-reports" title="Permalink to this headline"></a></h2>
+<p>Please use the <a class="reference external" href="https://github.com/grburgess/popsynth/issues">Github issue tracking system for any bugs</a>, for questions, and or feature requests.</p>
+</section>
+<section id="Code-and-more-distributions">
+<h2>Code and more distributions<a class="headerlink" href="#Code-and-more-distributions" title="Permalink to this headline"></a></h2>
+<p>While it is easy to create custom distributions in your local setup, if you would like to add them to popsynth directly, go ahead. Please include tests to ensure that your contributions are compatible with the code and can be maintained in the long term.</p>
+</section>
+<section id="Documentation">
+<h2>Documentation<a class="headerlink" href="#Documentation" title="Permalink to this headline"></a></h2>
+<p>Additions or examples, tutorials, or better explanations are always welcome. To ensure that the documentation builds with the current version of the software, I am using <a class="reference external" href="https://jupytext.readthedocs.io/en/latest/">jupytext</a> to write the documentation in Markdown. These are automatically converted to and executed as jupyter notebooks when changes are pushed to Github.</p>
+</section>
+</section>
 
 
            </div>
           </div>
 
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="aux.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="aux.html" class="btn btn-neutral float-left" title="Auxiliary Samplers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../api/API.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
