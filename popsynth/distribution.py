@@ -3,10 +3,10 @@ from dataclasses import dataclass
 from typing import Dict, Union
 
 import numpy as np
-from class_registry import AutoRegister
-from numpy.typing import ArrayLike
-from IPython.display import Markdown, Math, display
 import pandas as pd
+from class_registry import AutoRegister
+from IPython.display import Markdown, Math, display
+from numpy.typing import ArrayLike
 
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.logging import setup_logger
@@ -23,9 +23,10 @@ class DistributionParameter(Parameter):
     pass
 
 
-class Distribution(object,
-                   metaclass=AutoRegister(distribution_registry,
-                                          base_type=ParameterMeta)):
+class Distribution(
+    object,
+    metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta),
+):
     _distribution_name = "Distribution"
 
     def __init__(self, name: str, seed: int, form: str) -> None:
@@ -51,7 +52,7 @@ class Distribution(object,
         """
         The name of the distribution
 
-        :returns: 
+        :returns:
 
         """
         return self._name
@@ -59,10 +60,10 @@ class Distribution(object,
     @property
     def form(self) -> str:
         """
-        The latex form of the 
+        The latex form of the
         distribution
 
-        :returns: 
+        :returns:
 
         """
         return self._form
@@ -92,10 +93,10 @@ class Distribution(object,
 
     def display(self):
         """
-        use ipython pretty display to 
+        use ipython pretty display to
         display the functions
 
-        :returns: 
+        :returns:
 
         """
 
@@ -159,9 +160,9 @@ class SpatialDistribution(Distribution):
         self._theta = None
         self._phi = None
 
-        super(SpatialDistribution, self).__init__(name=name,
-                                                  seed=seed,
-                                                  form=form)
+        super(SpatialDistribution, self).__init__(
+            name=name, seed=seed, form=form
+        )
 
     @abc.abstractmethod
     def differential_volume(self, distance):
@@ -179,9 +180,9 @@ class SpatialDistribution(Distribution):
         The differential number of objects
         per volume element
 
-        :param distance: 
-        :type distance: 
-        :returns: 
+        :param distance:
+        :type distance:
+        :returns:
 
         """
         raise RuntimeError("Must be implemented in derived class")
@@ -200,13 +201,13 @@ class SpatialDistribution(Distribution):
     def transform(self, flux, distance):
         """
         The transform from luminosity to flux
-        for the 
+        for the
 
-        :param flux: 
-        :type flux: 
-        :param distance: 
-        :type distance: 
-        :returns: 
+        :param flux:
+        :type flux:
+        :param distance:
+        :type distance:
+        :returns:
 
         """
         pass
@@ -216,7 +217,7 @@ class SpatialDistribution(Distribution):
         """
         the polar coordinate of the objects
 
-        :returns: 
+        :returns:
 
         """
         return self._theta
@@ -226,7 +227,7 @@ class SpatialDistribution(Distribution):
         """
         the longitudinal coordinate fo the objects
 
-        :returns: 
+        :returns:
 
         """
 
@@ -237,7 +238,7 @@ class SpatialDistribution(Distribution):
         """
         The declination of the objects
 
-        :returns: 
+        :returns:
 
         """
         return 90 - np.rad2deg(self._theta)
@@ -247,7 +248,7 @@ class SpatialDistribution(Distribution):
         """
         the right acension of the objects
 
-        :returns: 
+        :returns:
 
         """
         return np.rad2deg(self._phi)
@@ -257,7 +258,7 @@ class SpatialDistribution(Distribution):
         """
         the distances to the objects
 
-        :returns: 
+        :returns:
 
         """
         return self._distances
@@ -266,7 +267,7 @@ class SpatialDistribution(Distribution):
     def spatial_values(self):
         """
         All the spatial values of the objects
-        :returns: 
+        :returns:
 
         """
         return SpatialContainer(self._distances, self._theta, self._phi)
@@ -275,9 +276,9 @@ class SpatialDistribution(Distribution):
         """
         Draw teh sky positions of the objects
 
-        :param size: 
+        :param size:
         :type size: int
-        :returns: 
+        :returns:
 
         """
         self._theta, self._phi = sample_theta_phi(size)
@@ -291,12 +292,16 @@ class SpatialDistribution(Distribution):
         """
 
         # create a callback for the sampler
-        dNdr = (lambda r: self.dNdV(r) * self.differential_volume(r) / self.
-                time_adjustment(r))
+        dNdr = (
+            lambda r: self.dNdV(r)
+            * self.differential_volume(r)
+            / self.time_adjustment(r)
+        )
 
         # find the maximum point
-        tmp = np.linspace(0.0, self.r_max, 500,
-                          dtype=np.float64)  # type: ArrayLike
+        tmp = np.linspace(
+            0.0, self.r_max, 500, dtype=np.float64
+        )  # type: ArrayLike
         ymax = np.max(dNdr(tmp))  # type: float
 
         # rejection sampling the distribution
@@ -315,8 +320,7 @@ class SpatialDistribution(Distribution):
 
                     # get an rvs from 0 to the maximum distance
 
-                    r = np.random.uniform(low=0,
-                                          high=self.r_max)  # type: float
+                    r = np.random.uniform(low=0, high=self.r_max)  # type: float
 
                     # compare them
 
@@ -325,8 +329,9 @@ class SpatialDistribution(Distribution):
                         flag = False
         else:
 
-            r_out = rejection_sample(size, ymax, self.r_max,
-                                     dNdr)  # type: ArrayLike
+            r_out = rejection_sample(
+                size, ymax, self.r_max, dNdr
+            )  # type: ArrayLike
 
         self._distances = np.array(r_out)  # type: ArrayLike
 
@@ -368,9 +373,9 @@ class LuminosityDistribution(Distribution):
         function to draw the luminosity via an alternative method
         must be implemented in child class
 
-        :param size: 
-        :type size: 
-        :returns: 
+        :param size:
+        :type size:
+        :returns:
 
         """
         pass

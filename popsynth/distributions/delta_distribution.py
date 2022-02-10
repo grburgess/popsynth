@@ -1,5 +1,6 @@
 import numpy as np
-from popsynth.distribution import LuminosityDistribution, DistributionParameter
+
+from popsynth.distribution import DistributionParameter, LuminosityDistribution
 
 
 class DeltaDistribution(LuminosityDistribution):

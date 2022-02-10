@@ -1,7 +1,7 @@
-import scipy.special as sf
 import numpy as np
+import scipy.special as sf
 
-from popsynth.distribution import LuminosityDistribution, DistributionParameter
+from popsynth.distribution import DistributionParameter, LuminosityDistribution
 
 
 class SchechterDistribution(LuminosityDistribution):
@@ -36,8 +36,11 @@ class SchechterDistribution(LuminosityDistribution):
 
     def phi(self, L):
 
-        return (L**self.alpha * np.exp(-L / self.Lmin) /
-                (self.Lmin**(1 + self.alpha) * sf.gamma(1 + self.alpha)))
+        return (
+            L ** self.alpha
+            * np.exp(-L / self.Lmin)
+            / (self.Lmin ** (1 + self.alpha) * sf.gamma(1 + self.alpha))
+        )
 
     def draw_luminosity(self, size=1):
 

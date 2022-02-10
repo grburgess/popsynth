@@ -1,18 +1,20 @@
+import hypothesis.strategies as st
 import numpy as np
+from hypothesis import given, settings
+
 from popsynth.aux_samplers.lognormal_aux_sampler import (
-    LogNormalAuxSampler,
     Log10NormalAuxSampler,
+    LogNormalAuxSampler,
 )
 from popsynth.aux_samplers.normal_aux_sampler import NormalAuxSampler
-from popsynth.aux_samplers.trunc_normal_aux_sampler import TruncatedNormalAuxSampler
 from popsynth.aux_samplers.plaw_aux_sampler import (
+    BrokenPowerLawAuxSampler,
     ParetoAuxSampler,
     PowerLawAuxSampler,
-    BrokenPowerLawAuxSampler,
 )
-
-from hypothesis import given, settings
-import hypothesis.strategies as st
+from popsynth.aux_samplers.trunc_normal_aux_sampler import (
+    TruncatedNormalAuxSampler,
+)
 
 
 def test_constructor():
@@ -43,7 +45,9 @@ def test_constructor():
 
 
 @given(
-    st.floats(min_value=0.01, ),
+    st.floats(
+        min_value=0.01,
+    ),
     st.floats(min_value=0.01, max_value=10.0),
     st.integers(min_value=2, max_value=1000),
 )

@@ -35,15 +35,16 @@ class LogNormalAuxSampler(AuxiliarySampler):
     def true_sampler(self, size: int):
 
         self._true_values = np.exp(
-            stats.norm.rvs(loc=self.mu, scale=self.tau, size=size))
+            stats.norm.rvs(loc=self.mu, scale=self.tau, size=size)
+        )
 
     def observation_sampler(self, size: int):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(loc=self._true_values,
-                                              scale=self.sigma,
-                                              size=size)
+            self._obs_values = stats.norm.rvs(
+                loc=self._true_values, scale=self.sigma, size=size
+            )
 
         else:
 
@@ -76,21 +77,23 @@ class Log10NormalAuxSampler(AuxiliarySampler):
             is `True`
         :type sigma: :class:`AuxiliaryParameter`
         """
-        super(Log10NormalAuxSampler, self).__init__(name=name,
-                                                    observed=observed)
+        super(Log10NormalAuxSampler, self).__init__(
+            name=name, observed=observed
+        )
 
     def true_sampler(self, size: int):
 
         self._true_values = np.power(
-            10, stats.norm.rvs(loc=self.mu, scale=self.tau, size=size))
+            10, stats.norm.rvs(loc=self.mu, scale=self.tau, size=size)
+        )
 
     def observation_sampler(self, size: int):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(loc=self._true_values,
-                                              scale=self.sigma,
-                                              size=size)
+            self._obs_values = stats.norm.rvs(
+                loc=self._true_values, scale=self.sigma, size=size
+            )
 
         else:
 

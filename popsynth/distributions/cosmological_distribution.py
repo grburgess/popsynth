@@ -1,7 +1,9 @@
-import numpy as np
+from typing import Any, Dict
+
 import numba as nb
-from typing import Dict, Any
-from popsynth.distribution import SpatialDistribution, DistributionParameter
+import numpy as np
+
+from popsynth.distribution import DistributionParameter, SpatialDistribution
 from popsynth.utils.cosmology import cosmology
 
 
@@ -67,7 +69,7 @@ class CosmologicalDistribution(SpatialDistribution):
         :returns: Flux
         """
 
-        return L / (4.0 * np.pi * cosmology.luminosity_distance(z)**2)
+        return L / (4.0 * np.pi * cosmology.luminosity_distance(z) ** 2)
 
     def time_adjustment(self, z):
         """
@@ -95,10 +97,9 @@ class SFRDistribution(CosmologicalDistribution):
     decay = DistributionParameter()
     peak = DistributionParameter(vmin=0)
 
-    def __init__(self,
-                 seed: int = 1234,
-                 name: str = "sfr",
-                 is_rate: bool = True):
+    def __init__(
+        self, seed: int = 1234, name: str = "sfr", is_rate: bool = True
+    ):
         """
         A star-formation like distribution of the form
         presented in Cole et al. 2001.

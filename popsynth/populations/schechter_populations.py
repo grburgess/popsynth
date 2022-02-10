@@ -1,15 +1,13 @@
-from popsynth.populations.spatial_populations import (
-    SphericalPopulation,
-    ZPowerSphericalPopulation,
-    ZPowerCosmoPopulation,
-    SFRPopulation,
-)
-
 from popsynth.distributions.schechter_distribution import SchechterDistribution
+from popsynth.populations.spatial_populations import (
+    SFRPopulation,
+    SphericalPopulation,
+    ZPowerCosmoPopulation,
+    ZPowerSphericalPopulation,
+)
 
 
 class SchechterHomogeneousSphericalPopulation(SphericalPopulation):
-
     def __init__(
         self,
         Lambda: float,
@@ -48,7 +46,6 @@ class SchechterHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
-
     def __init__(
         self,
         Lambda: float,
@@ -92,7 +89,6 @@ class SchechterZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class SchechterZPowerCosmoPopulation(ZPowerCosmoPopulation):
-
     def __init__(
         self,
         Lambda: float,
@@ -143,7 +139,6 @@ class SchechterZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class SchechterSFRPopulation(SFRPopulation):
-
     def __init__(
         self,
         r0: float,

@@ -13,9 +13,9 @@ from .selection_probability import (
     SelectionProbability,
 )
 from .spatial_selection import (
-    SpatialSelection,
-    GalacticPlaneSelection,
     DistanceSelection,
+    GalacticPlaneSelection,
+    SpatialSelection,
 )
 
 __all__ = [

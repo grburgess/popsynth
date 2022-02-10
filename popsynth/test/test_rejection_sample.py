@@ -1,12 +1,11 @@
-import numpy as np
-from popsynth.utils.rejection_sample import rejection_sample
-
-from hypothesis import given, settings
 import hypothesis.strategies as st
+import numpy as np
+from hypothesis import given, settings
+
+from popsynth.utils.rejection_sample import rejection_sample
 
 
 class FunctionGen(object):
-
     def __init__(self, xmax):
 
         self.xmax = xmax
@@ -23,9 +22,7 @@ class FunctionGen(object):
 
 
 class LinearFuncGen(FunctionGen):
-
     def __init__(self, alpha, beta, xmax):
-
         def func(x):
 
             return alpha + beta * x
