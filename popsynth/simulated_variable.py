@@ -111,10 +111,27 @@ class SimulatedVariable(np.ndarray):
 
         self._latent_values = getattr(obj, "_latent_values", None)
 
+    def __getitem__(self, item):
+
+        obs = self.view(np.ndarray).__getitem__(item)
+
+        if not isinstance(obs, np.ndarray):
+
+            return obs
+
+        latent = self._latent_values.__getitem__(item)
+
+        selection = self._selection.__getitem__(item)
+
+        return SimulatedVariable(obs, latent, selection)
+
     def __array_ufunc__(self, ufunc, method, *inputs, out=None, **kwargs):
         args = []
         in_no = []
         latent_args = []
+
+        is_reduction = False
+
         for i, input_ in enumerate(inputs):
             if isinstance(input_, SimulatedVariable):
                 in_no.append(i)
@@ -175,7 +192,15 @@ class SimulatedVariable(np.ndarray):
 
             if output is None:
 
-                out = SimulatedVariable(result, latent_result, self._selection)
+                if isinstance(result, np.ndarray):
+
+                    out = SimulatedVariable(
+                        result, latent_result, self._selection
+                    )
+
+                else:
+
+                    out = result
 
             else:
 
