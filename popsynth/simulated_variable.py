@@ -39,7 +39,9 @@ class SimulatedVariable(np.ndarray):
 
         if len(selection) != len(observed_values):
 
-            log.error("selection is not the same length as observation")
+            log.error(
+                f"selection ({len(selection)}) is not the same length as observation ({len(observed_values)})"
+            )
 
             raise AssertionError()
 

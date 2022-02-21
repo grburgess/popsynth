@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import h5py
 import ipyvolume as ipv
@@ -21,6 +21,8 @@ from popsynth.utils.hdf5_utils import (
 )
 from popsynth.utils.logging import setup_logger
 from popsynth.utils.spherical_geometry import xyz
+
+from .simulated_variable import SimulatedVariable
 
 log = setup_logger(__name__)
 
@@ -108,42 +110,47 @@ class Population(object):
         :param pop_synth: Population synth
         :type pop_synth: Optional[Dict[str, Any]]
         """
-        self._luminosities = luminosities  # type: ArrayLike
 
-        self._distances = distances  # type: ArrayLike
-        self._known_distances = known_distances  # type: ArrayLike
-        self._known_distance_idx = known_distance_idx  # type: ArrayLike
-        self._unknown_distance_idx = unknown_distance_idx  # type: ArrayLike
+        self._protected_names: List[str] = []
 
-        self._theta = theta  # type: ArrayLike
-        self._phi = phi  # type: ArrayLike
+        self._luminosities: SimulatedVariable = SimulatedVariable(
+            luminosities, luminosities, selection
+        )
+
+        self._distances: SimulatedVariable = SimulatedVariable(
+            distances, distances, selection
+        )
+
+        self._known_distances: ArrayLike = known_distances
+        self._known_distance_idx: ArrayLike = known_distance_idx
+        self._unknown_distance_idx: ArrayLike = unknown_distance_idx
+
+        self._theta: SimulatedVariable = SimulatedVariable(
+            theta, theta, selection
+        )
+        self._phi: SimulatedVariable = SimulatedVariable(phi, phi, selection)
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
             selection
         ), "the distances are not the correct size"
 
-        # latent fluxes
-        self._fluxes = fluxes  # type: ArrayLike
+        # fluxes
 
-        # observed fluxes
-        self._flux_obs = flux_obs  # type: ArrayLike
-        self._selection = selection  # type: ArrayLike
-        self._flux_sigma = flux_sigma  # type: float
+        self._fluxes: SimulatedVariable = SimulatedVariable(
+            flux_obs, fluxes, selection
+        )
 
-        self._r_max = r_max  # type: float
-        self._seed = seed  # type: int
-        self._n_model = n_model  # type: int
-        self._name = name  # type: str
+        self._selection: ArrayLike = selection
+        self._flux_sigma: float = flux_sigma
+
+        self._r_max: float = r_max
+        self._seed: int = seed
+        self._n_model: int = n_model
+
+        self._name: str = name
+
         self._spatial_form = spatial_form
         self._lf_form = lf_form
-
-        self._flux_selected = flux_obs[selection]  # type: ArrayLike
-        self._distance_selected = distances[selection]  # type: ArrayLike
-        self._luminosity_selected = luminosities[selection]  # type: ArrayLike
-
-        self._flux_hidden = flux_obs[~selection]  # type: ArrayLike
-        self._distance_hidden = distances[~selection]  # type: ArrayLike
-        self._luminosity_hidden = luminosities[~selection]  # type: ArrayLike
 
         self._lf_params = lf_params
         self._spatial_params = spatial_params
@@ -154,11 +161,9 @@ class Population(object):
 
         self._graph = graph
 
-        self._n_objects = len(selection)  # type: int
-        self._n_detections = sum(self._selection)  # type: int
-        self._n_non_detections = (
-            self._n_objects - self._n_detections
-        )  # type: int
+        self._n_objects: int = len(selection)
+        self._n_detections: int = sum(self._selection)
+        self._n_non_detections: int = self._n_objects - self._n_detections
 
         self._pop_synth: Optional[Dict[str, Any]] = pop_synth
 
@@ -175,10 +180,14 @@ class Population(object):
         if auxiliary_quantities is not None:
 
             for k, v in auxiliary_quantities.items():
-
-                setattr(self, k, v["true_values"])
-                setattr(self, "%s_obs" % k, v["obs_values"])
-                setattr(self, "%s_selected" % k, v["obs_values"][selection])
+                setattr(
+                    self,
+                    k,
+                    SimulatedVariable(
+                        v["obs_values"], v["true_values"], selection
+                    ),
+                )
+                self._protected_names.append(k)
 
         self._auxiliary_quantities = auxiliary_quantities
 
@@ -187,6 +196,19 @@ class Population(object):
             for k, v in model_spaces.items():
 
                 assert len(v) == n_model
+
+    def __setattr__(self, name, value):
+
+        # dont allow setting of aux properties
+
+        if name == "_protected_names":
+            object.__setattr__(self, name, value)
+
+        elif name in self._protected_names:
+            raise AttributeError('Denied.')
+
+        else:
+            object.__setattr__(self, name, value)
 
     @property
     def graph(self):
@@ -223,32 +245,43 @@ class Population(object):
         return self._flux_sigma
 
     @property
-    def theta(self) -> np.ndarray:
+    def theta(self) -> SimulatedVariable:
         """
         The polar angle of the objects
         """
         return self._theta
 
     @property
-    def phi(self) -> np.ndarray:
+    def phi(self) -> SimulatedVariable:
         """
         The phi angle of the objects
         """
         return self._phi
 
     @property
-    def dec(self) -> np.ndarray:
+    def dec(self) -> SimulatedVariable:
         """
         The declination of the objects
         """
         return 90 - np.rad2deg(self._theta)
 
     @property
-    def ra(self) -> np.ndarray:
+    def ra(self) -> SimulatedVariable:
         """
         The right ascension of the objects
         """
         return np.rad2deg(self._phi)
+
+    @property
+    def luminosities(self) -> SimulatedVariable:
+        """
+        the luminosities of the objects
+
+        :returns:
+
+        """
+
+        return self._luminosities
 
     @property
     def luminosities_latent(self) -> np.ndarray:
@@ -256,10 +289,10 @@ class Population(object):
         The true luminosities of the objects. These are always latent
         as one cannot directly observe them.
         """
-        return self._luminosities
+        return self._luminosities.latent
 
     @property
-    def distances(self) -> np.ndarray:
+    def distances(self) -> SimulatedVariable:
         """
         The distances to the objects
         """
@@ -281,11 +314,27 @@ class Population(object):
         return self._selection
 
     @property
+    def fluxes(self) -> SimulatedVariable:
+        """
+        the fluxes of the objects
+
+        :returns:
+
+        """
+
+        return self._fluxes
+
+    @property
     def fluxes_latent(self) -> np.ndarray:
         """
         The latent fluxes of the objects
         """
-        return self._fluxes
+
+        msg = "This will be removed in future versions use fluxes.latent"
+
+        log.warning(msg)
+
+        return self._fluxes.latent
 
     @property
     def fluxes_observed(self) -> np.ndarray:
@@ -293,7 +342,12 @@ class Population(object):
         All of the observed fluxes, i.e.,
         scattered with error
         """
-        return self._flux_obs
+
+        msg = "This will be removed in future versions use x.fluxes"
+
+        log.warning(msg)
+
+        return self._fluxes
 
     @property
     def selected_fluxes_observed(self) -> np.ndarray:
@@ -301,7 +355,11 @@ class Population(object):
         The selected obs fluxes
         """
 
-        return self._flux_selected
+        msg = "This will be removed in future versions use x.fluxes.selected"
+
+        log.warning(msg)
+
+        return self._fluxes.selected
 
     @property
     def selected_fluxes_latent(self) -> np.ndarray:
@@ -309,7 +367,11 @@ class Population(object):
         The selected latent fluxes
         """
 
-        return self._fluxes[self._selection]
+        msg = "This will be removed in future versions use x.fluxes.selected.latent"
+
+        log.warning(msg)
+
+        return self._fluxes.selected.latent
 
     @property
     def selected_distances(self) -> np.ndarray:
@@ -317,7 +379,12 @@ class Population(object):
         The selected distances. Note, this is different than
         the KNOWN distances.
         """
-        return self._distance_selected
+
+        msg = "This will be removed in future versions use x.distances.selected"
+
+        log.warning(msg)
+
+        return self._distances.selected
 
     @property
     def hidden_fluxes_observed(self) -> np.ndarray:
@@ -325,7 +392,13 @@ class Population(object):
         The observed fluxes that are hidden by the selection
         """
 
-        return self._flux_hidden
+        msg = (
+            "This will be removed in future versions use x.fluxes.non_selected"
+        )
+
+        log.warning(msg)
+
+        return self._fluxes.non_selected
 
     @property
     def hidden_distances(self) -> np.ndarray:
@@ -333,7 +406,11 @@ class Population(object):
         The distances that are hidden by the selection
         """
 
-        return self._distance_hidden
+        msg = "This will be removed in future versions use x.distances.non_selected"
+
+        log.warning(msg)
+
+        return self._distances.non_selected
 
     @property
     def hidden_fluxes_latent(self) -> np.ndarray:
@@ -341,7 +418,11 @@ class Population(object):
         The latent fluxes that are hidden by the selection
         """
 
-        return self._fluxes[~self._selection]
+        msg = "This will be removed in future versions use x.distances.non_selected"
+
+        log.warning(msg)
+
+        return self._fluxes.non_selected.latent
 
     @property
     def hard_cut(self) -> bool:
@@ -416,16 +497,16 @@ class Population(object):
             N=self._n_detections,
             Nz=len(self._known_distances),
             Nnz=len(self._unknown_distance_idx),
-            z_obs=self._distance_selected,
+            z_obs=self._distances.selected,
             known_z_obs=self._known_distances,
             z_idx=self._known_distance_idx + 1,  # stan indexing
             z_nidx=self._unknown_distance_idx + 1,  # stan indexing
-            r_obs=self._distance_selected,
+            r_obs=self._distances.selected,
             known_r_obs=self._known_distances,
             r_idx=self._known_distance_idx + 1,  # stan indexing
             r_nidx=self._unknown_distance_idx + 1,  # stan indexing
-            log_flux_obs=np.log10(self._flux_selected),
-            flux_obs=self._flux_selected,
+            log_flux_obs=np.log10(self._fluxes.selected),
+            flux_obs=self._fluxes.selected.view(np.ndarray),
             flux_sigma=self._flux_sigma,
             z_max=self._r_max,
             r_max=self._r_max,
@@ -530,8 +611,8 @@ class Population(object):
             data=self._unknown_distance_idx,
             compression="lzf",
         )
-        f.create_dataset("fluxes", data=self._fluxes, compression="lzf")
-        f.create_dataset("flux_obs", data=self._flux_obs, compression="lzf")
+        f.create_dataset("fluxes", data=self._fluxes.latent, compression="lzf")
+        f.create_dataset("flux_obs", data=self._fluxes, compression="lzf")
         f.create_dataset("selection", data=self._selection, compression="lzf")
         f.create_dataset("theta", data=self._theta, compression="lzf")
         f.create_dataset("phi", data=self._phi, compression="lzf")
@@ -723,9 +804,18 @@ class Population(object):
         """
 
         if observed:
+
+            def _selector(x):
+
+                return x.selected
+
             selection = self._selection
 
         else:
+
+            def _selector(x):
+
+                return x.non_selected
 
             selection = ~self._selection
 
@@ -765,13 +855,13 @@ class Population(object):
                 itr += 1
 
         return Population(
-            luminosities=self._luminosities[selection],
-            distances=self._distances[selection],
+            luminosities=_selector(self._luminosities),
+            distances=_selector(self._distances),
             known_distances=np.array(known_distances),
             known_distance_idx=np.array(known_distance_idx),
             unknown_distance_idx=np.array(unknown_distance_idx),
-            fluxes=self._fluxes[selection],
-            flux_obs=self._flux_obs[selection],
+            fluxes=_selector(self._fluxes).latent,
+            flux_obs=_selector(self._fluxes),
             selection=np.ones(sum(selection), dtype=bool),
             flux_sigma=self._flux_sigma,
             n_model=self._n_model,
@@ -786,8 +876,8 @@ class Population(object):
             auxiliary_quantities=new_aux,
             truth=self._truth,
             graph=self._graph,
-            theta=self._theta[selection],
-            phi=self._phi[selection],
+            theta=_selector(self._theta),
+            phi=_selector(self._phi),
         )
 
     def display(self):
@@ -860,7 +950,7 @@ class Population(object):
         try:
 
             ax.set_ylim(
-                bottom=min([self._fluxes.min(), self._flux_selected.min()])
+                bottom=min([self._fluxes.min(), self._fluxes.selected.min()])
             )
 
         except ValueError:
@@ -900,8 +990,8 @@ class Population(object):
             fig = ax.get_figure()
 
         ax.scatter(
-            self._distance_selected,
-            self._flux_selected,
+            self._distances.selected,
+            self._fluxes.selected,
             alpha=0.8,
             color=flux_color,
             edgecolors="none",
@@ -913,7 +1003,9 @@ class Population(object):
         # ax.set_xscale('log')
         ax.set_yscale("log")
 
-        ax.set_ylim(bottom=min([self._fluxes.min(), self._flux_selected.min()]))
+        ax.set_ylim(
+            bottom=min([self._fluxes.min(), self._fluxes.selected.min()])
+        )
         ax.set_xlim(right=self._r_max)
 
         ax.set_xlabel("distance")
@@ -954,8 +1046,8 @@ class Population(object):
         if (with_arrows) and (not self._no_detection):
             for start, stop, z in zip(
                 self._fluxes[self._selection],
-                self._flux_selected,
-                self._distance_selected,
+                self._fluxes.selected,
+                self._distances.selected,
             ):
 
                 x = z
@@ -999,7 +1091,7 @@ class Population(object):
             fig = ax.get_figure()
 
         ax.scatter(
-            self._distance_selected,
+            self._distances.selected,
             self._luminosity_selected,
             s=5,
             color=obs_color,
@@ -1087,8 +1179,8 @@ class Population(object):
         phi = self._phi[self._selection]
 
         fig = self._display_sphere(
-            self._flux_selected,
-            self._distance_selected,
+            self._fluxes.selected,
+            self._distances.selected,
             theta=theta,
             phi=phi,
             cmap=cmap,
@@ -1114,12 +1206,12 @@ class Population(object):
         **kwargs,
     ):
 
-        theta = self._theta[~self._selection]
-        phi = self._phi[~self._selection]
+        theta = self._theta.non_selected
+        phi = self._phi.non_selected
 
         fig = self._display_sphere(
-            self._flux_hidden,
-            self._distance_hidden,
+            self._fluxes.non_selected,
+            self._distances.non_selected,
             theta=theta,
             phi=phi,
             cmap=cmap,
@@ -1190,7 +1282,7 @@ class Population(object):
             label="Total Pop.",
         )
         ax.hist(
-            self._distance_selected,
+            self._distances.selected,
             bins=bins,
             #            facecolor=blue,
             #            edgecolor=blue_highlight,
