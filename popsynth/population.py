@@ -1092,13 +1092,13 @@ class Population(object):
 
         ax.scatter(
             self._distances.selected,
-            self._luminosity_selected,
+            self._luminosities.selected,
             s=5,
             color=obs_color,
         )
         ax.scatter(
-            self._distance_hidden,
-            self._luminosity_hidden,
+            self._distances.non_selected,
+            self._luminosities.non_selected,
             s=5,
             color=true_color,
         )

@@ -220,14 +220,55 @@ The population object stores a lot of information. For example, an array of sele
 population.selection
 ```
 
+Every variable that is simulated is stored as a `SimulatedVariable` object. This
+object acts as a normal numpy array with a few special properties. The main view
+of the array are the **observed** values. These are values that can be obscured
+from the **latent** values by measurement error.
+
+Let's examine the observed flux.
+
+```python
+
+# the observed values
+
+population.fluxes
+
+# the latent values
+
+population.fluxes.latent
+
+```
+
+Any math operation on the a simulated variable is applied to the latent values
+as well. Thus, it is easy to manipulate both in one operation. When a variable
+is not marked as observed, this implies that the **latent** (true) values and
+the **observed** values will be the same. Thus, the values stored will be the
+same.
+
+To access the selected or non-selected values of a variable:
+
+```python
+
+selected_fluxes = population.fluxes.selected
+
+non_selected_fluxes = population.fluxes.non_selected
+
+
+```
+
+This returns another `SimulatedVaraible` object which allows access to the
+latent and observed values as well.
+
+
+
 We can retrieve selected and non-selected distances:
 
 ```python
-distances = population.selected_distances
+distances = population.distances.selected
 ```
 
 ```python
-hidden_distances = population.hidden_distances
+hidden_distances = population.distances.non_selected
 ```
 
 ```python

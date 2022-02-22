@@ -139,9 +139,7 @@ We can see that the population has stored out demo auxiliary property.
 ```python
 all_demo = population.demo
 
-obs_demo = population.demo_obs
-
-selected_demo = population.demo_selected
+selected_demo = population.demo.selected
 ```
 
 We can also see that our demo sampler is now known which is important when creating populations from YAML files. This registering happens when we add the property ```_auxiliary_sampler_name = "DemoSampler" ``` which must be name of the class!
@@ -243,7 +241,7 @@ population = pop_gen.draw_survey(flux_sigma=0.1)
 ```python
 fig, ax = plt.subplots()
 
-ax.scatter(population.demo2_selected, population.demo_selected, c=purple, s=40)
+ax.scatter(population.demo2.selected, population.demo.selected, c=purple, s=40)
 
 ax.scatter(population.demo2, population.demo, c=yellow, s=20)
 ```
