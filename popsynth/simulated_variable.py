@@ -163,7 +163,6 @@ class SimulatedVariable(np.ndarray):
         if out_no:
             info['outputs'] = out_no
 
-        print(kwargs)
         results = super().__array_ufunc__(ufunc, method, *args, **kwargs)
 
         latent_results = super().__array_ufunc__(
