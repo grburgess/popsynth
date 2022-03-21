@@ -502,7 +502,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         # we will gather them so that we can sort out dependencies
         aux_samplers: Dict[str, AuxiliarySampler] = OrderedDict()
-        secondary_samplers: [str, str] = OrderedDict()
+        secondary_samplers: Dict[str, str] = OrderedDict()
 
         if "auxiliary samplers" in input:
 
