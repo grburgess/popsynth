@@ -1,14 +1,13 @@
 from .delta_aux_sampler import DeltaAuxSampler
-from .viewing_angle_sampler import ViewingAngleSampler
-from .lognormal_aux_sampler import LogNormalAuxSampler, Log10NormalAuxSampler
+from .lognormal_aux_sampler import Log10NormalAuxSampler, LogNormalAuxSampler
 from .normal_aux_sampler import NormalAuxSampler
-from .trunc_normal_aux_sampler import TruncatedNormalAuxSampler
-
 from .plaw_aux_sampler import (
+    BrokenPowerLawAuxSampler,
     ParetoAuxSampler,
     PowerLawAuxSampler,
-    BrokenPowerLawAuxSampler,
 )
+from .trunc_normal_aux_sampler import TruncatedNormalAuxSampler
+from .viewing_angle_sampler import ViewingAngleSampler
 
 __all__ = [
     "DeltaAuxSampler",

@@ -1,6 +1,7 @@
 import tempfile
-import yaml
 from pathlib import Path
+
+import yaml
 from omegaconf import OmegaConf
 
 from popsynth.utils.configuration import PopSynthConfig
@@ -37,16 +38,10 @@ def test_user_config_merge():
 
     popsynth_config = PopSynthConfig()
 
-    user_configs = [{
-        "show_progress": False
-    }, {
-        "logging": {
-            "console": {
-                "on": False,
-                "level": "INFO"
-            }
-        }
-    }]
+    user_configs = [
+        {"show_progress": False},
+        {"logging": {"console": {"on": False, "level": "INFO"}}},
+    ]
 
     for i, config in enumerate(user_configs):
 
@@ -62,8 +57,8 @@ def test_user_config_merge():
 
         path.unlink()
 
-    assert popsynth_config.show_progress == False
+    assert not popsynth_config.show_progress
 
-    assert popsynth_config["logging"]["console"]["on"] == False
+    assert not popsynth_config["logging"]["console"]["on"]
 
     assert popsynth_config["logging"]["console"]["level"] == "INFO"

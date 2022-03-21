@@ -1,14 +1,13 @@
-from popsynth.populations.spatial_populations import (
-    SphericalPopulation,
-    ZPowerSphericalPopulation,
-    ZPowerCosmoPopulation,
-    SFRPopulation,
-)
 from popsynth.distributions.bpl_distribution import BPLDistribution
+from popsynth.populations.spatial_populations import (
+    SFRPopulation,
+    SphericalPopulation,
+    ZPowerCosmoPopulation,
+    ZPowerSphericalPopulation,
+)
 
 
 class BPLHomogeneousSphericalPopulation(SphericalPopulation):
-
     def __init__(
         self,
         Lambda: float,
@@ -58,7 +57,6 @@ class BPLHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
-
     def __init__(
         self,
         Lambda: float,
@@ -112,7 +110,6 @@ class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
-
     def __init__(
         self,
         Lambda: float,
@@ -169,7 +166,6 @@ class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class BPLSFRPopulation(SFRPopulation):
-
     def __init__(
         self,
         r0: float,

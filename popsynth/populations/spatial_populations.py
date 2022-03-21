@@ -1,13 +1,17 @@
+from popsynth.distribution import LuminosityDistribution
 from popsynth.distributions.cosmological_distribution import (  # MergerDistribution,
-    SFRDistribution, ZPowerCosmoDistribution,
+    SFRDistribution,
+    ZPowerCosmoDistribution,
 )
 from popsynth.distributions.spherical_distribution import (
     ConstantSphericalDistribution,
     ZPowerSphericalDistribution,
 )
-from popsynth.distribution import LuminosityDistribution
-from popsynth.distributions.spiral_galaxy_distribution import SpiralGalaxyDistribution
+from popsynth.distributions.spiral_galaxy_distribution import (
+    SpiralGalaxyDistribution,
+)
 from popsynth.population_synth import PopulationSynth
+
 """
 Create a range of spatial populations that can
 be expanded with luminosity distributions.
@@ -15,7 +19,6 @@ be expanded with luminosity distributions.
 
 
 class SphericalPopulation(PopulationSynth):
-
     def __init__(
         self,
         Lambda: float,
@@ -49,7 +52,6 @@ class SphericalPopulation(PopulationSynth):
 
 
 class ZPowerSphericalPopulation(PopulationSynth):
-
     def __init__(
         self,
         Lambda: float,
@@ -89,7 +91,6 @@ class ZPowerSphericalPopulation(PopulationSynth):
 
 
 class ZPowerCosmoPopulation(PopulationSynth):
-
     def __init__(
         self,
         Lambda: float,
@@ -138,7 +139,6 @@ class ZPowerCosmoPopulation(PopulationSynth):
 
 
 class SFRPopulation(PopulationSynth):
-
     def __init__(
         self,
         r0: float,
@@ -196,7 +196,6 @@ class SFRPopulation(PopulationSynth):
 
 
 class MWRadialPopulation(PopulationSynth):
-
     def __init__(
         self,
         rho: float,

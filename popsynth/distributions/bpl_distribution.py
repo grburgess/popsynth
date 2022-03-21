@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.stats as stats
-from popsynth.distribution import LuminosityDistribution, DistributionParameter
+
+from popsynth.distribution import DistributionParameter, LuminosityDistribution
 
 
 class BPLDistribution(LuminosityDistribution):
@@ -38,9 +39,9 @@ class BPLDistribution(LuminosityDistribution):
         lf_form += r"L_\mathrm{break}^{\alpha - \beta}"
         lf_form += r" & \mbox{if } L > L_\mathrm{break}. \end{cases}"
 
-        super(BPLDistribution, self).__init__(seed=seed,
-                                              name=name,
-                                              form=lf_form)
+        super(BPLDistribution, self).__init__(
+            seed=seed, name=name, form=lf_form
+        )
 
     def phi(self, L):
 
@@ -50,8 +51,9 @@ class BPLDistribution(LuminosityDistribution):
 
         u = np.atleast_1d(np.random.uniform(size=size))
 
-        return sample_bpl(u, self.Lmin, self.Lbreak, self.Lmax, self.alpha,
-                          self.beta)
+        return sample_bpl(
+            u, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta
+        )
 
 
 def integrate_pl(x0, x1, x2, a1, a2):
@@ -67,8 +69,11 @@ def integrate_pl(x0, x1, x2, a1, a2):
 
     # compute the integral of each piece analytically
     int_1 = (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) / (a1 + 1)
-    int_2 = (np.power(x1, a1 - a2) *
-             (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0)) / (a2 + 1))
+    int_2 = (
+        np.power(x1, a1 - a2)
+        * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
+        / (a2 + 1)
+    )
 
     # compute the total integral
     total = int_1 + int_2
@@ -137,15 +142,15 @@ def sample_bpl(u, x0, x1, x2, a1, a2):
 
     # inverse transform sample the lower part for the "successes"
     out[idx] = np.power(
-        u[idx] * (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) +
-        np.power(x0, a1 + 1.0),
+        u[idx] * (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0))
+        + np.power(x0, a1 + 1.0),
         1.0 / (1 + a1),
     )
 
     # inverse transform sample the upper part for the "failures"
     out[~idx] = np.power(
-        u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0)) +
-        np.power(x1, a2 + 1.0),
+        u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
+        + np.power(x1, a2 + 1.0),
         1.0 / (1 + a2),
     )
 

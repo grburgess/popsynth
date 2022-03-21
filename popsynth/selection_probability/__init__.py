@@ -12,7 +12,11 @@ from .selection_probability import (
     SelectionParameter,
     SelectionProbability,
 )
-from .spatial_selection import SpatialSelection, GalacticPlaneSelection
+from .spatial_selection import (
+    DistanceSelection,
+    GalacticPlaneSelection,
+    SpatialSelection,
+)
 
 __all__ = [
     "HardFluxSelection",
@@ -28,4 +32,5 @@ __all__ = [
     "DummySelection",
     "SelectionParameter",
     "GalacticPlaneSelection",
+    "DistanceSelection",
 ]

@@ -2,11 +2,11 @@ import abc
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from class_registry import AutoRegister
-from numpy.typing import ArrayLike
-from dotmap import DotMap
 import pandas as pd
+from class_registry import AutoRegister
+from dotmap import DotMap
 from IPython.display import Markdown, Math, display
+from numpy.typing import ArrayLike
 
 from popsynth.distribution import SpatialContainer
 from popsynth.selection_probability import SelectionProbability, UnitySelection
@@ -21,7 +21,6 @@ SamplerDict = Dict[str, Dict[str, ArrayLike]]
 
 
 class SecondaryContainer(object):
-
     def __init__(
         self,
         name: str,
@@ -104,7 +103,6 @@ class SecondaryContainer(object):
 
 
 class SecondaryStorage(DotMap):
-
     def __init__(self):
         """
         A container for secondary samplers
@@ -150,11 +148,11 @@ class AuxiliaryParameter(Parameter):
 
 
 class AuxiliarySampler(
-        object,
-        metaclass=AutoRegister(auxiliary_parameter_registry,
-                               base_type=ParameterMeta),
+    object,
+    metaclass=AutoRegister(
+        auxiliary_parameter_registry, base_type=ParameterMeta
+    ),
 ):
-
     def __init__(
         self,
         name: str,
@@ -252,8 +250,7 @@ class AuxiliarySampler(
         self._dec = value.dec
         self._spatial_values = value
 
-    def set_selection_probability(self,
-                                  selector: SelectionProbability) -> None:
+    def set_selection_probability(self, selector: SelectionProbability) -> None:
         """
         Set a selection probabilty for this sampler.
 
@@ -366,12 +363,12 @@ class AuxiliarySampler(
             self._selector.set_observed_value(self._obs_values)
 
             # check to make sure we sampled!
-            assert (self.true_values is not None
-                    and len(self.true_values) == size
-                    ), f"{self.name} likely has a bad true_sampler function"
-            assert (self.obs_values is not None
-                    and len(self.obs_values) == size
-                    ), f"{self.name} likely has a observation_sampler function"
+            assert (
+                self.true_values is not None and len(self.true_values) == size
+            ), f"{self.name} likely has a bad true_sampler function"
+            assert (
+                self.obs_values is not None and len(self.obs_values) == size
+            ), f"{self.name} likely has a observation_sampler function"
 
             # now apply the selection to yourself
             # if there is nothing coded, it will be
@@ -398,8 +395,7 @@ class AuxiliarySampler(
 
         else:
 
-            log.debug(
-                f"{self.name} is not reseting as it has not been sampled")
+            log.debug(f"{self.name} is not reseting as it has not been sampled")
 
         for k, v in self._secondary_samplers.items():
 
@@ -454,13 +450,16 @@ class AuxiliarySampler(
                         self._graph.add_edge(spatial_distribution.name, k)
 
                 recursive_secondaries += v.get_secondary_properties(
-                    graph, k, spatial_distribution)
+                    graph, k, spatial_distribution
+                )
 
         # add our own on
 
         recursive_secondaries.add_secondary(
-            SecondaryContainer(self._name, self._true_values, self._obs_values,
-                               self._selector))
+            SecondaryContainer(
+                self._name, self._true_values, self._obs_values, self._selector
+            )
+        )
 
         return recursive_secondaries
 
@@ -485,7 +484,8 @@ class AuxiliarySampler(
 
             for k, v in self._secondary_samplers.items():
                 recursive_secondaries = v.get_secondary_objects(
-                    recursive_secondaries)  # type: SamplerDict
+                    recursive_secondaries
+                )  # type: SamplerDict
 
         # add our own on
 
@@ -676,11 +676,12 @@ class AuxiliarySampler(
 
 
 class NonObservedAuxSampler(AuxiliarySampler):
-
-    def __init__(self,
-                 name: str,
-                 uses_distance: bool = False,
-                 uses_luminosity: bool = False):
+    def __init__(
+        self,
+        name: str,
+        uses_distance: bool = False,
+        uses_luminosity: bool = False,
+    ):
 
         super(NonObservedAuxSampler, self).__init__(
             name=name,
@@ -691,7 +692,6 @@ class NonObservedAuxSampler(AuxiliarySampler):
 
 
 class DerivedLumAuxSampler(AuxiliarySampler):
-
     def __init__(self, name: str, uses_distance: bool = False):
         """
         Base class for generating luminosity from other properties.
@@ -702,9 +702,9 @@ class DerivedLumAuxSampler(AuxiliarySampler):
         :type uses_distance: bool
         """
 
-        super(DerivedLumAuxSampler, self).__init__(name,
-                                                   observed=False,
-                                                   uses_distance=uses_distance)
+        super(DerivedLumAuxSampler, self).__init__(
+            name, observed=False, uses_distance=uses_distance
+        )
 
     @abc.abstractmethod
     def compute_luminosity(self):

@@ -2,7 +2,7 @@
 ![CI](https://github.com/grburgess/popsynth/workflows/CI/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/grburgess/popsynth/branch/master/graph/badge.svg)](https://codecov.io/gh/grburgess/popsynth)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d02c9e6f5c540989a615eb1575863e3)](https://app.codacy.com/gh/grburgess/popsynth?utm_source=github.com&utm_medium=referral&utm_content=grburgess/popsynth&utm_campaign=Badge_Grade_Settings)
-[![Documentation Status](https://readthedocs.org/projects/popsynth/badge/?version=latest)](https://popsynth.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/popsynth/badge/?version=latest)](http://jmichaelburgess.com/popsynth/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5109590.svg)](https://doi.org/10.5281/zenodo.5109590)
 ![PyPI](https://img.shields.io/pypi/v/popsynth)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/popsynth)

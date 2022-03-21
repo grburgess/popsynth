@@ -1,5 +1,5 @@
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 
 from omegaconf import OmegaConf
 
@@ -59,8 +59,9 @@ if _config_file.is_file():
 
     _local_config = OmegaConf.load(_config_file)
 
-    popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config,
-                                                      _local_config)
+    popsynth_config: PopSynthConfig = OmegaConf.merge(
+        popsynth_config, _local_config
+    )
 
 # Write defaults if not
 else:

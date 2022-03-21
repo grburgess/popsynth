@@ -24,14 +24,13 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install --upgrade flake8 numpy ipython scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
+        pip install --upgrade flake8 numba numpy ipython scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
         python setup.py install
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 popsynth
+
     - name: Test with pytest
       run: |
         python -m pytest -vv --cov=popsynth/ --cov-report=xml
@@ -52,12 +51,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Install twine
-        run: python -m pip install twine
+        run: python -m pip install twine setuptools wheel
       - name: Build package
-        run: python setup.py sdist
+        run: python setup.py sdist bdist_wheel
       - name: List result
         run: ls -l dist
       - name: Check long_description
@@ -75,11 +74,11 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: 3.9
     - name: Install twine
-      run: python -m pip install twine
+      run: pip install twine setuptools wheel -U
     - name: Build package
-      run: python setup.py sdist
+      run: python setup.py sdist bdist_wheel
     - uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__

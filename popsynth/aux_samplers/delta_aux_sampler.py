@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.stats as stats
 
-from popsynth.auxiliary_sampler import AuxiliarySampler, AuxiliaryParameter
+from popsynth.auxiliary_sampler import AuxiliaryParameter, AuxiliarySampler
 
 
 class DeltaAuxSampler(AuxiliarySampler):
@@ -40,9 +40,9 @@ class DeltaAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(loc=self._true_values,
-                                              scale=self.sigma,
-                                              size=size)
+            self._obs_values = stats.norm.rvs(
+                loc=self._true_values, scale=self.sigma, size=size
+            )
 
         else:
 

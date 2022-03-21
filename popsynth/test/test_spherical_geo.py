@@ -1,8 +1,8 @@
-import numpy as np
-from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
-
-from hypothesis import given, settings
 import hypothesis.strategies as st
+import numpy as np
+from hypothesis import given, settings
+
+from popsynth.utils.spherical_geometry import sample_theta_phi, xyz
 
 
 @given(st.floats(min_value=0.1), st.floats(), st.floats())
