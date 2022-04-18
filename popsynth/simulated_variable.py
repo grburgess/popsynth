@@ -138,7 +138,7 @@ class SimulatedVariable(np.ndarray):
             if isinstance(input_, SimulatedVariable):
                 in_no.append(i)
                 args.append(input_.view(np.ndarray))
-                latent_args.append(input_._latent_values)
+                latent_args.append(input_._latent_values.view(np.ndarray))
             else:
                 args.append(input_)
                 latent_args.append(input_)
@@ -171,6 +171,10 @@ class SimulatedVariable(np.ndarray):
 
         if results is NotImplemented:
             return NotImplemented
+
+        if latent_results is NotImplemented:
+            return NotImplemented
+
 
         if method == 'at':
             if isinstance(inputs[0], SimulatedVariable):
