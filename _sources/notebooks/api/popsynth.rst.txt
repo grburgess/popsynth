@@ -48,6 +48,14 @@ popsynth.population\_synth module
    :undoc-members:
    :show-inheritance:
 
+popsynth.simulated\_variable module
+-----------------------------------
+
+.. automodule:: popsynth.simulated_variable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

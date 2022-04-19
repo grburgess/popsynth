@@ -17,7 +17,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -104,7 +104,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for popsynth.population</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">ipyvolume</span> <span class="k">as</span> <span class="nn">ipv</span>
@@ -127,6 +127,8 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">popsynth.utils.logging</span> <span class="kn">import</span> <span class="n">setup_logger</span>
 <span class="kn">from</span> <span class="nn">popsynth.utils.spherical_geometry</span> <span class="kn">import</span> <span class="n">xyz</span>
+
+<span class="kn">from</span> <span class="nn">.simulated_variable</span> <span class="kn">import</span> <span class="n">SimulatedVariable</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -214,42 +216,47 @@
 <span class="sd">        :param pop_synth: Population synth</span>
 <span class="sd">        :type pop_synth: Optional[Dict[str, Any]]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span> <span class="o">=</span> <span class="n">luminosities</span>  <span class="c1"># type: ArrayLike</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">=</span> <span class="n">distances</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span> <span class="o">=</span> <span class="n">known_distances</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span> <span class="o">=</span> <span class="n">known_distance_idx</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span> <span class="o">=</span> <span class="n">unknown_distance_idx</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_protected_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">theta</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="n">phi</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="p">:</span> <span class="n">SimulatedVariable</span> <span class="o">=</span> <span class="n">SimulatedVariable</span><span class="p">(</span>
+            <span class="n">luminosities</span><span class="p">,</span> <span class="n">luminosities</span><span class="p">,</span> <span class="n">selection</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">:</span> <span class="n">SimulatedVariable</span> <span class="o">=</span> <span class="n">SimulatedVariable</span><span class="p">(</span>
+            <span class="n">distances</span><span class="p">,</span> <span class="n">distances</span><span class="p">,</span> <span class="n">selection</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">known_distances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">known_distance_idx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">unknown_distance_idx</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">:</span> <span class="n">SimulatedVariable</span> <span class="o">=</span> <span class="n">SimulatedVariable</span><span class="p">(</span>
+            <span class="n">theta</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">selection</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">:</span> <span class="n">SimulatedVariable</span> <span class="o">=</span> <span class="n">SimulatedVariable</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">selection</span><span class="p">)</span>
 
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">known_distances</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">unknown_distance_idx</span><span class="p">)</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">(</span>
             <span class="n">selection</span>
         <span class="p">),</span> <span class="s2">&quot;the distances are not the correct size&quot;</span>
 
-        <span class="c1"># latent fluxes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span> <span class="o">=</span> <span class="n">fluxes</span>  <span class="c1"># type: ArrayLike</span>
+        <span class="c1"># fluxes</span>
 
-        <span class="c1"># observed fluxes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span> <span class="o">=</span> <span class="n">flux_obs</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">selection</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span> <span class="o">=</span> <span class="n">flux_sigma</span>  <span class="c1"># type: float</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">:</span> <span class="n">SimulatedVariable</span> <span class="o">=</span> <span class="n">SimulatedVariable</span><span class="p">(</span>
+            <span class="n">flux_obs</span><span class="p">,</span> <span class="n">fluxes</span><span class="p">,</span> <span class="n">selection</span>
+        <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span> <span class="o">=</span> <span class="n">r_max</span>  <span class="c1"># type: float</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="n">seed</span>  <span class="c1"># type: int</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span> <span class="o">=</span> <span class="n">n_model</span>  <span class="c1"># type: int</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># type: str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">flux_sigma</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">r_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">n_model</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_form</span> <span class="o">=</span> <span class="n">spatial_form</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lf_form</span> <span class="o">=</span> <span class="n">lf_form</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span> <span class="o">=</span> <span class="n">flux_obs</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_selected</span> <span class="o">=</span> <span class="n">luminosities</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flux_hidden</span> <span class="o">=</span> <span class="n">flux_obs</span><span class="p">[</span><span class="o">~</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="o">~</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_hidden</span> <span class="o">=</span> <span class="n">luminosities</span><span class="p">[</span><span class="o">~</span><span class="n">selection</span><span class="p">]</span>  <span class="c1"># type: ArrayLike</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_lf_params</span> <span class="o">=</span> <span class="n">lf_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_params</span> <span class="o">=</span> <span class="n">spatial_params</span>
@@ -260,11 +267,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">graph</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_objects</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>  <span class="c1"># type: int</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">)</span>  <span class="c1"># type: int</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_non_detections</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_n_objects</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span>
-        <span class="p">)</span>  <span class="c1"># type: int</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_objects</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_non_detections</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_objects</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pop_synth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pop_synth</span>
 
@@ -281,10 +286,14 @@
         <span class="k">if</span> <span class="n">auxiliary_quantities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">auxiliary_quantities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;true_values&quot;</span><span class="p">])</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_obs&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">])</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_selected&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">][</span><span class="n">selection</span><span class="p">])</span>
+                <span class="nb">setattr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">k</span><span class="p">,</span>
+                    <span class="n">SimulatedVariable</span><span class="p">(</span>
+                        <span class="n">v</span><span class="p">[</span><span class="s2">&quot;obs_values&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;true_values&quot;</span><span class="p">],</span> <span class="n">selection</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_protected_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxiliary_quantities</span> <span class="o">=</span> <span class="n">auxiliary_quantities</span>
 
@@ -293,6 +302,19 @@
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model_spaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_model</span></div>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+
+        <span class="c1"># dont allow setting of aux properties</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;_protected_names&quot;</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_protected_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Denied.&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -329,32 +351,43 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">theta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">theta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulatedVariable</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The polar angle of the objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulatedVariable</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The phi angle of the objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulatedVariable</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The declination of the objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">90</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">ra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulatedVariable</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The right ascension of the objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">luminosities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulatedVariable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the luminosities of the objects</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">luminosities_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -362,10 +395,10 @@
 <span class="sd">        The true luminosities of the objects. These are always latent</span>
 <span class="sd">        as one cannot directly observe them.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="o">.</span><span class="n">latent</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulatedVariable</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The distances to the objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -387,11 +420,27 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimulatedVariable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the fluxes of the objects</span>
+
+<span class="sd">        :returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fluxes_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The latent fluxes of the objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;This will be removed in future versions use fluxes.latent&quot;</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">latent</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fluxes_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -399,7 +448,12 @@
 <span class="sd">        All of the observed fluxes, i.e.,</span>
 <span class="sd">        scattered with error</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;This will be removed in future versions use x.fluxes&quot;</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">selected_fluxes_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -407,7 +461,11 @@
 <span class="sd">        The selected obs fluxes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;This will be removed in future versions use x.fluxes.selected&quot;</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">selected_fluxes_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -415,7 +473,11 @@
 <span class="sd">        The selected latent fluxes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;This will be removed in future versions use x.fluxes.selected.latent&quot;</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">latent</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">selected_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -423,7 +485,12 @@
 <span class="sd">        The selected distances. Note, this is different than</span>
 <span class="sd">        the KNOWN distances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;This will be removed in future versions use x.distances.selected&quot;</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hidden_fluxes_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -431,7 +498,13 @@
 <span class="sd">        The observed fluxes that are hidden by the selection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_hidden</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;This will be removed in future versions use x.fluxes.non_selected&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">non_selected</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hidden_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -439,7 +512,11 @@
 <span class="sd">        The distances that are hidden by the selection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;This will be removed in future versions use x.distances.non_selected&quot;</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">non_selected</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hidden_fluxes_latent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -447,7 +524,11 @@
 <span class="sd">        The latent fluxes that are hidden by the selection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;This will be removed in future versions use x.distances.non_selected&quot;</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">non_selected</span><span class="o">.</span><span class="n">latent</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hard_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -522,16 +603,16 @@
             <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_detections</span><span class="p">,</span>
             <span class="n">Nz</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">),</span>
             <span class="n">Nnz</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span><span class="p">),</span>
-            <span class="n">z_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="n">z_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
             <span class="n">known_z_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">,</span>
             <span class="n">z_idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
             <span class="n">z_nidx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
-            <span class="n">r_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="n">r_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
             <span class="n">known_r_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distances</span><span class="p">,</span>
             <span class="n">r_idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_known_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
             <span class="n">r_nidx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># stan indexing</span>
-            <span class="n">log_flux_obs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">),</span>
-            <span class="n">flux_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
+            <span class="n">log_flux_obs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="p">),</span>
+            <span class="n">flux_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span>
             <span class="n">flux_sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span><span class="p">,</span>
             <span class="n">z_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">,</span>
             <span class="n">r_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">,</span>
@@ -636,8 +717,8 @@
             <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unknown_distance_idx</span><span class="p">,</span>
             <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;fluxes&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;flux_obs&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;fluxes&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">latent</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;flux_obs&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;selection&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;lzf&quot;</span><span class="p">)</span>
@@ -829,9 +910,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">observed</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">_selector</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+                <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">selected</span>
+
             <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
 
         <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">_selector</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+                <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">non_selected</span>
 
             <span class="n">selection</span> <span class="o">=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span>
 
@@ -871,13 +961,13 @@
                 <span class="n">itr</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">Population</span><span class="p">(</span>
-            <span class="n">luminosities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
-            <span class="n">distances</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">luminosities</span><span class="o">=</span><span class="n">_selector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="p">),</span>
+            <span class="n">distances</span><span class="o">=</span><span class="n">_selector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">),</span>
             <span class="n">known_distances</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">known_distances</span><span class="p">),</span>
             <span class="n">known_distance_idx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">known_distance_idx</span><span class="p">),</span>
             <span class="n">unknown_distance_idx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">unknown_distance_idx</span><span class="p">),</span>
-            <span class="n">fluxes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
-            <span class="n">flux_obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_obs</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">fluxes</span><span class="o">=</span><span class="n">_selector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">)</span><span class="o">.</span><span class="n">latent</span><span class="p">,</span>
+            <span class="n">flux_obs</span><span class="o">=</span><span class="n">_selector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">),</span>
             <span class="n">selection</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">),</span>
             <span class="n">flux_sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flux_sigma</span><span class="p">,</span>
             <span class="n">n_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_model</span><span class="p">,</span>
@@ -892,8 +982,8 @@
             <span class="n">auxiliary_quantities</span><span class="o">=</span><span class="n">new_aux</span><span class="p">,</span>
             <span class="n">truth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truth</span><span class="p">,</span>
             <span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span>
-            <span class="n">theta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
-            <span class="n">phi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span>
+            <span class="n">theta</span><span class="o">=</span><span class="n">_selector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">),</span>
+            <span class="n">phi</span><span class="o">=</span><span class="n">_selector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">),</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Population.display"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.Population.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -966,7 +1056,7 @@
         <span class="k">try</span><span class="p">:</span>
 
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span>
-                <span class="n">bottom</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="o">.</span><span class="n">min</span><span class="p">()])</span>
+                <span class="n">bottom</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">min</span><span class="p">()])</span>
             <span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -1006,8 +1096,8 @@
             <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
             <span class="n">color</span><span class="o">=</span><span class="n">flux_color</span><span class="p">,</span>
             <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
@@ -1019,7 +1109,9 @@
         <span class="c1"># ax.set_xscale(&#39;log&#39;)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="o">.</span><span class="n">min</span><span class="p">()]))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span>
+            <span class="n">bottom</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">min</span><span class="p">()])</span>
+        <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_max</span><span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">)</span>
@@ -1060,8 +1152,8 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">with_arrows</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_detection</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
             <span class="p">):</span>
 
                 <span class="n">x</span> <span class="o">=</span> <span class="n">z</span>
@@ -1105,14 +1197,14 @@
             <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
             <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
             <span class="n">color</span><span class="o">=</span><span class="n">obs_color</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_hidden</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">non_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosities</span><span class="o">.</span><span class="n">non_selected</span><span class="p">,</span>
             <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
             <span class="n">color</span><span class="o">=</span><span class="n">true_color</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1193,8 +1285,8 @@
         <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
 
         <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_sphere</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_flux_selected</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
             <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
             <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
             <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
@@ -1220,12 +1312,12 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 
-        <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
-        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="p">]</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">non_selected</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span><span class="o">.</span><span class="n">non_selected</span>
 
         <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_sphere</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_flux_hidden</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_hidden</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">non_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">non_selected</span><span class="p">,</span>
             <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
             <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
             <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
@@ -1296,7 +1388,7 @@
             <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Total Pop.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distance_selected</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="o">.</span><span class="n">selected</span><span class="p">,</span>
             <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
             <span class="c1">#            facecolor=blue,</span>
             <span class="c1">#            edgecolor=blue_highlight,</span>

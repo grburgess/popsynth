@@ -1,0 +1,7 @@
+popsynth.simulated_variable module
+==================================
+
+.. automodule:: popsynth.simulated_variable
+    :members:
+    :undoc-members:
+    :show-inheritance:

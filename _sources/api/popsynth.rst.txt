@@ -21,6 +21,7 @@ Submodules
    popsynth.distribution
    popsynth.population
    popsynth.population_synth
+   popsynth.simulated_variable
 
 Module contents
 ---------------
