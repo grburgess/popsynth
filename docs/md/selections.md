@@ -92,7 +92,7 @@ ax.scatter(
 )
 ax.scatter(
     np.log10(pop.selected_fluxes_observed),
-    pop.dummy_selected,
+    pop.dummy.selected,
     color="yellow",
     alpha=0.7,
     label="selected",
