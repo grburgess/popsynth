@@ -70,6 +70,7 @@ class SimulatedVariable(np.ndarray):
         :returns:
 
         """
+
         return self._latent_values
 
     @property
@@ -174,7 +175,6 @@ class SimulatedVariable(np.ndarray):
 
         if latent_results is NotImplemented:
             return NotImplemented
-
 
         if method == 'at':
             if isinstance(inputs[0], SimulatedVariable):
