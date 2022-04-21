@@ -670,6 +670,11 @@ class AuxiliarySampler(
 
         pass
 
+    def _probability(self, true_values: np.ndarray) -> np.ndarray:
+        pass
+
+
+
     def observation_sampler(self, size: int = 1) -> np.ndarray:
 
         return self._true_values

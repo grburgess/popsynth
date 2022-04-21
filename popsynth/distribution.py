@@ -1,9 +1,10 @@
 import abc
 from dataclasses import dataclass
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
 import numpy as np
 import pandas as pd
+import scipy.integrate as integrate
 from class_registry import AutoRegister
 from IPython.display import Markdown, Math, display
 from numpy.typing import ArrayLike
@@ -46,6 +47,8 @@ class Distribution(
         self._seed = seed  # type: int
         self._name = name  # type: str
         self._form = form  # type: str
+
+        self._probability: Optional[np.ndarray] = None
 
     @property
     def name(self) -> str:
@@ -90,6 +93,11 @@ class Distribution(
                 out[k] = v
 
         return out
+
+    @property
+    def probability(self) -> np.ndarray:
+
+        return self._probability
 
     def display(self):
         """
@@ -335,6 +343,12 @@ class SpatialDistribution(Distribution):
 
         self._distances = np.array(r_out)  # type: ArrayLike
 
+        # now compute the differential probability
+        # of the distance draws
+
+        integral = integrate.quad(dNdr, 0.0, self.r_max)[0]
+
+        self._probability = dNdr(r_out) / integral
 
 class LuminosityDistribution(Distribution):
     _distribution_name = "LuminosityDistribtuion"

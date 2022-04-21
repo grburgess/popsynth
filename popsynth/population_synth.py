@@ -907,6 +907,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
         self,
         flux_sigma: Optional[float] = None,
         log10_flux_draw: bool = True,
+        n_samples: Optional[int] = None,
     ) -> Population:
         """
         Draw the total survey and return a :class:`Population` object.
@@ -936,23 +937,29 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         np.random.seed(self._seed)
 
-        # create a callback of the integrand
-        dNdr = (
-            lambda r: self._spatial_distribution.dNdV(r)
-            * self._spatial_distribution.differential_volume(r)
-            / self._spatial_distribution.time_adjustment(r)
-        )
+        if n_samples is None:
 
-        # integrate the population to determine the true number of
-        # objects
-        N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
-            0
-        ]  # type: float
+            # create a callback of the integrand
+            dNdr = (
+                lambda r: self._spatial_distribution.dNdV(r)
+                * self._spatial_distribution.differential_volume(r)
+                / self._spatial_distribution.time_adjustment(r)
+            )
 
-        log.info("The volume integral is %f" % N)
+            # integrate the population to determine the true number of
+            # objects
+            N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
+                0
+            ]  # type: float
 
-        # this should be poisson distributed
-        n = np.random.poisson(N)  # type: np.int64
+            log.info("The volume integral is %f" % N)
+
+            # this should be poisson distributed
+            n: int = np.random.poisson(N)
+
+        else:
+
+            n: int = n_samples
 
         self._spatial_distribution.draw_distance(size=n)
 
