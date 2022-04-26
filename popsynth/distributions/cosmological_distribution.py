@@ -91,7 +91,7 @@ class CosmologicalDistribution(SpatialDistribution):
 class SFRDistribution(CosmologicalDistribution):
     _distribution_name = "SFRDistribution"
 
-    r0 = DistributionParameter(vmin=0)
+    r0 = DistributionParameter(vmin=0, is_normalization=True)
     a = DistributionParameter(vmin=0)
     rise = DistributionParameter()
     decay = DistributionParameter()
@@ -157,7 +157,7 @@ def _sfr_dndv(z, r0, a, rise, decay, peak):
 class ZPowerCosmoDistribution(CosmologicalDistribution):
     _distribution_name = "ZPowerCosmoDistribution"
 
-    Lambda = DistributionParameter(default=1, vmin=0)
+    Lambda = DistributionParameter(default=1, vmin=0, is_normalization=True)
     delta = DistributionParameter()
 
     def __init__(

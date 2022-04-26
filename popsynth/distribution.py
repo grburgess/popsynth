@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import Dict, Union, Optional
+from typing import Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -43,12 +43,22 @@ class Distribution(
         """
 
         self._parameter_storage: Dict[str, float] = {}
+        self._normalization_parameter: Optional[str] = None
 
         self._seed = seed  # type: int
         self._name = name  # type: str
         self._form = form  # type: str
 
         self._probability: Optional[np.ndarray] = None
+
+    @property
+    def normalization_parameter(self) -> Optional[float]:
+
+        return self._parameter_storage[self._normalization_parameter]
+
+    @normalization_parameter.setter
+    def normalization_parameter(self, value):
+        self._parameter_storage[self._normalization_parameter] = value
 
     @property
     def name(self) -> str:
@@ -282,7 +292,7 @@ class SpatialDistribution(Distribution):
 
     def draw_sky_positions(self, size: int) -> None:
         """
-        Draw teh sky positions of the objects
+        Draw the sky positions of the objects
 
         :param size:
         :type size: int
@@ -291,7 +301,7 @@ class SpatialDistribution(Distribution):
         """
         self._theta, self._phi = sample_theta_phi(size)
 
-    def draw_distance(self, size: int) -> None:
+    def draw_distance(self, size: int, normalize: bool = False) -> None:
         """
         Draw the distances from the specified dN/dr model.
 
@@ -306,11 +316,34 @@ class SpatialDistribution(Distribution):
             / self.time_adjustment(r)
         )
 
+        if normalize:
+
+            # set the prefactor to unity
+
+            if self._normalization_parameter is not None:
+
+                old_value = self.normalization_parameter
+                self.normalization_parameter = 1
+
+
+
+            integral = integrate.quad(dNdr, 0.0, self.r_max)[0]
+
+            dNdr_norm = lambda r: dNdr(r) / integral
+
+            if self._normalization_parameter is not None:
+
+                self.normalization_parameter = old_value
+
+        else:
+
+            dNdr_norm = dNdr
+
         # find the maximum point
         tmp = np.linspace(
             0.0, self.r_max, 500, dtype=np.float64
         )  # type: ArrayLike
-        ymax = np.max(dNdr(tmp))  # type: float
+        ymax = np.max(dNdr_norm(tmp))  # type: float
 
         # rejection sampling the distribution
         r_out = []
@@ -332,7 +365,7 @@ class SpatialDistribution(Distribution):
 
                     # compare them
 
-                    if y < dNdr(r):
+                    if y < dNdr_norm(r):
                         r_out.append(r)
                         flag = False
         else:
@@ -346,9 +379,8 @@ class SpatialDistribution(Distribution):
         # now compute the differential probability
         # of the distance draws
 
-        integral = integrate.quad(dNdr, 0.0, self.r_max)[0]
+        self._probability = dNdr_norm(self._distances)
 
-        self._probability = dNdr(r_out) / integral
 
 class LuminosityDistribution(Distribution):
     _distribution_name = "LuminosityDistribtuion"
@@ -382,7 +414,7 @@ class LuminosityDistribution(Distribution):
         raise RuntimeError("Must be implemented in derived class")
 
     @abc.abstractmethod
-    def draw_luminosity(self, size):
+    def draw_luminosity(self, size: int) -> np.ndarray:
         """
         function to draw the luminosity via an alternative method
         must be implemented in child class
@@ -393,3 +425,7 @@ class LuminosityDistribution(Distribution):
 
         """
         pass
+
+    def compute_probability(self, L: np.ndarray) -> None:
+
+        self._probability = self.phi(L)

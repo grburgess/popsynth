@@ -57,6 +57,7 @@ class Population(object):
         theta=None,
         phi=None,
         pop_synth: Optional[Dict[str, Any]] = None,
+        probability: Optional[np.ndarray] = None,
     ) -> None:
         """
         A population container for all the properties of the population.
@@ -167,6 +168,16 @@ class Population(object):
 
         self._pop_synth: Optional[Dict[str, Any]] = pop_synth
 
+        if probability is not None:
+
+            self._probability: Optional[SimulatedVariable] = SimulatedVariable(
+                probability, probability, selection
+            )
+
+        else:
+
+            self._probability = None
+
         if self._n_detections == 0:
 
             self._no_detection = True
@@ -220,6 +231,10 @@ class Population(object):
         """
 
         return self._graph
+
+    @property
+    def probability(self) -> Optional[SimulatedVariable]:
+        return self._probability
 
     @property
     def pop_synth(self) -> Dict[str, Any]:
@@ -570,7 +585,9 @@ class Population(object):
 
         for k, v in self._spatial_params.items():
 
-            spatial_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+            spatial_grp.create_dataset(
+                k, data=np.array([v]), compression="gzip"
+            )
 
         if self._lf_params is not None:
 
@@ -578,7 +595,9 @@ class Population(object):
 
             for k, v in self._lf_params.items():
 
-                lum_grp.create_dataset(k, data=np.array([v]), compression="lzf")
+                lum_grp.create_dataset(
+                    k, data=np.array([v]), compression="gzip"
+                )
 
             f.attrs["lf_form"] = np.string_(self._lf_form)
 
@@ -594,28 +613,33 @@ class Population(object):
         f.attrs["r_max"] = self._r_max
         f.attrs["seed"] = int(self._seed)
 
+        if self._probability is not None:
+            f.create_dataset(
+                "probabilty", data=self._probability, compression="gzip"
+            )
+
         f.create_dataset(
-            "luminosities", data=self._luminosities, compression="lzf"
+            "luminosities", data=self._luminosities, compression="gzip"
         )
-        f.create_dataset("distances", data=self._distances, compression="lzf")
+        f.create_dataset("distances", data=self._distances, compression="gzip")
         f.create_dataset(
-            "known_distances", data=self._known_distances, compression="lzf"
+            "known_distances", data=self._known_distances, compression="gzip"
         )
         f.create_dataset(
             "known_distance_idx",
             data=self._known_distance_idx,
-            compression="lzf",
+            compression="gzip",
         )
         f.create_dataset(
             "unknown_distance_idx",
             data=self._unknown_distance_idx,
-            compression="lzf",
+            compression="gzip",
         )
-        f.create_dataset("fluxes", data=self._fluxes.latent, compression="lzf")
-        f.create_dataset("flux_obs", data=self._fluxes, compression="lzf")
-        f.create_dataset("selection", data=self._selection, compression="lzf")
-        f.create_dataset("theta", data=self._theta, compression="lzf")
-        f.create_dataset("phi", data=self._phi, compression="lzf")
+        f.create_dataset("fluxes", data=self._fluxes.latent, compression="gzip")
+        f.create_dataset("flux_obs", data=self._fluxes, compression="gzip")
+        f.create_dataset("selection", data=self._selection, compression="gzip")
+        f.create_dataset("theta", data=self._theta, compression="gzip")
+        f.create_dataset("phi", data=self._phi, compression="gzip")
 
         aux_grp = f.create_group("auxiliary_quantities")
 
@@ -623,17 +647,17 @@ class Population(object):
 
             q_grp = aux_grp.create_group(k)
             q_grp.create_dataset(
-                "true_values", data=v["true_values"], compression="lzf"
+                "true_values", data=v["true_values"], compression="gzip"
             )
             q_grp.create_dataset(
-                "obs_values", data=v["obs_values"], compression="lzf"
+                "obs_values", data=v["obs_values"], compression="gzip"
             )
 
         model_grp = f.create_group("model_spaces")
 
         for k, v in self._model_spaces.items():
 
-            model_grp.create_dataset(k, data=v, compression="lzf")
+            model_grp.create_dataset(k, data=v, compression="gzip")
 
         # now store the truths
         recursively_save_dict_contents_to_group(f, "truth", self._truth)
@@ -736,6 +760,14 @@ class Population(object):
             known_distance_idx = None
             unknown_distance_idx = None
 
+        try:
+
+            probability = f["probability"][()]
+
+        except AttributeError:
+
+            probability = None
+
         fluxes = f["fluxes"][()]
         flux_obs = f["flux_obs"][()]
         selection = f["selection"][()]
@@ -790,6 +822,7 @@ class Population(object):
             theta=theta,
             phi=phi,
             pop_synth=pop_synth,
+            probability=probability,
         )
 
     def to_sub_population(self, observed: bool = True) -> "Population":
@@ -854,6 +887,14 @@ class Population(object):
 
                 itr += 1
 
+        if self._probability is not None:
+
+            probability = _selector(self._probability)
+
+        else:
+
+            probability = None
+
         return Population(
             luminosities=_selector(self._luminosities),
             distances=_selector(self._distances),
@@ -878,6 +919,7 @@ class Population(object):
             graph=self._graph,
             theta=_selector(self._theta),
             phi=_selector(self._phi),
+            probability=probability,
         )
 
     def display(self):

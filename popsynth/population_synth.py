@@ -906,8 +906,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
     def draw_survey(
         self,
         flux_sigma: Optional[float] = None,
-        log10_flux_draw: bool = True,
+        log10_flux_rdraw: bool = True,
         n_samples: Optional[int] = None,
+        normalize: bool = False,
     ) -> Population:
         """
         Draw the total survey and return a :class:`Population` object.
@@ -946,13 +947,52 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 / self._spatial_distribution.time_adjustment(r)
             )
 
-            # integrate the population to determine the true number of
-            # objects
-            N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
-                0
-            ]  # type: float
+            if normalize:
 
-            log.info("The volume integral is %f" % N)
+                log.info("The population is being normalized such that")
+                log.info("the integral over N * dV/dz = N")
+
+                old_value = None
+
+                if (
+                    self._spatial_distribution._normalization_parameter
+                    is not None
+                ):
+
+                    old_value = (
+                        self._spatial_distribution.normalization_parameter
+                    )
+                    log.info('setting normalization to unity for integration')
+                    self._spatial_distribution.normalization_parameter = 1
+
+                integral = integrate.quad(
+                    dNdr, 0.0, self._spatial_distribution.r_max
+                )[0]
+
+                if old_value is not None:
+
+                    self._spatial_distribution.normalization_parameter = (
+                        old_value
+                    )
+
+                    log.info(
+                        f"normalization parameter set back to {self._spatial_distribution.normalization_parameter}"
+                    )
+
+                dNdr_norm = lambda r: dNdr(r) / integral
+
+                N = integrate.quad(
+                    dNdr_norm, 0.0, self._spatial_distribution.r_max
+                )[0]
+
+            else:
+                # integrate the population to determine the true number of
+                # objects
+                N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
+                    0
+                ]
+
+            log.info(f"The volume integral is {N}")
 
             # this should be poisson distributed
             n: int = np.random.poisson(N)
@@ -961,7 +1001,13 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             n: int = n_samples
 
-        self._spatial_distribution.draw_distance(size=n)
+        probability = np.ones(n)
+
+        self._spatial_distribution.draw_distance(size=n, normalize=normalize)
+
+        # set the draw probability
+
+        probability *= self._spatial_distribution.probability
 
         # now draw the sky positions
 
@@ -1084,6 +1130,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
             luminosities = self.luminosity_distribution.draw_luminosity(
                 size=n
             )  # type: np.ndarray
+
+            self._luminosity_distribution.compute_probability(luminosities)
+
+            probability *= self._luminosity_distribution.probability
 
             # store the truths from the luminosity distribution
             truth[
@@ -1332,6 +1382,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             theta=self._spatial_distribution.theta,
             phi=self._spatial_distribution.phi,
             pop_synth=self.to_dict(),
+            probability=probability,
         )
 
     def display(self) -> None:
