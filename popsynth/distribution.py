@@ -379,7 +379,21 @@ class SpatialDistribution(Distribution):
         # now compute the differential probability
         # of the distance draws
 
+        if self._normalization_parameter is not None:
+
+            old_value = self.normalization_parameter
+            self.normalization_parameter = 1
+
+
+
         self._probability = dNdr_norm(self._distances)
+
+
+        if self._normalization_parameter is not None:
+
+            self.normalization_parameter = old_value
+
+
 
 
 class LuminosityDistribution(Distribution):

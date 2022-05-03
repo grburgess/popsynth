@@ -906,7 +906,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
     def draw_survey(
         self,
         flux_sigma: Optional[float] = None,
-        log10_flux_rdraw: bool = True,
+        log10_flux_draw: bool = True,
         n_samples: Optional[int] = None,
         normalize: bool = False,
     ) -> Population:
@@ -950,7 +950,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             if normalize:
 
                 log.info("The population is being normalized such that")
-                log.info("the integral over N * dV/dz = N")
+                log.info("the integral over N * f(z) * dV/dz = N")
 
                 old_value = None
 
