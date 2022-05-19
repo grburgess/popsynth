@@ -818,7 +818,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         else:
 
-            log.error("This not an auxiliary sampler")
+            log.error("This is not an auxiliary sampler")
 
             raise RuntimeError()
 
@@ -893,7 +893,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
     def draw_log_fobs(self, f, f_sigma, size=1) -> np.ndarray:
         """
-        Draw the log10 of the the fluxes.
+        Draw the log of the the fluxes.
         """
 
         log_f = np.log(f)

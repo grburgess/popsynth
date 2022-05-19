@@ -50,7 +50,7 @@ class CosmologicalDistribution(SpatialDistribution):
 
         :param z: Redshift
         :returns: The differential comoving volume in
-            Gpc^-3 sr^-1.
+            Gpc^3 sr^-1.
         """
 
         return cosmology.differential_comoving_volume(z)
