@@ -172,8 +172,8 @@ Let's look at our distribution of Ep
 ```python
 fig, ax = plt.subplots()
 
-ax.hist(np.log10(population.Ep_obs[population.selection]), histtype="step", color=yellow, lw=3, label="Ep observed")
-ax.hist(np.log10(population.Ep[~population.selection]), histtype="step", color=purple, lw=3,  label="Ep hidden")
+ax.hist(np.log10(population.Ep.selected), histtype="step", color=yellow, lw=3, label="Ep observed")
+ax.hist(np.log10(population.Ep.non_selected), histtype="step", color=purple, lw=3,  label="Ep hidden")
 ax.set_xlabel("log Ep")
 
 ax.legend()
@@ -183,10 +183,10 @@ ax.legend()
 fig, ax = plt.subplots()
 
 
-ax.scatter(population.fluxes_observed[~population.selection],
-           population.Ep_obs[~population.selection],c=purple, alpha=0.5)
-ax.scatter(population.fluxes_observed[population.selection],
-           population.Ep_obs[population.selection],c=yellow, alpha=0.5)
+ax.scatter(population.fluxes.non_selected,
+           population.Ep.non_selected,c=purple, alpha=0.5)
+ax.scatter(population.fluxes.selected,
+           population.Ep.selected,c=yellow, alpha=0.5)
 
 ax.set_xscale("log")
 ax.set_yscale("log")
