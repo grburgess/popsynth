@@ -123,10 +123,9 @@ def bpl(x, x0, x1, x2, a1, a2):
 
     # compute the upper power law
 
-    idx = (x>=x1) & (x<x2)
+    idx = (x >= x1) & (x < x2)
 
     out[idx] = np.power(x[idx], a2) * np.power(x1, a1 - a2)
-
 
     return out * norm
 

@@ -43,7 +43,7 @@ class SphericalDistribution(SpatialDistribution):
 class ConstantSphericalDistribution(SphericalDistribution):
     _distribution_name = "ConstantSphericalDistribution"
 
-    Lambda = DistributionParameter(default=1, vmin=0 , is_normalization=True)
+    Lambda = DistributionParameter(default=1, vmin=0, is_normalization=True)
 
     def __init__(
         self,

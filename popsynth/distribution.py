@@ -325,8 +325,6 @@ class SpatialDistribution(Distribution):
                 old_value = self.normalization_parameter
                 self.normalization_parameter = 1
 
-
-
             integral = integrate.quad(dNdr, 0.0, self.r_max)[0]
 
             dNdr_norm = lambda r: dNdr(r) / integral
@@ -384,16 +382,11 @@ class SpatialDistribution(Distribution):
             old_value = self.normalization_parameter
             self.normalization_parameter = 1
 
-
-
         self._probability = dNdr_norm(self._distances)
-
 
         if self._normalization_parameter is not None:
 
             self.normalization_parameter = old_value
-
-
 
 
 class LuminosityDistribution(Distribution):
