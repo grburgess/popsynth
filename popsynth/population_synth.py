@@ -907,6 +907,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
         self,
         flux_sigma: Optional[float] = None,
         log10_flux_draw: bool = True,
+        n_samples: Optional[int] = None,
+        normalize: bool = False,
     ) -> Population:
         """
         Draw the total survey and return a :class:`Population` object.
@@ -936,25 +938,76 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         np.random.seed(self._seed)
 
-        # create a callback of the integrand
-        dNdr = (
-            lambda r: self._spatial_distribution.dNdV(r)
-            * self._spatial_distribution.differential_volume(r)
-            / self._spatial_distribution.time_adjustment(r)
-        )
+        if n_samples is None:
 
-        # integrate the population to determine the true number of
-        # objects
-        N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
-            0
-        ]  # type: float
+            # create a callback of the integrand
+            dNdr = (
+                lambda r: self._spatial_distribution.dNdV(r)
+                * self._spatial_distribution.differential_volume(r)
+                / self._spatial_distribution.time_adjustment(r)
+            )
 
-        log.info("The volume integral is %f" % N)
+            if normalize:
 
-        # this should be poisson distributed
-        n = np.random.poisson(N)  # type: np.int64
+                log.info("The population is being normalized such that")
+                log.info("the integral over N * f(z) * dV/dz = N")
 
-        self._spatial_distribution.draw_distance(size=n)
+                old_value = None
+
+                if (
+                    self._spatial_distribution._normalization_parameter
+                    is not None
+                ):
+
+                    old_value = (
+                        self._spatial_distribution.normalization_parameter
+                    )
+                    log.info('setting normalization to unity for integration')
+                    self._spatial_distribution.normalization_parameter = 1
+
+                integral = integrate.quad(
+                    dNdr, 0.0, self._spatial_distribution.r_max
+                )[0]
+
+                if old_value is not None:
+
+                    self._spatial_distribution.normalization_parameter = (
+                        old_value
+                    )
+
+                    log.info(
+                        f"normalization parameter set back to {self._spatial_distribution.normalization_parameter}"
+                    )
+
+                dNdr_norm = lambda r: dNdr(r) / integral
+
+                N = integrate.quad(
+                    dNdr_norm, 0.0, self._spatial_distribution.r_max
+                )[0]
+
+            else:
+                # integrate the population to determine the true number of
+                # objects
+                N = integrate.quad(dNdr, 0.0, self._spatial_distribution.r_max)[
+                    0
+                ]
+
+            log.info(f"The volume integral is {N}")
+
+            # this should be poisson distributed
+            n: int = np.random.poisson(N)
+
+        else:
+
+            n: int = n_samples
+
+        probability = np.ones(n)
+
+        self._spatial_distribution.draw_distance(size=n, normalize=normalize)
+
+        # set the draw probability
+
+        probability *= self._spatial_distribution.probability
 
         # now draw the sky positions
 
@@ -1030,6 +1083,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     self._derived_luminosity_sampler.true_values,
                     self._derived_luminosity_sampler.obs_values,
                     self._derived_luminosity_sampler.selector,
+                    self._derived_luminosity_sampler.probability,
                 )
             )
 
@@ -1077,6 +1131,10 @@ class PopulationSynth(object, metaclass=ABCMeta):
             luminosities = self.luminosity_distribution.draw_luminosity(
                 size=n
             )  # type: np.ndarray
+
+            self._luminosity_distribution.compute_probability(luminosities)
+
+            probability *= self._luminosity_distribution.probability
 
             # store the truths from the luminosity distribution
             truth[
@@ -1134,26 +1192,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             auxiliary_quantities += v.get_secondary_properties()
 
-            # # append these values to a dict
-            # auxiliary_quantities[k] = {
-            #     "true_values": v.true_values,
-            #     "obs_values": v.obs_values,
-            #     "selection": v.selector,
-            # }  # type: dict
-
             # collect the secondary values
 
             for k2, v2 in v.secondary_samplers.items():
-
-                # first we tell the sampler to go and retrieve all of
-                # its own secondaries
-
-                # properties = v2.get_secondary_properties()  # type: dict
-
-                # for k3, v3 in properties.items():
-
-                #     # now attach them
-                #     auxiliary_quantities[k3] = v3
 
                 # store the secondary truths
 
@@ -1216,7 +1257,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         #       selection = self._flux_selector.selection
 
-        # now apply the selection from the auxilary samplers
+        # now apply the selection and draw probability
+        # from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
 
@@ -1227,6 +1269,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 log.debug(f"skipping {k} selection because it is unity")
 
                 continue
+
+            probability *= v["probability"]
 
             auxiliary_selection += v["selection"]
 
@@ -1325,6 +1369,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
             theta=self._spatial_distribution.theta,
             phi=self._spatial_distribution.phi,
             pop_synth=self.to_dict(),
+            probability=probability,
         )
 
     def display(self) -> None:

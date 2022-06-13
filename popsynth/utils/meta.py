@@ -12,6 +12,7 @@ class Parameter(object):
         vmin: Optional[float] = None,
         vmax: Optional[float] = None,
         free: bool = True,
+        is_normalization: bool = False,
     ):
         """
         Parameter base class.
@@ -25,17 +26,26 @@ class Parameter(object):
         :param free: If `True`, parameter is free
         """
 
-        self.name = None  # type: Union[None, str]
-        self._vmin = vmin  # type: Optional[float]
-        self._vmax = vmax  # type: Optional[float]
-        self._default = default  # type: Optional[float]
-        self._free = free
+        self.name: Optional[float] = None
+        self._vmin: Optional[float] = vmin  # type: Optional[float]
+        self._vmax: Optional[float] = vmax  # type: Optional[float]
+        self._default: Optional[float] = default  # type: Optional[float]
+        self._free: bool = free
+        self._is_normalization: bool = is_normalization
 
     @property
     def default(self) -> Optional[float]:
         return self._default
 
+    @property
+    def is_normalization(self) -> bool:
+        return self._is_normalization
+
     def __get__(self, obj, type=None) -> object:
+
+        if self._is_normalization:
+
+            obj._normalization_parameter = self.name
 
         try:
 
@@ -61,6 +71,10 @@ class Parameter(object):
 
     def __set__(self, obj, value) -> None:
         self._is_set = True
+
+        if self._is_normalization:
+
+            obj._normalization_parameter = self.name
 
         if not self._free:
 
@@ -142,10 +156,20 @@ class ParameterMeta(type):
 
         cls._parameter_storage = {}
 
+        norm_counter = 0
+
+        norm = None
+
         for k, v in attrs.items():
 
             if isinstance(v, Parameter):
                 v.name = k
+
+                if v.is_normalization:
+
+                    if norm_counter > 0:
+
+                        raise AssertionError("Can only have 1 normalization")
 
         return cls
 

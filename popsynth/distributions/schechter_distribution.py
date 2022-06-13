@@ -37,7 +37,7 @@ class SchechterDistribution(LuminosityDistribution):
     def phi(self, L):
 
         return (
-            L ** self.alpha
+            L**self.alpha
             * np.exp(-L / self.Lmin)
             / (self.Lmin ** (1 + self.alpha) * sf.gamma(1 + self.alpha))
         )

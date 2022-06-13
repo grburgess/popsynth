@@ -24,7 +24,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install --upgrade flake8 numba numpy ipython scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
+        python -m pip install --upgrade pip wheel
+        pip install --upgrade flake8 numba numpy ipython ipython_genutils scipy h5py matplotlib hypothesis pystan betagen coverage pytest pytest-cov cython codecov
         python setup.py install
     - name: Lint with flake8
       run: |

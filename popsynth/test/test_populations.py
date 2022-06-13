@@ -76,7 +76,7 @@ class DemoSampler3(popsynth.AuxiliarySampler):
 
         dl = cosmology.luminosity_distance(self._distance)
 
-        fluxes = self._luminosity / (4 * np.pi * dl ** 2)
+        fluxes = self._luminosity / (4 * np.pi * dl**2)
 
         self._true_values = fluxes
 
