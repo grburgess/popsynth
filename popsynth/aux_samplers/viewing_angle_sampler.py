@@ -36,3 +36,9 @@ class ViewingAngleSampler(NonObservedAuxSampler):
         )
 
         self._true_values = np.arccos(1.0 - theta_inverse)
+
+    def _compute_probability(self):
+
+        return np.sin(self._true_values) / (
+            1 - np.cos(np.deg2rad(self.max_angle))
+        )

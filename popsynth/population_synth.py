@@ -1083,6 +1083,7 @@ class PopulationSynth(object, metaclass=ABCMeta):
                     self._derived_luminosity_sampler.true_values,
                     self._derived_luminosity_sampler.obs_values,
                     self._derived_luminosity_sampler.selector,
+                    self._derived_luminosity_sampler.probability,
                 )
             )
 
@@ -1191,26 +1192,9 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
             auxiliary_quantities += v.get_secondary_properties()
 
-            # # append these values to a dict
-            # auxiliary_quantities[k] = {
-            #     "true_values": v.true_values,
-            #     "obs_values": v.obs_values,
-            #     "selection": v.selector,
-            # }  # type: dict
-
             # collect the secondary values
 
             for k2, v2 in v.secondary_samplers.items():
-
-                # first we tell the sampler to go and retrieve all of
-                # its own secondaries
-
-                # properties = v2.get_secondary_properties()  # type: dict
-
-                # for k3, v3 in properties.items():
-
-                #     # now attach them
-                #     auxiliary_quantities[k3] = v3
 
                 # store the secondary truths
 
@@ -1273,7 +1257,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
         #       selection = self._flux_selector.selection
 
-        # now apply the selection from the auxilary samplers
+        # now apply the selection and draw probability
+        # from the auxilary samplers
 
         for k, v in auxiliary_quantities.items():
 
@@ -1284,6 +1269,8 @@ class PopulationSynth(object, metaclass=ABCMeta):
                 log.debug(f"skipping {k} selection because it is unity")
 
                 continue
+
+            probability *= v["probability"]
 
             auxiliary_selection += v["selection"]
 

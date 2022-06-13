@@ -27,6 +27,7 @@ class SecondaryContainer(object):
         true_values: ArrayLike,
         obs_values: ArrayLike,
         selection: ArrayLike,
+        probability: ArrayLike,
     ) -> None:
         """
         A container for secondary properties that adds dict
@@ -40,6 +41,9 @@ class SecondaryContainer(object):
         :type obs_values: ArrayLike
         :param selection:
         :type selection: ArrayLike
+        :param probability:
+        :type probability: ArrayLike
+        :returns:
         :returns:
 
         """
@@ -47,7 +51,7 @@ class SecondaryContainer(object):
         self._true_values: ArrayLike = true_values
         self._obs_values: ArrayLike = obs_values
         self._selection: ArrayLike = selection
-
+        self._probability: ArrayLike = probability
         self._name: str = name
 
     @property
@@ -84,6 +88,16 @@ class SecondaryContainer(object):
         """
         return self._selection
 
+    @property
+    def probability(self) -> ArrayLike:
+        """
+        The the probability of the draws
+
+        :returns:
+
+        """
+        return self._probability
+
     def __getitem__(self, key):
 
         if key == "selection":
@@ -94,6 +108,9 @@ class SecondaryContainer(object):
 
         elif key == "obs_values":
             return self._obs_values
+
+        elif key == "probability":
+            return self._probability
 
         else:
 
@@ -177,22 +194,23 @@ class AuxiliarySampler(
         :type uses_sky_position: bool
         """
 
-        self._parameter_storage = {}  # type: Dict[str, float]
-        self._name = name  # type: str
-        self._obs_name = "%s_obs" % name  # type: str
+        self._parameter_storage: Dict[str, float] = {}
+        self._name: str = name
+        self._obs_name: str = "%s_obs" % name
 
-        self._obs_values = None  # type: ArrayLike
-        self._true_values = None  # type: ArrayLike
-        self._is_observed = observed  # type: bool
-        self._secondary_samplers = {}  # type: SamplerDict
-        self._is_secondary = False  # type: bool
+        self._obs_values: ArrayLike = None
+        self._true_values: ArrayLike = None
+        self._is_observed: bool = observed
+        self._secondary_samplers: SamplerDict = {}
+        self._is_secondary: bool = False
         self._parent_names = []
-        self._has_secondary = False  # type: bool
-        self._is_sampled = False  # type: bool
-        self._selector = UnitySelection()  # type: SelectionProbability
-        self._uses_distance = uses_distance  # type: bool
-        self._uses_luminosity = uses_luminosity  # type: bool
-        self._uses_sky_position = uses_sky_position  # type: bool
+        self._has_secondary: bool = False
+        self._is_sampled: bool = False
+        self._selector: SelectionProbability = UnitySelection()
+        self._uses_distance: bool = uses_distance
+        self._uses_luminosity: bool = uses_luminosity
+        self._uses_sky_position: bool = uses_sky_position
+        self._probability: Optional[np.ndarray] = None
 
     def display(self):
 
@@ -378,6 +396,22 @@ class AuxiliarySampler(
 
             self._apply_selection()
 
+            self._probability = self._compute_probability()
+
+    def _compute_probability(self) -> Optional[np.ndarray]:
+        return None
+
+    @property
+    def probability(self) -> np.ndarray:
+
+        if self._probability is None:
+
+            return np.ones_like(self._true_values)
+
+        else:
+
+            return self._probability
+
     def reset(self):
         """
         Reset all the selections.
@@ -457,7 +491,11 @@ class AuxiliarySampler(
 
         recursive_secondaries.add_secondary(
             SecondaryContainer(
-                self._name, self._true_values, self._obs_values, self._selector
+                self._name,
+                self._true_values,
+                self._obs_values,
+                self._selector,
+                self.probability,
             )
         )
 
@@ -672,8 +710,6 @@ class AuxiliarySampler(
 
     def _probability(self, true_values: np.ndarray) -> np.ndarray:
         pass
-
-
 
     def observation_sampler(self, size: int = 1) -> np.ndarray:
 
