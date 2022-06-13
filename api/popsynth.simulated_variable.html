@@ -16,6 +16,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -132,11 +133,11 @@
 }
 </style>
 <section id="module-popsynth.simulated_variable">
-<span id="popsynth-simulated-variable-module"></span><h1>popsynth.simulated_variable module<a class="headerlink" href="#module-popsynth.simulated_variable" title="Permalink to this headline"></a></h1>
+<span id="popsynth-simulated-variable-module"></span><h1>popsynth.simulated_variable module<a class="headerlink" href="#module-popsynth.simulated_variable" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="popsynth.simulated_variable.SimulatedVariable">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.simulated_variable.</span></span><span class="sig-name descname"><span class="pre">SimulatedVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observed_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/simulated_variable.html#SimulatedVariable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">popsynth.simulated_variable.</span></span><span class="sig-name descname"><span class="pre">SimulatedVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observed_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latent_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/popsynth/simulated_variable.html#SimulatedVariable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 <p>SimulatedVariables hold the observed and latent values
 from a population synth variable as well as its selection.</p>
 <p>The array displays as the observed values. The latent values
@@ -149,7 +150,7 @@ x.non_selected</p>
 and latent values.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="popsynth.simulated_variable.SimulatedVariable.latent">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">latent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable.latent" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">latent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable.latent" title="Permalink to this definition"></a></dt>
 <dd><p>The latent values simulated
 which are unobscured by measurement
 error</p>
@@ -162,14 +163,14 @@ error</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="popsynth.simulated_variable.SimulatedVariable.selected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.simulated_variable.SimulatedVariable" title="popsynth.simulated_variable.SimulatedVariable"><span class="pre">popsynth.simulated_variable.SimulatedVariable</span></a></em><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable.selected" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.simulated_variable.SimulatedVariable" title="popsynth.simulated_variable.SimulatedVariable"><span class="pre">SimulatedVariable</span></a></em><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable.selected" title="Permalink to this definition"></a></dt>
 <dd><p>returns the latent and observed values
 that were selected as a new SimulatedVariable</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="popsynth.simulated_variable.SimulatedVariable.non_selected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_selected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.simulated_variable.SimulatedVariable" title="popsynth.simulated_variable.SimulatedVariable"><span class="pre">popsynth.simulated_variable.SimulatedVariable</span></a></em><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable.non_selected" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_selected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../notebooks/api/popsynth.html#popsynth.simulated_variable.SimulatedVariable" title="popsynth.simulated_variable.SimulatedVariable"><span class="pre">SimulatedVariable</span></a></em><a class="headerlink" href="#popsynth.simulated_variable.SimulatedVariable.non_selected" title="Permalink to this definition"></a></dt>
 <dd><p>returns the latent and observed values
 that were selected as a new SimulatedVariable</p>
 </dd></dl>

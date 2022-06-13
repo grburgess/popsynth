@@ -15,6 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -1013,6 +1014,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">flux_sigma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">log10_flux_draw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">n_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Population</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw the total survey and return a :class:`Population` object.</span>
@@ -1042,25 +1045,76 @@
 
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span><span class="p">)</span>
 
-        <span class="c1"># create a callback of the integrand</span>
-        <span class="n">dNdr</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">dNdV</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">differential_volume</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-            <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">time_adjustment</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_samples</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># integrate the population to determine the true number of</span>
-        <span class="c1"># objects</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">dNdr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">r_max</span><span class="p">)[</span>
-            <span class="mi">0</span>
-        <span class="p">]</span>  <span class="c1"># type: float</span>
+            <span class="c1"># create a callback of the integrand</span>
+            <span class="n">dNdr</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">dNdV</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">differential_volume</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">time_adjustment</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="p">)</span>
 
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The volume integral is </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">N</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
 
-        <span class="c1"># this should be poisson distributed</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># type: np.int64</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The population is being normalized such that&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;the integral over N * f(z) * dV/dz = N&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">draw_distance</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+                <span class="n">old_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">_normalization_parameter</span>
+                    <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">):</span>
+
+                    <span class="n">old_value</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">normalization_parameter</span>
+                    <span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;setting normalization to unity for integration&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">normalization_parameter</span> <span class="o">=</span> <span class="mi">1</span>
+
+                <span class="n">integral</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
+                    <span class="n">dNdr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">r_max</span>
+                <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">old_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">normalization_parameter</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">old_value</span>
+                    <span class="p">)</span>
+
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;normalization parameter set back to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">normalization_parameter</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="n">dNdr_norm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">dNdr</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">/</span> <span class="n">integral</span>
+
+                <span class="n">N</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
+                    <span class="n">dNdr_norm</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">r_max</span>
+                <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># integrate the population to determine the true number of</span>
+                <span class="c1"># objects</span>
+                <span class="n">N</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">dNdr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">r_max</span><span class="p">)[</span>
+                    <span class="mi">0</span>
+                <span class="p">]</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The volume integral is </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># this should be poisson distributed</span>
+            <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">n_samples</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">draw_distance</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+
+        <span class="c1"># set the draw probability</span>
+
+        <span class="n">probability</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">probability</span>
 
         <span class="c1"># now draw the sky positions</span>
 
@@ -1136,6 +1190,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">true_values</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">obs_values</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_derived_luminosity_sampler</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
@@ -1183,6 +1238,10 @@
             <span class="n">luminosities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">luminosity_distribution</span><span class="o">.</span><span class="n">draw_luminosity</span><span class="p">(</span>
                 <span class="n">size</span><span class="o">=</span><span class="n">n</span>
             <span class="p">)</span>  <span class="c1"># type: np.ndarray</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">compute_probability</span><span class="p">(</span><span class="n">luminosities</span><span class="p">)</span>
+
+            <span class="n">probability</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_luminosity_distribution</span><span class="o">.</span><span class="n">probability</span>
 
             <span class="c1"># store the truths from the luminosity distribution</span>
             <span class="n">truth</span><span class="p">[</span>
@@ -1240,26 +1299,9 @@
 
             <span class="n">auxiliary_quantities</span> <span class="o">+=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_secondary_properties</span><span class="p">()</span>
 
-            <span class="c1"># # append these values to a dict</span>
-            <span class="c1"># auxiliary_quantities[k] = {</span>
-            <span class="c1">#     &quot;true_values&quot;: v.true_values,</span>
-            <span class="c1">#     &quot;obs_values&quot;: v.obs_values,</span>
-            <span class="c1">#     &quot;selection&quot;: v.selector,</span>
-            <span class="c1"># }  # type: dict</span>
-
             <span class="c1"># collect the secondary values</span>
 
             <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">secondary_samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
-                <span class="c1"># first we tell the sampler to go and retrieve all of</span>
-                <span class="c1"># its own secondaries</span>
-
-                <span class="c1"># properties = v2.get_secondary_properties()  # type: dict</span>
-
-                <span class="c1"># for k3, v3 in properties.items():</span>
-
-                <span class="c1">#     # now attach them</span>
-                <span class="c1">#     auxiliary_quantities[k3] = v3</span>
 
                 <span class="c1"># store the secondary truths</span>
 
@@ -1322,7 +1364,8 @@
 
         <span class="c1">#       selection = self._flux_selector.selection</span>
 
-        <span class="c1"># now apply the selection from the auxilary samplers</span>
+        <span class="c1"># now apply the selection and draw probability</span>
+        <span class="c1"># from the auxilary samplers</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">auxiliary_quantities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 
@@ -1333,6 +1376,8 @@
                 <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;skipping </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> selection because it is unity&quot;</span><span class="p">)</span>
 
                 <span class="k">continue</span>
+
+            <span class="n">probability</span> <span class="o">*=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;probability&quot;</span><span class="p">]</span>
 
             <span class="n">auxiliary_selection</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span>
 
@@ -1431,6 +1476,7 @@
             <span class="n">theta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
             <span class="n">phi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spatial_distribution</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span>
             <span class="n">pop_synth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+            <span class="n">probability</span><span class="o">=</span><span class="n">probability</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="PopulationSynth.display"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.PopulationSynth.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

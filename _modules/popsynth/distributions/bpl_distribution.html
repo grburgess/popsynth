@@ -15,6 +15,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -105,6 +106,7 @@
              
   <h1>Source code for popsynth.distributions.bpl_distribution</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.integrate</span> <span class="k">as</span> <span class="nn">integrate</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 
 <span class="kn">from</span> <span class="nn">popsynth.distribution</span> <span class="kn">import</span> <span class="n">DistributionParameter</span><span class="p">,</span> <span class="n">LuminosityDistribution</span>
@@ -151,7 +153,15 @@
 
 <div class="viewcode-block" id="BPLDistribution.phi"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.BPLDistribution.phi">[docs]</a>    <span class="k">def</span> <span class="nf">phi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
 
-        <span class="k">return</span> <span class="n">bpl</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lbreak</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span></div>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ll</span><span class="p">:</span> <span class="n">bpl</span><span class="p">(</span>
+            <span class="n">ll</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lbreak</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span>
+        <span class="p">)</span>
+
+        <span class="n">integrand</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># normalize</span>
+
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="o">/</span> <span class="n">integrand</span></div>
 
 <div class="viewcode-block" id="BPLDistribution.draw_luminosity"><a class="viewcode-back" href="../../../notebooks/api/popsynth.distributions.html#popsynth.distributions.BPLDistribution.draw_luminosity">[docs]</a>    <span class="k">def</span> <span class="nf">draw_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 
@@ -204,20 +214,25 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># creatre a holder for the values</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
     <span class="c1"># get the total integral to compute the normalization</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">integrate_pl</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
     <span class="n">norm</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">C</span>
 
     <span class="c1"># create an index to select each piece of the function</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">x1</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">x0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">x1</span><span class="p">)</span>
 
     <span class="c1"># compute the lower power law</span>
     <span class="n">out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">a1</span><span class="p">)</span>
 
     <span class="c1"># compute the upper power law</span>
-    <span class="n">out</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">],</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a1</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">x1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">x2</span><span class="p">)</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">a1</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">out</span> <span class="o">*</span> <span class="n">norm</span></div>
 

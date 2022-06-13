@@ -15,6 +15,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -106,10 +107,11 @@
   <h1>Source code for popsynth.distribution</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy.integrate</span> <span class="k">as</span> <span class="nn">integrate</span>
 <span class="kn">from</span> <span class="nn">class_registry</span> <span class="kn">import</span> <span class="n">AutoRegister</span>
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">display</span>
 <span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
@@ -148,10 +150,22 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_parameter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="n">seed</span>  <span class="c1"># type: int</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># type: str</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">=</span> <span class="n">form</span>  <span class="c1"># type: str</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">=</span> <span class="n">form</span>  <span class="c1"># type: str</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probability</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">normalization_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalization_parameter</span><span class="p">]</span>
+
+    <span class="nd">@normalization_parameter</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">normalization_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_storage</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalization_parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -196,6 +210,11 @@
                 <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="k">return</span> <span class="n">out</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">probability</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability</span>
 
 <div class="viewcode-block" id="Distribution.display"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.Distribution.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -380,7 +399,7 @@
 
 <div class="viewcode-block" id="SpatialDistribution.draw_sky_positions"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.draw_sky_positions">[docs]</a>    <span class="k">def</span> <span class="nf">draw_sky_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Draw teh sky positions of the objects</span>
+<span class="sd">        Draw the sky positions of the objects</span>
 
 <span class="sd">        :param size:</span>
 <span class="sd">        :type size: int</span>
@@ -389,7 +408,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi</span> <span class="o">=</span> <span class="n">sample_theta_phi</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SpatialDistribution.draw_distance"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.draw_distance">[docs]</a>    <span class="k">def</span> <span class="nf">draw_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="SpatialDistribution.draw_distance"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.SpatialDistribution.draw_distance">[docs]</a>    <span class="k">def</span> <span class="nf">draw_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw the distances from the specified dN/dr model.</span>
 
@@ -404,11 +423,32 @@
             <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_adjustment</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+
+            <span class="c1"># set the prefactor to unity</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_parameter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">normalization_parameter</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">integral</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">dNdr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">dNdr_norm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">dNdr</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">/</span> <span class="n">integral</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">normalization_parameter</span> <span class="o">=</span> <span class="n">old_value</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">dNdr_norm</span> <span class="o">=</span> <span class="n">dNdr</span>
+
         <span class="c1"># find the maximum point</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
             <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_max</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
         <span class="p">)</span>  <span class="c1"># type: ArrayLike</span>
-        <span class="n">ymax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dNdr</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>  <span class="c1"># type: float</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dNdr_norm</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>  <span class="c1"># type: float</span>
 
         <span class="c1"># rejection sampling the distribution</span>
         <span class="n">r_out</span> <span class="o">=</span> <span class="p">[]</span>
@@ -430,7 +470,7 @@
 
                     <span class="c1"># compare them</span>
 
-                    <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">dNdr</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">dNdr_norm</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
                         <span class="n">r_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
                         <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
@@ -439,7 +479,21 @@
                 <span class="n">size</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_max</span><span class="p">,</span> <span class="n">dNdr</span>
             <span class="p">)</span>  <span class="c1"># type: ArrayLike</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r_out</span><span class="p">)</span>  <span class="c1"># type: ArrayLike</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r_out</span><span class="p">)</span>  <span class="c1"># type: ArrayLike</span>
+
+        <span class="c1"># now compute the differential probability</span>
+        <span class="c1"># of the distance draws</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_parameter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalization_parameter</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probability</span> <span class="o">=</span> <span class="n">dNdr_norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalization_parameter</span> <span class="o">=</span> <span class="n">old_value</span></div></div>
 
 
 <div class="viewcode-block" id="LuminosityDistribution"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution">[docs]</a><span class="k">class</span> <span class="nc">LuminosityDistribution</span><span class="p">(</span><span class="n">Distribution</span><span class="p">):</span>
@@ -474,7 +528,7 @@
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Must be implemented in derived class&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LuminosityDistribution.draw_luminosity"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution.draw_luminosity">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">draw_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">draw_luminosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        function to draw the luminosity via an alternative method</span>
 <span class="sd">        must be implemented in child class</span>
@@ -484,7 +538,11 @@
 <span class="sd">        :returns:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div></div>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="LuminosityDistribution.compute_probability"><a class="viewcode-back" href="../../notebooks/api/popsynth.html#popsynth.distribution.LuminosityDistribution.compute_probability">[docs]</a>    <span class="k">def</span> <span class="nf">compute_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">(</span><span class="n">L</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

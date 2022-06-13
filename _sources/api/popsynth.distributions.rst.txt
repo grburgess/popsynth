@@ -16,6 +16,7 @@ Submodules
    popsynth.distributions.schechter_distribution
    popsynth.distributions.spherical_distribution
    popsynth.distributions.spiral_galaxy_distribution
+   popsynth.distributions.uniform_distribution
 
 Module contents
 ---------------

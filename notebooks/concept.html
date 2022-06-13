@@ -16,6 +16,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -132,7 +133,7 @@
 }
 </style>
 <section id="Core-Concept">
-<h1>Core Concept<a class="headerlink" href="#Core-Concept" title="Permalink to this headline"></a></h1>
+<h1>Core Concept<a class="headerlink" href="#Core-Concept" title="Permalink to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">popsynth</span></code> core function is to create <strong>observed</strong> surveys from <strong>latent</strong> population models.</p>
 <p>First, let’s define what a population of objects is in terms of a generative model. The two main ingredients are the objects’ spatial distribution (<span class="math notranslate nohighlight">\(\lambda(\vec{r}; \vec{\psi})\)</span>) and the distribution of their inherent properties (<span class="math notranslate nohighlight">\(\pi(\vec{\phi} | \vec{\psi})\)</span>). Here, <span class="math notranslate nohighlight">\(\vec{\psi}\)</span> are the latent population parameters, <span class="math notranslate nohighlight">\(\vec{r}\)</span> are the spatial locations of the objects, and <span class="math notranslate nohighlight">\(\vec{\phi}\)</span> are the properties of the individual objects (luminosity, spin, viewing angle,
 mass, etc.). The spatial distribution is defined such that:</p>
