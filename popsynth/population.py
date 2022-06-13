@@ -754,7 +754,7 @@ class Population(object):
             known_distance_idx = (f["known_distance_idx"][()]).astype(int)
             unknown_distance_idx = (f["unknown_distance_idx"][()]).astype(int)
 
-        except AttributeError:
+        except KeyError:
 
             known_distances = None
             known_distance_idx = None
@@ -764,7 +764,7 @@ class Population(object):
 
             probability = f["probability"][()]
 
-        except AttributeError:
+        except KeyError:
 
             probability = None
 
