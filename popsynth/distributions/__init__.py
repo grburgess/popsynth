@@ -16,6 +16,10 @@ from .spherical_distribution import (
     ZPowerSphericalDistribution,
 )
 from .spiral_galaxy_distribution import SpiralGalaxyDistribution
+from .uniform_distribution import (
+    LogUniLuminiosityDistribution,
+    UniformCosmoDistribution,
+)
 
 __all__ = [
     "SphericalDistribution",
@@ -33,4 +37,6 @@ __all__ = [
     "DeltaDistribution",
     "FlatlandDistribution",
     "SpiralGalaxyDistribution",
+    "LogUniLuminiosityDistribution",
+    "UniformCosmoDistribution",
 ]

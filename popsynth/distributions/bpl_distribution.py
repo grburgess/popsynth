@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.integrate as integrate
 import scipy.stats as stats
 
 from popsynth.distribution import DistributionParameter, LuminosityDistribution
@@ -45,7 +46,15 @@ class BPLDistribution(LuminosityDistribution):
 
     def phi(self, L):
 
-        return bpl(L, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta)
+        f = lambda ll: bpl(
+            ll, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta
+        )
+
+        integrand = integrate.quad(f, self.Lmin, self.Lmax)[0]
+
+        # normalize
+
+        return f(L) / integrand
 
     def draw_luminosity(self, size=1):
 
@@ -98,20 +107,25 @@ def bpl(x, x0, x1, x2, a1, a2):
     """
 
     # creatre a holder for the values
-    out = np.empty_like(x)
+    x = np.atleast_1d(x)
+
+    out = np.zeros_like(x)
 
     # get the total integral to compute the normalization
     _, _, C = integrate_pl(x0, x1, x2, a1, a2)
     norm = 1.0 / C
 
     # create an index to select each piece of the function
-    idx = x < x1
+    idx = (x > x0) & (x < x1)
 
     # compute the lower power law
     out[idx] = np.power(x[idx], a1)
 
     # compute the upper power law
-    out[~idx] = np.power(x[~idx], a2) * np.power(x1, a1 - a2)
+
+    idx = (x >= x1) & (x < x2)
+
+    out[idx] = np.power(x[idx], a2) * np.power(x1, a1 - a2)
 
     return out * norm
 

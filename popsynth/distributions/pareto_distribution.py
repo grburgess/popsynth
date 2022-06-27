@@ -37,7 +37,7 @@ class ParetoDistribution(LuminosityDistribution):
         idx = L >= self.Lmin
 
         out[idx] = (
-            self.alpha * self.Lmin ** self.alpha / L[idx] ** (self.alpha + 1)
+            self.alpha * self.Lmin**self.alpha / L[idx] ** (self.alpha + 1)
         )
 
         return out
