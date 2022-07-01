@@ -298,6 +298,31 @@ class PopulationSynth(object, metaclass=ABCMeta):
 
                 aux_samplers = v.get_secondary_objects(aux_samplers)
 
+        if self._has_derived_luminosity:
+
+            tmp = {}
+
+            tmp["type"] = self._derived_luminosity_sampler.name
+            tmp["observed"] = self._derived_luminosity_sampler._is_observed
+
+            for k2, v2 in self._derived_luminosity_sampler.truth.items():
+
+                tmp[k2] = v2
+
+            tmp["secondary"] = list(self._derived_luminosity_sampler.secondary_samplers.keys())
+
+            selection = {}
+            selection[self._derived_luminosity_sampler.selector._selection_name] = self._derived_luminosity_sampler.selector.parameters
+
+            tmp["selection"] = selection
+
+            aux_samplers[self._derived_luminosity_sampler.name] = tmp
+
+            if self._derived_luminosity_sampler.has_secondary:
+
+                aux_samplers = self._derived_luminosity_sampler.get_secondary_objects(aux_samplers)
+
+
         output["auxiliary samplers"] = aux_samplers
 
         return output
