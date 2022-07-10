@@ -4,41 +4,18 @@ import sys
 from contextlib import contextmanager
 from typing import Dict, Optional
 
-import colorama
-from colorama import Back, Fore, Style
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.theme import Theme
 
 from popsynth.utils.configuration import popsynth_config
 from popsynth.utils.package_data import (
+    get_path_of_data_file,
     get_path_of_log_dir,
     get_path_of_log_file,
 )
 
-colorama.deinit()
-colorama.init(strip=False)
 # set up the console logging
-
-
-class ColoredFormatter(logging.Formatter):
-    """
-    Colored log formatter.
-    """
-
-    def __init__(
-        self, *args, colors: Optional[Dict[str, str]] = None, **kwargs
-    ) -> None:
-        """Initialize the formatter with specified format strings."""
-
-        super().__init__(*args, **kwargs)
-
-        self.colors = colors if colors else {}
-
-    def format(self, record) -> str:
-        """Format the specified record as text."""
-
-        record.color = self.colors.get(record.levelname, "")
-        record.reset = Style.RESET_ALL
-
-        return super().format(record)
 
 
 class MyFilter(object):
@@ -71,7 +48,7 @@ popsynth_usr_log_handler = handlers.TimedRotatingFileHandler(
     get_path_of_log_file("usr.log"), when="D", interval=1, backupCount=10
 )
 
-popsynth_usr_log_handler.setLevel(popsynth_config["logging"]["file"]["level"])
+popsynth_usr_log_handler.setLevel(popsynth_config.logging.file.level)
 
 # lots of info written out
 _usr_formatter = logging.Formatter(
@@ -82,24 +59,21 @@ popsynth_usr_log_handler.setFormatter(_usr_formatter)
 
 # now set up the console logger
 
-_console_formatter = ColoredFormatter(
-    "{color} {levelname:8} {reset}| {color} {message} {reset}",
-    style="{",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    colors={
-        "DEBUG": Fore.CYAN,
-        "INFO": Fore.GREEN + Style.BRIGHT,
-        "WARNING": Fore.YELLOW + Style.DIM,
-        "ERROR": Fore.RED + Style.BRIGHT,
-        "CRITICAL": Fore.RED + Back.WHITE + Style.BRIGHT,
-    },
+_console_formatter = logging.Formatter(
+    ' %(message)s',
+    datefmt="%H:%M:%S",
 )
 
-popsynth_console_log_handler = logging.StreamHandler(sys.stdout)
-popsynth_console_log_handler.setFormatter(_console_formatter)
-popsynth_console_log_handler.setLevel(
-    popsynth_config["logging"]["console"]["level"]
+
+mytheme = Theme().read(get_path_of_data_file("log_theme.ini"))
+console = Console(theme=mytheme)
+
+
+popsynth_console_log_handler = RichHandler(
+    level="INFO", rich_tracebacks=True, markup=True, console=console
 )
+popsynth_console_log_handler.setFormatter(_console_formatter)
+popsynth_console_log_handler.setLevel(popsynth_config.logging.console.level)
 
 warning_filter = MyFilter(logging.WARNING)
 
