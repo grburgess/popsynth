@@ -90,7 +90,7 @@ class SpiralGalaxyDistribution(SphericalDistribution):
 
         spiraltheta = tet + corrtet  # Faucher-Giguere 2007
 
-        zpos = rd.exponential(height, size=size)
+        zpos = np.random.exponential(height, size=size)
 
         zpos *= np.random.choice([-1, 1], size=size)
 
