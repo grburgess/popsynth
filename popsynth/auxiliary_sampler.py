@@ -333,7 +333,9 @@ class AuxiliarySampler(
 
                 log.info(f"{self.name} is sampling its secondary quantities")
 
-            self._selector.set_distance(self._distance)
+            if self._uses_distance:
+
+                self._selector.set_distance(self._distance)
 
             try:
 
