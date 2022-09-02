@@ -9,8 +9,8 @@ class TruncatedLogNormalAuxSampler(AuxiliarySampler):
 
     mu = AuxiliaryParameter(default=0)
     tau = AuxiliaryParameter(default=1, vmin=0)
-    lower = AuxiliaryParameter()
-    upper = AuxiliaryParameter()
+    lower = AuxiliaryParameter(vmin=0)
+    upper = AuxiliaryParameter(vmin=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
 
     def __init__(self, name: str, observed: bool = True):
@@ -40,7 +40,12 @@ class TruncatedLogNormalAuxSampler(AuxiliarySampler):
         super(TruncatedLogNormalAuxSampler, self).__init__(name=name, observed=observed)
 
     def true_sampler(self, size: int):
-        a = np.log(self.lower)
+
+        if self.lower==0:
+            a = stats.norm.ppf(1e-5,loc=self.mu,scale=self.tau)
+        else:
+            a = np.log(self.lower)
+            
         b = np.log(self.upper)
 
         lower = (a - self.mu) / self.tau
@@ -78,8 +83,8 @@ class TruncatedLog10NormalAuxSampler(AuxiliarySampler):
     mu = AuxiliaryParameter(default=0)
     tau = AuxiliaryParameter(default=1, vmin=0)
     sigma = AuxiliaryParameter(default=1, vmin=0)
-    lower = AuxiliaryParameter()
-    upper = AuxiliaryParameter()
+    lower = AuxiliaryParameter(vmin=0)
+    upper = AuxiliaryParameter(vmin=0)
 
     def __init__(self, name: str, observed: bool = True):
         """
@@ -111,7 +116,11 @@ class TruncatedLog10NormalAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size: int):
 
-        a = np.log10(self.lower)
+        if self.lower==0:
+            a = stats.norm.ppf(1e-5,loc=self.mu,scale=self.tau)
+        else:
+            a = np.log(self.lower)
+
         b = np.log10(self.upper)
 
         lower = (a - self.mu) / self.tau
@@ -119,8 +128,8 @@ class TruncatedLog10NormalAuxSampler(AuxiliarySampler):
 
         self._true_values = np.power(
             10, stats.truncnorm.rvs(
-                lower=lower,
-                upper=upper,
+                lower,
+                upper,
                 loc=self.mu,
                 scale=self.tau,
                 size=size,
