@@ -1001,7 +1001,7 @@ class Population(object):
 
         ax.set_xlabel("distance")
         ax.set_ylabel("flux")
-        return fig 
+        return fig
 
     def display_obs_fluxes(self, ax=None, flux_color=dark, **kwargs):
         """

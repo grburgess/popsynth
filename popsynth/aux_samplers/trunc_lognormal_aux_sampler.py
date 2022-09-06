@@ -42,10 +42,10 @@ class TruncatedLogNormalAuxSampler(AuxiliarySampler):
     def true_sampler(self, size: int):
 
         if self.lower==0:
-            a = stats.norm.ppf(1e-5,loc=self.mu,scale=self.tau)
+            a = stats.norm.ppf(1e-5, loc=self.mu, scale=self.tau)
         else:
             a = np.log(self.lower)
-            
+
         b = np.log(self.upper)
 
         lower = (a - self.mu) / self.tau
@@ -116,7 +116,7 @@ class TruncatedLog10NormalAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size: int):
 
-        if self.lower==0:
+        if self.lower == 0:
             a = stats.norm.ppf(1e-5,loc=self.mu,scale=self.tau)
         else:
             a = np.log(self.lower)
