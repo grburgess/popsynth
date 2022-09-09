@@ -1,5 +1,4 @@
 import numpy as np
-from scipy import random as rd
 
 from popsynth.distribution import DistributionParameter
 from popsynth.distributions.spherical_distribution import SphericalDistribution
@@ -91,7 +90,7 @@ class SpiralGalaxyDistribution(SphericalDistribution):
 
         spiraltheta = tet + corrtet  # Faucher-Giguere 2007
 
-        zpos = rd.exponential(height, size=size)
+        zpos = np.random.exponential(height, size=size)
 
         zpos *= np.random.choice([-1, 1], size=size)
 
@@ -99,7 +98,7 @@ class SpiralGalaxyDistribution(SphericalDistribution):
             0, scale=0.07 * np.abs(self._distances), size=size
         )
 
-        phi = np.arccos(zpos / np.sqrt(self._distances**2 + zpos**2))
+        phi = np.arccos(zpos / np.sqrt(self._distances ** 2 + zpos ** 2))
 
         self._theta = spiraltheta
 
