@@ -3,7 +3,7 @@ import numpy as np
 import scipy.stats as stats
 
 from popsynth.auxiliary_sampler import AuxiliaryParameter, AuxiliarySampler
-from popsynth.distributions.bpl_distribution import bpl
+from popsynth.distributions.bpl_distribution import sample_bpl
 
 
 class ParetoAuxSampler(AuxiliarySampler):
@@ -139,7 +139,7 @@ class BrokenPowerLawAuxSampler(AuxiliarySampler):
 
         u = np.atleast_1d(np.random.uniform(size=size))
 
-        self._true_values = bpl(
+        self._true_values = sample_bpl(
             u, self.xmin, self.xbreak, self.xmax, self.alpha, self.beta
         )
 

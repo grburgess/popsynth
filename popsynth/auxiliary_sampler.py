@@ -333,7 +333,9 @@ class AuxiliarySampler(
 
                 log.info(f"{self.name} is sampling its secondary quantities")
 
-            self._selector.set_distance(self._distance)
+            if self._uses_distance:
+
+                self._selector.set_distance(self._distance)
 
             try:
 
@@ -357,7 +359,7 @@ class AuxiliarySampler(
                 # quantities to derive a luminosity
                 # as it should be the last thing dervied
 
-                log.debug(f"{k} will have it spatial values set")
+                log.debug(f"{k} will have its spatial values set")
 
                 v.set_spatial_values(self._spatial_values)
 
