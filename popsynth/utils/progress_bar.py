@@ -7,8 +7,5 @@ _purple = "#B833FF"
 
 def progress_bar(itr, **kwargs):
 
-    return (
-        tqdm(itr, colour=_purple, **kwargs)
-        if popsynth_config.show_progress
-        else itr
-    )
+    return (tqdm(itr, colour=_purple, **kwargs)
+            if popsynth_config.show_progress else itr)

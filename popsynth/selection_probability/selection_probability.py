@@ -15,9 +15,10 @@ class SelectionParameter(Parameter):
     pass
 
 
-class SelectionProbability(
-    object, metaclass=AutoRegister(selection_registry, base_type=ParameterMeta)
-):
+class SelectionProbability(object,
+                           metaclass=AutoRegister(selection_registry,
+                                                  base_type=ParameterMeta)):
+
     def __init__(
         self,
         name: str = "name",

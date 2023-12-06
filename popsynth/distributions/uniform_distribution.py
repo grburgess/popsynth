@@ -4,8 +4,7 @@ import scipy.stats as stats
 
 from popsynth.distribution import DistributionParameter, LuminosityDistribution
 from popsynth.distributions.cosmological_distribution import (
-    CosmologicalDistribution,
-)
+    CosmologicalDistribution, )
 
 
 class LogUniLuminiosityDistribution(LuminosityDistribution):
@@ -35,9 +34,9 @@ class LogUniLuminiosityDistribution(LuminosityDistribution):
         lf_form += r"L_\mathrm{break}^{\alpha - \beta}"
         lf_form += r" & \mbox{if } L > L_\mathrm{break}. \end{cases}"
 
-        super(LogUniLuminiosityDistribution, self).__init__(
-            seed=seed, name=name, form=lf_form
-        )
+        super(LogUniLuminiosityDistribution, self).__init__(seed=seed,
+                                                            name=name,
+                                                            form=lf_form)
 
     def phi(self, L):
 

@@ -66,9 +66,9 @@ class ConstantSphericalDistribution(SphericalDistribution):
         if form is None:
             form = r"\Lambda"
 
-        super(ConstantSphericalDistribution, self).__init__(
-            seed=seed, name=name, form=form
-        )
+        super(ConstantSphericalDistribution, self).__init__(seed=seed,
+                                                            name=name,
+                                                            form=form)
 
     def dNdV(self, distance):
 

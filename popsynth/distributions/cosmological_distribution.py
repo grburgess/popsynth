@@ -69,7 +69,7 @@ class CosmologicalDistribution(SpatialDistribution):
         :returns: Flux
         """
 
-        return L / (4.0 * np.pi * cosmology.luminosity_distance(z) ** 2)
+        return L / (4.0 * np.pi * cosmology.luminosity_distance(z)**2)
 
     def time_adjustment(self, z):
         """
@@ -97,9 +97,10 @@ class SFRDistribution(CosmologicalDistribution):
     decay = DistributionParameter()
     peak = DistributionParameter(vmin=0)
 
-    def __init__(
-        self, seed: int = 1234, name: str = "sfr", is_rate: bool = True
-    ):
+    def __init__(self,
+                 seed: int = 1234,
+                 name: str = "sfr",
+                 is_rate: bool = True):
         """
         A star-formation like distribution of the form
         presented in Cole et al. 2001.

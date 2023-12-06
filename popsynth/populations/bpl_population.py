@@ -8,6 +8,7 @@ from popsynth.populations.spatial_populations import (
 
 
 class BPLHomogeneousSphericalPopulation(SphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -57,6 +58,7 @@ class BPLHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -110,6 +112,7 @@ class BPLZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -166,6 +169,7 @@ class BPLZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class BPLSFRPopulation(SFRPopulation):
+
     def __init__(
         self,
         r0: float,

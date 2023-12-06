@@ -59,9 +59,8 @@ if _config_file.is_file():
 
     _local_config = OmegaConf.load(_config_file)
 
-    popsynth_config: PopSynthConfig = OmegaConf.merge(
-        popsynth_config, _local_config
-    )
+    popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config,
+                                                      _local_config)
 
 # Write defaults if not
 else:

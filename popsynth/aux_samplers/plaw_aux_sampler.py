@@ -37,15 +37,16 @@ class ParetoAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size: int):
 
-        self._true_values = (np.random.pareto(self.alpha, size) + 1) * self.xmin
+        self._true_values = (np.random.pareto(self.alpha, size) +
+                             1) * self.xmin
 
     def observation_sampler(self, size: int):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)
 
         else:
 
@@ -84,17 +85,16 @@ class PowerLawAuxSampler(AuxiliarySampler):
 
     def true_sampler(self, size: int):
 
-        self._true_values = _sample_power_law(
-            self.xmin, self.xmax, self.alpha, size
-        )
+        self._true_values = _sample_power_law(self.xmin, self.xmax, self.alpha,
+                                              size)
 
     def observation_sampler(self, size: int):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)
 
         else:
 
@@ -131,25 +131,23 @@ class BrokenPowerLawAuxSampler(AuxiliarySampler):
         :type sigma: :class:`AuxiliaryParameter`
         """
 
-        super(BrokenPowerLawAuxSampler, self).__init__(
-            name=name, observed=observed
-        )
+        super(BrokenPowerLawAuxSampler, self).__init__(name=name,
+                                                       observed=observed)
 
     def true_sampler(self, size: int):
 
         u = np.atleast_1d(np.random.uniform(size=size))
 
-        self._true_values = sample_bpl(
-            u, self.xmin, self.xbreak, self.xmax, self.alpha, self.beta
-        )
+        self._true_values = sample_bpl(u, self.xmin, self.xbreak, self.xmax,
+                                       self.alpha, self.beta)
 
     def observation_sampler(self, size: int):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)
 
         else:
 
@@ -168,8 +166,8 @@ def _sample_power_law(xmin, xmax, alpha, size):
         if alpha != -1.0:
 
             x = np.power(
-                (np.power(xmax, alpha + 1) - np.power(xmin, alpha + 1)) * u
-                + np.power(xmin, alpha + 1),
+                (np.power(xmax, alpha + 1) - np.power(xmin, alpha + 1)) * u +
+                np.power(xmin, alpha + 1),
                 1.0 / (alpha + 1.0),
             )
 

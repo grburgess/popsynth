@@ -37,7 +37,8 @@ class TruncatedLogNormalAuxSampler(AuxiliarySampler):
             is `True`
         :type sigma: :class:`AuxiliaryParameter`
         """
-        super(TruncatedLogNormalAuxSampler, self).__init__(name=name, observed=observed)
+        super(TruncatedLogNormalAuxSampler, self).__init__(name=name,
+                                                           observed=observed)
 
     def true_sampler(self, size: int):
 
@@ -58,8 +59,7 @@ class TruncatedLogNormalAuxSampler(AuxiliarySampler):
                 loc=self.mu,
                 scale=self.tau,
                 size=size,
-            )
-        )
+            ))
 
         assert np.alltrue(self._true_values >= self.lower)
         assert np.alltrue(self._true_values <= self.upper)
@@ -68,9 +68,9 @@ class TruncatedLogNormalAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)
 
         else:
 
@@ -110,14 +110,13 @@ class TruncatedLog10NormalAuxSampler(AuxiliarySampler):
             is `True`
         :type sigma: :class:`AuxiliaryParameter`
         """
-        super(TruncatedLog10NormalAuxSampler, self).__init__(
-            name=name, observed=observed
-        )
+        super(TruncatedLog10NormalAuxSampler, self).__init__(name=name,
+                                                             observed=observed)
 
     def true_sampler(self, size: int):
 
         if self.lower == 0:
-            a = stats.norm.ppf(1e-5,loc=self.mu,scale=self.tau)
+            a = stats.norm.ppf(1e-5, loc=self.mu, scale=self.tau)
         else:
             a = np.log(self.lower)
 
@@ -127,14 +126,14 @@ class TruncatedLog10NormalAuxSampler(AuxiliarySampler):
         upper = (b - self.mu) / self.tau
 
         self._true_values = np.power(
-            10, stats.truncnorm.rvs(
+            10,
+            stats.truncnorm.rvs(
                 lower,
                 upper,
                 loc=self.mu,
                 scale=self.tau,
                 size=size,
-            )
-        )
+            ))
 
         assert np.alltrue(self._true_values >= self.lower)
         assert np.alltrue(self._true_values <= self.upper)
@@ -143,9 +142,9 @@ class TruncatedLog10NormalAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)
 
         else:
 

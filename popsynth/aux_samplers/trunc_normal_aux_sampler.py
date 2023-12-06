@@ -38,9 +38,8 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
         :type sigma: :class:`AuxiliaryParameter`
         """
 
-        super(TruncatedNormalAuxSampler, self).__init__(
-            name=name, observed=observed
-        )
+        super(TruncatedNormalAuxSampler, self).__init__(name=name,
+                                                        observed=observed)
 
     def true_sampler(self, size):
 
@@ -62,9 +61,9 @@ class TruncatedNormalAuxSampler(AuxiliarySampler):
 
         if self._is_observed:
 
-            self._obs_values = stats.norm.rvs(
-                loc=self._true_values, scale=self.sigma, size=size
-            )
+            self._obs_values = stats.norm.rvs(loc=self._true_values,
+                                              scale=self.sigma,
+                                              size=size)
 
         else:
 

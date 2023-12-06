@@ -1,5 +1,5 @@
 
-![CI](https://github.com/grburgess/popsynth/workflows/CI/badge.svg?branch=master)
+[![CI](https://github.com/cescalara/popsynth/actions/workflows/build_test.yml/badge.svg)](https://github.com/cescalara/popsynth/actions/workflows/build_test.yml)
 [![codecov](https://codecov.io/gh/grburgess/popsynth/branch/master/graph/badge.svg)](https://codecov.io/gh/grburgess/popsynth)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d02c9e6f5c540989a615eb1575863e3)](https://app.codacy.com/gh/grburgess/popsynth?utm_source=github.com&utm_medium=referral&utm_content=grburgess/popsynth&utm_campaign=Badge_Grade_Settings)
 [![Documentation Status](https://readthedocs.org/projects/popsynth/badge/?version=latest)](http://jmichaelburgess.com/popsynth/)

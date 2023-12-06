@@ -40,15 +40,13 @@ class BPLDistribution(LuminosityDistribution):
         lf_form += r"L_\mathrm{break}^{\alpha - \beta}"
         lf_form += r" & \mbox{if } L > L_\mathrm{break}. \end{cases}"
 
-        super(BPLDistribution, self).__init__(
-            seed=seed, name=name, form=lf_form
-        )
+        super(BPLDistribution, self).__init__(seed=seed,
+                                              name=name,
+                                              form=lf_form)
 
     def phi(self, L):
-
-        f = lambda ll: bpl(
-            ll, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta
-        )
+        f = lambda ll: bpl(ll, self.Lmin, self.Lbreak, self.Lmax, self.alpha,
+                           self.beta)
 
         integrand = integrate.quad(f, self.Lmin, self.Lmax)[0]
 
@@ -57,12 +55,10 @@ class BPLDistribution(LuminosityDistribution):
         return f(L) / integrand
 
     def draw_luminosity(self, size=1):
-
         u = np.atleast_1d(np.random.uniform(size=size))
 
-        return sample_bpl(
-            u, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta
-        )
+        return sample_bpl(u, self.Lmin, self.Lbreak, self.Lmax, self.alpha,
+                          self.beta)
 
 
 def integrate_pl(x0, x1, x2, a1, a2):
@@ -77,12 +73,16 @@ def integrate_pl(x0, x1, x2, a1, a2):
     """
 
     # compute the integral of each piece analytically
-    int_1 = (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) / (a1 + 1)
-    int_2 = (
-        np.power(x1, a1 - a2)
-        * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
-        / (a2 + 1)
-    )
+    if a1 == -1.0:
+        int_1 = 1 / np.log(x1 / x0)
+    else:
+        int_1 = (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) / (a1 + 1)
+
+    if a2 == -1.0:
+        int_2 = np.power(x1, a1 - a2) * (1 / np.log(x2 / x1))
+    else:
+        int_2 = (np.power(x1, a1 - a2) *
+                 (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0)) / (a2 + 1))
 
     # compute the total integral
     total = int_1 + int_2
@@ -155,17 +155,23 @@ def sample_bpl(u, x0, x1, x2, a1, a2):
     idx = stats.bernoulli.rvs(w1, size=len(u)).astype(bool)
 
     # inverse transform sample the lower part for the "successes"
-    out[idx] = np.power(
-        u[idx] * (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0))
-        + np.power(x0, a1 + 1.0),
-        1.0 / (1 + a1),
-    )
+    if a1 == -1.0:
+        out[idx] = x0 * np.exp(u[idx] / (1 / np.log(x1 / x0)))
+    else:
+        out[idx] = np.power(
+            u[idx] * (np.power(x1, a1 + 1.0) - np.power(x0, a1 + 1.0)) +
+            np.power(x0, a1 + 1.0),
+            1.0 / (1 + a1),
+        )
 
     # inverse transform sample the upper part for the "failures"
-    out[~idx] = np.power(
-        u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0))
-        + np.power(x1, a2 + 1.0),
-        1.0 / (1 + a2),
-    )
+    if a2 == -1.0:
+        out[~idx] = x1 * np.exp(u[~idx] / (1 / np.log(x2 / x1)))
+    else:
+        out[~idx] = np.power(
+            u[~idx] * (np.power(x2, a2 + 1.0) - np.power(x1, a2 + 1.0)) +
+            np.power(x1, a2 + 1.0),
+            1.0 / (1 + a2),
+        )
 
     return out

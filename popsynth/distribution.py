@@ -25,8 +25,8 @@ class DistributionParameter(Parameter):
 
 
 class Distribution(
-    object,
-    metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta),
+        object,
+        metaclass=AutoRegister(distribution_registry, base_type=ParameterMeta),
 ):
     _distribution_name = "Distribution"
 
@@ -178,9 +178,9 @@ class SpatialDistribution(Distribution):
         self._theta = None
         self._phi = None
 
-        super(SpatialDistribution, self).__init__(
-            name=name, seed=seed, form=form
-        )
+        super(SpatialDistribution, self).__init__(name=name,
+                                                  seed=seed,
+                                                  form=form)
 
     @abc.abstractmethod
     def differential_volume(self, distance):
@@ -310,11 +310,8 @@ class SpatialDistribution(Distribution):
         """
 
         # create a callback for the sampler
-        dNdr = (
-            lambda r: self.dNdV(r)
-            * self.differential_volume(r)
-            / self.time_adjustment(r)
-        )
+        dNdr = (lambda r: self.dNdV(r) * self.differential_volume(r) / self.
+                time_adjustment(r))
 
         if normalize:
 
@@ -338,9 +335,8 @@ class SpatialDistribution(Distribution):
             dNdr_norm = dNdr
 
         # find the maximum point
-        tmp = np.linspace(
-            0.0, self.r_max, 500, dtype=np.float64
-        )  # type: ArrayLike
+        tmp = np.linspace(0.0, self.r_max, 500,
+                          dtype=np.float64)  # type: ArrayLike
         ymax = np.max(dNdr_norm(tmp))  # type: float
 
         # rejection sampling the distribution
@@ -359,7 +355,8 @@ class SpatialDistribution(Distribution):
 
                     # get an rvs from 0 to the maximum distance
 
-                    r = np.random.uniform(low=0, high=self.r_max)  # type: float
+                    r = np.random.uniform(low=0,
+                                          high=self.r_max)  # type: float
 
                     # compare them
 
@@ -368,9 +365,8 @@ class SpatialDistribution(Distribution):
                         flag = False
         else:
 
-            r_out = rejection_sample(
-                size, ymax, self.r_max, dNdr
-            )  # type: ArrayLike
+            r_out = rejection_sample(size, ymax, self.r_max,
+                                     dNdr)  # type: ArrayLike
 
         self._distances = np.array(r_out)  # type: ArrayLike
 

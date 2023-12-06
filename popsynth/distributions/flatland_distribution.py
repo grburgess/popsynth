@@ -6,9 +6,10 @@ class FlatlandDistribution(SpatialDistribution):
 
     Lambda = DistributionParameter(default=1, vmin=0)
 
-    def __init__(
-        self, seed: int = 1234, name: str = "flatland", form: str = None
-    ):
+    def __init__(self,
+                 seed: int = 1234,
+                 name: str = "flatland",
+                 form: str = None):
         """
         A flat spatial distribution with only length.
 
@@ -21,9 +22,9 @@ class FlatlandDistribution(SpatialDistribution):
         :param Lambda: Length
         :type Lambda: :class:`DistributionParameter`
         """
-        super(FlatlandDistribution, self).__init__(
-            seed=seed, name=name, form=form
-        )
+        super(FlatlandDistribution, self).__init__(seed=seed,
+                                                   name=name,
+                                                   form=form)
 
     def differential_volume(self, r):
 
