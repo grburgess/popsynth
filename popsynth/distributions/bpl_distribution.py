@@ -50,7 +50,10 @@ class BPLDistribution(LuminosityDistribution):
             self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta
         )
 
-        return bpl(L) / total
+        return (
+            bpl(L, self.Lmin, self.Lbreak, self.Lmax, self.alpha, self.beta)
+            / total
+        )
 
     def draw_luminosity(self, size=1):
         u = np.atleast_1d(np.random.uniform(size=size))
