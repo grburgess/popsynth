@@ -51,14 +51,10 @@ class SpiralGalaxyDistribution(SphericalDistribution):
 
     def dNdV(self, r):
 
-        return (
-            self.rho
-            * np.power(
-                (r + self.R1) / (self.R0 + self.R1),
-                self.a,
-            )
-            * np.exp(-self.b * (r - self.R0) / (self.R0 + self.R1))
-        )
+        return (self.rho * np.power(
+            (r + self.R1) / (self.R0 + self.R1),
+            self.a,
+        ) * np.exp(-self.b * (r - self.R0) / (self.R0 + self.R1)))
 
     def draw_sky_positions(self, size):
         """
@@ -85,8 +81,7 @@ class SpiralGalaxyDistribution(SphericalDistribution):
         winklcor = np.random.uniform(0.0, 2 * np.pi, size=size)
 
         corrtet = winklcor * np.exp(
-            -0.35 * self._distances
-        )  # Faucher-Giguere 2007
+            -0.35 * self._distances)  # Faucher-Giguere 2007
 
         spiraltheta = tet + corrtet  # Faucher-Giguere 2007
 
@@ -95,10 +90,9 @@ class SpiralGalaxyDistribution(SphericalDistribution):
         zpos *= np.random.choice([-1, 1], size=size)
 
         self._distances = self._distances + np.random.normal(
-            0, scale=0.07 * np.abs(self._distances), size=size
-        )
+            0, scale=0.07 * np.abs(self._distances), size=size)
 
-        phi = np.arccos(zpos / np.sqrt(self._distances ** 2 + zpos ** 2))
+        phi = np.arccos(zpos / np.sqrt(self._distances**2 + zpos**2))
 
         self._theta = spiraltheta
 

@@ -27,10 +27,12 @@ from .simulated_variable import SimulatedVariable
 log = setup_logger(__name__)
 
 wine = "#8F2727"
-dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(wine)
+dark, dark_highlight, mid, mid_highlight, light, light_highlight = betagen(
+    wine)
 
 
 class Population(object):
+
     def __init__(
         self,
         luminosities: ArrayLike,
@@ -115,31 +117,26 @@ class Population(object):
         self._protected_names: List[str] = []
 
         self._luminosities: SimulatedVariable = SimulatedVariable(
-            luminosities, luminosities, selection
-        )
+            luminosities, luminosities, selection)
 
         self._distances: SimulatedVariable = SimulatedVariable(
-            distances, distances, selection
-        )
+            distances, distances, selection)
 
         self._known_distances: ArrayLike = known_distances
         self._known_distance_idx: ArrayLike = known_distance_idx
         self._unknown_distance_idx: ArrayLike = unknown_distance_idx
 
         self._theta: SimulatedVariable = SimulatedVariable(
-            theta, theta, selection
-        )
+            theta, theta, selection)
         self._phi: SimulatedVariable = SimulatedVariable(phi, phi, selection)
 
         assert len(known_distances) + len(unknown_distance_idx) == sum(
-            selection
-        ), "the distances are not the correct size"
+            selection), "the distances are not the correct size"
 
         # fluxes
 
         self._fluxes: SimulatedVariable = SimulatedVariable(
-            flux_obs, fluxes, selection
-        )
+            flux_obs, fluxes, selection)
 
         self._selection: ArrayLike = selection
         self._flux_sigma: float = flux_sigma
@@ -171,8 +168,7 @@ class Population(object):
         if probability is not None:
 
             self._probability: Optional[SimulatedVariable] = SimulatedVariable(
-                probability, probability, selection
-            )
+                probability, probability, selection)
 
         else:
 
@@ -194,9 +190,8 @@ class Population(object):
                 setattr(
                     self,
                     k,
-                    SimulatedVariable(
-                        v["obs_values"], v["true_values"], selection
-                    ),
+                    SimulatedVariable(v["obs_values"], v["true_values"],
+                                      selection),
                 )
                 self._protected_names.append(k)
 
@@ -585,9 +580,9 @@ class Population(object):
 
         for k, v in self._spatial_params.items():
 
-            spatial_grp.create_dataset(
-                k, data=np.array([v]), compression="gzip"
-            )
+            spatial_grp.create_dataset(k,
+                                       data=np.array([v]),
+                                       compression="gzip")
 
         if self._lf_params is not None:
 
@@ -595,9 +590,9 @@ class Population(object):
 
             for k, v in self._lf_params.items():
 
-                lum_grp.create_dataset(
-                    k, data=np.array([v]), compression="gzip"
-                )
+                lum_grp.create_dataset(k,
+                                       data=np.array([v]),
+                                       compression="gzip")
 
             f.attrs["lf_form"] = np.string_(self._lf_form)
 
@@ -614,17 +609,17 @@ class Population(object):
         f.attrs["seed"] = int(self._seed)
 
         if self._probability is not None:
-            f.create_dataset(
-                "probabilty", data=self._probability, compression="gzip"
-            )
+            f.create_dataset("probabilty",
+                             data=self._probability,
+                             compression="gzip")
 
-        f.create_dataset(
-            "luminosities", data=self._luminosities, compression="gzip"
-        )
+        f.create_dataset("luminosities",
+                         data=self._luminosities,
+                         compression="gzip")
         f.create_dataset("distances", data=self._distances, compression="gzip")
-        f.create_dataset(
-            "known_distances", data=self._known_distances, compression="gzip"
-        )
+        f.create_dataset("known_distances",
+                         data=self._known_distances,
+                         compression="gzip")
         f.create_dataset(
             "known_distance_idx",
             data=self._known_distance_idx,
@@ -635,7 +630,9 @@ class Population(object):
             data=self._unknown_distance_idx,
             compression="gzip",
         )
-        f.create_dataset("fluxes", data=self._fluxes.latent, compression="gzip")
+        f.create_dataset("fluxes",
+                         data=self._fluxes.latent,
+                         compression="gzip")
         f.create_dataset("flux_obs", data=self._fluxes, compression="gzip")
         f.create_dataset("selection", data=self._selection, compression="gzip")
         f.create_dataset("theta", data=self._theta, compression="gzip")
@@ -646,12 +643,12 @@ class Population(object):
         for k, v in self._auxiliary_quantities.items():
 
             q_grp = aux_grp.create_group(k)
-            q_grp.create_dataset(
-                "true_values", data=v["true_values"], compression="gzip"
-            )
-            q_grp.create_dataset(
-                "obs_values", data=v["obs_values"], compression="gzip"
-            )
+            q_grp.create_dataset("true_values",
+                                 data=v["true_values"],
+                                 compression="gzip")
+            q_grp.create_dataset("obs_values",
+                                 data=v["obs_values"],
+                                 compression="gzip")
 
         model_grp = f.create_group("model_spaces")
 
@@ -663,8 +660,7 @@ class Population(object):
         recursively_save_dict_contents_to_group(f, "truth", self._truth)
 
         recursively_save_dict_contents_to_group(
-            f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph))
-        )
+            f, "graph", fill_graph_dict(nx.to_dict_of_dicts(self._graph)))
 
         # now store the popsynth
         recursively_save_dict_contents_to_group(f, "popsynth", self._pop_synth)
@@ -791,9 +787,7 @@ class Population(object):
 
         graph = nx.from_dict_of_dicts(
             clean_graph_dict(
-                recursively_load_dict_contents_from_group(f, "graph")
-            )
-        )
+                recursively_load_dict_contents_from_group(f, "graph")))
 
         pop_synth = recursively_load_dict_contents_from_group(f, "popsynth")
 
@@ -992,8 +986,8 @@ class Population(object):
         try:
 
             ax.set_ylim(
-                bottom=min([self._fluxes.min(), self._fluxes.selected.min()])
-            )
+                bottom=min([self._fluxes.min(),
+                            self._fluxes.selected.min()]))
 
         except ValueError:
 
@@ -1047,8 +1041,8 @@ class Population(object):
         ax.set_yscale("log")
 
         ax.set_ylim(
-            bottom=min([self._fluxes.min(), self._fluxes.selected.min()])
-        )
+            bottom=min([self._fluxes.min(),
+                        self._fluxes.selected.min()]))
         ax.set_xlim(right=self._r_max)
 
         ax.set_xlabel("distance")
@@ -1088,9 +1082,9 @@ class Population(object):
 
         if (with_arrows) and (not self._no_detection):
             for start, stop, z in zip(
-                self._fluxes[self._selection],
-                self._fluxes.selected,
-                self._distances.selected,
+                    self._fluxes[self._selection],
+                    self._fluxes.selected,
+                    self._distances.selected,
             ):
 
                 x = z

@@ -19,9 +19,7 @@ class ViewingAngleSampler(NonObservedAuxSampler):
         :type max_angle: :class:`AuxiliaryParameter`
         """
 
-        super(ViewingAngleSampler, self).__init__(
-            name="va",
-        )
+        super(ViewingAngleSampler, self).__init__(name="va", )
 
     def true_sampler(self, size: int) -> None:
         """
@@ -31,14 +29,14 @@ class ViewingAngleSampler(NonObservedAuxSampler):
         :type size: int
         """
 
-        theta_inverse = np.random.uniform(
-            0.0, 1 - np.cos(np.deg2rad(self.max_angle)), size=size
-        )
+        theta_inverse = np.random.uniform(0.0,
+                                          1 -
+                                          np.cos(np.deg2rad(self.max_angle)),
+                                          size=size)
 
         self._true_values = np.arccos(1.0 - theta_inverse)
 
     def _compute_probability(self):
 
-        return np.sin(self._true_values) / (
-            1 - np.cos(np.deg2rad(self.max_angle))
-        )
+        return np.sin(
+            self._true_values) / (1 - np.cos(np.deg2rad(self.max_angle)))

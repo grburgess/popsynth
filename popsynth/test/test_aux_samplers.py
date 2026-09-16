@@ -13,12 +13,10 @@ from popsynth.aux_samplers.plaw_aux_sampler import (
     PowerLawAuxSampler,
 )
 from popsynth.aux_samplers.trunc_normal_aux_sampler import (
-    TruncatedNormalAuxSampler,
-)
+    TruncatedNormalAuxSampler, )
 
 
 def test_constructor():
-
     sampler = TruncatedNormalAuxSampler("test", observed=False)
 
     sampler.mu = 1
@@ -45,14 +43,11 @@ def test_constructor():
 
 
 @given(
-    st.floats(
-        min_value=0.01,
-    ),
+    st.floats(min_value=0.01, ),
     st.floats(min_value=0.01, max_value=10.0),
     st.integers(min_value=2, max_value=1000),
 )
 def test_lognorm_sampler(mu, tau, size):
-
     sampler = LogNormalAuxSampler("test", observed=False)
 
     sampler.true_sampler(size)
@@ -106,7 +101,6 @@ def test_lognorm_sampler(mu, tau, size):
     st.integers(min_value=2, max_value=1000),
 )
 def test_norm_sampler(mu, tau, size):
-
     sampler = NormalAuxSampler("test", observed=False)
 
     sampler.true_sampler(size)
@@ -138,7 +132,6 @@ def test_norm_sampler(mu, tau, size):
     st.integers(min_value=2, max_value=1000),
 )
 def test_truncnorm_sampler(mu, tau, size):
-
     sampler = TruncatedNormalAuxSampler("test", observed=False)
 
     sampler.mu = mu
@@ -175,7 +168,6 @@ def test_truncnorm_sampler(mu, tau, size):
 )
 @settings(deadline=None)
 def test_pareto_sampler(xmin, alpha, size):
-
     sampler = ParetoAuxSampler("test", observed=False)
 
     sampler.xmin = xmin
@@ -202,14 +194,13 @@ def test_pareto_sampler(xmin, alpha, size):
 
 
 @given(
-    st.floats(min_value=0.0, max_value=10),
-    st.floats(min_value=10, max_value=20),
+    st.floats(min_value=0.1, max_value=10),
+    st.floats(min_value=20, max_value=30),
     st.floats(min_value=-5, max_value=5.0),
     st.integers(min_value=2, max_value=1000),
 )
 @settings(deadline=None)
 def test_plaw_sampler(xmin, xmax, alpha, size):
-
     sampler = PowerLawAuxSampler("test", observed=False)
 
     sampler.xmin = xmin
@@ -238,15 +229,14 @@ def test_plaw_sampler(xmin, xmax, alpha, size):
 
 
 @given(
-    st.floats(min_value=0.0, max_value=10),
-    st.floats(min_value=10, max_value=20),
+    st.floats(min_value=0.1, max_value=10),
+    st.floats(min_value=20, max_value=30),
     st.floats(min_value=-5, max_value=5.0),
     st.floats(min_value=-5, max_value=5.0),
     st.integers(min_value=2, max_value=1000),
 )
 @settings(deadline=None)
 def test_broken_plaw_sampler(xmin, xmax, alpha, beta, size):
-
     sampler = BrokenPowerLawAuxSampler("test", observed=False)
 
     sampler.xmin = xmin

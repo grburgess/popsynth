@@ -69,7 +69,7 @@ class CosmologicalDistribution(SpatialDistribution):
         :returns: Flux
         """
 
-        return L / (4.0 * np.pi * cosmology.luminosity_distance(z) ** 2)
+        return L / (4.0 * np.pi * cosmology.luminosity_distance(z)**2)
 
     def time_adjustment(self, z):
         """
@@ -97,9 +97,10 @@ class SFRDistribution(CosmologicalDistribution):
     decay = DistributionParameter()
     peak = DistributionParameter(vmin=0)
 
-    def __init__(
-        self, seed: int = 1234, name: str = "sfr", is_rate: bool = True
-    ):
+    def __init__(self,
+                 seed: int = 1234,
+                 name: str = "sfr",
+                 is_rate: bool = True):
         """
         A star-formation like distribution of the form
         presented in Cole et al. 2001.
@@ -115,7 +116,7 @@ class SFRDistribution(CosmologicalDistribution):
             Affects the ``time_adjustment`` method used in cosmo calculations.
             Default is `True`.
         :type is_rate: bool
-        :param r0: The local density in units of Gpc^-3
+        :param r0: The local density in units of Gpc^-3 sr
         :type r0: :class:`DistributionParameter`
         :param a: Offset at z=0
         :type a: :class:`DistributionParameter`

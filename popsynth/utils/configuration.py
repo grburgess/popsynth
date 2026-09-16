@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from omegaconf import OmegaConf
@@ -32,8 +32,8 @@ class LogFile:
 class Logging:
 
     debug: bool = False
-    console: LogConsole = LogConsole()
-    file: LogFile = LogFile()
+    console: LogConsole = field(default_factory=LogConsole)
+    file: LogFile = field(default_factory=LogFile)
 
 
 @dataclass
@@ -46,8 +46,8 @@ class Cosmology:
 @dataclass
 class PopSynthConfig:
 
-    logging: Logging = Logging()
-    cosmology: Cosmology = Cosmology()
+    logging: Logging = field(default_factory=Logging)
+    cosmology: Cosmology = field(default_factory=Cosmology)
     show_progress: bool = True
 
 
@@ -59,9 +59,8 @@ if _config_file.is_file():
 
     _local_config = OmegaConf.load(_config_file)
 
-    popsynth_config: PopSynthConfig = OmegaConf.merge(
-        popsynth_config, _local_config
-    )
+    popsynth_config: PopSynthConfig = OmegaConf.merge(popsynth_config,
+                                                      _local_config)
 
 # Write defaults if not
 else:

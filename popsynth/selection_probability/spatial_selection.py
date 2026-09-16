@@ -22,8 +22,7 @@ class SpatialSelection(SelectionProbability):
         self._spatial_distribution: SpatialDistribution = None
 
     def set_spatial_distribution(
-        self, spatial_distribtuion: SpatialDistribution
-    ) -> None:
+            self, spatial_distribtuion: SpatialDistribution) -> None:
         """
         Set the spatial distribution for the selection.
 
@@ -91,5 +90,5 @@ class DistanceSelection(SpatialSelection):
     def draw(self, size: int):
 
         self._selection = (
-            self._spatial_distribution.distances >= self.min_distance
-        ) & (self._spatial_distribution.distances <= self.max_distance)
+            self._spatial_distribution.distances >= self.min_distance) & (
+                self._spatial_distribution.distances <= self.max_distance)

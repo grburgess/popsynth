@@ -8,6 +8,7 @@ from popsynth.populations.spatial_populations import (
 
 
 class ParetoHomogeneousSphericalPopulation(SphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -46,6 +47,7 @@ class ParetoHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -88,6 +90,7 @@ class ParetoZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class ParetoZPowerCosmoPopulation(ZPowerCosmoPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -137,6 +140,7 @@ class ParetoZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class ParetoSFRPopulation(SFRPopulation):
+
     def __init__(
         self,
         r0: float,

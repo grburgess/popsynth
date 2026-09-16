@@ -8,7 +8,6 @@ _obs = np.array([1, 2, 3])
 _latent = np.array([5, 6, 7])
 _selection = np.array([1, 0, 1], dtype=bool)
 
-
 _latent_bad = np.array([5, 6])
 _selection_bad = np.array([1, 0], dtype=bool)
 

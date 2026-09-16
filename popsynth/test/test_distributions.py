@@ -4,12 +4,12 @@ from popsynth.distribution import LuminosityDistribution, SpatialDistribution
 from popsynth.distributions.delta_distribution import DeltaDistribution
 from popsynth.distributions.flatland_distribution import FlatlandDistribution
 from popsynth.distributions.spiral_galaxy_distribution import (
-    SpiralGalaxyDistribution,
-)
+    SpiralGalaxyDistribution, )
 from popsynth.population_synth import PopulationSynth
 
 
 class DummySDistribution(SpatialDistribution):
+
     def __init__(self, seed=1234, form=None, truth={}):
 
         # the latex formula for the ditribution
@@ -18,9 +18,9 @@ class DummySDistribution(SpatialDistribution):
         # we do not need a "truth" dict here because
         # there are no parameters
 
-        super(DummySDistribution, self).__init__(
-            seed=seed, name="dummy1", form=form
-        )
+        super(DummySDistribution, self).__init__(seed=seed,
+                                                 name="dummy1",
+                                                 form=form)
 
     def differential_volume(self, r):
 
@@ -37,14 +37,15 @@ class DummySDistribution(SpatialDistribution):
 
 
 class DummyLDistribution(LuminosityDistribution):
+
     def __init__(self, seed=1234, name="dummy"):
 
         # the latex formula for the ditribution
         lf_form = r"1"
 
-        super(DummyLDistribution, self).__init__(
-            seed=seed, name="pareto", form=lf_form
-        )
+        super(DummyLDistribution, self).__init__(seed=seed,
+                                                 name="pareto",
+                                                 form=lf_form)
 
     def phi(self, L):
 
@@ -58,6 +59,7 @@ class DummyLDistribution(LuminosityDistribution):
 
 
 class MyPopulation(PopulationSynth):
+
     def __init__(self, r_max=5, seed=1234):
 
         # instantiate the distributions
@@ -74,6 +76,7 @@ class MyPopulation(PopulationSynth):
 
 
 class MyFlatPopulation(PopulationSynth):
+
     def __init__(self, r_max=5, seed=1234):
 
         # instantiate the distributions
@@ -91,6 +94,7 @@ class MyFlatPopulation(PopulationSynth):
 
 
 class MyDeltaPopulation(PopulationSynth):
+
     def __init__(self, r_max=5, seed=1234):
 
         # instantiate the distributions

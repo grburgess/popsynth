@@ -39,8 +39,17 @@ def test_user_config_merge():
     popsynth_config = PopSynthConfig()
 
     user_configs = [
-        {"show_progress": False},
-        {"logging": {"console": {"on": False, "level": "INFO"}}},
+        {
+            "show_progress": False
+        },
+        {
+            "logging": {
+                "console": {
+                    "on": False,
+                    "level": "INFO"
+                }
+            }
+        },
     ]
 
     for i, config in enumerate(user_configs):

@@ -78,6 +78,5 @@ class DecSampler(NonObservedAuxSampler):
 
     def true_sampler(self, size):
 
-        self._true_values = np.arccos(
-            1 - 2 * np.random.uniform(0.0, 1.0, size=size)
-        )
+        self._true_values = np.arccos(1 - 2 *
+                                      np.random.uniform(0.0, 1.0, size=size))

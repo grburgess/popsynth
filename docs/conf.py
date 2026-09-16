@@ -71,7 +71,6 @@ extensions = [
     'sphinx_gallery.load_style',
 ]
 
-
 napoleon_google_docstring = True
 napoleon_use_param = True
 napoleon_include_private_with_doc = True
@@ -84,8 +83,6 @@ autodoc_default_options = {
     "undoc-members": True,
     "exclude-members": "__weakref__",
 }
-
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

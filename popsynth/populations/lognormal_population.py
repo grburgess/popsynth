@@ -1,6 +1,5 @@
 from popsynth.distributions.log10_normal_distribution import (
-    Log10NormalDistribution,
-)
+    Log10NormalDistribution, )
 from popsynth.distributions.log_normal_distribution import LogNormalDistribution
 from popsynth.populations.spatial_populations import (
     SFRPopulation,
@@ -11,6 +10,7 @@ from popsynth.populations.spatial_populations import (
 
 
 class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -49,6 +49,7 @@ class LogNormalHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -91,6 +92,7 @@ class LogNormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -140,6 +142,7 @@ class LogNormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class LogNormalSFRPopulation(SFRPopulation):
+
     def __init__(
         self,
         r0: float,
@@ -201,6 +204,7 @@ class LogNormalSFRPopulation(SFRPopulation):
 
 
 class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -239,6 +243,7 @@ class Log10NormalHomogeneousSphericalPopulation(SphericalPopulation):
 
 
 class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -281,6 +286,7 @@ class Log10NormalZPowerSphericalPopulation(ZPowerSphericalPopulation):
 
 
 class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
+
     def __init__(
         self,
         Lambda: float,
@@ -330,6 +336,7 @@ class Log10NormalZPowerCosmoPopulation(ZPowerCosmoPopulation):
 
 
 class Log10NormalSFRPopulation(SFRPopulation):
+
     def __init__(
         self,
         r0: float,

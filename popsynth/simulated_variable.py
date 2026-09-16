@@ -98,9 +98,8 @@ class SimulatedVariable(np.ndarray):
 
         new_selection = np.zeros_like(non_selected)
 
-        return SimulatedVariable(
-            non_selected, non_selected_latent, new_selection
-        )
+        return SimulatedVariable(non_selected, non_selected_latent,
+                                 new_selection)
 
     def __array_finalize__(self, obj):
 
@@ -156,7 +155,7 @@ class SimulatedVariable(np.ndarray):
                     out_args.append(output)
             kwargs['out'] = tuple(out_args)
         else:
-            outputs = (None,) * ufunc.nout
+            outputs = (None, ) * ufunc.nout
 
         info = {}
         if in_no:
@@ -166,9 +165,8 @@ class SimulatedVariable(np.ndarray):
 
         results = super().__array_ufunc__(ufunc, method, *args, **kwargs)
 
-        latent_results = super().__array_ufunc__(
-            ufunc, method, *latent_args, **kwargs
-        )
+        latent_results = super().__array_ufunc__(ufunc, method, *latent_args,
+                                                 **kwargs)
 
         if results is NotImplemented:
             return NotImplemented
@@ -186,22 +184,20 @@ class SimulatedVariable(np.ndarray):
             return
 
         if ufunc.nout == 1:
-            results = (results,)
-            latent_results = (latent_results,)
+            results = (results, )
+            latent_results = (latent_results, )
 
         final_results = []
 
-        for result, latent_result, output in zip(
-            results, latent_results, outputs
-        ):
+        for result, latent_result, output in zip(results, latent_results,
+                                                 outputs):
 
             if output is None:
 
                 if isinstance(result, np.ndarray):
 
-                    out = SimulatedVariable(
-                        result, latent_result, self._selection
-                    )
+                    out = SimulatedVariable(result, latent_result,
+                                            self._selection)
 
                 else:
 

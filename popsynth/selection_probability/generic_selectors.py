@@ -47,8 +47,7 @@ class BernoulliSelection(SelectionProbability):
         if popsynth_config.show_progress:
 
             self._selection = np.zeros(size, dtype=int).astype(
-                bool
-            )  # type: np.ndarray
+                bool)  # type: np.ndarray
 
             for i in progress_bar(range(size), desc=f"Selecting {self.name}"):
 
@@ -60,10 +59,7 @@ class BernoulliSelection(SelectionProbability):
         else:
 
             self._selection = stats.bernoulli.rvs(
-                self.probability, size=size
-            ).astype(
-                bool
-            )  # type: np.ndarray
+                self.probability, size=size).astype(bool)  # type: np.ndarray
 
 
 class BoxSelection(SelectionProbability):
@@ -321,19 +317,17 @@ class SoftSelection(SelectionProbability):
             values = self._observed_flux
 
         if not use_log:
-            probs = sf.expit(
-                self.strength * (values - self.boundary)
-            )  # type: np.ndarray
+            probs = sf.expit(self.strength *
+                             (values - self.boundary))  # type: np.ndarray
 
         else:
 
-            probs = sf.expit(
-                self.strength * (np.log10(values) - np.log10(self.boundary))
-            )  # type: np.ndarray
+            probs = sf.expit(self.strength *
+                             (np.log10(values) -
+                              np.log10(self.boundary)))  # type: np.ndarray
 
-        self._selection = stats.bernoulli.rvs(probs, size=len(values)).astype(
-            bool
-        )
+        self._selection = stats.bernoulli.rvs(probs,
+                                              size=len(values)).astype(bool)
 
     __all__ = [
         "UnitySelection",

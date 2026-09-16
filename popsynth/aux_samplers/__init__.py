@@ -7,7 +7,7 @@ from .plaw_aux_sampler import (
     PowerLawAuxSampler,
 )
 from .trunc_normal_aux_sampler import TruncatedNormalAuxSampler
-from .trunc_lognormal_aux_sampler import TruncatedLogNormalAuxSampler,TruncatedLog10NormalAuxSampler
+from .trunc_lognormal_aux_sampler import TruncatedLogNormalAuxSampler, TruncatedLog10NormalAuxSampler
 from .viewing_angle_sampler import ViewingAngleSampler
 
 __all__ = [
